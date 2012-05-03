@@ -25,6 +25,9 @@ class mongodb (
       'Ubuntu': {
         $location = 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart'
       }
+      default: {
+        fail("mongrodb: operatingsystem ${::operatingsystem} is not supported.")
+      }
     }
   }
 
@@ -38,7 +41,7 @@ class mongodb (
     repos       => '10gen',
     key         => '7F0CEB10',
     key_server  => 'keyserver.ubuntu.com',
-    pin         => '-10',
+    pin         => -10,
     include_src => false,
     before      => Package['mongodb-10gen'],
   }
@@ -48,8 +51,8 @@ class mongodb (
   }
 
   service { 'mongodb':
-    ensure => running,
-    enable => true,
+    ensure  => running,
+    enable  => true,
     require => Package['mongodb-10gen'],
   }
 
