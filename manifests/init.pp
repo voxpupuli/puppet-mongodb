@@ -41,7 +41,6 @@ class mongodb (
     repos       => '10gen',
     key         => '7F0CEB10',
     key_server  => 'keyserver.ubuntu.com',
-    pin         => -10,
     include_src => false,
     before      => Package['mongodb-10gen'],
   }
