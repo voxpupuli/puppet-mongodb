@@ -7,8 +7,9 @@
 #
 # setup_sources (default: true) - Whether or not to set up software sources in yum/apt
 # init (auto discovered) - override init (sysv or upstart) for Debian derivitives
+# location - override apt location configuration.
 # packagename (auto discovered) - override the package name (eg: for EPEL)
-# servicename (auto discovered) - override the service name 
+# servicename (auto discovered) - override the service name
 #
 # === Examples
 #
@@ -27,13 +28,13 @@
 #
 # === Copyright
 #
-# Copyright 2011 Craig Dunn
+# Copyright 2012 PuppetLabs
 #
 class mongodb (
-  $setup_sources   = true,
+  $enable_10gen    = false,
   $init            = $mongodb::params::init,
   $location        = '',
-  $packagename     = $mongodb::params::package,
+  $packagename     = undef,
   $servicename     = $mongodb::params::service,
   $logpath         = '/var/log/mongo/mongod.log',
   $logappend       = 'true',
@@ -64,13 +65,21 @@ class mongodb (
   $source          = undef
 ) inherits mongodb::params {
 
-  if $setup_sources {
+  if $enable_10gen {
     include $mongodb::params::source
     Class[$mongodb::params::source] -> Package['mongodb-10gen']
   }
 
+  if $packagename {
+    $package = $packagename
+  } elsif $enable_10gen {
+    $package = $mongodb::params::pkg_10gen
+  } else {
+    $package = $mongodb::params::package
+  }
+
   package { 'mongodb-10gen':
-    name   => $packagename,
+    name   => $package,
     ensure => installed,
   }
 

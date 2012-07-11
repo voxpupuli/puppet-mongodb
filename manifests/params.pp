@@ -3,8 +3,9 @@ class mongodb::params{
     'redhat': {
       $baseurl = "http://downloads-distro.mongodb.org/repo/redhat/os/${::architecture}"
       $source  = 'mongodb::sources::yum'
-      $package = 'mongo-10gen-server'
+      $package = 'mongodb-server'
       $service = 'mongod'
+      $pkg_10gen = 'mongo-10gen-server'
     }
     'debian': {
       $locations = {
@@ -16,8 +17,9 @@ class mongodb::params{
         'Ubuntu': { $init = 'upstart' }
       }
       $source  = 'mongodb::sources::apt'
-      $package = 'mongodb-10gen'
+      $package = 'mongodb'
       $service = 'mongodb'
+      $pkg_10gen = 'mongodb-10gen'
     }
     default: {
       fail ("mongodb: ${::operatingsystem} is not supported.")
