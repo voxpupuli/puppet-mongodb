@@ -5,7 +5,7 @@
 #
 # === Parameters
 #
-# setup_sources (default: true) - Whether or not to set up software sources in yum/apt
+# enable_10gen (default: false) - Whether or not to set up 10gen software repositories
 # init (auto discovered) - override init (sysv or upstart) for Debian derivitives
 # location - override apt location configuration.
 # packagename (auto discovered) - override the package name (eg: for EPEL)
@@ -13,13 +13,12 @@
 #
 # === Examples
 #
-# To install with defaults from sources on any system:
+# To install with defaults from the distribution packages on any system:
 #   include mongodb
 #
-# To install from EPEL on a EL server
+# To install from 10gen on a EL server
 #   class { 'mongodb':
-#     setup_sources => false,
-#     packagename   => 'mongodb-server',
+#     enable_10gen => true,
 #   }
 #
 # === Authors

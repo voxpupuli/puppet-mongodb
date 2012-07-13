@@ -9,8 +9,11 @@ Installs mongodb on Ubuntu/Debian per 10gen [installation documentation](http://
 ### class mongodb
 
 Parameters:
-
-* init: optionally specify the init script used, accepts sysv or upstart.
+* enable_10gen (default: false) - Whether or not to set up 10gen software repositories
+* init (auto discovered) - override init (sysv or upstart) for Debian derivitives
+* location - override apt location configuration.
+* packagename (auto discovered) - override the package name (eg: for EPEL)
+* servicename (auto discovered) - override the service name
 
 By default ubuntu is upstart and debian uses sysv.
 
@@ -22,8 +25,6 @@ Examples:
 
 ## Supported Platforms
 
-The module have been tested on the following operating systems. Testing and patches for other platforms are welcomed.
-
 * Debian Wheezy
-
-This module is under development and does not manage mongodb.conf at the moment.
+* Ubuntu 12.04 (precise)
+* RHEL 6
