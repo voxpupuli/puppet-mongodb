@@ -84,7 +84,7 @@ class mongodb (
     ensure => installed,
   }
 
-  file { '/etc/mongod.conf':
+  file { $mongodb::params::config:
     content => template('mongodb/mongod.conf.erb'),
     owner   => 'root',
     group   => 'root',
