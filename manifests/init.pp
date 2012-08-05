@@ -96,6 +96,6 @@ class mongodb (
     name      => $servicename,
     ensure    => running,
     enable    => true,
-    subscribe => File['/etc/mongod.conf'],
+    subscribe => File[$mongodb::params::config],
   }
 }
