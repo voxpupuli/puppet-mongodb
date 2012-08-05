@@ -6,6 +6,9 @@ logappend=<%= logappend %>
 
 # fork and run in background
 fork = <%= mongofork %>
+<% if @bind_ip -%>
+bind_ip = <%= bind_ip %>
+<% end -%>
 port = <%= port %>
 dbpath= <%= dbpath %>
 
@@ -84,6 +87,9 @@ mms-name = <%= mms_name %>
 # Ping interval for Mongo monitoring server.
 mms-interval = <%= mms_interval %>
 <% end %>
+<% if @replset %>
+replSet = <%= replset %>
+<% else %>
 <% if @slave %>
 slave = <%= slave %>
 <% end %>
@@ -96,4 +102,5 @@ only = <%= only %>
 <% end %>
 <% if @master %>
 master = <%= master %>
+<% end %>
 <% end %>
