@@ -87,7 +87,7 @@ class mongodb (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => Package['mongodb-10gen'],
+    require => Package[$package],
   }
 
   service { 'mongodb':
