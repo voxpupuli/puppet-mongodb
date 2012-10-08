@@ -97,3 +97,12 @@ only = <%= only %>
 <% if @master %>
 master = <%= master %>
 <% end %>
+# Configure ReplicaSet membership
+<% if @replset %>
+replSet = <%= replset %>
+<% end %>
+# Enable rest API (disabled by default)
+<% if @rest %>
+rest = <%= rest %>
+<% end %>
+
