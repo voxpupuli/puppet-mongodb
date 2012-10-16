@@ -97,3 +97,8 @@ only = <%= only %>
 <% if @master %>
 master = <%= master %>
 <% end %>
+# Alters the storage pattern of the data directory to store each database’s
+# files in a distinct folder. 
+<% if @directoryperdb %>
+directoryperdb = <%= directoryperdb %>
+<% end %>
