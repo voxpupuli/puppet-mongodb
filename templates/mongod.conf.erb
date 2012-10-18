@@ -97,8 +97,13 @@ only = <%= only %>
 <% if @master %>
 master = <%= master %>
 <% end %>
-# Alters the storage pattern of the data directory to store each database’s
-# files in a distinct folder. 
 <% if @directoryperdb %>
+# Alters the storage pattern of the data directory to store each database's
+# files in a distinct folder. 
 directoryperdb = <%= directoryperdb %>
+<% end %>
+<% if @replSet %>
+# Use this setting to configure replication with replica sets. Specify a replica
+# set name as an argument to this set. All hosts must have the same set name. 
+replSet = <%= replSet %>
 <% end %>
