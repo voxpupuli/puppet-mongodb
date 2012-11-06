@@ -106,5 +106,6 @@ class mongodb (
     ensure    => $service_ensure,
     enable    => $service_enable,
     subscribe => $service_subscribe,
+    require   => Package['mongodb-10gen'],
   }
 }
