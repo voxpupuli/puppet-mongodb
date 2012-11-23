@@ -1,20 +1,20 @@
 class mongodb::params{
-  case $::operatingsystem {
-    centos, redhat, oel, Amazon: {
+  case $::osfamily {
+    'redhat': {
       $baseurl = "http://downloads-distro.mongodb.org/repo/redhat/os/${::architecture}"
       $source  = 'mongodb::sources::yum'
       $package = 'mongodb-server'
       $service = 'mongod'
       $pkg_10gen = 'mongo-10gen-server'
     }
-    debian, ubuntu: {
+    'debian': {
       $locations = {
         'sysv'    => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
         'upstart' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart'
       }
       case $::operatingsystem {
-        debian: { $init = 'sysv' }
-        ubuntu: { $init = 'upstart' }
+        'Debian': { $init = 'sysv' }
+        'Ubuntu': { $init = 'upstart' }
       }
       $source  = 'mongodb::sources::apt'
       $package = 'mongodb'
