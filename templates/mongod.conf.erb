@@ -9,36 +9,36 @@ fork = <%= mongofork %>
 port = <%= port %>
 dbpath= <%= dbpath %>
 
-<% if @nojournal %>
+<% if @nojournal -%>
 # Disables write-ahead journaling
 nojournal = <%= nojournal %> 
-<% end %>
-<% if @cpu %>
+<% end -%>
+<% if @cpu -%>
 # Enables periodic logging of CPU utilization and I/O wait
 cpu = <%= cpu %>
 
-<% end %>
-<% if @noauth %>
+<% end -%>
+<% if @noauth -%>
 # Turn on/off security.  Off is currently the default
 noauth = <%= noauth %>
-<% end %>
-<% if @auth %>
+<% end -%>
+<% if @auth -%>
 auth = <%= auth %>
-<% end %>
-<% if @verbose %>
+<% end -%>
+<% if @verbose -%>
 # Verbose logging output.
 verbose = <%= verbose %>
-<% end %>
-<% if @objcheck %>
+<% end -%>
+<% if @objcheck -%>
 # Inspect all client data for validity on receipt (useful for
 # developing drivers)
 objcheck = <%= objcheck %>
-<% end %>
-<% if @quota %>
+<% end -%>
+<% if @quota -%>
 # Enable db quota management
 quota = <%= quota %>
-<% end %>
-<% if @oplog %>
+<% end -%>
+<% if @oplog -%>
 # Set oplogging level where n is
 #   0=off (default)
 #   1=W
@@ -46,54 +46,64 @@ quota = <%= quota %>
 #   3=both
 #   7=W+some reads
 oplog = <%= oplog %>
-<% end %>
-<% if @nohints %>
+<% end -%>
+<% if @nohints -%>
 # Ignore query hints
 nohints = <%= nohints %>
-<% end %>
-<% if @nohttpinterface %>
+<% end -%>
+<% if @nohttpinterface -%>
 # Disable the HTTP interface (Defaults to localhost:27018).
 nohttpinterface = <%= nohttpinterface %>
-<% end %>
-<% if @noscripting %>
+<% end -%>
+<% if @noscripting -%>
 # Turns off server-side scripting.  This will result in greatly limited
 # functionality
 noscripting = <%= noscripting %>
-<% end %>
-<% if @notablescan %>
+<% end -%>
+<% if @notablescan -%>
 # Turns off table scans.  Any query that would do a table scan fails.
 notablescan = <%= notablescan %>
-<% end %>
-<% if @noprealloc %>
+<% end -%>
+<% if @noprealloc -%>
 # Disable data file preallocation.
 noprealloc = <%= noprealloc %>
-<% end %>
-<% if @nssize %>
+<% end -%>
+<% if @nssize -%>
 # Specify .ns file size for new databases.
- nssize = <%= nssize %>
-<% end %>
-<% if @mms_token %>
+nssize = <%= nssize %>
+<% end -%>
+<% if @mms_token -%>
 # Accout token for Mongo monitoring server.
 mms-token = <%= mms_token %>
-<% end %>
-<% if @mms_name %>
+<% end -%>
+<% if @mms_name -%>
 # Server name for Mongo monitoring server.
 mms-name = <%= mms_name %>
-<% end %>
-<% if @mms_interval %>
+<% end -%>
+<% if @mms_interval -%>
 # Ping interval for Mongo monitoring server.
 mms-interval = <%= mms_interval %>
-<% end %>
-<% if @slave %>
+<% end -%>
+<% if @slave -%>
 slave = <%= slave %>
-<% end %>
-<% if @mongosource %>
+<% end -%>
+<% if @mongosource -%>
 source = <%= mongosource %>
-<% end %>
-<% if @only %>
+<% end -%>
+<% if @only -%>
 # Slave only: specify a single database to replicate
 only = <%= only %>
-<% end %>
-<% if @master %>
+<% end -%>
+<% if @master -%>
 master = <%= master %>
-<% end %>
+<% end -%>
+<% if @directoryperdb -%>
+# Alters the storage pattern of the data directory to store each database's
+# files in a distinct folder. 
+directoryperdb = <%= directoryperdb %>
+<% end -%>
+<% if @replSet -%>
+# Use this setting to configure replication with replica sets. Specify a replica
+# set name as an argument to this set. All hosts must have the same set name. 
+replSet = <%= replSet %>
+<% end -%>
