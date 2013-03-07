@@ -103,10 +103,11 @@ class mongodb (
   }
 
   file { $dbpath:
-    ensure => directory,
-    owner  => mongod,
-    group  => mongod,
-    before => Service['mongodb'],
+    ensure  => directory,
+    owner   => mongod,
+    group   => mongod,
+    before  => Service['mongodb'],
+    require => Package[$package],
   }
 
   $logpath_dir = $logpath ? {
@@ -115,10 +116,11 @@ class mongodb (
   }
 
   file { $logpath_dir:
-    ensure => directory,
-    owner  => mongod,
-    group  => mongod,
-    before => Service['mongodb'],
+    ensure  => directory,
+    owner   => mongod,
+    group   => mongod,
+    before  => Service['mongodb'],
+    require => Package[$package],
   }
 
   $pidfilepath_dir = $pidfilepath ? {
@@ -127,10 +129,11 @@ class mongodb (
   }
 
   file { $pidfilepath_dir:
-    ensure => directory,
-    owner  => mongod,
-    group  => mongod,
-    before => Service['mongodb'],
+    ensure  => directory,
+    owner   => mongod,
+    group   => mongod,
+    before  => Service['mongodb'],
+    require => Package[$package],
   }
 
 }
