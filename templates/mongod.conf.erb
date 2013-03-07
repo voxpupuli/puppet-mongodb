@@ -7,11 +7,11 @@ logappend=<%= logappend %>
 # fork and run in background
 fork = <%= mongofork %>
 port = <%= port %>
-dbpath= <%= dbpath %>
+dbpath = <%= dbpath %>
 # location of pidfile
 pidfilepath = <%= pidfilepath %>
 <% if @bindip %>
-bind_ip <%= bindip %>
+bind_ip = <%= bindip %>
 <% end %>
 <% if @rest %>
 rest = <%= rest %>
