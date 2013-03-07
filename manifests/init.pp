@@ -39,7 +39,9 @@ class mongodb (
   $logappend       = true,
   $mongofork       = true,
   $port            = '27017',
+  $bindip          = undef,
   $dbpath          = '/var/lib/mongo',
+  $pidfilepath     = '/var/run/mongodb/mongod.pid',
   $nojournal       = undef,
   $cpu             = undef,
   $noauth          = undef,
@@ -50,6 +52,7 @@ class mongodb (
   $oplog           = undef,
   $nohints         = undef,
   $nohttpinterface = undef,
+  $rest            = undef,
   $noscripting     = undef,
   $notablescan     = undef,
   $noprealloc      = undef,
@@ -60,8 +63,11 @@ class mongodb (
   $slave           = undef,
   $only            = undef,
   $master          = undef,
-  $source          = undef
-) inherits mongodb::params {
+  $source          = undef,
+  $replset         = undef,
+) {
+
+  include mongodb::params
 
   if $enable_10gen {
     include $mongodb::params::source
@@ -77,8 +83,8 @@ class mongodb (
   }
 
   package { 'mongodb-10gen':
-    name   => $package,
     ensure => installed,
+    name   => $package,
   }
 
   file { '/etc/mongod.conf':
@@ -90,9 +96,74 @@ class mongodb (
   }
 
   service { 'mongodb':
-    name      => $servicename,
     ensure    => running,
+    name      => $mongodb::params::service,
     enable    => true,
     subscribe => File['/etc/mongod.conf'],
   }
+
+  exec { $dbpath:
+    path    => '/bin:/usr/bin:/sbin:/usr/sbin',
+    command => "mkdir -p ${dbpath}",
+    user    => root,
+    group   => root,
+    unless  => "test -d ${dbpath}",
+    before  => Service['mongodb'],
+    require => Package[$package],
+  }
+
+  file { $dbpath:
+    ensure  => directory,
+    owner   => mongod,
+    group   => mongod,
+    before  => Service['mongodb'],
+    require => Exec[$dbpath],
+  }
+
+  $logpath_dir = $logpath ? {
+    /(.*\/)\w+.log/ => $1,
+    default         => undef,
+  }
+
+  exec { $logpath_dir:
+    path    => '/bin:/usr/bin:/sbin:/usr/sbin',
+    command => "mkdir -p ${logpath_dir}",
+    user    => root,
+    group   => root,
+    unless  => "test -d ${logpath_dir}",
+    before  => Service['mongodb'],
+    require => Package[$package],
+  }
+
+  file { $logpath_dir:
+    ensure  => directory,
+    owner   => mongod,
+    group   => mongod,
+    before  => Service['mongodb'],
+    require => Exec[$logpath_dir],
+  }
+
+  $pidfilepath_dir = $pidfilepath ? {
+    /(.*\/)\w+.pid/ => $1,
+    default         => undef,
+  }
+
+  exec { $pidfilepath_dir:
+    path    => '/bin:/usr/bin:/sbin:/usr/sbin',
+    command => "mkdir -p ${pidfilepath_dir}",
+    user    => root,
+    group   => root,
+    unless  => "test -d ${pidfilepath_dir}",
+    before  => Service['mongodb'],
+    require => Package[$package],
+  }
+
+  file { $pidfilepath_dir:
+    ensure  => directory,
+    owner   => mongod,
+    group   => mongod,
+    before  => Service['mongodb'],
+    require => Exec[$pidfilepath_dir],
+  }
+
 }

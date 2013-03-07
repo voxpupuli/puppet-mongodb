@@ -7,8 +7,15 @@ logappend=<%= logappend %>
 # fork and run in background
 fork = <%= mongofork %>
 port = <%= port %>
-dbpath= <%= dbpath %>
-
+dbpath = <%= dbpath %>
+# location of pidfile
+pidfilepath = <%= pidfilepath %>
+<% if @bindip %>
+bind_ip = <%= bindip %>
+<% end %>
+<% if @rest %>
+rest = <%= rest %>
+<% end %>
 <% if @nojournal %>
 # Disables write-ahead journaling
 nojournal = <%= nojournal %> 
@@ -16,7 +23,6 @@ nojournal = <%= nojournal %>
 <% if @cpu %>
 # Enables periodic logging of CPU utilization and I/O wait
 cpu = <%= cpu %>
-
 <% end %>
 <% if @noauth %>
 # Turn on/off security.  Off is currently the default
@@ -45,7 +51,7 @@ quota = <%= quota %>
 #   2=R
 #   3=both
 #   7=W+some reads
-oplog = <%= oplog %>
+diaglog = <%= oplog %>
 <% end %>
 <% if @nohints %>
 # Ignore query hints
@@ -70,7 +76,7 @@ noprealloc = <%= noprealloc %>
 <% end %>
 <% if @nssize %>
 # Specify .ns file size for new databases.
- nssize = <%= nssize %>
+nssize = <%= nssize %>
 <% end %>
 <% if @mms_token %>
 # Accout token for Mongo monitoring server.
@@ -84,6 +90,7 @@ mms-name = <%= mms_name %>
 # Ping interval for Mongo monitoring server.
 mms-interval = <%= mms_interval %>
 <% end %>
+# Replication Options
 <% if @slave %>
 slave = <%= slave %>
 <% end %>
@@ -96,4 +103,8 @@ only = <%= only %>
 <% end %>
 <% if @master %>
 master = <%= master %>
+<% end %>
+<%if @replset %>
+# Replication
+replSet = <%= replset %>
 <% end %>
