@@ -102,12 +102,22 @@ class mongodb (
     subscribe => File['/etc/mongod.conf'],
   }
 
+  exec { $dbpath:
+    path    => '/bin:/usr/bin:/sbin:/usr/sbin',
+    command => "mkdir -p ${dbpath}",
+    user    => root,
+    group   => root,
+    unless  => "test -d ${dbpath}",
+    before  => Service['mongodb'],
+    require => Package[$package],
+  }
+
   file { $dbpath:
     ensure  => directory,
     owner   => mongod,
     group   => mongod,
     before  => Service['mongodb'],
-    require => Package[$package],
+    require => Exec[$dbpath],
   }
 
   $logpath_dir = $logpath ? {
@@ -115,12 +125,22 @@ class mongodb (
     default         => undef,
   }
 
+  exec { $logpath_dir:
+    path    => '/bin:/usr/bin:/sbin:/usr/sbin',
+    command => "mkdir -p ${logpath_dir}",
+    user    => root,
+    group   => root,
+    unless  => "test -d ${logpath_dir}",
+    before  => Service['mongodb'],
+    require => Package[$package],
+  }
+
   file { $logpath_dir:
     ensure  => directory,
     owner   => mongod,
     group   => mongod,
     before  => Service['mongodb'],
-    require => Package[$package],
+    require => Exec[$logpath_dir],
   }
 
   $pidfilepath_dir = $pidfilepath ? {
@@ -128,12 +148,22 @@ class mongodb (
     default         => undef,
   }
 
+  exec { $pidfilepath_dir:
+    path    => '/bin:/usr/bin:/sbin:/usr/sbin',
+    command => "mkdir -p ${pidfilepath_dir}",
+    user    => root,
+    group   => root,
+    unless  => "test -d ${pidfilepath_dir}",
+    before  => Service['mongodb'],
+    require => Package[$package],
+  }
+
   file { $pidfilepath_dir:
     ensure  => directory,
     owner   => mongod,
     group   => mongod,
     before  => Service['mongodb'],
-    require => Package[$package],
+    require => Exec[$pidfilepath_dir],
   }
 
 }
