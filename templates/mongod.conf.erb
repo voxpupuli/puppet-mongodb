@@ -107,3 +107,7 @@ directoryperdb = <%= directoryperdb %>
 # set name as an argument to this set. All hosts must have the same set name.
 replSet = <%= replSet %>
 <% end -%>
+<% if @smallfiles -%>
+# Set to true to modify MongoDB to use a smaller default data file size.
+smallfiles = <%= smallfiles %>
+<% end -%>
