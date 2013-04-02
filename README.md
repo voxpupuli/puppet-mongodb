@@ -19,11 +19,11 @@ By default ubuntu is upstart and debian uses sysv.
 
 Examples:
 
-    class mongodb {
+    class { 'mongodb':
       init => 'sysv',
     }
 
-    class mongodb {
+    class { 'mongodb':
       enable_10gen => true,
     }
 
