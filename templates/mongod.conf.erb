@@ -111,3 +111,7 @@ replSet = <%= replSet %>
 # Set to true to modify MongoDB to use a smaller default data file size.
 smallfiles = <%= smallfiles %>
 <% end -%>
+<% if @rest -%>
+# Set to true to enable a simple REST interface.
+rest = <%= rest %>
+<% end -%>
