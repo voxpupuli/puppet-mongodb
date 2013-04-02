@@ -61,7 +61,8 @@ class mongodb (
   $only            = undef,
   $master          = undef,
   $source          = undef,
-  $directoryperdb  = undef
+  $directoryperdb  = undef,
+  $replSet         = undef
 ) inherits mongodb::params {
 
   if $enable_10gen {
