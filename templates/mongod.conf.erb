@@ -114,3 +114,12 @@ smallfiles = <%= smallfiles %>
 # Set to true to enable a simple REST interface.
 rest = <%= rest %>
 <% end -%>
+<% if @profile -%>
+# Modify this value to changes the level of database profiling, which inserts
+# information about operation performance into output of mongod or the log file.
+profile = <%= profile %>
+<% end -%>
+<% if @slowms -%>
+# Sets the threshold for mongod to consider a query “slow” for the database profiler.
+slowms = <%= @slowms %>
+<% end -%>
