@@ -123,3 +123,7 @@ profile = <%= profile %>
 # Sets the threshold for mongod to consider a query “slow” for the database profiler.
 slowms = <%= @slowms %>
 <% end -%>
+<% if @keyfile -%>
+# Specify the path to a key file to store authentication information.
+keyFile = <%= @keyfile %>
+<% end -%>

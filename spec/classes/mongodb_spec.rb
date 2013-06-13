@@ -166,6 +166,22 @@ describe 'mongodb', :type => :class do
         })
       }
     end
+
+    describe 'when using additional options' do
+      let :params do
+        {
+            :slowms  => '100',
+            :keyfile => '/etc/mongokeyfile',
+            :auth    => 'true'
+        }
+      end
+
+      it {
+        should contain_file('/etc/mongod.conf').with_content(/slowms\s=\s100/)
+        should contain_file('/etc/mongod.conf').with_content(/keyFile\s=\s\/etc\/mongokeyfile/)
+        should contain_file('/etc/mongod.conf').with_content(/auth\s=\strue/)
+      }
+    end
   end
 
   describe 'when deploying on Solaris' do
