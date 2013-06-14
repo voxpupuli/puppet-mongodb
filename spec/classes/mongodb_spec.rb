@@ -173,7 +173,8 @@ describe 'mongodb', :type => :class do
             :slowms           => '100',
             :keyfile          => '/etc/mongokeyfile',
             :auth             => 'true',
-            :mongod_conf_file => '/etc/mongodb.conf'
+            :mongod_conf_file => '/etc/mongodb.conf',
+            :bind_ip          => '0.0.0.0'
         }
       end
 
@@ -181,6 +182,7 @@ describe 'mongodb', :type => :class do
         should contain_file('/etc/mongodb.conf').with_content(/slowms\s=\s100/)
         should contain_file('/etc/mongodb.conf').with_content(/keyFile\s=\s\/etc\/mongokeyfile/)
         should contain_file('/etc/mongodb.conf').with_content(/auth\s=\strue/)
+        should contain_file('/etc/mongodb.conf').with_content(/bind_ip\s=\s0\.0\.0\.0/)
         should contain_service('mongodb').with(
             'subscribe' => "File[/etc/mongodb.conf]"
                )

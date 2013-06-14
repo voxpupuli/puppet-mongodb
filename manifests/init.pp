@@ -68,7 +68,8 @@ class mongodb (
   $rest              = undef,
   $profile           = undef,
   $slowms            = undef,
-  $keyfile           = undef
+  $keyfile           = undef,
+  $bind_ip           = undef
 ) inherits mongodb::params {
 
   if $enable_10gen {
