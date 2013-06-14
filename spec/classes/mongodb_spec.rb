@@ -170,16 +170,20 @@ describe 'mongodb', :type => :class do
     describe 'when using additional options' do
       let :params do
         {
-            :slowms  => '100',
-            :keyfile => '/etc/mongokeyfile',
-            :auth    => 'true'
+            :slowms           => '100',
+            :keyfile          => '/etc/mongokeyfile',
+            :auth             => 'true',
+            :mongod_conf_file => '/etc/mongodb.conf'
         }
       end
 
       it {
-        should contain_file('/etc/mongod.conf').with_content(/slowms\s=\s100/)
-        should contain_file('/etc/mongod.conf').with_content(/keyFile\s=\s\/etc\/mongokeyfile/)
-        should contain_file('/etc/mongod.conf').with_content(/auth\s=\strue/)
+        should contain_file('/etc/mongodb.conf').with_content(/slowms\s=\s100/)
+        should contain_file('/etc/mongodb.conf').with_content(/keyFile\s=\s\/etc\/mongokeyfile/)
+        should contain_file('/etc/mongodb.conf').with_content(/auth\s=\strue/)
+        should contain_service('mongodb').with(
+            'subscribe' => "File[/etc/mongodb.conf]"
+               )
       }
     end
   end
