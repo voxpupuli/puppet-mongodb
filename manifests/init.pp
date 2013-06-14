@@ -49,6 +49,7 @@ class mongodb (
   $objcheck          = undef,
   $quota             = undef,
   $oplog             = undef,
+  $oplog_size        = undef,
   $nohints           = undef,
   $nohttpinterface   = undef,
   $noscripting       = undef,

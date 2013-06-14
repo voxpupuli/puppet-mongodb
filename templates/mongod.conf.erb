@@ -133,3 +133,7 @@ keyFile = <%= @keyfile %>
 # You may concatenate a list of comma separated values to bind mongod to multiple IP addresses.
 bind_ip = <%= @bind_ip %>
 <% end -%>
+<% if @oplog_size -%>
+# Specifies a maximum size in megabytes for the replication operation log (e.g. oplog.)
+oplogSize = <%= @oplog_size %>
+<% end -%>
