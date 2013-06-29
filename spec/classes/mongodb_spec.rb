@@ -154,7 +154,29 @@ describe 'mongodb', :type => :class do
       let :params do
         { :enable_10gen => true }
       end
-
+      ['i386','i686'].each do |not64bitrepo|
+        context "on an #{not64bitrepo} release" do
+          let :facts do
+            {
+              :architecture    => not64bitrepo,
+              :osfamily        => 'RedHat',
+              :lsbdistcodename => 'Final',
+            }
+          end
+          it {should contain_yumrepo('10gen').with({:baseurl => 'http://downloads-distro.mongodb.org/repo/redhat/os/i686'})}
+        end
+      end
+      context 'on an x86_64 release' do
+        let :facts do
+          {
+            :architecture    => 'x86_64',
+            :osfamily        => 'RedHat',
+            :lsbdistcodename => 'Final',
+          }
+        end
+        it {should contain_yumrepo('10gen').with({:baseurl => 'http://downloads-distro.mongodb.org/repo/redhat/os/x86_64'})}
+      end
+      it {should contain_file('10gen_repofile')}
       it {
         should contain_class('mongodb::sources::yum')
         should contain_package('mongodb-10gen').with({
