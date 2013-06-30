@@ -1,41 +1,41 @@
 # mongo.conf - generated from Puppet
 
 #where to log
-logpath = <%= logpath %>
-logappend = <%= logappend %>
+logpath = <%= @logpath %>
+logappend = <%= @logappend %>
 
 # fork and run in background
-fork = <%= mongofork %>
-port = <%= port %>
-dbpath = <%= dbpath %>
+fork = <%= @mongofork %>
+port = <%= @port %>
+dbpath = <%= @dbpath %>
 
 <% if @nojournal -%>
 # Disables write-ahead journaling
-nojournal = <%= nojournal %> 
+nojournal = <%= @nojournal %>
 <% end -%>
 <% if @cpu -%>
 # Enables periodic logging of CPU utilization and I/O wait
-cpu = <%= cpu %>
+cpu = <%= @cpu %>
 <% end -%>
 <% if @noauth -%>
 # Turn on/off security.  Off is currently the default
-noauth = <%= noauth %>
+noauth = <%= @noauth %>
 <% end -%>
 <% if @auth -%>
-auth = <%= auth %>
+auth = <%= @auth %>
 <% end -%>
 <% if @verbose -%>
 # Verbose logging output.
-verbose = <%= verbose %>
+verbose = <%= @verbose %>
 <% end -%>
 <% if @objcheck -%>
 # Inspect all client data for validity on receipt (useful for
 # developing drivers)
-objcheck = <%= objcheck %>
+objcheck = <%= @objcheck %>
 <% end -%>
 <% if @quota -%>
 # Enable db quota management
-quota = <%= quota %>
+quota = <%= @quota %>
 <% end -%>
 <% if @oplog -%>
 # Set oplogging level where n is
@@ -44,80 +44,80 @@ quota = <%= quota %>
 #   2=R
 #   3=both
 #   7=W+some reads
-oplog = <%= oplog %>
+oplog = <%= @oplog %>
 <% end -%>
 <% if @nohints -%>
 # Ignore query hints
-nohints = <%= nohints %>
+nohints = <%= @nohints %>
 <% end -%>
 <% if @nohttpinterface -%>
 # Disable the HTTP interface (Defaults to localhost:27018).
-nohttpinterface = <%= nohttpinterface %>
+nohttpinterface = <%= @nohttpinterface %>
 <% end -%>
 <% if @noscripting -%>
 # Turns off server-side scripting.  This will result in greatly limited
 # functionality
-noscripting = <%= noscripting %>
+noscripting = <%= @noscripting %>
 <% end -%>
 <% if @notablescan -%>
 # Turns off table scans.  Any query that would do a table scan fails.
-notablescan = <%= notablescan %>
+notablescan = <%= @notablescan %>
 <% end -%>
 <% if @noprealloc -%>
 # Disable data file preallocation.
-noprealloc = <%= noprealloc %>
+noprealloc = <%= @noprealloc %>
 <% end -%>
 <% if @nssize -%>
 # Specify .ns file size for new databases.
-nssize = <%= nssize %>
+nssize = <%= @nssize %>
 <% end -%>
 <% if @mms_token -%>
 # Accout token for Mongo monitoring server.
-mms-token = <%= mms_token %>
+mms-token = <%= @mms_token %>
 <% end -%>
 <% if @mms_name -%>
 # Server name for Mongo monitoring server.
-mms-name = <%= mms_name %>
+mms-name = <%= @mms_name %>
 <% end -%>
 <% if @mms_interval -%>
 # Ping interval for Mongo monitoring server.
-mms-interval = <%= mms_interval %>
+mms-interval = <%= @mms_interval %>
 <% end -%>
 <% if @slave -%>
-slave = <%= slave %>
+slave = <%= @slave %>
 <% end -%>
 <% if @mongosource -%>
-source = <%= mongosource %>
+source = <%= @mongosource %>
 <% end -%>
 <% if @only -%>
 # Slave only: specify a single database to replicate
-only = <%= only %>
+only = <%= @only %>
 <% end -%>
 <% if @master -%>
-master = <%= master %>
+master = <%= @master %>
 <% end -%>
 <% if @directoryperdb -%>
 # Alters the storage pattern of the data directory to store each database’s
 # files in a distinct folder.
-directoryperdb = <%= directoryperdb %>
+directoryperdb = <%= @directoryperdb %>
 <% end -%>
 <% if @replSet -%>
 # Use this setting to configure replication with replica sets. Specify a replica
 # set name as an argument to this set. All hosts must have the same set name.
-replSet = <%= replSet %>
+replSet = <%= @replSet %>
 <% end -%>
 <% if @smallfiles -%>
 # Set to true to modify MongoDB to use a smaller default data file size.
-smallfiles = <%= smallfiles %>
+smallfiles = <%= @smallfiles %>
 <% end -%>
 <% if @rest -%>
 # Set to true to enable a simple REST interface.
-rest = <%= rest %>
+rest = <%= @rest %>
 <% end -%>
 <% if @profile -%>
 # Modify this value to changes the level of database profiling, which inserts
 # information about operation performance into output of mongod or the log file.
-profile = <%= profile %>
+profile = <%= @profile %>
 <% end -%>
 <% if @slowms -%>
 # Sets the threshold for mongod to consider a query “slow” for the database profiler.
