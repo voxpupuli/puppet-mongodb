@@ -1,0 +1,6 @@
+pkg/
+metadata.json
+*.idea
+*.swp
+*.tmp
+tmp/

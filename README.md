@@ -1,8 +1,10 @@
 # mongodb puppet module
 
+[![Build Status](https://travis-ci.org/actionjack/puppetlabs-mongodb.png)](https://travis-ci.org/actionjack/puppetlabs-mongodb)
+
 ## Overview
 
-Installs mongodb on Ubuntu/Debian from OS repo, or alternatively per 10gen [installation documentation](http://www.mongodb.org/display/DOCS/Ubuntu+and+Debian+packages).
+Installs mongodb on CentOS/Ubuntu/Debian from OS repo, or alternatively per 10gen [installation documentation](http://www.mongodb.org/display/DOCS/Ubuntu+and+Debian+packages).
 
 ## Usage
 
@@ -19,11 +21,11 @@ By default ubuntu is upstart and debian uses sysv.
 
 Examples:
 
-    class mongodb {
+    class { 'mongodb':
       init => 'sysv',
     }
 
-    class mongodb {
+    class { 'mongodb':
       enable_10gen => true,
     }
 
@@ -32,3 +34,4 @@ Examples:
 * Debian Wheezy
 * Ubuntu 12.04 (precise)
 * RHEL 6
+* CentOS 6
