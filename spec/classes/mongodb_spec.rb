@@ -36,7 +36,8 @@ describe 'mongodb', :type => :class do
           :location => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
         })
         should contain_package('mongodb-10gen').with({
-          :name => 'mongodb-10gen'
+          :name   => 'mongodb-10gen',
+          :ensure => 'installed'
         })
       }
     end
@@ -141,7 +142,8 @@ describe 'mongodb', :type => :class do
         should_not contain_class('mongodb::sources::yum')
         should_not contain_yumrepo('10gen')
         should contain_package('mongodb-10gen').with({
-          :name => 'mongodb-server'
+          :name   => 'mongodb-server',
+          :ensure => 'installed'
         })
         should contain_file('/etc/mongod.conf')
         should contain_service('mongodb').with({
@@ -175,7 +177,9 @@ describe 'mongodb', :type => :class do
             :auth             => 'true',
             :mongod_conf_file => '/etc/mongodb.conf',
             :bind_ip          => '0.0.0.0',
-            :oplog_size       => '50'
+            :oplog_size       => '50',
+            :enable_10gen     => true,
+            :version          => '2.4.3'
         }
       end
 
@@ -187,7 +191,11 @@ describe 'mongodb', :type => :class do
         should contain_file('/etc/mongodb.conf').with_content(/oplogSize\s=\s50/)
         should contain_service('mongodb').with(
             'subscribe' => "File[/etc/mongodb.conf]"
-               )
+        )
+        should contain_package('mongodb-10gen').with({
+            :name    => 'mongo-10gen-server',
+            :ensure => '2.4.3'
+        })
       }
     end
   end
