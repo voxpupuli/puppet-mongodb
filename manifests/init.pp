@@ -39,7 +39,7 @@ class mongodb (
   $logappend       = true,
   $mongofork       = true,
   $port            = '27017',
-  $dbpath          = '/var/lib/mongo',
+  $dbpath          = undef,
   $nojournal       = undef,
   $cpu             = undef,
   $noauth          = undef,
@@ -76,6 +76,16 @@ class mongodb (
     $mongo_group = $mongodb::params::mongo_group_os
   }
 
+  if $dbpath == undef {
+    if $enable_10gen {
+	    $real_dbpath = $mongodb::params::dbpath_10gen
+	  } else {
+	    $real_dbpath = $mongodb::params::dbpath_os
+	  }
+  } else {
+    $real_dbpath = $dbpath
+  }
+
   if $logpath == undef {
     if $enable_10gen {
 	    $real_logpath = $mongodb::params::logpath_10gen
@@ -103,6 +113,14 @@ class mongodb (
   package { 'mongodb-10gen':
     name   => $package,
     ensure => installed,
+  }
+
+  file { $real_dbpath:
+    ensure  => directory,
+    owner   => $mongo_user,
+    group   => $mongo_group,
+    mode    => 0755,
+    require => Package['mongodb-10gen']
   }
 
   file { $logpath_dir:

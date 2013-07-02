@@ -7,7 +7,7 @@ logappend=<%= logappend %>
 # fork and run in background
 fork = <%= mongofork %>
 port = <%= port %>
-dbpath= <%= dbpath %>
+dbpath= <%= real_dbpath %>
 
 <% if @nojournal %>
 # Disables write-ahead journaling

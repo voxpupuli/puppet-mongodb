@@ -31,6 +31,9 @@ class mongodb::params{
   $mongo_user_10gen = 'mongod'
   $mongo_group_10gen = 'mongod'
 
+  $dbpath_os = '/var/lib/mongodb/'
+  $dbpath_10gen = '/var/lib/mongo/'
+
   $logpath_os = '/var/log/mongodb/mongodb.log'
   $logpath_10gen = '/var/log/mongo/mongod.log'
 
