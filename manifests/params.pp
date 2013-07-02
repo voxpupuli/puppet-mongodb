@@ -25,4 +25,9 @@ class mongodb::params{
       fail ("mongodb: ${::operatingsystem} is not supported.")
     }
   }
+
+  $mongo_user_os = 'mongodb'
+  $mongo_group_os = 'mongodb'
+  $mongo_user_10gen = 'mongod'
+  $mongo_group_10gen = 'mongod'
 }

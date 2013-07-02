@@ -68,6 +68,14 @@ class mongodb (
     Class[$mongodb::params::source] -> Package['mongodb-10gen']
   }
 
+  if $enable_10gen {
+    $mongo_user = $mongodb::params::mongo_user_10gen
+    $mongo_group = $mongodb::params::mongo_group_10gen
+  } else {
+    $mongo_user = $mongodb::params::mongo_user_os
+    $mongo_group = $mongodb::params::mongo_group_os
+  }
+
   if $packagename {
     $package = $packagename
   } elsif $enable_10gen {
