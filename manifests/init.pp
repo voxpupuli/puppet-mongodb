@@ -144,5 +144,6 @@ class mongodb (
     ensure    => running,
     enable    => true,
     subscribe => File['/etc/mongod.conf'],
+    require => [File[$real_dbpath], File[$logpath_dir]]
   }
 }
