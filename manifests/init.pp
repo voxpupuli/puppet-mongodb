@@ -78,20 +78,20 @@ class mongodb (
 
   if $dbpath == undef {
     if $enable_10gen {
-	    $real_dbpath = $mongodb::params::dbpath_10gen
-	  } else {
-	    $real_dbpath = $mongodb::params::dbpath_os
-	  }
+      $real_dbpath = $mongodb::params::dbpath_10gen
+    } else {
+      $real_dbpath = $mongodb::params::dbpath_os
+    }
   } else {
     $real_dbpath = $dbpath
   }
 
   if $logpath == undef {
     if $enable_10gen {
-	    $real_logpath = $mongodb::params::logpath_10gen
-	  } else {
-	    $real_logpath = $mongodb::params::logpath_os
-	  }
+      $real_logpath = $mongodb::params::logpath_10gen
+    } else {
+      $real_logpath = $mongodb::params::logpath_os
+    }
   } else {
     $real_logpath = $logpath
   }
@@ -119,15 +119,15 @@ class mongodb (
     ensure  => directory,
     owner   => $mongo_user,
     group   => $mongo_group,
-    mode    => 0755,
+    mode    => '0755',
     require => Package['mongodb-10gen']
   }
 
   file { $logpath_dir:
-    ensure => directory,
-    owner  => $mongo_user,
-    group  => $mongo_group,
-    mode   => 0755,
+    ensure  => directory,
+    owner   => $mongo_user,
+    group   => $mongo_group,
+    mode    => '0755',
     require => Package['mongodb-10gen']
   }
 
@@ -144,6 +144,6 @@ class mongodb (
     ensure    => running,
     enable    => true,
     subscribe => File['/etc/mongod.conf'],
-    require => [File[$real_dbpath], File[$logpath_dir]]
+    require   => [File[$real_dbpath], File[$logpath_dir]]
   }
 }
