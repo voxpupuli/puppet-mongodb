@@ -60,7 +60,8 @@ class mongodb (
   $slave           = undef,
   $only            = undef,
   $master          = undef,
-  $source          = undef
+  $source          = undef,
+  $version         = 'installed'
 ) inherits mongodb::params {
 
   if $enable_10gen {
@@ -78,7 +79,7 @@ class mongodb (
 
   package { 'mongodb-10gen':
     name   => $package,
-    ensure => installed,
+    ensure => $version,
   }
 
   file { '/etc/mongod.conf':
