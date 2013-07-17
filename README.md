@@ -27,6 +27,10 @@ Examples:
       enable_10gen => true,
     }
 
+### class mongodb::python
+
+Installs the python bindings for mongodb using the pip provider.
+
 ## Supported Platforms
 
 * Debian Wheezy
