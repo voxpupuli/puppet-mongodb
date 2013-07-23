@@ -5,6 +5,7 @@ class mongodb::params{
       $source  = 'mongodb::sources::yum'
       $package = 'mongodb-server'
       $service = 'mongod'
+      $cfgfile = '/etc/mongod.conf'
       $pkg_10gen = 'mongo-10gen-server'
     }
     'debian': {
@@ -19,6 +20,7 @@ class mongodb::params{
       $source  = 'mongodb::sources::apt'
       $package = 'mongodb'
       $service = 'mongodb'
+      $cfgfile = '/etc/mongodb.conf'
       $pkg_10gen = 'mongodb-10gen'
     }
     default: {

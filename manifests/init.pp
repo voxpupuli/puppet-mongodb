@@ -81,7 +81,7 @@ class mongodb (
     ensure => installed,
   }
 
-  file { '/etc/mongod.conf':
+  file { $mongodb::params::cfgfile:
     content => template('mongodb/mongod.conf.erb'),
     owner   => 'root',
     group   => 'root',
@@ -93,6 +93,6 @@ class mongodb (
     name      => $servicename,
     ensure    => running,
     enable    => true,
-    subscribe => File['/etc/mongod.conf'],
+    subscribe => File[$mongodb::params::cfgfile],
   }
 }
