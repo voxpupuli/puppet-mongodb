@@ -7,7 +7,7 @@ logappend=<%= logappend %>
 # fork and run in background
 fork = <%= mongofork %>
 port = <%= port %>
-dbpath= <%= dbpath %>
+dbpath = <%= dbpath %>
 
 <% if @nojournal %>
 # Disables write-ahead journaling
@@ -87,8 +87,8 @@ mms-interval = <%= mms_interval %>
 <% if @slave %>
 slave = <%= slave %>
 <% end %>
-<% if @mongosource %>
-source = <%= mongosource %>
+<% if @source %>
+source = <%= source %>
 <% end %>
 <% if @only %>
 # Slave only: specify a single database to replicate
