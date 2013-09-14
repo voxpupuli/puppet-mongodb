@@ -35,11 +35,12 @@ class mongodb (
   $location        = '',
   $packagename     = undef,
   $servicename     = $mongodb::params::service,
-  $logpath         = '/var/log/mongo/mongod.log',
+  $logpath         = $mongodb::params::logpath,
   $logappend       = true,
   $mongofork       = true,
+  $bind_ip         = undef,
   $port            = '27017',
-  $dbpath          = '/var/lib/mongo',
+  $dbpath          = $mongodb::params::dbpath,
   $nojournal       = undef,
   $cpu             = undef,
   $noauth          = undef,
@@ -57,6 +58,7 @@ class mongodb (
   $mms_token       = undef,
   $mms_name        = undef,
   $mms_interval    = undef,
+  $replset         = undef,
   $slave           = undef,
   $only            = undef,
   $master          = undef,
@@ -65,7 +67,7 @@ class mongodb (
 
   if $enable_10gen {
     include $mongodb::params::source
-    Class[$mongodb::params::source] -> Package['mongodb-10gen']
+    Class[$mongodb::params::source] -> Package[$mongodb::params::pkg_10gen]
   }
 
   if $packagename {
@@ -76,23 +78,23 @@ class mongodb (
     $package = $mongodb::params::package
   }
 
-  package { 'mongodb-10gen':
+  package { $package:
     name   => $package,
     ensure => installed,
   }
 
-  file { '/etc/mongod.conf':
+  file { $mongodb::params::config:
     content => template('mongodb/mongod.conf.erb'),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => Package['mongodb-10gen'],
+    require => Package[$package],
   }
 
   service { 'mongodb':
     name      => $servicename,
     ensure    => running,
     enable    => true,
-    subscribe => File['/etc/mongod.conf'],
+    subscribe => File[$mongodb::params::config],
   }
 }
