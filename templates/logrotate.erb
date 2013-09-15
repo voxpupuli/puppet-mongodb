@@ -1,0 +1,9 @@
+# mongod logrotate - generated from Puppet
+<%= logpath -%> {
+   copytruncate
+   delaycompress
+   compress
+   notifempty
+   missingok
+   create 640 mongod mongod
+}
