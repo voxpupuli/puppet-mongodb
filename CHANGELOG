@@ -1,3 +1,12 @@
+2013-09-25 - Version 0.2.0
+
+Summary:
+
+This release fixes a duplicate parameter.
+
+Fixes:
+- Fix a duplicated parameter.
+
 2012-07-13 Puppet Labs <info@puppetlabs.com> - 0.1.0
 * Add support for RHEL/CentOS
 * Change default mongodb install location to OS repo
