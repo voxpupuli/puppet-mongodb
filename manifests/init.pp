@@ -35,11 +35,11 @@ class mongodb (
   $location        = '',
   $packagename     = undef,
   $servicename     = $mongodb::params::service,
-  $logpath         = '/var/log/mongo/mongod.log',
+  $logpath         = $mongodb::params::logpath,
   $logappend       = true,
   $mongofork       = true,
   $port            = '27017',
-  $dbpath          = '/var/lib/mongo',
+  $dbpath          = $mongodb::params::dbpath,
   $nojournal       = undef,
   $cpu             = undef,
   $noauth          = undef,
@@ -81,7 +81,7 @@ class mongodb (
     ensure => installed,
   }
 
-  file { '/etc/mongod.conf':
+  file { $mongodb::params::cfgfile:
     content => template('mongodb/mongod.conf.erb'),
     owner   => 'root',
     group   => 'root',
@@ -93,6 +93,6 @@ class mongodb (
     name      => $servicename,
     ensure    => running,
     enable    => true,
-    subscribe => File['/etc/mongod.conf'],
+    subscribe => File[$mongodb::params::cfgfile],
   }
 }
