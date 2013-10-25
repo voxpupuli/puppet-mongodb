@@ -16,12 +16,25 @@ describe 'mongodb', :type => :class do
         should_not contain_class('mongodb::sources::apt')
         should_not contain_apt__source('10gen')
         should contain_package('mongodb-10gen').with({
-          :name => 'mongodb'
+          :name => 'mongodb',
+          :ensure => 'installed',
         })
         should contain_file('/etc/mongod.conf')
         should contain_service('mongodb').with({
           :name => 'mongodb'
         })
+      }
+    end
+
+    describe 'when specifying a package version' do
+      let :params do
+        {
+          :version => '2.4.5',
+        }
+      end
+
+      it {
+        should contain_package('mongodb-10gen').with_ensure('2.4.5')
       }
     end
 
@@ -71,12 +84,25 @@ describe 'mongodb', :type => :class do
         should_not contain_class('mongodb::sources::apt')
         should_not contain_apt__source('10gen')
         should contain_package('mongodb-10gen').with({
-          :name => 'mongodb'
+          :name => 'mongodb',
+          :ensure => 'installed',
         })
         should contain_file('/etc/mongod.conf')
         should contain_service('mongodb').with({
           :name => 'mongodb'
         })
+      }
+    end
+
+    describe 'when specifying a package version' do
+      let :params do
+        {
+          :version => '2.4.5',
+        }
+      end
+
+      it {
+        should contain_package('mongodb-10gen').with_ensure('2.4.5')
       }
     end
 
@@ -141,12 +167,25 @@ describe 'mongodb', :type => :class do
         should_not contain_class('mongodb::sources::yum')
         should_not contain_yumrepo('10gen')
         should contain_package('mongodb-10gen').with({
-          :name => 'mongodb-server'
+          :name => 'mongodb-server',
+          :ensure => 'installed',
         })
         should contain_file('/etc/mongod.conf')
         should contain_service('mongodb').with({
           :name => 'mongod'
         })
+      }
+    end
+
+    describe 'when specifying a package version' do
+      let :params do
+        {
+          :version => '2.4.5',
+        }
+      end
+
+      it {
+        should contain_package('mongodb-10gen').with_ensure('2.4.5')
       }
     end
 
@@ -174,5 +213,4 @@ describe 'mongodb', :type => :class do
     end
     it { expect { should raise_error(Puppet::Error) } }
   end
-
 end

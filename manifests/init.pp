@@ -34,6 +34,7 @@ class mongodb (
   $init            = $mongodb::params::init,
   $location        = '',
   $packagename     = undef,
+  $version         = undef,
   $servicename     = $mongodb::params::service,
   $logpath         = '/var/log/mongo/mongod.log',
   $logappend       = true,
@@ -76,9 +77,15 @@ class mongodb (
     $package = $mongodb::params::package
   }
 
+  if $version {
+    $ensure_package = $version
+  } else {
+    $ensure_package = installed
+  }
+
   package { 'mongodb-10gen':
     name   => $package,
-    ensure => installed,
+    ensure => $ensure_package,
   }
 
   file { '/etc/mongod.conf':
