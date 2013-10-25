@@ -1,13 +1,13 @@
 # mongo.conf - generated from Puppet
 
 #where to log
-logpath=<%= logpath %>
-logappend=<%= logappend %>
+logpath=<%= @logpath %>
+logappend=<%= @logappend %>
 
 # fork and run in background
-fork = <%= mongofork %>
-port = <%= port %>
-dbpath= <%= dbpath %>
+fork = <%= @mongofork %>
+port = <%= @port %>
+dbpath= <%= @dbpath %>
 
 <% if @nojournal %>
 # Disables write-ahead journaling
