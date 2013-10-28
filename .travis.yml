@@ -12,7 +12,6 @@ env:
   - PUPPET_VERSION=3.3.1
   - PUPPET_VERSION=2.7.13
   - PUPPET_VERSION=2.7.6
-  - PUPPET_VERSION=2.6.9
 notifications:
   email: false
 matrix:
@@ -21,5 +20,3 @@ matrix:
       env: PUPPET_VERSION=2.7.13
     - rvm: 1.9.3
       env: PUPPET_VERSION=2.7.6
-    - rvm: 1.9.3
-      env: PUPPET_VERSION=2.6.9
