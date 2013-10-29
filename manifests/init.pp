@@ -73,9 +73,11 @@ class mongodb (
   if $enable_10gen {
     $mongo_user = $mongodb::params::mongo_user_10gen
     $mongo_group = $mongodb::params::mongo_group_10gen
+    $config_path = $mongodb::params::config_path_10gen
   } else {
     $mongo_user = $mongodb::params::mongo_user_os
     $mongo_group = $mongodb::params::mongo_group_os
+    $config_path = '/etc/mongodb.conf'
   }
 
   if $dbpath == undef {
@@ -139,8 +141,8 @@ class mongodb (
     require => Package['mongodb-10gen']
   }
 
-  file { '/etc/mongod.conf':
-    content => template('mongodb/mongod.conf.erb'),
+  file { $config_path:
+    content => template('mongodb/mongodb.conf.erb'),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
@@ -151,7 +153,7 @@ class mongodb (
     name      => $servicename,
     ensure    => running,
     enable    => true,
-    subscribe => File['/etc/mongod.conf'],
+    subscribe => File[$config_path],
     require   => [File[$real_dbpath], File[$logpath_dir]]
   }
 }
