@@ -42,5 +42,4 @@ class mongodb::params{
   $dbpath_os = '/var/lib/mongodb/'
 
   $logpath_os = '/var/log/mongodb/mongodb.log'
-
 }
