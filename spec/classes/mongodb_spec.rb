@@ -19,7 +19,7 @@ describe 'mongodb', :type => :class do
           :name => 'mongodb',
           :ensure => 'installed',
         })
-        should contain_file('/etc/mongod.conf')
+        should contain_file('/etc/mongodb.conf')
         should contain_service('mongodb').with({
           :name => 'mongodb'
         })
@@ -87,7 +87,7 @@ describe 'mongodb', :type => :class do
           :name => 'mongodb',
           :ensure => 'installed',
         })
-        should contain_file('/etc/mongod.conf')
+        should contain_file('/etc/mongodb.conf')
         should contain_service('mongodb').with({
           :name => 'mongodb'
         })
@@ -170,7 +170,7 @@ describe 'mongodb', :type => :class do
           :name => 'mongodb-server',
           :ensure => 'installed',
         })
-        should contain_file('/etc/mongod.conf')
+        should contain_file('/etc/mongodb.conf')
         should contain_service('mongodb').with({
           :name => 'mongod'
         })
