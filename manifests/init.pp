@@ -36,11 +36,11 @@ class mongodb (
   $packagename     = undef,
   $version         = undef,
   $servicename     = $mongodb::params::service,
-  $logpath         = '/var/log/mongo/mongod.log',
+  $logpath         = undef,
   $logappend       = true,
   $mongofork       = true,
   $port            = '27017',
-  $dbpath          = '/var/lib/mongo',
+  $dbpath          = undef,
   $nojournal       = undef,
   $cpu             = undef,
   $noauth          = undef,
@@ -69,6 +69,40 @@ class mongodb (
     Class[$mongodb::params::source] -> Package['mongodb-10gen']
   }
 
+  if $enable_10gen {
+    $mongo_user = $mongodb::params::mongo_user_10gen
+    $mongo_group = $mongodb::params::mongo_group_10gen
+  } else {
+    $mongo_user = $mongodb::params::mongo_user_os
+    $mongo_group = $mongodb::params::mongo_group_os
+  }
+
+  if $dbpath == undef {
+    if $enable_10gen {
+      $real_dbpath = $mongodb::params::dbpath_10gen
+    } else {
+      $real_dbpath = $mongodb::params::dbpath_os
+    }
+  } else {
+    $real_dbpath = $dbpath
+  }
+
+  if $logpath == undef {
+    if $enable_10gen {
+      $real_logpath = $mongodb::params::logpath_10gen
+    } else {
+      $real_logpath = $mongodb::params::logpath_os
+    }
+  } else {
+    $real_logpath = $logpath
+  }
+
+  # NOTE: dirname() not available until stdlib 4.1.0
+  $logpath_array = split($real_logpath, '/')
+  $logpath_dir_array = delete_at($logpath_array, -1)
+  $logpath_dir = join($logpath_dir_array, '/')
+
+
   if $packagename {
     $package = $packagename
   } elsif $enable_10gen {
@@ -88,6 +122,22 @@ class mongodb (
     ensure => $ensure_package,
   }
 
+  file { $real_dbpath:
+    ensure  => directory,
+    owner   => $mongo_user,
+    group   => $mongo_group,
+    mode    => '0755',
+    require => Package['mongodb-10gen']
+  }
+
+  file { $logpath_dir:
+    ensure  => directory,
+    owner   => $mongo_user,
+    group   => $mongo_group,
+    mode    => '0755',
+    require => Package['mongodb-10gen']
+  }
+
   file { '/etc/mongod.conf':
     content => template('mongodb/mongod.conf.erb'),
     owner   => 'root',
@@ -101,5 +151,6 @@ class mongodb (
     ensure    => running,
     enable    => true,
     subscribe => File['/etc/mongod.conf'],
+    require   => [File[$real_dbpath], File[$logpath_dir]]
   }
 }
