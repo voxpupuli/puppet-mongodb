@@ -1,17 +1,23 @@
 # mongo.conf - generated from Puppet
 
 #where to log
-logpath=<%= @real_logpath %>
+logpath=<%= @_logpath %>
 logappend=<%= @logappend %>
 
 # fork and run in background
-fork = <%= @mongofork %>
+fork = <%= @_fork %>
 port = <%= @port %>
-dbpath= <%= @real_dbpath %>
-
+dbpath= <%= @_dbpath %>
+<% if @_pidfilepath -%>
+pidfilepath = <%= @_pidfilepath %>
+<% end -%>
 <% if @nojournal -%>
 # Disables write-ahead journaling
 nojournal = <%= @nojournal %> 
+<% end -%>
+<% if @_journal -%>
+# Enables journaling
+journal = <%= @_journal %> 
 <% end -%>
 <% if @cpu -%>
 # Enables periodic logging of CPU utilization and I/O wait
@@ -126,11 +132,11 @@ slowms = <%= @slowms %>
 # Specify the path to a key file to store authentication information.
 keyFile = <%= @keyfile %>
 <% end -%>
-<% if @bind_ip -%>
+<% if @_bind_ip -%>
 # Set this option to configure the mongod or mongos process to bind to and
 # listen for connections from applications on this address.
 # You may concatenate a list of comma separated values to bind mongod to multiple IP addresses.
-bind_ip = <%= @bind_ip %>
+bind_ip = <%= @_bind_ip %>
 <% end -%>
 <% if @oplog_size -%>
 # Specifies a maximum size in megabytes for the replication operation log (e.g. oplog.)
