@@ -40,9 +40,10 @@ class mongodb (
   $service_enable  = true,
   $logpath         = undef,
   $logappend       = true,
-  $mongofork       = true,
+  $fork            = true,
   $port            = '27017',
   $dbpath          = undef,
+  $journal         = undef,
   $nojournal       = undef,
   $smallfiles      = undef,
   $cpu             = undef,
@@ -70,15 +71,13 @@ class mongodb (
   $rest            = undef,
   $slowms          = undef,
   $keyfile         = undef,
-  $bind_ip         = undef
+  $bind_ip          = undef,
+  $pidfilepath     = undef
 ) inherits mongodb::params {
-
   if $enable_10gen {
     include $mongodb::params::source
     Class[$mongodb::params::source] -> Package['mongodb-10gen']
-  }
 
-  if $enable_10gen {
     $mongo_user = $mongodb::params::mongo_user_10gen
     $mongo_group = $mongodb::params::mongo_group_10gen
     $config_path = $mongodb::params::config_path_10gen
@@ -90,26 +89,66 @@ class mongodb (
 
   if $dbpath == undef {
     if $enable_10gen {
-      $real_dbpath = $mongodb::params::dbpath_10gen
+      $_dbpath = $mongodb::params::default_dbpath_10gen
     } else {
-      $real_dbpath = $mongodb::params::dbpath_os
+      $_dbpath = $mongodb::params::default_dbpath
     }
   } else {
-    $real_dbpath = $dbpath
+    $_dbpath = $dbpath
   }
 
   if $logpath == undef {
     if $enable_10gen {
-      $real_logpath = $mongodb::params::logpath_10gen
+      $_logpath = $mongodb::params::default_logpath_10gen
     } else {
-      $real_logpath = $mongodb::params::logpath_os
+      $_logpath = $mongodb::params::default_logpath
     }
   } else {
-    $real_logpath = $logpath
+    $_logpath = $logpath
+  }
+
+  if $pidfilepath == undef {
+    if $enable_10gen {
+      $_pidfilepath = $mongodb::params::default_pidfilepath_10gen
+    } else {
+      $_pidfilepath = $mongodb::params::default_pidfilepath
+    }
+  } else {
+    $_pidfilepath = $pidfilepath
+  }
+
+  if $bind_ip == undef {
+    if $enable_10gen {
+      $_bind_ip = $mongodb::params::default_bind_ip_10gen
+    } else {
+      $_bind_ip = $mongodb::params::default_bind_ip
+    }
+  } else {
+    $_bind_ip = $bind_ip
+  }
+
+  if $fork == undef {
+    if $enable_10gen {
+      $_fork = $mongodb::params::default_fork_10gen
+    } else {
+      $_fork = $mongodb::params::default_fork
+    }
+  } else {
+    $_fork = $fork
+  }
+
+  if $journal == undef {
+    if $enable_10gen {
+      $_journal = $mongodb::params::default_journal_10gen
+    } else {
+      $_journal = $mongodb::params::default_journal
+    }
+  } else {
+    $_journal = $journal
   }
 
   # NOTE: dirname() not available until stdlib 4.1.0
-  $logpath_array = split($real_logpath, '/')
+  $logpath_array = split($_logpath, '/')
   $logpath_dir_array = delete_at($logpath_array, -1)
   $logpath_dir = join($logpath_dir_array, '/')
 
@@ -133,7 +172,7 @@ class mongodb (
     ensure => $ensure_package,
   }
 
-  file { $real_dbpath:
+  file { $_dbpath:
     ensure  => directory,
     owner   => $mongo_user,
     group   => $mongo_group,
@@ -171,6 +210,6 @@ class mongodb (
     ensure    => $service_ensure,
     enable    => $service_enable,
     subscribe => $service_subscribe,
-    require   => [File[$real_dbpath], File[$logpath_dir]]
+    require   => [File[$_dbpath], File[$logpath_dir]]
   }
 }
