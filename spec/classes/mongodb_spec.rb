@@ -49,7 +49,8 @@ describe 'mongodb', :type => :class do
           :location => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
         })
         should contain_package('mongodb-10gen').with({
-          :name => 'mongodb-10gen'
+          :name   => 'mongodb-10gen',
+          :ensure => 'installed'
         })
       }
     end
@@ -204,6 +205,35 @@ describe 'mongodb', :type => :class do
           :name => 'mongod'
         })
       }
+    end
+
+    describe 'when using additional options' do
+      let :params do
+        {
+            :slowms           => '100',
+            :keyfile          => '/etc/mongokeyfile',
+            :auth             => 'true',
+            :bind_ip          => '0.0.0.0',
+            :oplog_size       => '50',
+            :enable_10gen     => true,
+            :version          => '2.4.3'
+        }
+      end
+
+      it {
+        should contain_file('/etc/mongod.conf').with_content(/slowms\s=\s100/)
+        should contain_file('/etc/mongod.conf').with_content(/keyFile\s=\s\/etc\/mongokeyfile/)
+        should contain_file('/etc/mongod.conf').with_content(/auth\s=\strue/)
+        should contain_file('/etc/mongod.conf').with_content(/bind_ip\s=\s0\.0\.0\.0/)
+        should contain_file('/etc/mongod.conf').with_content(/oplogSize\s=\s50/)
+        should contain_service('mongodb').with(
+            'subscribe' => "File[/etc/mongod.conf]"
+        )
+        should contain_package('mongodb-10gen').with({
+            :name    => 'mongo-10gen-server',
+            :ensure => '2.4.3'
+        })
+     }
     end
   end
 

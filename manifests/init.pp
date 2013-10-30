@@ -50,6 +50,7 @@ class mongodb (
   $objcheck        = undef,
   $quota           = undef,
   $oplog           = undef,
+  $oplog_size      = undef,
   $nohints         = undef,
   $nohttpinterface = undef,
   $noscripting     = undef,
@@ -62,7 +63,12 @@ class mongodb (
   $slave           = undef,
   $only            = undef,
   $master          = undef,
-  $source          = undef
+  $source          = undef,
+  $replset         = undef,
+  $rest            = undef,
+  $slowms          = undef,
+  $keyfile         = undef,
+  $bind_ip         = undef
 ) inherits mongodb::params {
 
   if $enable_10gen {
