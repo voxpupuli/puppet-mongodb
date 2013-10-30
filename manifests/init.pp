@@ -155,6 +155,14 @@ class mongodb (
     require => Package['mongodb-10gen'],
   }
 
+  file { '/etc/logrotate.d/mongod':
+    content => template('mongodb/logrotate.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Package['mongodb-10gen'],
+  }
+
   service { 'mongodb':
     name      => $servicename,
     ensure    => running,
