@@ -10,6 +10,7 @@
 # location - override apt location configuration for Debian derivatives
 # packagename (auto discovered) - override the package name
 # servicename (auto discovered) - override the service name
+# service-enable (default: true) - Enable the service and ensure it is running
 #
 # === Examples
 #
@@ -36,6 +37,7 @@ class mongodb (
   $packagename     = undef,
   $version         = undef,
   $servicename     = $mongodb::params::service,
+  $service_enable  = true,
   $logpath         = undef,
   $logappend       = true,
   $mongofork       = true,
@@ -155,11 +157,20 @@ class mongodb (
     require => Package['mongodb-10gen'],
   }
 
+  validate_bool($service_enable)
+  if $service_enable {
+    $service_ensure = 'running'
+    $service_subscribe = File[$config_path]
+  } else {
+    $service_ensure = 'stopped'
+    $service_subscribe = undef
+  }
+
   service { 'mongodb':
     name      => $servicename,
-    ensure    => running,
-    enable    => true,
-    subscribe => File[$config_path],
+    ensure    => $service_ensure,
+    enable    => $service_enable,
+    subscribe => $service_subscribe,
     require   => [File[$real_dbpath], File[$logpath_dir]]
   }
 }
