@@ -15,14 +15,14 @@ class mongodb::params{
       $default_dbpath      = '/var/lib/mongodb'
       $default_logpath     = '/var/log/mongodb/mongodb.log'
       $default_pidfilepath = '/var/run/mongodb/mongodb.pid'
-      $default_bind_ip      = '127.0.0.1'
+      $default_bind_ip     = '127.0.0.1'
       $default_fork        = true
       $default_journal     = true
 
       $default_dbpath_10gen      = '/var/lib/mongo'
       $default_logpath_10gen     = '/var/log/mongo/mongod.log'
       $default_pidfilepath_10gen = '/var/run/mongodb/mongod.pid'
-      $default_bind_ip_10gen      = undef
+      $default_bind_ip_10gen     = undef
       $default_fork_10gen        = true
       $default_journal_10gen     = undef
     }
@@ -48,14 +48,14 @@ class mongodb::params{
       $default_dbpath      = '/var/lib/mongodb'
       $default_logpath     = '/var/log/mongodb/mongodb.log'
       $default_pidfilepath = undef
-      $default_bind_ip      = '127.0.0.1'
+      $default_bind_ip     = '127.0.0.1'
       $default_fork        = undef
       $default_journal     = true
 
       $default_dbpath_10gen      = '/var/lib/mongodb'
       $default_logpath_10gen     = '/var/log/mongodb/mongodb.log'
       $default_pidfilepath_10gen = undef
-      $default_bind_ip_10gen      = undef
+      $default_bind_ip_10gen     = undef
       $default_fork_10gen        = undef
       $default_journal_10gen     = undef
     }
