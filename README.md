@@ -16,6 +16,7 @@ Parameters:
 * location - override apt location configuration for Debian derivatives
 * packagename (auto discovered) - override the package name
 * servicename (auto discovered) - override the service name
+* service_enable (default: true) - enable or disable the service
 
 By default ubuntu is upstart and debian uses sysv.
 
