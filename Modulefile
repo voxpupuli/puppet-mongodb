@@ -1,5 +1,5 @@
 name 'puppetlabs-mongodb'
-version '0.2.0'
+version '0.3.0-rc1'
 source 'git@github.com:puppetlabs/puppetlabs-mongodb.git'
 author 'puppetlabs'
 license 'Apache License Version 2.0'
@@ -10,4 +10,3 @@ project_page 'https://github.com/puppetlabs/puppetlabs-mongodb'
 ## Add dependencies, if any:
 dependency 'puppetlabs/apt', '>= 0.0.2'
 dependency 'puppetlabs/stdlib', '>= 2.2.0'
-
