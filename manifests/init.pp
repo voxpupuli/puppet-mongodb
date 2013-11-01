@@ -1,150 +1,105 @@
-# == Class: mongodb
-#
-# Manage mongodb installations on RHEL, CentOS, Debian and Ubuntu - either
-# installing from the 10Gen repo or from EPEL in the case of EL systems.
-#
-# === Parameters
-#
-# enable_10gen (default: false) - Whether or not to set up 10gen software repositories
-# init (auto discovered) - override init (sysv or upstart) for Debian derivatives
-# location - override apt location configuration for Debian derivatives
-# packagename (auto discovered) - override the package name
-# servicename (auto discovered) - override the service name
-# service-enable (default: true) - Enable the service and ensure it is running
-#
-# === Examples
-#
-# To install with defaults from the distribution packages on any system:
-#   include mongodb
-#
-# To install from 10gen on a EL server
-#   class { 'mongodb':
-#     enable_10gen => true,
-#   }
-#
-# === Authors
-#
-# Craig Dunn <craig@craigdunn.org>
-#
-# === Copyright
-#
-# Copyright 2012 PuppetLabs
-#
+# See README for more details.
 class mongodb (
-  $enable_10gen    = false,
-  $init            = $mongodb::params::init,
-  $location        = '',
-  $packagename     = undef,
-  $version         = undef,
-  $servicename     = $mongodb::params::service,
-  $service_enable  = true,
-  $logpath         = undef,
-  $logappend       = true,
-  $fork            = true,
-  $port            = '27017',
+  $auth            = $mongodb::params::auth,
+  $bind_ip         = undef,
+  $config_path     = undef,
+  $cpu             = $mongodb::params::cpu,
   $dbpath          = undef,
+  $enable_10gen    = $mongodb::params::enable_10gen,
+  $fork            = undef,
+  $init            = $mongodb::params::init,
   $journal         = undef,
-  $nojournal       = undef,
-  $smallfiles      = undef,
-  $cpu             = undef,
-  $noauth          = undef,
-  $auth            = undef,
-  $verbose         = undef,
-  $objcheck        = undef,
-  $quota           = undef,
-  $oplog           = undef,
-  $oplog_size      = undef,
-  $nohints         = undef,
-  $nohttpinterface = undef,
-  $noscripting     = undef,
-  $notablescan     = undef,
-  $noprealloc      = undef,
-  $nssize          = undef,
-  $mms_token       = undef,
-  $mms_name        = undef,
-  $mms_interval    = undef,
-  $slave           = undef,
-  $only            = undef,
-  $master          = undef,
-  $source          = undef,
-  $replset         = undef,
-  $rest            = undef,
-  $slowms          = undef,
-  $keyfile         = undef,
-  $bind_ip          = undef,
-  $pidfilepath     = undef
+  $keyfile         = $mongodb::params::keyfile,
+  $location        = $mongodb::params::location,
+  $logappend       = $mongodb::params::logappend,
+  $logpath         = undef,
+  $master          = $mongodb::params::master,
+  $mongo_group     = undef,
+  $mongo_user      = undef,
+  $mms_interval    = $mongodb::params::mms_interval,
+  $mms_name        = $mongodb::params::mms_name,
+  $mms_token       = $mongodb::params::mms_token,
+  $noauth          = $mongodb::params::noauth,
+  $nohints         = $mongodb::params::nohints,
+  $nohttpinterface = $mongodb::params::nohttpinterface,
+  $nojournal       = $mongodb::params::nojournal,
+  $noprealloc      = $mongodb::params::noprealloc,
+  $noscripting     = $mongodb::params::noscripting,
+  $notablescan     = $mongodb::params::notablescan,
+  $nssize          = $mongodb::params::nssize,
+  $objcheck        = $mongodb::params::objcheck,
+  $only            = $mongodb::params::only,
+  $oplog           = $mongodb::params::oplog,
+  $oplog_size      = $mongodb::params::oplog_size,
+  $packagename     = undef,
+  $pidfilepath     = undef,
+  $port            = $mongodb::params::port,
+  $quota           = $mongodb::params::quota,
+  $replset         = $mongodb::params::replset,
+  $rest            = $mongodb::params::rest,
+  $service_enable  = $mongodb::params::service_enable,
+  $servicename     = $mongodb::params::servicename,
+  $slave           = $mongodb::params::slave,
+  $slowms          = $mongodb::params::slowms,
+  $smallfiles      = $mongodb::params::smallfiles,
+  $source          = $mongodb::params::source,
+  $verbose         = $mongodb::params::verbose,
+  $version         = $mongodb::params::version
 ) inherits mongodb::params {
+
   if $enable_10gen {
     include $mongodb::params::source
     Class[$mongodb::params::source] -> Package['mongodb-10gen']
-
-    $mongo_user = $mongodb::params::mongo_user_10gen
-    $mongo_group = $mongodb::params::mongo_group_10gen
-    $config_path = $mongodb::params::config_path_10gen
-  } else {
-    $mongo_user = $mongodb::params::mongo_user_os
-    $mongo_group = $mongodb::params::mongo_group_os
-    $config_path = '/etc/mongodb.conf'
   }
 
-  if $dbpath == undef {
-    if $enable_10gen {
-      $_dbpath = $mongodb::params::default_dbpath_10gen
+  # Pick() only works if at least one value is positive, so we wrap some in
+  # if tests.
+  if $enable_10gen {
+    if $mongodb::params::default_bind_ip_10gen {
+      $_bind_ip = pick($bind_ip, $mongodb::params::default_bind_ip_10gen)
     } else {
-      $_dbpath = $mongodb::params::default_dbpath
+      $_bind_ip = $bind_ip
+    }
+    $_config_path = pick($config_path, $mongodb::params::config_path_10gen)
+    $_dbpath      = pick($dbpath, $mongodb::params::default_dbpath_10gen)
+    if $mongodb::params::default_fork_10gen {
+      $_fork      = pick($fork, $mongodb::params::default_fork_10gen)
+    } else {
+      $_fork      = $fork
+    }
+    if $mongodb::params::default_journal_10gen {
+      $_journal   = pick($journal, $mongodb::params::default_journal_10gen)
+    } else {
+      $_journal   = $journal
+    }
+    $_logpath     = pick($logpath, $mongodb::params::default_logpath_10gen)
+    $_mongo_group = pick($mongo_group, $mongodb::params::mongo_group_10gen)
+    $_mongo_user  = pick($mongo_user, $mongodb::params::mongo_user_10gen)
+    $_packagename = pick($packagename, $mongodb::params::pkg_10gen)
+    if $mongodb::params::default_pidfilepath_10gen {
+      $_pidfilepath = pick($pidfilepath, $mongodb::params::default_pidfilepath_10gen)
+    } else {
+      $_pidfilepath = $pidfilepath
     }
   } else {
-    $_dbpath = $dbpath
-  }
-
-  if $logpath == undef {
-    if $enable_10gen {
-      $_logpath = $mongodb::params::default_logpath_10gen
+    $_bind_ip     = pick($bind_ip, $mongodb::params::default_bind_ip)
+    $_config_path = pick($config_path, '/etc/mongodb.conf')
+    $_dbpath      = pick($dbpath, $mongodb::params::default_dbpath)
+    if $mongodb::params::default_fork {
+      $_fork      = pick($fork, $mongodb::params::default_fork)
     } else {
-      $_logpath = $mongodb::params::default_logpath
+      $_fork      = $fork
     }
-  } else {
-    $_logpath = $logpath
-  }
-
-  if $pidfilepath == undef {
-    if $enable_10gen {
-      $_pidfilepath = $mongodb::params::default_pidfilepath_10gen
+    $_journal     = pick($journal, $mongodb::params::default_journal)
+    $_logpath     = pick($logpath, $mongodb::params::default_logpath)
+    $_mongo_group = pick($mongo_group, $mongodb::params::mongo_group_os)
+    $_mongo_user  = pick($mongo_user, $mongodb::params::mongo_user_os)
+    $_packagename = pick($packagename, $mongodb::params::package)
+    if $mongodb::params::default_pidfilepath_10gen {
+      $_pidfilepath = pick($pidfilepath, $mongodb::params::default_pidfilepath)
     } else {
-      $_pidfilepath = $mongodb::params::default_pidfilepath
+      $_pidfilepath = $pidfilepath
     }
-  } else {
-    $_pidfilepath = $pidfilepath
-  }
-
-  if $bind_ip == undef {
-    if $enable_10gen {
-      $_bind_ip = $mongodb::params::default_bind_ip_10gen
-    } else {
-      $_bind_ip = $mongodb::params::default_bind_ip
-    }
-  } else {
-    $_bind_ip = $bind_ip
-  }
-
-  if $fork == undef {
-    if $enable_10gen {
-      $_fork = $mongodb::params::default_fork_10gen
-    } else {
-      $_fork = $mongodb::params::default_fork
-    }
-  } else {
-    $_fork = $fork
-  }
-
-  if $journal == undef {
-    if $enable_10gen {
-      $_journal = $mongodb::params::default_journal_10gen
-    } else {
-      $_journal = $mongodb::params::default_journal
-    }
-  } else {
-    $_journal = $journal
   }
 
   # NOTE: dirname() not available until stdlib 4.1.0
@@ -152,43 +107,28 @@ class mongodb (
   $logpath_dir_array = delete_at($logpath_array, -1)
   $logpath_dir = join($logpath_dir_array, '/')
 
-
-  if $packagename {
-    $package = $packagename
-  } elsif $enable_10gen {
-    $package = $mongodb::params::pkg_10gen
-  } else {
-    $package = $mongodb::params::package
-  }
-
-  if $version {
-    $ensure_package = $version
-  } else {
-    $ensure_package = installed
-  }
-
   package { 'mongodb-10gen':
-    name   => $package,
-    ensure => $ensure_package,
+    ensure => $version,
+    name   => $_packagename,
   }
 
   file { $_dbpath:
     ensure  => directory,
-    owner   => $mongo_user,
-    group   => $mongo_group,
+    owner   => $_mongo_user,
+    group   => $_mongo_group,
     mode    => '0755',
     require => Package['mongodb-10gen']
   }
 
   file { $logpath_dir:
     ensure  => directory,
-    owner   => $mongo_user,
-    group   => $mongo_group,
+    owner   => $_mongo_user,
+    group   => $_mongo_group,
     mode    => '0755',
     require => Package['mongodb-10gen']
   }
 
-  file { $config_path:
+  file { $_config_path:
     content => template('mongodb/mongodb.conf.erb'),
     owner   => 'root',
     group   => 'root',
@@ -199,15 +139,15 @@ class mongodb (
   validate_bool($service_enable)
   if $service_enable {
     $service_ensure = 'running'
-    $service_subscribe = File[$config_path]
+    $service_subscribe = File[$_config_path]
   } else {
     $service_ensure = 'stopped'
     $service_subscribe = undef
   }
 
   service { 'mongodb':
-    name      => $servicename,
     ensure    => $service_ensure,
+    name      => $servicename,
     enable    => $service_enable,
     subscribe => $service_subscribe,
     require   => [File[$_dbpath], File[$logpath_dir]]

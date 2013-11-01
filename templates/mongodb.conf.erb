@@ -77,17 +77,17 @@ noprealloc = <%= @noprealloc %>
 # Specify .ns file size for new databases.
  nssize = <%= @nssize %>
 <% end -%>
-<% if @mms_token -%>
+<% if @mmstoken -%>
 # Accout token for Mongo monitoring server.
-mms-token = <%= @mms_token %>
+mms-token = <%= @mmstoken %>
 <% end -%>
-<% if @mms_name -%>
+<% if @mmsname -%>
 # Server name for Mongo monitoring server.
-mms-name = <%= @mms_name %>
+mms-name = <%= @mmsname %>
 <% end -%>
-<% if @mms_interval -%>
+<% if @mmsinterval -%>
 # Ping interval for Mongo monitoring server.
-mms-interval = <%= @mms_interval %>
+mms-interval = <%= @mmsinterval %>
 <% end -%>
 <% if @slave -%>
 slave = <%= @slave %>
