@@ -8,5 +8,5 @@ description '10gen mongodb puppet module'
 project_page 'https://github.com/puppetlabs/puppetlabs-mongodb'
 
 ## Add dependencies, if any:
-dependency 'puppetlabs/apt', '>= 0.0.2'
+dependency 'puppetlabs/apt', '>= 1.0.0'
 dependency 'puppetlabs/stdlib', '>= 2.2.0'
