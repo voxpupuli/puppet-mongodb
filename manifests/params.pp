@@ -3,8 +3,6 @@ class mongodb::params{
 
   $auth            = undef
   $cpu             = undef
-  $dbpath_os       = '/var/lib/mongodb/'
-  $enable_10gen    = false
   $keyfile         = undef
   $location        = ''
   $logappend       = true
@@ -13,8 +11,6 @@ class mongodb::params{
   $mms_interval    = undef
   $mms_name        = undef
   $mms_token       = undef
-  $mongo_group_os  = 'mongodb'
-  $mongo_user_os   = 'mongodb'
   $noauth          = undef
   $nohints         = undef
   $nohttpinterface = undef
@@ -32,77 +28,93 @@ class mongodb::params{
   $replset         = undef
   $rest            = undef
   $service_enable  = true
+  $service_ensure  = running
   $slave           = undef
   $slowms          = undef
   $smallfiles      = undef
   $verbose         = undef
-  $version         = present
+  $package_ensure  = present
 
   case $::osfamily {
     'redhat': {
-      $baseurl = "http://downloads-distro.mongodb.org/repo/redhat/os/${::architecture}"
-      $source  = 'mongodb::sources::yum'
-      $package = 'mongodb-server'
-      $service = 'mongod'
-      $pkg_10gen = 'mongo-10gen-server'
+      $repo_location = "http://downloads-distro.mongodb.org/repo/redhat/os/${::architecture}"
+      $service_name  = 'mongod'
+      $source        = 'mongodb::sources::yum'
+      $config_name   = '/etc/mongod.conf'
+      $bind_ip       = '127.0.0.1'
+      $fork          = true
+      $journal       = true
 
-      $mongo_user_10gen = 'mongod'
-      $mongo_group_10gen = 'mongod'
-
-      $config_path_10gen = '/etc/mongod.conf'
-
-      $default_dbpath      = '/var/lib/mongodb'
-      $default_logpath     = '/var/log/mongodb/mongodb.log'
-      $default_pidfilepath = '/var/run/mongodb/mongodb.pid'
-      $default_bind_ip     = '127.0.0.1'
-      $default_fork        = true
-      $default_journal     = true
-
-      $default_dbpath_10gen      = '/var/lib/mongo'
-      $default_logpath_10gen     = '/var/log/mongo/mongod.log'
-      $default_pidfilepath_10gen = '/var/run/mongodb/mongod.pid'
-      $default_bind_ip_10gen     = undef
-      $default_fork_10gen        = true
-      $default_journal_10gen     = undef
+      $package_name = {
+        '10gen'  => 'mongo-10gen-server',
+        'distro' => 'mongodb-server'
+      }
+      $user = {
+        '10gen'  => 'mongod',
+        'distro' => 'mongodb',
+      }
+      $group = {
+        '10gen'  => 'mongod',
+        'distro' => 'mongodb',
+      }
+      $dbpath_name = {
+        '10gen'  => '/var/lib/mongo',
+        'distro' => '/var/lib/mongodb',
+      }
+      $logpath_name = {
+        '10gen'  => '/var/log/mongo/mongod.log',
+        'distro' => '/var/log/mongodb/mongodb.log',
+      }
+      $pidfilepath = {
+        '10gen'  => '/var/run/mongodb/mongod.pid',
+        'distro' => '/var/run/mongodb/mongodb.pid',
+      }
     }
     'debian': {
-      $locations = {
-        'sysv'    => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
-        'upstart' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart'
+      $source      = 'mongodb::sources::apt'
+      $service     = 'mongodb'
+      $config_name = '/etc/mongodb.conf'
+      $bind_ip     = '127.0.0.1'
+      $fork        = true
+      $journal     = true
+
+      $repo_location = $::operatingsystem ? {
+        'Debian'    => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
+        'Ubuntu'    => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart'
       }
-      case $::operatingsystem {
-        'Debian': { $init = 'sysv' }
-        'Ubuntu': { $init = 'upstart' }
+      $init = $::operatingsystem ? {
+        'Debian' => 'sysv',
+        'Ubuntu' => 'upstart',
       }
-      $source  = 'mongodb::sources::apt'
-      $package = 'mongodb'
-      $service = 'mongodb'
-      $pkg_10gen = 'mongodb-10gen'
+      $package_name = {
+        '10gen'  => 'mongodb-10gen',
+        'distro' => 'mongodb'
+      }
+      $dbpath_name  = {
+        '10gen'  => '/var/lib/mongodb',
+        'distro' => '/var/lib/mongodb',
+      }
+      $user = {
+        '10gen'  => 'mongodb',
+        'distro' => 'mongodb',
+      }
+      $group = {
+        '10gen'  => 'mongodb',
+        'distro' => 'mongodb',
+      }
+      $logpath_name = {
+        '10gen'  => '/var/log/mongodb/mongodb.log',
+        'distro' => '/var/log/mongodb/mongodb.log',
+      }
+      $pidfilepath = {
+        '10gen'  => '/var/run/mongodb/mongodb.pid',
+        'distro' => '/var/run/mongodb/mongodb.pid',
+      }
 
-      $mongo_user_10gen = 'mongodb'
-      $mongo_group_10gen = 'mongodb'
-
-      $config_path_10gen = '/etc/mongodb.conf'
-
-      $default_dbpath      = '/var/lib/mongodb'
-      $default_logpath     = '/var/log/mongodb/mongodb.log'
-      $default_pidfilepath = undef
-      $default_bind_ip     = '127.0.0.1'
-      $default_fork        = undef
-      $default_journal     = true
-
-      $default_dbpath_10gen      = '/var/lib/mongodb'
-      $default_logpath_10gen     = '/var/log/mongodb/mongodb.log'
-      $default_pidfilepath_10gen = undef
-      $default_bind_ip_10gen     = undef
-      $default_fork_10gen        = undef
-      $default_journal_10gen     = undef
     }
     default: {
       fail ("mongodb: ${::operatingsystem} is not supported.")
     }
   }
-
-  $servicename = $service
 
 }
