@@ -9,4 +9,4 @@ project_page 'https://github.com/puppetlabs/puppetlabs-mongodb'
 
 ## Add dependencies, if any:
 dependency 'puppetlabs/apt', '>= 1.0.0'
-dependency 'puppetlabs/stdlib', '>= 2.2.0'
+dependency 'puppetlabs/stdlib', '>= 4.1.0'
