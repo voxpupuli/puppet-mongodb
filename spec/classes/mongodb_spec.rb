@@ -12,43 +12,47 @@ describe 'mongodb', :type => :class do
     end
 
     describe 'by default' do
-      it {
-        should_not contain_class('mongodb::sources::apt')
+      it 'should not contain the 10gen repo' do
+        should_not contain_class('mongodb::repos::debian')
         should_not contain_apt__source('10gen')
-        should contain_package('mongodb-10gen').with({
+      end
+
+      it 'should contain the package/file/service' do
+        should contain_package('mongodb').with({
           :name => 'mongodb',
           :ensure => 'present',
         })
-        should contain_file('/etc/mongodb.conf')
+        should contain_file('config_file')
         should contain_service('mongodb').with({
           :name => 'mongodb'
         })
-      }
+      end
     end
 
     describe 'when specifying a package version' do
       let :params do
         {
-          :version => '2.4.5',
+          :package_ensure => '2.4.5',
         }
       end
 
       it {
-        should contain_package('mongodb-10gen').with_ensure('2.4.5')
+        should contain_package('mongodb').with_ensure('2.4.5')
       }
     end
 
     describe 'when enabling 10gen repo' do
       let :params do
-        { :enable_10gen => true,
+        { :type => '10gen',
           :init => 'sysv' }
       end
 
       it {
+        should contain_class('mongodb::repo::debian')
         should contain_apt__source('10gen').with({
           :location => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
         })
-        should contain_package('mongodb-10gen').with({
+        should contain_package('mongodb').with({
           :name   => 'mongodb-10gen',
           :ensure => 'present'
         })
@@ -58,12 +62,12 @@ describe 'mongodb', :type => :class do
     describe 'when overriding location' do
 
       let :params do
-        { :enable_10gen => true,
-          :location => 'http://myrepo' }
+        { :type => '10gen',
+          :repo_location => 'http://myrepo' }
       end
 
       it {
-        should contain_class('mongodb::sources::apt')
+        should contain_class('mongodb::repo::debian')
         should contain_apt__source('10gen').with({
           :location => 'http://myrepo'
         })
@@ -81,60 +85,46 @@ describe 'mongodb', :type => :class do
     end
 
     describe 'by default' do
-      it {
-        should_not contain_class('mongodb::sources::apt')
+      it 'should not contain the 10gen repo' do
+        should_not contain_class('mongodb::repo::debian')
         should_not contain_apt__source('10gen')
-        should contain_package('mongodb-10gen').with({
+      end
+
+      it 'should contain the package/file/service' do
+        should contain_package('mongodb').with({
           :name => 'mongodb',
           :ensure => 'present',
         })
-        should contain_file('/etc/mongodb.conf')
+        should contain_file('config_file')
         should contain_service('mongodb').with({
           :name => 'mongodb'
         })
-      }
+      end
     end
 
     describe 'when specifying a package version' do
       let :params do
         {
-          :version => '2.4.5',
+          :package_ensure => '2.4.5',
         }
       end
 
       it {
-        should contain_package('mongodb-10gen').with_ensure('2.4.5')
+        should contain_package('mongodb').with_ensure('2.4.5')
       }
     end
 
     describe 'when enabling 10gen repo on ubuntu' do
       let :params do
-        { :enable_10gen => true }
+        { :type => '10gen' }
       end
 
       it {
-        should contain_class('mongodb::sources::apt')
+        should contain_class('mongodb::repo::debian')
         should contain_apt__source('10gen').with({
           :location => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
         })
-        should contain_package('mongodb-10gen').with({
-          :name => 'mongodb-10gen'
-        })
-      }
-    end
-
-    describe 'when overriding init' do
-      let :params do
-        { :enable_10gen => true,
-          :init => 'sysv' }
-      end
-
-      it {
-        should contain_class('mongodb::sources::apt')
-        should contain_apt__source('10gen').with({
-          :location => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit'
-        })
-        should contain_package('mongodb-10gen').with({
+        should contain_package('mongodb').with({
           :name => 'mongodb-10gen'
         })
       }
@@ -142,12 +132,12 @@ describe 'mongodb', :type => :class do
 
     describe 'when using custom location' do
       let :params do
-        { :enable_10gen => true,
-          :location => 'http://myrepo' }
+        { :type => '10gen',
+          :repo_location => 'http://myrepo' }
       end
 
       it {
-        should contain_class('mongodb::sources::apt')
+        should contain_class('mongodb::repo::debian')
         should contain_apt__source('10gen').with({
           :location => 'http://myrepo'
         })
@@ -165,13 +155,13 @@ describe 'mongodb', :type => :class do
 
     describe 'by default' do
       it {
-        should_not contain_class('mongodb::sources::yum')
+        should_not contain_class('mongodb::repo::redhat')
         should_not contain_yumrepo('10gen')
-        should contain_package('mongodb-10gen').with({
+        should contain_package('mongodb').with({
           :name => 'mongodb-server',
           :ensure => 'present',
         })
-        should contain_file('/etc/mongodb.conf')
+        should contain_file('config_file')
         should contain_service('mongodb').with({
           :name => 'mongod'
         })
@@ -181,26 +171,26 @@ describe 'mongodb', :type => :class do
     describe 'when specifying a package version' do
       let :params do
         {
-          :version => '2.4.5',
+          :package_ensure => '2.4.5',
         }
       end
 
       it {
-        should contain_package('mongodb-10gen').with_ensure('2.4.5')
+        should contain_package('mongodb').with_ensure('2.4.5')
       }
     end
 
     describe 'when using 10gen source' do
       let :params do
-        { :enable_10gen => true }
+        { :type => '10gen' }
       end
 
       it {
-        should contain_class('mongodb::sources::yum')
-        should contain_package('mongodb-10gen').with({
+        should contain_class('mongodb::repo::redhat')
+        should contain_package('mongodb').with({
           :name => 'mongo-10gen-server'
         })
-        should contain_file('/etc/mongod.conf')
+        should contain_file('config_file')
         should contain_service('mongodb').with({
           :name => 'mongod'
         })
@@ -215,21 +205,19 @@ describe 'mongodb', :type => :class do
             :auth             => 'true',
             :bind_ip          => '0.0.0.0',
             :oplog_size       => '50',
-            :enable_10gen     => true,
-            :version          => '2.4.3'
+            :type             => '10gen',
+            :package_ensure   => '2.4.3'
         }
       end
 
       it {
-        should contain_file('/etc/mongod.conf').with_content(/slowms\s=\s100/)
-        should contain_file('/etc/mongod.conf').with_content(/keyFile\s=\s\/etc\/mongokeyfile/)
-        should contain_file('/etc/mongod.conf').with_content(/auth\s=\strue/)
-        should contain_file('/etc/mongod.conf').with_content(/bind_ip\s=\s0\.0\.0\.0/)
-        should contain_file('/etc/mongod.conf').with_content(/oplogSize\s=\s50/)
-        should contain_service('mongodb').with(
-            'subscribe' => "File[/etc/mongod.conf]"
-        )
-        should contain_package('mongodb-10gen').with({
+        should contain_file('config_file').with_content(/slowms\s=\s100/)
+        should contain_file('config_file').with_content(/keyFile\s=\s\/etc\/mongokeyfile/)
+        should contain_file('config_file').with_content(/auth\s=\strue/)
+        should contain_file('config_file').with_content(/bind_ip\s=\s0\.0\.0\.0/)
+        should contain_file('config_file').with_content(/oplogSize\s=\s50/)
+        should contain_service('mongodb')
+        should contain_package('mongodb').with({
             :name    => 'mongo-10gen-server',
             :ensure => '2.4.3'
         })
