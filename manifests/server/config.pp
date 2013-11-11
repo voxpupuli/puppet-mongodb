@@ -60,7 +60,7 @@ class mongodb::server::config {
       $noauth = true
     }
 
-    file { "${config}":
+    file { $config:
       content => template('mongodb/mongodb.conf.erb'),
       owner   => 'root',
       group   => 'root',
@@ -68,7 +68,7 @@ class mongodb::server::config {
       notify  => Class['mongodb::server::service']
     }
 
-    file { "${dbpath}":
+    file { $dbpath:
       ensure  => directory,
       mode    => '0755',
       owner   => $user,
@@ -76,12 +76,12 @@ class mongodb::server::config {
       require => File["${config}"]
     }
   } else {
-    file { "${dbpath}":
+    file { $dbpath:
       ensure => absent,
       force  => true,
       backup => false,
     }
-    file { "${config}":
+    file { $config:
       ensure => absent
     }
   }
