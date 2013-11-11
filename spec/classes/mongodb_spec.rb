@@ -17,7 +17,7 @@ describe 'mongodb', :type => :class do
         should_not contain_apt__source('10gen')
         should contain_package('mongodb-10gen').with({
           :name => 'mongodb',
-          :ensure => 'installed',
+          :ensure => 'present',
         })
         should contain_file('/etc/mongodb.conf')
         should contain_service('mongodb').with({
@@ -50,7 +50,7 @@ describe 'mongodb', :type => :class do
         })
         should contain_package('mongodb-10gen').with({
           :name   => 'mongodb-10gen',
-          :ensure => 'installed'
+          :ensure => 'present'
         })
       }
     end
@@ -86,7 +86,7 @@ describe 'mongodb', :type => :class do
         should_not contain_apt__source('10gen')
         should contain_package('mongodb-10gen').with({
           :name => 'mongodb',
-          :ensure => 'installed',
+          :ensure => 'present',
         })
         should contain_file('/etc/mongodb.conf')
         should contain_service('mongodb').with({
@@ -169,7 +169,7 @@ describe 'mongodb', :type => :class do
         should_not contain_yumrepo('10gen')
         should contain_package('mongodb-10gen').with({
           :name => 'mongodb-server',
-          :ensure => 'installed',
+          :ensure => 'present',
         })
         should contain_file('/etc/mongodb.conf')
         should contain_service('mongodb').with({

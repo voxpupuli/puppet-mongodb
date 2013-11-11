@@ -1,4 +1,43 @@
+# See README
 class mongodb::params{
+
+  $auth            = undef
+  $cpu             = undef
+  $dbpath_os       = '/var/lib/mongodb/'
+  $enable_10gen    = false
+  $keyfile         = undef
+  $location        = ''
+  $logappend       = true
+  $logpath_os      = '/var/log/mongodb/mongodb.log'
+  $master          = undef
+  $mms_interval    = undef
+  $mms_name        = undef
+  $mms_token       = undef
+  $mongo_group_os  = 'mongodb'
+  $mongo_user_os   = 'mongodb'
+  $noauth          = undef
+  $nohints         = undef
+  $nohttpinterface = undef
+  $nojournal       = undef
+  $noprealloc      = undef
+  $noscripting     = undef
+  $notablescan     = undef
+  $nssize          = undef
+  $objcheck        = undef
+  $only            = undef
+  $oplog           = undef
+  $oplog_size      = undef
+  $port            = '27017'
+  $quota           = undef
+  $replset         = undef
+  $rest            = undef
+  $service_enable  = true
+  $slave           = undef
+  $slowms          = undef
+  $smallfiles      = undef
+  $verbose         = undef
+  $version         = present
+
   case $::osfamily {
     'redhat': {
       $baseurl = "http://downloads-distro.mongodb.org/repo/redhat/os/${::architecture}"
@@ -64,10 +103,6 @@ class mongodb::params{
     }
   }
 
-  $mongo_user_os = 'mongodb'
-  $mongo_group_os = 'mongodb'
+  $servicename = $service
 
-  $dbpath_os = '/var/lib/mongodb/'
-
-  $logpath_os = '/var/log/mongodb/mongodb.log'
 }
