@@ -24,5 +24,11 @@ RSpec.configure do |c|
     puppet_module_install(:source => proj_root, :module_name => 'mongodb')
     shell('puppet module install puppetlabs-stdlib')
     shell('puppet module install puppetlabs-apt')
+
+    case node.facts['osfamily']
+    when 'RedHat'
+      shell('puppet module install stahnma-epel')
+      puppet_apply('include epel')
+    end
   end
 end
