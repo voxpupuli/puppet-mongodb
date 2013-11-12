@@ -6,6 +6,12 @@
 
 Installs mongodb on RHEL/Ubuntu/Debian from OS repo, or alternatively per 10gen [installation documentation](http://www.mongodb.org/display/DOCS/Ubuntu+and+Debian+packages).
 
+## Deprecation Warning ##
+
+Release 0.3 will be the final prototypical release for the puppetlabs-mongodb module. The development api should
+be considered deprecated and will not work for the forthcoming 1.0 module release. If your project depends
+on the current API, please pin your dependencies to ensure your environments don't break.
+
 ## Usage
 
 ### class mongodb
