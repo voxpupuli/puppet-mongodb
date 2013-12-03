@@ -1,5 +1,7 @@
 # == Class: mongodb
 #
+# Direct use of this class is deprecated. Please use mongodb::server
+#
 # Manage mongodb installations on RHEL, CentOS, Debian and Ubuntu - either
 # installing from the 10Gen repo or from EPEL in the case of EL systems.
 #
@@ -28,7 +30,7 @@
 #
 # === Copyright
 #
-# Copyright 2012 PuppetLabs
+# Copyright 2013 PuppetLabs
 #
 
 class mongodb (
@@ -79,15 +81,15 @@ class mongodb (
 ) inherits mongodb::params {
 
   if $enable_10gen {
-    fail("Parameter enable_10gen not supported. Please use class { 'mongodb::globals': manage_package_repo => true }")
+    fail("Parameter enable_10gen is no longer supported. Please use class { 'mongodb::globals': manage_package_repo => true }")
   }
 
   if $version {
-    fail("Parameter version is deprecated. Please use class { 'mongodb::globals': version => VERSION }")
+    fail("Parameter version is no longer supported. Please use class { 'mongodb::globals': version => VERSION }")
   }
   
   if $oplog {
-    fail("Parameter is deprecated. On replica set Oplog is enabled by default.")
+    fail("Parameter is no longer supported. On replica set Oplog is enabled by default.")
   }
   
   notify { "An attempt has been made below to automatically apply your custom
