@@ -6,3 +6,4 @@ metadata.json
 tmp/
 pkg/
 spec/fixtures/manifests
+.rspec_system/
