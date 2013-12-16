@@ -42,7 +42,8 @@ describe 'mongodb::server:' do
     
     describe port(27017) do
       it do
-        should be_listening        
+        sleep(20)
+        should be_listening
       end
     end
   end
