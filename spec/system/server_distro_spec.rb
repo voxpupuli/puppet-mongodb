@@ -1,5 +1,6 @@
 begin
 require 'spec_helper_system'
+require 'pry'
 
 describe 'mongodb::server:' do
   
