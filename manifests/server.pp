@@ -20,7 +20,7 @@ class mongodb::server (
   $bind_ip         = $mongodb::params::bind_ip,
   $logappend       = true,
   $fork            = $mongodb::params::fork,
-  $port            = '27017',
+  $port            = 27017,
   $journal         = $mongodb::params::journal,
   $nojournal       = undef,
   $smallfiles      = undef,
@@ -72,5 +72,4 @@ class mongodb::server (
     class { 'mongodb::server::install': }->
     anchor { 'mongodb::server::end': }
   }
-
 }
