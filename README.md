@@ -19,9 +19,12 @@ Installs MongoDB on RHEL/Ubuntu/Debian from OS repo, or alternatively from
 
 ### Deprecation Warning ###
 
-That's a new release of the module which means that the API was drastically
-changed. If your project depends on the old API, please pin your dependencies 
-to 0.3 version to ensure your environments don't break.
+This release is a major refactoring of the module which means that the API may
+have changed in backwards incompatible ways. If your project depends on the old API, 
+please pin your dependencies to 0.3 version to ensure your environments don't break.
+
+The current module design is undergoing review for potential 1.0 release. We welcome
+any feedback with regard to the APIs and patterns used in this release.
 
 ##Module Description
 
@@ -386,7 +389,7 @@ and run the specific set with the following syntax:
 
 ### Authors
 
-The following contributor have contributed patches to this module (beyond Puppet Labs):
-
-* [Dejan Golja](https://www.github.com/n1tr0g) ([@dejangolja](https://twitter.com/dejangolja))
-* ???????????
+We would like to thank everyone who has contributed issues and pull requests to this modules.
+A complete list of contributors can be found on the 
+[GitHub Contributor Graph](https://github.com/puppetlabs/puppetlabs-mongodb/graphs/contributors)
+for the [puppetlabs-mongodb module](https://github.com/puppetlabs/puppetlabs-mongodb).
