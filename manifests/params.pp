@@ -6,11 +6,11 @@ class mongodb::params inherits mongodb::globals {
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
   case $::osfamily {
     'RedHat', 'Linux': {
-         
+
       if $mongodb::globals::manage_package_repo {
         $user        = pick($user, 'mongod')
         $group       = pick($group, 'mongod')
-        if $version {        
+        if $version {
           $server_package_name = "mongo-10gen-server-${version}"
         } else {
           $server_package_name = 'mongo-10gen-server'
@@ -22,13 +22,13 @@ class mongodb::params inherits mongodb::globals {
         $pidfilepath = '/var/run/mongodb/mongod.pid'
         $bind_ip     = pick($bind_ip, ['127.0.0.1'])
         $fork        = true
-      } else {     
+      } else {
         # RedHat/CentOS doesn't come with a prepacked mongodb
         # so we assume that you are using EPEL repository.
         $user                = pick($user, 'mongodb')
         $group               = pick($group, 'mongodb')
         $server_package_name = pick($server_package_name, "mongodb-server")
-      
+
         $service_name        = pick($service_name, 'mongod')
         $config              = '/etc/mongodb.conf'
         $dbpath              = '/var/lib/mongodb'
@@ -36,14 +36,14 @@ class mongodb::params inherits mongodb::globals {
         $bind_ip             = pick($bind_ip, ['127.0.0.1'])
         $pidfilepath         = '/var/run/mongodb/mongodb.pid'
         $fork                = true
-        $journal             = true      
+        $journal             = true
       }
     }
     'Debian': {
       if $mongodb::globals::manage_package_repo {
         $user  = pick($user, 'mongodb')
         $group = pick($group, 'mongodb')
-        if $version {        
+        if $version {
           $server_package_name = "mongodb-10gen-${version}"
         } else {
           $server_package_name = 'mongodb-10gen'
@@ -56,7 +56,7 @@ class mongodb::params inherits mongodb::globals {
       } else {
         # although we are living in a free world,
         # I would not recommend to use the prepacked
-        # mongodb server on Ubuntu 12.04 or Debian 6/7, 
+        # mongodb server on Ubuntu 12.04 or Debian 6/7,
         # because its really outdated
         $user                = pick($user, 'mongodb')
         $group               = pick($group, 'mongodb')
@@ -75,7 +75,7 @@ class mongodb::params inherits mongodb::globals {
       fail("Osfamily ${::osfamily} and ${::operatingsystem} is not supported")
     }
   }
-    
+
   case $::operatingsystem {
     'Ubuntu': {
       $service_provider = pick($service_provider, 'upstart')
@@ -84,5 +84,5 @@ class mongodb::params inherits mongodb::globals {
       $service_provider = undef
     }
   }
-  
+
 }

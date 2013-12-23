@@ -12,7 +12,7 @@ describe 'mongodb::server' do
     it { should contain_class('mongodb::server::install') }
     it { should contain_class('mongodb::server::config') }
   end
-  
+
   context 'when deploying on Solaris' do
     let :facts do
       { :osfamily        => 'Solaris' }

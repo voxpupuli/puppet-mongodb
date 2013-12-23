@@ -20,7 +20,7 @@ Installs MongoDB on RHEL/Ubuntu/Debian from OS repo, or alternatively from
 ### Deprecation Warning ###
 
 This release is a major refactoring of the module which means that the API may
-have changed in backwards incompatible ways. If your project depends on the old API, 
+have changed in backwards incompatible ways. If your project depends on the old API,
 please pin your dependencies to 0.3 version to ensure your environments don't break.
 
 The current module design is undergoing review for potential 1.0 release. We welcome
@@ -29,7 +29,7 @@ any feedback with regard to the APIs and patterns used in this release.
 ##Module Description
 
 The MongoDB module manages mongod server installation and configuration of the mongod daemon. For the time being it supports only a single
-MongoDB server instance, without sharding and  limited replica set 
+MongoDB server instance, without sharding and  limited replica set
 functionality (you can define the replica set parameter in the config file, however
 rs.initiate() has to be done manually).
 
@@ -73,7 +73,7 @@ Most of the interaction for the server is done via `mongodb::server`. For
 more options please have a look at [monogbd::server](#class-mongodbserver).
 Also in this version we introduced `mongodb::globals`, which is meant more
 for future implementation, where you can configure the main settings for
-this module in a global way, to be used by other classes and defined resources. 
+this module in a global way, to be used by other classes and defined resources.
 On its own it does nothing.
 
 
@@ -149,7 +149,7 @@ the module will use the default for your OS distro.
 
 ####Class: mongodb::server
 
-Most of the parameters manipulates the mongod.conf file. 
+Most of the parameters manipulates the mongod.conf file.
 
 For more details about configuration parameters consult the [MongoDB Configuration File Options](http://docs.mongodb.org/manual/reference/configuration-options/).
 
@@ -177,7 +177,7 @@ to the standard output.
 Set this option to configure the mongod or mongos process to bind to and listen
 for connections from applications on this address. If not specified, the module
 will use the default for your OS distro. Example: bind_ip=['127.0.0.1', '192.168.0.3']
-*Note*: bind_ip accept array as a value. 
+*Note*: bind_ip accept array as a value.
 
 #####`logappend`
 Set to true to add new entries to the end of the logfile rather than overwriting
@@ -188,7 +188,7 @@ Set to true to enable database authentication for users connecting from remote
 hosts. If not specified, the module will use the default for your OS distro.
 
 #####`port`
-Specifies a TCP port for the server instance to listen for client connections. 
+Specifies a TCP port for the server instance to listen for client connections.
 Default: 27017
 
 #####`journal`
@@ -197,13 +197,13 @@ data consistency. Default: on 64-bit systems true and on 32-bit systems false
 
 #####`nojournal`
 Set nojournal = true to disable durability journaling. By default, mongod
-enables journaling in 64-bit versions after v2.0. 
+enables journaling in 64-bit versions after v2.0.
 Default: on 64-bit systems  false and on 32-bit systems true
 
 *Note*: You must use journal to enable journaling on 32-bit systems.
 
 #####`smallfiles`
-Set to true to modify MongoDB to use a smaller default data file size. 
+Set to true to modify MongoDB to use a smaller default data file size.
 Specifically, smallfiles reduces the initial size for data files and
 limits them to 512 megabytes.  Default: false
 
@@ -215,7 +215,7 @@ complete (i.e. I/O wait.) Default: false
 #####`auth`
 Set to true to enable database authentication for users connecting from
 remote hosts. If no users exist, the localhost interface will continue
-to have access to the database until you create the first user. 
+to have access to the database until you create the first user.
 Default: false
 
 #####`noauth`
@@ -232,7 +232,7 @@ Default: None
 
 #####`objcheck`
 Forces the mongod to validate all requests from clients upon receipt to ensure
-that clients never insert invalid documents into the database. 
+that clients never insert invalid documents into the database.
 Default: on v2.4 default to true and on earlier version to false
 
 #####`quota`
@@ -245,7 +245,7 @@ Modify limit on the number of data files per database. This option requires the
 
 #####`diaglog`
 Creates a very verbose diagnostic log for troubleshooting and recording various
-errors.  Valid values: 0, 1, 2, 3 and 7. 
+errors.  Valid values: 0, 1, 2, 3 and 7.
 For more information please refer to [MongoDB Configuration File Options](http://docs.mongodb.org/manual/reference/configuration-options/).
 
 #####`directoryperdb`
@@ -264,7 +264,7 @@ that MongoDB will accept. Default: depends on system (i.e. ulimit and file descr
 limits. Unless set, MongoDB will not limit its own connections.
 
 #####`oplog_size`
-Specifies a maximum size in megabytes for the replication operation log 
+Specifies a maximum size in megabytes for the replication operation log
 (e.g. oplog.) mongod creates an oplog based on the maximum amount of space
 available. For 64-bit systems, the oplog is typically 5% of available disk space.
 
@@ -307,11 +307,11 @@ set name as an argument to this set. All hosts must have the same set name.
 Set to true to enable a simple REST interface. Default: false
 
 #####`slowms`
-Sets the threshold for mongod to consider a query “slow” for the database profiler. 
+Sets the threshold for mongod to consider a query “slow” for the database profiler.
 Default: 100 ms
 
 #####`keyfile`
-Specify the path to a key file to store authentication information. This option 
+Specify the path to a key file to store authentication information. This option
 is only useful for the connection between replica set members. Default: None
 
 #####`master`
@@ -325,12 +325,12 @@ replication configuration. Default: false
 
 #####`only`
 Used with the slave option, only specifies only a single database to
-replicate. Default: <> 
+replicate. Default: <>
 *Note*: deprecated – use replica sets
 
 #####`source`
 Used with the slave setting to specify the master instance from which
-this slave instance will replicate. Default: <> 
+this slave instance will replicate. Default: <>
 *Note*: deprecated – use replica sets
 
 
@@ -372,7 +372,7 @@ in the Gemfile. To install the necessary gems:
     bundle install --path=vendor
 
 Test setup and teardown is handled with rake tasks, so the
-supported way of running tests is with 
+supported way of running tests is with
 
     bundle exec rake spec
 
@@ -384,12 +384,12 @@ To run the system tests
 
 To run the tests on different operating systems, see the sets available in [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml)
 and run the specific set with the following syntax:
-   
+
     RSPEC_SET=ubuntu-server-12042-x64 bundle exec rake spec:system
 
 ### Authors
 
 We would like to thank everyone who has contributed issues and pull requests to this modules.
-A complete list of contributors can be found on the 
+A complete list of contributors can be found on the
 [GitHub Contributor Graph](https://github.com/puppetlabs/puppetlabs-mongodb/graphs/contributors)
 for the [puppetlabs-mongodb module](https://github.com/puppetlabs/puppetlabs-mongodb).
