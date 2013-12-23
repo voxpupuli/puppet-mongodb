@@ -184,8 +184,8 @@ Set to true to add new entries to the end of the logfile rather than overwriting
 the content of the log when the process restarts. Default: True
 
 #####`fork`
-Set to true to enable database authentication for users connecting from remote
-hosts. If not specified, the module will use the default for your OS distro.
+Set to true to fork server process at launch time. The default setting depends on
+the operating system.
 
 #####`port`
 Specifies a TCP port for the server instance to listen for client connections.
