@@ -1,21 +1,21 @@
 # This installs a MongoDB server. See README.md for more details.
 class mongodb::server (
   $ensure           = $mongodb::params::ensure,
-  
+
   $user             = $mongodb::params::user,
   $group            = $mongodb::params::group,
-  
+
   $config           = $mongodb::params::config,
   $dbpath           = $mongodb::params::dbpath,
   $pidfilepath      = $mongodb::params::pidfilepath,
 
-  $service_provider = $mongodb::params::service_provider, 
+  $service_provider = $mongodb::params::service_provider,
   $service_name     = $mongodb::params::service_name,
   $service_status   = $mongodb::params::service_status,
 
   $package_ensure  = $ensure,
   $package_name    = $mongodb::params::server_package_name,
-    
+
   $logpath         = $mongodb::params::logpath,
   $bind_ip         = $mongodb::params::bind_ip,
   $logappend       = true,
@@ -57,8 +57,8 @@ class mongodb::server (
   $only            = undef,
   $source          = undef,
 ) inherits mongodb::params {
-  
-  
+
+
   if ($ensure == 'present' or $ensure == true) {
     anchor { 'mongodb::server::start': }->
     class { 'mongodb::server::install': }->

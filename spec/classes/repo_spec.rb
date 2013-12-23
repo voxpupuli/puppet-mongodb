@@ -8,8 +8,8 @@ describe 'mongodb::repo', :type => :class do
         :osfamily        => 'Debian',
         :operatingsystem => 'Debian',
       }
-    end 
-    
+    end
+
     it {
       should contain_class('mongodb::repo::apt')
     }
@@ -21,11 +21,11 @@ describe 'mongodb::repo', :type => :class do
         :osfamily        => 'RedHat',
         :operatingsystem => 'CentOS',
       }
-    end 
-    
+    end
+
     it {
       should contain_class('mongodb::repo::yum')
     }
   end
- 
+
 end

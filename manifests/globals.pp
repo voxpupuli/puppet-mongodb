@@ -13,10 +13,10 @@ class mongodb::globals (
   $bind_ip              = undef,
 
   $version              = undef,
-  
+
   $manage_package_repo  = undef
 ) {
-  
+
   # Setup of the repo only makes sense globally, so we are doing it here.
   if($manage_package_repo) {
     class { 'mongodb::repo':

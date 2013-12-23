@@ -2,7 +2,7 @@
 class mongodb::repo::yum inherits mongodb::repo {
   # We try to follow/reproduce the instruction
   # http://docs.mongodb.org/manual/tutorial/install-mongodb-on-red-hat-centos-or-fedora-linux/
-  
+
   if($ensure == 'present' or $ensure == true) {
     yumrepo { 'mongodb':
       descr    => 'MongoDB/10gen Repository',
@@ -15,6 +15,6 @@ class mongodb::repo::yum inherits mongodb::repo {
   else {
     yumrepo { 'mongodb':
       enabled => absent,
-    }   
+    }
   }
 }

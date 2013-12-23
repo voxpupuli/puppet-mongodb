@@ -37,7 +37,7 @@ class mongodb (
   # Deprecated parameters
   $enable_10gen    = undef,
 
-  $init            = $mongodb::params::service_provider, 
+  $init            = $mongodb::params::service_provider,
   $location        = '',
   $packagename     = undef,
   $version         = undef,
@@ -87,11 +87,11 @@ class mongodb (
   if $version {
     fail("Parameter version is no longer supported. Please use class { 'mongodb::globals': version => VERSION }")
   }
-  
+
   if $oplog {
     fail("Parameter is no longer supported. On replica set Oplog is enabled by default.")
   }
-  
+
   notify { "An attempt has been made below to automatically apply your custom
     settings to mongodb::server. Please verify this works in a safe test
     environment.": }
