@@ -73,6 +73,20 @@ for future implementation, where you can configure the main settings for
 this module in a global way, to be used by other classes and defined resources. 
 On its own it does nothing.
 
+### Create MongoDB database
+
+To install MongoDB server and create database with user.
+
+```puppet
+class {'::mongodb::server':
+  auth => true,
+}
+
+mongodb::db { 'testdb':
+  user     => 'user1',
+  password => 'pass1',
+}
+```
 
 ## Reference
 
@@ -329,6 +343,21 @@ replicate. Default: <>
 Used with the slave setting to specify the master instance from which
 this slave instance will replicate. Default: <> 
 *Note*: deprecated – use replica sets
+
+### Definitions
+
+#### Definition: mongodb:db
+
+Creates database with user. Resource title used as database name.
+
+#####`user`
+Name of the user for database
+
+#####`password`
+Plain-text user password (will be hashed)
+
+#####`roles`
+Array with user roles. Default: ['dbAdmin']
 
 
 ## Limitation
