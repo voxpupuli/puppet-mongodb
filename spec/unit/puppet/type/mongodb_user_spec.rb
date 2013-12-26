@@ -6,8 +6,7 @@ describe Puppet::Type.type(:mongodb_user) do
     @user = Puppet::Type.type(:mongodb_user).new(
               :name => 'test',
               :database => 'testdb',
-              :password_hash => 'pass',
-            )
+              :password_hash => 'pass')
   end
 
   it 'should accept a user name' do

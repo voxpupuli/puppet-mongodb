@@ -6,6 +6,16 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb) do
 
   commands :mongo => 'mongo'
 
+  def block_until_mongodb(tries = 10)
+    begin
+      mongo('--quiet', '--eval', 'db.getMongo()')
+    rescue
+      debug('MongoDB server not ready, retrying')
+      sleep 2
+      retry unless (tries -= 1) <= 0
+    end
+  end
+
   def create
     mongo(@resource[:database], '--eval', "db.system.users.insert({user:\"#{@resource[:name]}\", pwd:\"#{@resource[:password_hash]}\", roles: #{@resource[:roles].inspect}})")
   end
@@ -15,6 +25,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb) do
   end
 
   def exists?
+    block_until_mongodb
     mongo(@resource[:database], '--quiet', '--eval', "db.system.users.find({user:\"#{@resource[:name]}\"}).count()").strip.eql?('1')
   end
 
