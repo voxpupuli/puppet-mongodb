@@ -5,13 +5,15 @@
 # == Parameters
 #
 #  user - Database username.
-#  password - Database user password.
+#  password_hash - Hashed password. Hex encoded md5 hash of "$username:mongo:$password".
+#  password - Plain text user password. This is UNSAFE, use 'password_hash' unstead.
 #  roles (default: ['dbAdmin']) - array with user roles.
 #
 define mongodb::db (
   $user,
-  $password,
-  $roles = ['dbAdmin'],
+  $password_hash = false,
+  $password      = false,
+  $roles         = ['dbAdmin'],
 ) {
 
   mongodb_database { $name:
@@ -19,9 +21,17 @@ define mongodb::db (
     require  => Class['mongodb::server'],
   }
 
+  if $password_hash {
+    $hash = $password_hash
+  } elsif $password {
+    $hash = mongodb_password($user, $password)
+  } else {
+    fail("Parameter 'password_hash' or 'password' should be provided.")
+  }
+
   mongodb_user { $user:
     ensure        => present,
-    password_hash => mongodb_password($user, $password),
+    password_hash => $hash,
     database      => $name,
     roles         => $roles,
     require       => Mongodb_database[$name],

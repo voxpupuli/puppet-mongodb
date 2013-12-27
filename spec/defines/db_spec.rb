@@ -29,4 +29,10 @@ describe 'mongodb::db', :type => :define do
     should contain_mongodb_user('testuser')\
       .with_roles(["testrole1", "testrole2"])
   end
+
+  it 'should prefer password_hash instead of password' do
+    params.merge!({'password_hash' => 'securehash'})
+    should contain_mongodb_user('testuser')\
+      .with_password_hash('securehash')
+  end
 end
