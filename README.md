@@ -45,7 +45,7 @@ rs.initiate() has to be done manually).
 ###Beginning with MongoDB
 
 If you just want a server installation with the default options you can run
-`include '::mongodb:server'`. If you need to customize configuration
+`include '::mongodb::server'`. If you need to customize configuration
 options you need to do the following:
 
 ```puppet
@@ -70,7 +70,7 @@ class {'::mongodb::server': }
 ## Usage
 
 Most of the interaction for the server is done via `mongodb::server`. For
-more options please have a look at [monogbd::server](#class-mongodbserver).
+more options please have a look at [mongodb::server](#class-mongodbserver).
 Also in this version we introduced `mongodb::globals`, which is meant more
 for future implementation, where you can configure the main settings for
 this module in a global way, to be used by other classes and defined resources.
