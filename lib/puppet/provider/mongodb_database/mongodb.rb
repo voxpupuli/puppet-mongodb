@@ -25,8 +25,8 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb) do
   end
 
   def exists?
-    block_until_mongodb
-    mongo("--eval", 'db.getMongo().getDBNames()').split(",").include?(@resource[:name])
+    block_until_mongodb(@resource[:tries])
+    mongo("--quiet", "--eval", 'db.getMongo().getDBNames()').split(",").include?(@resource[:name])
   end
 
 end

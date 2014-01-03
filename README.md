@@ -373,9 +373,13 @@ Array with user roles. Default: ['dbAdmin']
 ```puppet
 mongodb_database { testdb:
   ensure   => present,
+  tries    => 10,
   require  => Class['mongodb::server'],
 }
 ```
+#####tries`
+The maximum amount of two second tries to wait MongoDB startup. Default: 10
+
 
 #### Provider: mongodb_user
 'mongodb_user' can be used to create and manage users within MongoDB database.
@@ -386,9 +390,21 @@ mongodb_user { testuser:
   password_hash => mongodb_password('testuser', 'p@ssw0rd'),
   database      => testdb,
   roles         => ['readWrite', 'dbAdmin'],
+  tries         => 10,
   require       => Class['mongodb::server'],
 }
 ```
+#####`password_hash`
+Hex encoded md5 hash of "$username:mongo:$password".
+
+#####`database`
+Name of database. It will be created, if not exists.
+
+#####`roles`
+Array with user roles. Default: ['dbAdmin']
+
+#####`tries`
+The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 ## Limitation
 

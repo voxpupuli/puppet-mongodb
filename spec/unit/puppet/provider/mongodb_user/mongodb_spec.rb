@@ -50,8 +50,8 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
   end
 
   describe 'roles' do
-    it 'returns a roles' do
-      provider.expects(:mongo).returns("role1,role2\n")
+    it 'returns a sorted roles' do
+      provider.expects(:mongo).returns("role2,role1\n")
       provider.roles.should == ['role1','role2']
     end
   end

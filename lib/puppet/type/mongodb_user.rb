@@ -3,6 +3,12 @@ Puppet::Type.newtype(:mongodb_user) do
 
   ensurable
 
+  def initialize(*args)
+    super
+    # Sort roles array before comparison.
+    self[:roles] = Array(self[:roles]).sort!
+  end
+
   newparam(:name, :namevar=>true) do
     desc "The name of the user."
   end
@@ -15,10 +21,28 @@ Puppet::Type.newtype(:mongodb_user) do
     newvalues(/^\w+$/)
   end
 
+  newparam(:tries) do
+    desc "The maximum amount of two second tries to wait MongoDB startup."
+    defaultto 10
+    newvalues(/^\d+$/)
+    munge do |value|
+      Integer(value)
+    end
+  end
+
   newproperty(:roles, :array_matching => :all) do
     desc "The user's roles."
     defaultto ['dbAdmin']
     newvalue(/^\w+$/)
+
+    # Pretty output for arrays.
+    def should_to_s(value)
+      value.inspect
+    end
+
+    def is_to_s(value)
+      value.inspect
+    end
   end
 
   newproperty(:password_hash) do

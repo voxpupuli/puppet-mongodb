@@ -17,6 +17,11 @@ describe Puppet::Type.type(:mongodb_user) do
     @user[:database].should == 'testdb'
   end
 
+  it 'should accept a tries parameter' do
+    @user[:tries] = 5
+    @user[:tries].should == 5
+  end
+
   it 'should accept a password' do
     @user[:password_hash] = 'foo'
     @user[:password_hash].should == 'foo'
@@ -47,6 +52,16 @@ describe Puppet::Type.type(:mongodb_user) do
     expect {
       Puppet::Type.type(:mongodb_user).new({:name => 'test', :database => 'testdb'})
     }.to raise_error(Puppet::Error, 'Property \'password_hash\' must be set. Use mongodb_password() for creating hash.')
+  end
+
+  it 'should sort roles' do
+    # Reinitialize type with explicit unsorted roles.
+    @user = Puppet::Type.type(:mongodb_user).new(
+              :name => 'test',
+              :database => 'testdb',
+              :password_hash => 'pass',
+              :roles => ['b', 'a'])
+    @user[:roles].should == ['a', 'b']
   end
 
 end

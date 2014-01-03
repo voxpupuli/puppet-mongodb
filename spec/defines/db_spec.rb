@@ -35,4 +35,9 @@ describe 'mongodb::db', :type => :define do
     should contain_mongodb_user('testuser')\
       .with_password_hash('securehash')
   end
+
+  it 'should contain mongodb_database with proper tries param' do
+    params.merge!({'tries' => 5})
+    should contain_mongodb_database('testdb').with_tries(5)
+  end
 end
