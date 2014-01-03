@@ -2,6 +2,11 @@ branches:
   only:
     - master
 language: ruby
+before_install:
+  - gem update bundler
+  - bundle --version
+  - gem update --system 2.1.11
+  - gem --version
 bundler_args: --without development
 script: "bundle exec rake spec SPEC_OPTS='--format documentation'"
 after_success:
