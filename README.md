@@ -377,7 +377,7 @@ mongodb_database { testdb:
   require  => Class['mongodb::server'],
 }
 ```
-#####tries`
+#####`tries`
 The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 
