@@ -7,6 +7,7 @@ class mongodb::repo (
       $location = $::architecture ? {
         'x86_64' => 'http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/',
         'i686'   => 'http://downloads-distro.mongodb.org/repo/redhat/os/i686/',
+        'i386'   => 'http://downloads-distro.mongodb.org/repo/redhat/os/i686/',
         default  => undef
       }
       class { 'mongodb::repo::yum': }
