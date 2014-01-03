@@ -55,7 +55,7 @@ class {'::mongodb::server':
 }
 ```
 
-Although most distro comes with a prepacked MongoDB server we recommend to
+Although most distros come with a prepacked MongoDB server we recommend to
 use the 10gen/MongoDB software repository, because most of the current OS
 packages are outdated and not appropriate for a production environment.
 To install MongoDB from 10gen repository:
@@ -83,7 +83,7 @@ On its own it does nothing.
 
 ####Public classes
 * `mongodb::server`: Installs and configure MongoDB
-* `mongodb::globals`: Configure main settings on a global way
+* `mongodb::globals`: Configure main settings in a global way
 
 ####Private classes
 * `mongodb::repo`: Manage 10gen/MongoDB software repository
@@ -138,7 +138,7 @@ the default for your OS distro.
 This setting can be used to configure MonogDB process to bind to and listen
 for connections from applications on this address. If not specified, the
 module will use the default for your OS distro.
-*Note:* This value should be passed an an array.
+*Note:* This value should be passed as an array.
 
 #####`version`
 The version of MonogDB to install/manage. This is a simple way of providing
@@ -149,7 +149,7 @@ the module will use the default for your OS distro.
 
 ####Class: mongodb::server
 
-Most of the parameters manipulates the mongod.conf file.
+Most of the parameters manipulate the mongod.conf file.
 
 For more details about configuration parameters consult the [MongoDB Configuration File Options](http://docs.mongodb.org/manual/reference/configuration-options/).
 
@@ -177,7 +177,7 @@ to the standard output.
 Set this option to configure the mongod or mongos process to bind to and listen
 for connections from applications on this address. If not specified, the module
 will use the default for your OS distro. Example: bind_ip=['127.0.0.1', '192.168.0.3']
-*Note*: bind_ip accept array as a value.
+*Note*: bind_ip accepts an array as a value.
 
 #####`logappend`
 Set to true to add new entries to the end of the logfile rather than overwriting
@@ -236,7 +236,7 @@ that clients never insert invalid documents into the database.
 Default: on v2.4 default to true and on earlier version to false
 
 #####`quota`
-Set to true to enable a maximum limit for the number data files each database
+Set to true to enable a maximum limit for the number of data files each database
 can have. The default quota is 8 data files, when quota is true. Default: false
 
 #####`quotafiles`
@@ -287,8 +287,8 @@ the start up time in some cases, but can cause significant performance penalties
 during normal operations. Default: false
 
 #####`nssize`
-Use this setting to control the default size for all newly created namespace f
-iles (i.e .ns). Default: 16
+Use this setting to control the default size for all newly created namespace
+files (i.e .ns). Default: 16
 
 #####`mms_token`
 MMS token for mms monitoring. Default: None
@@ -345,7 +345,7 @@ This module has been tested on:
 * RHEL 5/6
 * CentOS 5/6
 
-For a for list of tested OS please have a look at the [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml) definition.
+For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml) definition.
 
 ## Development
 
@@ -389,7 +389,7 @@ and run the specific set with the following syntax:
 
 ### Authors
 
-We would like to thank everyone who has contributed issues and pull requests to this modules.
+We would like to thank everyone who has contributed issues and pull requests to this module.
 A complete list of contributors can be found on the
 [GitHub Contributor Graph](https://github.com/puppetlabs/puppetlabs-mongodb/graphs/contributors)
 for the [puppetlabs-mongodb module](https://github.com/puppetlabs/puppetlabs-mongodb).
