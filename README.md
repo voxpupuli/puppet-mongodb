@@ -76,6 +76,22 @@ for future implementation, where you can configure the main settings for
 this module in a global way, to be used by other classes and defined resources.
 On its own it does nothing.
 
+### Create MongoDB database
+
+To install MongoDB server, create database "testdb" and user "user1" with password "pass1".
+
+```puppet
+class {'::mongodb::server':
+  auth => true,
+}
+
+mongodb::db { 'testdb':
+  user          => 'user1',
+  password_hash => 'a15fbfca5e3a758be80ceaf42458bcd8',
+}
+```
+Parameter 'password_hash' is hex encoded md5 hash of "user1:mongo:pass1".
+Unsafe plain text password could be used with 'password' parameter instead of 'password_hash'.
 
 ## Reference
 
@@ -333,6 +349,65 @@ Used with the slave setting to specify the master instance from which
 this slave instance will replicate. Default: <>
 *Note*: deprecated – use replica sets
 
+### Definitions
+
+#### Definition: mongodb:db
+
+Creates database with user. Resource title used as database name.
+
+#####`user`
+Name of the user for database
+
+#####`password_hash`
+Hex encoded md5 hash of "$username:mongo:$password".
+For more information please refer to [MongoDB Authentication Process](http://docs.mongodb.org/meta-driver/latest/legacy/implement-authentication-in-driver/#authentication-process).
+
+#####`password`
+Plain-text user password (will be hashed)
+
+#####`roles`
+Array with user roles. Default: ['dbAdmin']
+
+### Providers
+
+#### Provider: mongodb_database
+'mongodb_database' can be used to create and manage databases within MongoDB.
+
+```puppet
+mongodb_database { testdb:
+  ensure   => present,
+  tries    => 10,
+  require  => Class['mongodb::server'],
+}
+```
+#####`tries`
+The maximum amount of two second tries to wait MongoDB startup. Default: 10
+
+
+#### Provider: mongodb_user
+'mongodb_user' can be used to create and manage users within MongoDB database.
+
+```puppet
+mongodb_user { testuser:
+  ensure        => present,
+  password_hash => mongodb_password('testuser', 'p@ssw0rd'),
+  database      => testdb,
+  roles         => ['readWrite', 'dbAdmin'],
+  tries         => 10,
+  require       => Class['mongodb::server'],
+}
+```
+#####`password_hash`
+Hex encoded md5 hash of "$username:mongo:$password".
+
+#####`database`
+Name of database. It will be created, if not exists.
+
+#####`roles`
+Array with user roles. Default: ['dbAdmin']
+
+#####`tries`
+The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 ## Limitation
 
