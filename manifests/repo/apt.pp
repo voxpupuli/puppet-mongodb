@@ -9,7 +9,7 @@ class mongodb::repo::apt inherits mongodb::repo {
       location    => $location,
       release     => 'dist',
       repos       => '10gen',
-      key         => '7F0CEB10',
+      key         => '9ECBEC467F0CEB10',
       key_server  => 'keyserver.ubuntu.com',
       include_src => false,
     }
