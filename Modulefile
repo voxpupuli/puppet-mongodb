@@ -1,5 +1,5 @@
 name 'puppetlabs-mongodb'
-version '0.4.0'
+version '0.5.0'
 source 'git@github.com:puppetlabs/puppetlabs-mongodb.git'
 author 'puppetlabs'
 license 'Apache License Version 2.0'
