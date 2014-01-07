@@ -334,6 +334,10 @@ is only useful for the connection between replica set members. Default: None
 Set to true to configure the current instance to act as master instance in a
 replication configuration. Default: False  *Note*: deprecated – use replica sets
 
+#####`set_parameter`
+Specify extra configuration file parameters (i.e.
+textSearchEnabled=true). Default: None
+
 #####`slave`
 Set to true to configure the current instance to act as slave instance in a
 replication configuration. Default: false

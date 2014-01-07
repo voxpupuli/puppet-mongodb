@@ -54,6 +54,14 @@ describe 'mongodb::server::config', :type => :class do
       should contain_file('/etc/mongod.conf').with_content(/^auth=true/)
     }
   end
+  
+  describe 'when specifying set_parameter value' do
+    let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $set_parameter = 'textSearchEnable=true' $dbpath = '/var/lib/mongo' $ensure = present }", "include mongodb::server"]}
+
+    it {
+      should contain_file('/etc/mongod.conf').with_content(/^setParameter = textSearchEnable=true/)
+    }
+  end
 
   describe 'with journal:' do
     context 'on true with i686 architecture' do
