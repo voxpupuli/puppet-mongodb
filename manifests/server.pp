@@ -50,7 +50,7 @@ class mongodb::server (
   $rest            = undef,
   $slowms          = undef,
   $keyfile         = undef,
-  $set_parameter  = undef,
+  $set_parameter   = undef,
 
   # Deprecated parameters
   $master          = undef,
