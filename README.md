@@ -28,10 +28,13 @@ any feedback with regard to the APIs and patterns used in this release.
 
 ##Module Description
 
-The MongoDB module manages mongod server installation and configuration of the mongod daemon. For the time being it supports only a single
-MongoDB server instance, without sharding and  limited replica set
-functionality (you can define the replica set parameter in the config file, however
-rs.initiate() has to be done manually).
+The MongoDB module manages mongod server installation and configuration of the mongod
+daemon. For the time being it supports only a single MongoDB server instance, without
+sharding and limited replica set functionality (you can define the replica set parameter 
+in the config file, however rs.initiate() has to be done manually). Addition of
+replica set functionality is being investigated for a future release.
+
+For the 0.5 release, the MongoDB module now supports database and user types.
 
 ## Setup
 
@@ -109,7 +112,6 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 * `mongodb::server::install`: Install MongoDB software packages
 * `mongodb::server::service`: Manages service
 
-
 ####Class: mongodb::globals
 *Note:* most server specific defaults should be overridden in the `mongodb::server`
 class. This class should only be used if you are using a non-standard OS or
@@ -119,7 +121,6 @@ can only be changed here.
 This class allows you to configure the main settings for this module in a
 global way, to be used by the other classes and defined resources. On its
 own it does nothing.
-
 
 #####`server_package_name`
 This setting can be used to override the default MongoDB server package
@@ -161,13 +162,12 @@ The version of MonogDB to install/manage. This is a simple way of providing
 a specific version such as '2.2' or '2.4' for example. If not specified,
 the module will use the default for your OS distro.
 
-
-
 ####Class: mongodb::server
 
 Most of the parameters manipulate the mongod.conf file.
 
-For more details about configuration parameters consult the [MongoDB Configuration File Options](http://docs.mongodb.org/manual/reference/configuration-options/).
+For more details about configuration parameters consult the
+[MongoDB Configuration File Options](http://docs.mongodb.org/manual/reference/configuration-options/).
 
 #####`ensure`
 enable or disable the service
@@ -267,7 +267,6 @@ For more information please refer to [MongoDB Configuration File Options](http:/
 #####`directoryperdb`
 Set to true to modify the storage pattern of the data directory to store each
 database’s files in a distinct folder. Default: false
-
 
 #####`profile`
 Modify this value to changes the level of database profiling, which inserts
