@@ -4,6 +4,8 @@
 class mongodb::globals (
   $server_package_name  = undef,
 
+  $client_package_name  = undef,
+
   $service_name         = undef,
   $service_provider     = undef,
   $service_status       = undef,

@@ -1,6 +1,9 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::params inherits mongodb::globals {
   $ensure           = true
+# for mongo client
+  $client_ensure    = true
+
   $service_status   = $service_status
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
@@ -28,6 +31,8 @@ class mongodb::params inherits mongodb::globals {
         $user                = pick($user, 'mongodb')
         $group               = pick($group, 'mongodb')
         $server_package_name = pick($server_package_name, "mongodb-server")
+    
+        $client_package_name = pick($client_package_name, "mongodb")
 
         $service_name        = pick($service_name, 'mongod')
         $config              = '/etc/mongodb.conf'
@@ -61,6 +66,7 @@ class mongodb::params inherits mongodb::globals {
         $user                = pick($user, 'mongodb')
         $group               = pick($group, 'mongodb')
         $server_package_name = pick($server_package_name, 'mongodb-server')
+        $client_package_name = pick($client_package_name, 'mongodb-clients')
         $service_name        = pick($service_name, 'mongodb')
         $config              = '/etc/mongodb.conf'
         $dbpath              = '/var/lib/mongodb'
