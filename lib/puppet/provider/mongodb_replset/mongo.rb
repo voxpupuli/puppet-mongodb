@@ -97,14 +97,14 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
     end
   end
 
-  def mongo_command(command, host, max_wait=16)
-    # Allow waiting up to 30 seconds for mongod to become ready
-    # Wait for 2 seconds initially, double time at each iteration
-    wait = 1
+  def mongo_command(command, host, retries=4)
+    # Allow waiting for mongod to become ready
+    # Wait for 2 seconds initially and double the delay at each retry
+    wait = 2
     begin
       output = self.mongo('--quiet', '--host', host, '--eval', "printjson(#{command})")
     rescue Puppet::ExecutionFailure => e
-      if e =~ /Error: couldn't connect to server/ and wait <= max_wait
+      if e =~ /Error: couldn't connect to server/ and wait <= 2**max_wait
         info("Waiting #{wait} seconds for mongod to become available")
         sleep wait
         wait *= 2
