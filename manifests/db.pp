@@ -29,7 +29,7 @@ define mongodb::db (
   } elsif $password {
     $hash = mongodb_password($user, $password)
   } else {
-    fail("Parameter 'password_hash' or 'password' should be provided.")
+    fail("Parameter 'password_hash' or 'password' should be provided to mongodb::db.")
   }
 
   mongodb_user { $user:

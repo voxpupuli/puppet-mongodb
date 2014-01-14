@@ -43,6 +43,7 @@ For the 0.5 release, the MongoDB module now supports database and user types.
 * MongoDB package.
 * MongoDB configuration files.
 * MongoDB service.
+* MongoDB client.
 * 10gen/mongodb apt/yum repository.
 
 ###Beginning with MongoDB
@@ -58,6 +59,15 @@ class {'::mongodb::server':
 }
 ```
 
+For Red Hat family systems, the client can be installed in a similar fashion:
+
+```
+puppet class {'::mongodb::client':}
+```
+
+Note that for Debian/Ubuntu family systems the client is installed with the 
+server. Using the client class will by default install the server.
+
 Although most distros come with a prepacked MongoDB server we recommend to
 use the 10gen/MongoDB software repository, because most of the current OS
 packages are outdated and not appropriate for a production environment.
@@ -67,7 +77,8 @@ To install MongoDB from 10gen repository:
 class {'::mongodb::globals':
   manage_package_repo => true,
 }->
-class {'::mongodb::server': }
+class {'::mongodb::server': }->
+class {'::mondodb::client': }
 ```
 
 ## Usage
@@ -102,6 +113,7 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 
 ####Public classes
 * `mongodb::server`: Installs and configure MongoDB
+* `mongodb::client`: Installs the MongoDB client shell (for Red Hat family systems)
 * `mongodb::globals`: Configure main settings in a global way
 
 ####Private classes
@@ -111,6 +123,7 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 * `mongodb::server::config`: Configures MongoDB configuration files
 * `mongodb::server::install`: Install MongoDB software packages
 * `mongodb::server::service`: Manages service
+* `mongodb::client::install`: Installs the MongoDB client software package
 
 ####Class: mongodb::globals
 *Note:* most server specific defaults should be overridden in the `mongodb::server`

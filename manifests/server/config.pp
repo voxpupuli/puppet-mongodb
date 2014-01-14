@@ -74,7 +74,7 @@ class mongodb::server::config {
       mode    => '0755',
       owner   => $user,
       group   => $group,
-      require => File["${config}"]
+      require => File[$config]
     }
   } else {
     file { $dbpath:
