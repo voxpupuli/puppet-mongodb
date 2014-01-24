@@ -28,13 +28,14 @@ any feedback with regard to the APIs and patterns used in this release.
 
 ##Module Description
 
-The MongoDB module manages mongod server installation and configuration of the mongod
-daemon. For the time being it supports only a single MongoDB server instance, without
-sharding and limited replica set functionality (you can define the replica set parameter 
-in the config file, however rs.initiate() has to be done manually). Addition of
-replica set functionality is being investigated for a future release.
+The MongoDB module manages mongod server installation and configuration of the
+mongod daemon. For the time being it supports only a single MongoDB server
+instance, without sharding functionality.
 
 For the 0.5 release, the MongoDB module now supports database and user types.
+
+For the 0.6 release, the MongoDB module now supports basic replicaset features
+(initiating a replicaset and adding members, but without specific options).
 
 ## Setup
 
@@ -424,6 +425,27 @@ Array with user roles. Default: ['dbAdmin']
 
 #####`tries`
 The maximum amount of two second tries to wait MongoDB startup. Default: 10
+
+#### Provider: mongodb_replset
+'mongodb_replset' can be used to create and manage MongoDB replicasets.
+
+```puppet
+mongodb_replicaset { rsmain:
+  ensure  => present,
+  members => ['host1:27017', 'host2:27017', 'host3:27017']
+}
+```
+
+Ideally the ```mongodb_replicaset``` resource will be declared on the initial
+desired primary node (arbitrarily the first of the list) and this node will be
+processed once the secondary nodes are up. This will ensure all the nodes are
+in the first configuration of the replicaset, else it will require running
+puppet again to add them.
+
+#####`members`
+Array of 'host:port' of the replicaset members.
+
+It currently only adds members without options.
 
 ## Limitation
 
