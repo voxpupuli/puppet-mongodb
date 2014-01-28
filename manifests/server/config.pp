@@ -16,7 +16,7 @@ class mongodb::server::config {
   $smallfiles      = $mongodb::server::smallfiles
   $cpu             = $mongodb::server::cpu
   $auth            = $mongodb::server::auth
-  $noath           = $mongodb::server::noauth
+  $noauth           = $mongodb::server::noauth
   $verbose         = $mongodb::server::verbose
   $verbositylevel  = $mongodb::server::verbositylevel
   $objcheck        = $mongodb::server::objcheck
