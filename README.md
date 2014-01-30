@@ -430,13 +430,13 @@ The maximum amount of two second tries to wait MongoDB startup. Default: 10
 'mongodb_replset' can be used to create and manage MongoDB replicasets.
 
 ```puppet
-mongodb_replicaset { rsmain:
+mongodb_replset { rsmain:
   ensure  => present,
   members => ['host1:27017', 'host2:27017', 'host3:27017']
 }
 ```
 
-Ideally the ```mongodb_replicaset``` resource will be declared on the initial
+Ideally the ```mongodb_replset``` resource will be declared on the initial
 desired primary node (arbitrarily the first of the list) and this node will be
 processed once the secondary nodes are up. This will ensure all the nodes are
 in the first configuration of the replicaset, else it will require running
