@@ -12,7 +12,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
 
   def create
     alive_members = members_present
-    hostsconf = alive_members.collect.each_with_index do |host, id|
+    hostsconf = alive_members.collect.each_with_index.map do |host, id|
       "{ _id: #{id}, host: \"#{host}\" }"
     end.join(',')
     conf = "{ _id: \"#{@resource[:name]}\", members: [ #{hostsconf} ] }"
