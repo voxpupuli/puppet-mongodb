@@ -21,7 +21,8 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
 
   describe 'create' do
     it 'should create a replicaset' do
-      provider.stubs(:mongo_command).returns(
+      provider.stubs(:members_present).returns(valid_members)
+      provider.expects('rs_initiate').with("{ _id: \"rs_test\", members: [ { _id: 0, host: \"mongo1:27017\" },{ _id: 1, host: \"mongo2:27017\" },{ _id: 2, host: \"mongo3:27017\" } ] }", "mongo1:27017").returns(
         { "info" => "Config now saved locally.  Should come online in about a minute.",
           "ok"   => 1 } )
       provider.create
