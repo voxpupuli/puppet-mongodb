@@ -1,8 +1,13 @@
 # mongo.conf - generated from Puppet
 
+
+<% if @logpath -%>
 #where to log
 logpath=<%= @logpath %>
+<% if @logappend -%>
 logappend=<%= @logappend %>
+<% end -%>
+<% end -%>
 <% if @bind_ip -%>
 # Set this option to configure the mongod or mongos process to bind to and
 # listen for connections from applications on this address.
