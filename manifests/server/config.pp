@@ -45,11 +45,14 @@ class mongodb::server::config {
   $directoryperdb  = $mongodb::server::directoryperdb
   $profile         = $mongodb::server::profile
   $set_parameter   = $mongodb::server::set_parameter
+  $syslog          = $mongodb::server::syslog
 
   File {
     owner => $user,
     group => $group,
   }
+
+  if ($logpath and $syslog) { fail('You cannot use syslog with logpath')}
 
   if ($ensure == 'present' or $ensure == true) {
 

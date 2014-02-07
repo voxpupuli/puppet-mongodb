@@ -351,6 +351,11 @@ replication configuration. Default: False  *Note*: deprecated – use replica se
 Specify extra configuration file parameters (i.e.
 textSearchEnabled=true). Default: None
 
+#####`syslog`
+Sends all logging output to the host’s syslog system rather than to standard
+output or a log file. Default: None
+*Important*: You cannot use syslog with logpath.
+
 #####`slave`
 Set to true to configure the current instance to act as slave instance in a
 replication configuration. Default: false

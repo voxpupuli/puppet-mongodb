@@ -51,6 +51,7 @@ class mongodb::server (
   $slowms          = undef,
   $keyfile         = undef,
   $set_parameter   = undef,
+  $syslog          = undef,
 
   # Deprecated parameters
   $master          = undef,
