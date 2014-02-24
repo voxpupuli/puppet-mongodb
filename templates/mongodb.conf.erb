@@ -19,11 +19,11 @@ dbpath=<%= @dbpath %>
 # location of pidfile
 pidfilepath = <%= @pidfilepath %>
 <% end -%>
-<% if @nojournal -%>
+<% if @nojournal and not @journal -%>
 # Disables write-ahead journaling
 nojournal = <%= @nojournal %>
 <% end -%>
-<% if @journal -%>
+<% if @journal and not @nojournal -%>
 # Enables journaling
 journal = <%= @journal %>
 <% end -%>
@@ -32,10 +32,10 @@ journal = <%= @journal %>
 cpu = <%= @cpu %>
 <% end -%>
 # Turn on/off security.  Off is currently the default
-<% if @noauth -%>
+<% if @noauth and not @auth -%>
 noauth=<%= @noauth %>
 <% end -%>
-<% if @auth -%>
+<% if @auth and not @noauth -%>
 auth=<%= @auth %>
 <% end -%>
 <% if @verbose -%>
