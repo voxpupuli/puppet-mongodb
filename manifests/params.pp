@@ -1,6 +1,8 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::params inherits mongodb::globals {
   $ensure           = true
+  $service_enable   = pick($service_enable, true)
+  $service_ensure   = pick($service_ensure, 'running')
   $service_status   = $service_status
   $ensure_client    = true
 
