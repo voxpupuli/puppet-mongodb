@@ -50,7 +50,30 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
     if failcount == @resource[:members].length
       raise Puppet::Error, "Can't connect to any member of replicaset #{@resource[:name]}."
     end
+
+    arbiter = @resource[:arbiter]
+    if arbiter
+      debug "Checking arbiter #{arbiter} ..."
+      status = self.rs_status(arbiter)
+      if status.has_key?('errmsg') and status['errmsg'] == 'not running with --replSet'
+          raise Puppet::Error, "Can't configure replicaset #{@resource[:name]}, arbiter #{arbiter} is not supposed to be part of a replicaset."
+      end
+      self.arbiter=(arbiter)
+    end
+
     return is_configured
+  end
+
+  def arbiter
+    @resource[:arbiter]
+  end
+
+  def arbiter=(host)
+    if master = master_host()
+      self.rs_add_arbiter(host, master)
+    else
+      raise Puppet::Error, "Can't find master host for replicaset #{@resource[:name]}."
+    end
   end
 
   def members
@@ -123,8 +146,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
   end
 
   def rs_initiate(conf, host)
-    return self.mongo_command("rs.initiate(#{conf})", @resource[:members][0])
-
+    return self.mongo_command("rs.initiate(#{conf})", host)
   end
 
   def rs_status(host)
@@ -133,6 +155,10 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
 
   def rs_add(host, master)
     self.mongo_command("rs.add(\"#{host}\")", master)
+  end
+
+  def rs_add_arbiter(host, master)
+    self.mongo_command("rs.addArb(\"#{host}\")", master)
   end
 
 end
