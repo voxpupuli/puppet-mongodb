@@ -48,7 +48,7 @@ class mongodb::params inherits mongodb::globals {
         $user  = pick($user, 'mongodb')
         $group = pick($group, 'mongodb')
         if $::mongodb::globals::version {
-          $server_package_name = "mongodb-10gen-${::mongodb::globals::version}"
+          $server_package_name = "mongodb-10gen=${::mongodb::globals::version}"
         } else {
           $server_package_name = 'mongodb-10gen'
         }
