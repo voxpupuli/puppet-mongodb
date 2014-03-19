@@ -41,6 +41,7 @@ class mongodb::server::config {
   $rest            = $mongodb::server::rest
   $slowms          = $mongodb::server::slowms
   $keyfile         = $mongodb::server::keyfile
+  $key             = $mongodb::server::key
   $bind_ip         = $mongodb::server::bind_ip
   $directoryperdb  = $mongodb::server::directoryperdb
   $profile         = $mongodb::server::profile
@@ -59,6 +60,14 @@ class mongodb::server::config {
     # Exists for future compatibility and clarity.
     if $auth {
       $noauth = false
+      if $keyfile {
+        file { $keyfile:
+          content => inline_template($key),
+          owner   => $user,
+          group   => $group,
+          mode    => '0400',
+        }
+      }
     }
     else {
       $noauth = true
