@@ -20,6 +20,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
     if output['ok'] == 0
       raise Puppet::Error, "rs.initiate() failed for replicaset #{@resource[:name]}: #{output['errmsg']}"
     end
+    alive_members.each do |member|
+      debug "MEMBER : #{member.to_s}"
+      response = self.rs_slaveOk(member)
+      debug "RESPONSE : #{response}"
+    end
   end
 
   def destroy
@@ -88,11 +93,12 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
   def mongo_command(command, host, retries=4)
     # Allow waiting for mongod to become ready
     # Wait for 2 seconds initially and double the delay at each retry
+    nb_retry = 5 
     wait = 2
     begin
       output = self.mongo('--quiet', '--host', host, '--eval', "printjson(#{command})")
     rescue Puppet::ExecutionFailure => e
-      if e =~ /Error: couldn't connect to server/ and wait <= 2**max_wait
+      if e.to_s.include? "Error: couldn't connect to server" and wait <= 2**nb_retry
         info("Waiting #{wait} seconds for mongod to become available")
         sleep wait
         wait *= 2
@@ -135,4 +141,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
     self.mongo_command("rs.add(\"#{host}\")", master)
   end
 
+  def rs_slaveOk(host)
+    self.mongo_command("rs.slaveOk()", host)  
+  end
 end
