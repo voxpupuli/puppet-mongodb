@@ -123,7 +123,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
   end
 
   def rs_initiate(conf, host)
-    return self.mongo_command("rs.initiate(#{conf})", @resource[:members][0])
+    return self.mongo_command("rs.initiate(#{conf})", host)
 
   end
 
