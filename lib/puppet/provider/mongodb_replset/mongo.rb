@@ -2,11 +2,17 @@
 # Author: François Charlier <francois.charlier@enovance.com>
 #
 
-require 'json'
-
 Puppet::Type.type(:mongodb_replset).provide(:mongo) do
 
   desc "Manage hosts members for a replicaset."
+
+  confine :true =>
+    begin
+      require 'json'
+      true
+    rescue LoadError
+      false
+    end
 
   commands :mongo => 'mongo'
 
