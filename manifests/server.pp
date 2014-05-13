@@ -52,6 +52,9 @@ class mongodb::server (
   $keyfile         = undef,
   $set_parameter   = undef,
   $syslog          = undef,
+  $databases       = undef,
+  $dbdefaults      = {},
+  $hieramerge      = false,
 
   # Deprecated parameters
   $master          = undef,
@@ -66,6 +69,7 @@ class mongodb::server (
     class { 'mongodb::server::install': }->
     class { 'mongodb::server::config': }->
     class { 'mongodb::server::service': }->
+    class { 'mongodb::server::dbs': }->
     anchor { 'mongodb::server::end': }
   } else {
     anchor { 'mongodb::server::start': }->
