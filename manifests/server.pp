@@ -72,6 +72,7 @@ class mongodb::server (
     anchor { 'mongodb::server::end': }
 
     include ::mongodb::server::dbs
+    include ::mongodb::server::users
 
   } else {
     anchor { 'mongodb::server::start': }->
