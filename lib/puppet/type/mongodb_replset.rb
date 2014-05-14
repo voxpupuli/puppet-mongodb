@@ -25,6 +25,10 @@ Puppet::Type.newtype(:mongodb_replset) do
     end
   end
 
+  newproperty(:arbiter) do
+    desc "The replicaSet arbiter"
+  end
+
   autorequire(:package) do
     'mongodb'
   end
