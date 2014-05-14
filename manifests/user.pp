@@ -26,12 +26,21 @@ define mongodb::user (
     fail("Parameter 'password_hash' or 'password' should be provided to mongodb::db.")
   }
 
+  # Set account database dependency
+  # NOTE: ignore any internally defined mongo database(s)
+  #
+  if $database == 'admin' {
+    $req = undef
+  } else {
+    $req = Mongodb_database[$database]
+  }
+
   mongodb_user { $name:
     ensure        => $ensure,
     password_hash => $hash,
     database      => $database,
     roles         => $roles,
-    require       => Mongodb_database[$database],
+    require       => $req,
   }
 
 }
