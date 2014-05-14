@@ -69,8 +69,10 @@ class mongodb::server (
     class { 'mongodb::server::install': }->
     class { 'mongodb::server::config': }->
     class { 'mongodb::server::service': }->
-    class { 'mongodb::server::dbs': }->
     anchor { 'mongodb::server::end': }
+
+    include ::mongodb::server::dbs
+
   } else {
     anchor { 'mongodb::server::start': }->
     class { 'mongodb::server::service': }->
