@@ -22,7 +22,7 @@ class mongodb::server::install {
     }
   }
 
-  package { $package_name,
+  package { $package_name:
     ensure  => $my_package_ensure,
     tag     => 'mongodb',
   }
