@@ -53,4 +53,11 @@ Puppet::Type.newtype(:mongodb_user) do
     newvalue(/^\w+$/)
   end
 
+  autorequire(:package) do
+    'mongodb'
+  end
+
+  autorequire(:service) do
+    'mongodb'
+  end
 end
