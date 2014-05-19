@@ -12,13 +12,13 @@ class mongodb::params inherits mongodb::globals {
         $user        = pick($user, 'mongod')
         $group       = pick($group, 'mongod')
         if $::mongodb::globals::version {
-          $server_package_name = "mongodb-org-server-${::mongodb::globals::version}"
-          $client_package_name = "mongodb-org-${::mongodb::globals::version}"
+          $server_package_name = pick("$::mongodb::globals::server_package_name-${::mongodb::globals::version}", "mongodb-org-server-${::mongodb::globals::version}")
+          $client_package_name = pick("$::mongodb::globals::client_package_name-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
         } else {
-          $server_package_name = 'mongodb-org-server'
-          $client_package_name = 'mongodb-org'
+          $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
+          $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
         }
-        $service_name = pick($service_name, 'mongod')
+        $service_name = pick($::mongodb::globals::service_name, 'mongod')
         $config      = '/etc/mongod.conf'
         $dbpath      = '/var/lib/mongo'
         $logpath     = '/var/log/mongodb/mongod.log'
@@ -48,11 +48,14 @@ class mongodb::params inherits mongodb::globals {
         $user  = pick($user, 'mongodb')
         $group = pick($group, 'mongodb')
         if $::mongodb::globals::version {
-          $server_package_name = "mongodb-10gen=${::mongodb::globals::version}"
-        } else {
-          $server_package_name = 'mongodb-10gen'
+          $server_package_name = pick("${::mongodb::globals::server_package_name}-${::mongodb::globals::version}", "mongodb-org-server-${::mongodb::globals::version}")
+          $client_package_name = pick("${::mongodb::globals::client_package_name}-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
         }
-        $service_name = 'mongodb'
+        else {
+          $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
+          $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
+        }
+        $service_name = pick($::mongodb::globals::service_name, 'mongod')
         $config       = '/etc/mongodb.conf'
         $dbpath       = '/var/lib/mongodb'
         $logpath      = '/var/log/mongodb/mongodb.log'
