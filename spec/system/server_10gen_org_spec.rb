@@ -1,15 +1,15 @@
 require 'spec_helper_system'
 
-describe 'mongodb::server: with 10gen repo' do
+describe 'mongodb::server: mongodb-org with 10gen repo' do
 
   case node.facts['osfamily']
   when 'RedHat'
-    package_name = 'mongo-10gen-server'
+    package_name = 'mongodb-org'
     service_name = 'mongod'
     config_file  = '/etc/mongod.conf'
   when 'Debian'
-    package_name = 'mongo-10gen-server'
-    service_name = 'mongodb'
+    package_name = 'mongodb-org'
+    service_name = 'mongod'
     config_file  = '/etc/mongodb.conf'
   end
 
