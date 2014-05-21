@@ -12,11 +12,11 @@ class mongodb::params inherits mongodb::globals {
         $user        = pick($user, 'mongod')
         $group       = pick($group, 'mongod')
         if $::mongodb::globals::version {
-          $server_package_name = pick("$::mongodb::globals::server_package_name-${::mongodb::globals::version}", "mongodb-org-${::mongodb::globals::version}")
-          $client_package_name = pick("$::mongodb::globals::client_package_name-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
+          $server_package_name = pick("${::mongodb::globals::server_package_name}-${::mongodb::globals::version}", "mongodb-org-${::mongodb::globals::version}")
+          $client_package_name = pick("${::mongodb::globals::client_package_name}-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
         } else {
-          $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org')
-          $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
+          $server_package_name = pick(${::mongodb::globals::server_package_name}, 'mongodb-org')
+          $client_package_name = pick(${::mongodb::globals::client_package_name}, 'mongodb-org-shell')
         }
         $service_name = pick($::mongodb::globals::service_name, 'mongod')
         $config      = '/etc/mongod.conf'
@@ -48,12 +48,12 @@ class mongodb::params inherits mongodb::globals {
         $user  = pick($user, 'mongodb')
         $group = pick($group, 'mongodb')
         if $::mongodb::globals::version {
-          $server_package_name = pick("$::mongodb::globals::server_package_name-${::mongodb::globals::version}", "mongodb-org-${::mongodb::globals::version}")
-          $client_package_name = pick("$::mongodb::globals::client_package_name-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
+          $server_package_name = pick("${::mongodb::globals::server_package_name}-${::mongodb::globals::version}", "mongodb-org-${::mongodb::globals::version}")
+          $client_package_name = pick("${::mongodb::globals::client_package_name}-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
         }
         else {
-          $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org')
-          $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
+          $server_package_name = pick(${::mongodb::globals::server_package_name}, 'mongodb-org')
+          $client_package_name = pick(${::mongodb::globals::client_package_name}, 'mongodb-org-shell')
         }
         $service_name = pick($::mongodb::globals::service_name, 'mongod')
         $config       = '/etc/mongodb.conf'
