@@ -21,7 +21,7 @@ class mongodb::params inherits mongodb::globals {
         $service_name = pick($service_name, 'mongod')
         $config      = '/etc/mongod.conf'
         $dbpath      = '/var/lib/mongo'
-        $logpath     = '/var/log/mongo/mongod.log'
+        $logpath     = '/var/log/mongodb/mongod.log'
         $pidfilepath = '/var/run/mongodb/mongod.pid'
         $bind_ip     = pick($bind_ip, ['127.0.0.1'])
         $fork        = true
