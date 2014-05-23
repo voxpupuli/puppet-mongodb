@@ -2,6 +2,23 @@ require 'spec_helper_acceptance'
 
 if hosts.length > 1
   describe 'mongodb_replset resource' do
+    after :all do
+      # Have to drop the DB to disable replsets for further testing
+      on hosts, %{mongo --verbose --eval 'use local; db.dropDatabase()'}
+
+      pp = <<-EOS
+        class { 'mongodb::globals': }
+        -> class { 'mongodb::server':
+          ensure => purged,
+        }
+        if $::osfamily == 'RedHat' {
+          class { 'mongodb::client': }
+        }
+      EOS
+
+      apply_manifest_on(hosts.reverse, pp, :catch_failures => true)
+    end
+
     it 'configures mongo on both nodes' do
       pp = <<-EOS
         class { 'mongodb::globals': }
@@ -43,6 +60,7 @@ if hosts.length > 1
     end
 
     it 'checks the data on the slave' do
+      sleep(10)
       on hosts_as('slave'), %{mongo --verbose --eval 'rs.slaveOk(); printjson(db.test.findOne({name:"test1"}))'} do |r|
         expect(r.stdout).to match /some value/
       end

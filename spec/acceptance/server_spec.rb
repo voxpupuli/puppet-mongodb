@@ -2,9 +2,7 @@ require 'spec_helper_acceptance'
 
 describe 'mongodb::server class' do
 
-  it { require'pry';binding.pry }
-
-  shared_example 'normal tests' do |tengen|
+  shared_examples 'normal tests' do |tengen|
     if tengen
       case fact('osfamily')
       when 'RedHat'
@@ -91,7 +89,7 @@ describe 'mongodb::server class' do
 
       describe port(27018) do
         sleep(20)
-        it { should be_listening }
+        it { sleep 5 ; should be_listening }
       end
     end
 
@@ -110,7 +108,7 @@ describe 'mongodb::server class' do
       end
 
       describe port(27018) do
-        it { should_not be_listening}
+        it { sleep 5 ; should_not be_listening}
       end
     end
 

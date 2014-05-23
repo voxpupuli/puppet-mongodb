@@ -1,11 +1,11 @@
 HOSTS:
-  'mavunuqaz68crkj':
+  'master':
     roles:
       - master
     platform: el-6-x86_64
     hypervisor: vcloud
     template: centos-6-x86_64
-  'nk15y5sksmjczd1':
+  'slave':
     roles:
       - slave
     platform: el-6-x86_64
