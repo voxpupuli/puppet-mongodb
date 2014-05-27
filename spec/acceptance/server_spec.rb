@@ -6,11 +6,11 @@ describe 'mongodb::server class' do
     if tengen
       case fact('osfamily')
       when 'RedHat'
-        package_name = 'mongo-10gen-server'
+        package_name = 'mongodb-org-server'
         service_name = 'mongod'
         config_file  = '/etc/mongod.conf'
       when 'Debian'
-        package_name = 'mongodb-10gen'
+        package_name = 'mongodbdb-org-10gen'
         service_name = 'mongodb'
         config_file  = '/etc/mongodb.conf'
       end
@@ -90,25 +90,6 @@ describe 'mongodb::server class' do
       describe port(27018) do
         sleep(20)
         it { sleep 5 ; should be_listening }
-      end
-    end
-
-    context "test shutdown of custom port with 10gen => #{tengen}" do
-      it 'shut down service on port 27018' do
-        pp = <<-EOS
-          class {'mongodb::globals': manage_package_repo => #{tengen}, }
-          -> class {'mongodb::server':
-            ensure => absent,
-            port   => 27018,
-          }
-        EOS
-
-        apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes  => true)
-      end
-
-      describe port(27018) do
-        it { sleep 5 ; should_not be_listening}
       end
     end
 

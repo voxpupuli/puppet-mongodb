@@ -4,7 +4,7 @@ if hosts.length > 1
   describe 'mongodb_replset resource' do
     after :all do
       # Have to drop the DB to disable replsets for further testing
-      on hosts, %{mongo --verbose --eval 'use local; db.dropDatabase()'}
+      on hosts, %{mongo local --verbose --eval 'db.dropDatabase()'}
 
       pp = <<-EOS
         class { 'mongodb::globals': }
