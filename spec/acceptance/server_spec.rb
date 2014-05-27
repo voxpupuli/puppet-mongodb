@@ -30,6 +30,18 @@ describe 'mongodb::server class' do
     client_name  = 'mongo --version'
 
     context "default parameters with 10gen => #{tengen}" do
+      after :all do
+        if tengen
+          puts "XXX uninstalls mongodb because changing the port with tengen doesn't work because they have a crappy init script"
+          pp = <<-EOS
+            class {'mongodb::globals': manage_package_repo => #{tengen}, }
+            -> class { 'mongodb::server': ensure => absent, }
+            -> class { 'mongodb::client': ensure => absent, }
+          EOS
+          apply_manifest(pp, :catch_failures => true)
+        end
+      end
+
       it 'should work with no errors' do
         case fact('osfamily')
         when 'RedHat'
