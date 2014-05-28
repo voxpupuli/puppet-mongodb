@@ -144,6 +144,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
 
   def set_members
     if @property_flush[:ensure] == :absent
+      # TODO: I don't know how to remove a node from a replset; unimplemented
       #Puppet.debug "Removing all members from replset #{self.name}"
       #@property_hash[:members].collect do |member|
       #  rs_remove(member, master_host(@property_hash[:members]))
