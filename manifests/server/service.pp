@@ -8,6 +8,7 @@ class mongodb::server::service {
   $service_ensure = $ensure ? {
     present => true,
     absent  => false,
+    purged  => false,
     default => $ensure
   }
 

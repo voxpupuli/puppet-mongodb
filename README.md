@@ -184,7 +184,7 @@ For more details about configuration parameters consult the
 [MongoDB Configuration File Options](http://docs.mongodb.org/manual/reference/configuration-options/).
 
 #####`ensure`
-enable or disable the service
+Used to ensure that the package is installed and the service is running, or that the package is absent/purged and the service is stopped. Valid values are true/false/present/absent/purged.
 
 #####`config`
 Path of the config file. If not specified, the module will use the default
@@ -464,6 +464,8 @@ This module has been tested on:
 * CentOS 5/6
 
 For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml) definition.
+
+This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
 
 ## Development
 
