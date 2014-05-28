@@ -26,10 +26,6 @@ Puppet::Type.newtype(:mongodb_replset) do
   end
 
   autorequire(:package) do
-    'ruby-json'
-  end
-
-  autorequire(:package) do
     'mongodb'
   end
 
