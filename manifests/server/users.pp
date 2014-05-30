@@ -2,11 +2,13 @@
 #
 # Class for creating mongodb users.
 #
+# PRIVATE CLASS: do not call directly
+#
 # == Parameters
 #
-#  users - A hash of users in mongodb_user provider format
-#  userdefaults - A hash of user default settings in mongodb_user provider format
-#  hieramerge - enables hiera merging
+#  users - A hash of users in mongodb::user format
+#  userdefaults - An optional hash of user default settings in mongodb::user format
+#  hieramerge - Enables merging for hiera based hash parameters
 #
 class mongodb::server::users(
 
@@ -26,9 +28,10 @@ class mongodb::server::users(
   #
   if $hieramerge {
 
-    $x_users        = hiera_hash('mongodb::server::users', undef)
-    $x_userdefaults = hiera_hash('mongodb::server::userdefaults', undef)
+    $x_users        = hiera_hash('mongodb::server::users', $users)
+    $x_userdefaults = hiera_hash('mongodb::server::userdefaults', $userdefaults)
 
+  # Fall back to user provided class parameter / priority based hiera lookup
   } else {
     $x_users        = $users
     $x_userdefaults = $userdefaults

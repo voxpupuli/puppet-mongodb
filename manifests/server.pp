@@ -52,8 +52,10 @@ class mongodb::server (
   $keyfile         = undef,
   $set_parameter   = undef,
   $syslog          = undef,
-  $databases       = undef,
+  $dbs             = undef,
   $dbdefaults      = {},
+  $users           = undef,
+  $userdefaults    = {},
   $hieramerge      = false,
 
   # Deprecated parameters

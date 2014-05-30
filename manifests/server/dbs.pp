@@ -2,15 +2,17 @@
 #
 # Class for creating mongodb databases and users.
 #
+# PRIVATE CLASS: do not call directly
+#
 # == Parameters
 #
-#  databases - A hash of databases in mongodb::db format
-#  dbdefaults - A hash of database default settings in mongodb::db format
-#  hieramerge - enables hiera merging
+#  dbs - A hash of databases in mongodb::db format
+#  dbdefaults - An optional hash of database default settings in mongodb::db format
+#  hieramerge - Enables merging for hiera based hash parameters
 #
 class mongodb::server::dbs(
 
-  $databases  = $::mongodb::server::databases,
+  $dbs        = $::mongodb::server::dbs,
   $dbdefaults = $::mongodb::server::dbdefaults,
   $hieramerge = $::mongodb::server::hieramerge
 
@@ -26,16 +28,17 @@ class mongodb::server::dbs(
   #
   if $hieramerge {
 
-    $x_databases  = hiera_hash('mongodb::server::databases', undef)
-    $x_dbdefaults = hiera_hash('mongodb::server::dbdefaults', undef)
+    $x_dbs        = hiera_hash('mongodb::server::dbs', $dbs)
+    $x_dbdefaults = hiera_hash('mongodb::server::dbdefaults', $dbdefaults)
 
+  # Fall back to user provided class parameter / priority based hiera lookup
   } else {
-    $x_databases  = $databases
+    $x_dbs        = $dbs
     $x_dbdefaults = $dbdefaults
   }
 
-  if $x_databases {
-    create_resources('::mongodb::db', $x_databases, $x_dbdefaults)
+  if $x_dbs {
+    create_resources('::mongodb::db', $x_dbs, $x_dbdefaults)
   }
 
 }
