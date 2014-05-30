@@ -21,7 +21,7 @@ define mongodb::db (
   mongodb_database { $name:
     ensure   => present,
     tries    => $tries,
-    require  => Class['mongodb::server'],
+    require  => Anchor['mongodb::server::end'],
   }
 
   mongodb::user { $user:
