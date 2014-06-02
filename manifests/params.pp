@@ -20,7 +20,7 @@ class mongodb::params inherits mongodb::globals {
         }
         $service_name = pick($::mongodb::globals::service_name, 'mongod')
         $config      = '/etc/mongod.conf'
-        $dbpath      = '/var/lib/mongo'
+        $dbpath      = '/var/lib/mongodb'
         $logpath     = '/var/log/mongodb/mongod.log'
         $pidfilepath = '/var/run/mongodb/mongod.pid'
         $bind_ip     = pick($bind_ip, ['127.0.0.1'])
@@ -56,7 +56,7 @@ class mongodb::params inherits mongodb::globals {
           $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
         }
         $service_name = pick($::mongodb::globals::service_name, 'mongod')
-        $config       = '/etc/mongodb.conf'
+        $config       = '/etc/mongod.conf'
         $dbpath       = '/var/lib/mongodb'
         $logpath      = '/var/log/mongodb/mongodb.log'
         $bind_ip      = ['127.0.0.1']
@@ -68,7 +68,7 @@ class mongodb::params inherits mongodb::globals {
         $user                = pick($user, 'mongodb')
         $group               = pick($group, 'mongodb')
         $server_package_name = pick($server_package_name, 'mongodb-server')
-        $client_package_name = pick($client_package_name, 'mongodb')
+        $client_package_name = $client_package_name
         $service_name        = pick($service_name, 'mongodb')
         $config              = '/etc/mongodb.conf'
         $dbpath              = '/var/lib/mongodb'
