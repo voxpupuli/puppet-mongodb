@@ -33,7 +33,7 @@ RSpec.configure do |c|
     when 'RedHat'
       on hosts, 'puppet module install stahnma-epel'
       apply_manifest_on hosts, 'include epel'
+      on hosts, 'service iptables stop'
     end
-    on hosts, 'service iptables stop'
   end
 end
