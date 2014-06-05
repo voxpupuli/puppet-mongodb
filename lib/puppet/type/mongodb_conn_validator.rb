@@ -18,7 +18,7 @@ Puppet::Type.newtype(:mongodb_conn_validator) do
   newparam(:server) do
     desc 'An array containing DNS names or IP addresses of the server where mongodb should be running.'
     munge do |value|
-      value.first
+      Array(value).first
     end
   end
 
