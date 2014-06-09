@@ -12,8 +12,8 @@ class mongodb::params inherits mongodb::globals {
         $user        = pick($user, 'mongod')
         $group       = pick($group, 'mongod')
         if $::mongodb::globals::version {
-          $server_package_name = pick("$::mongodb::globals::server_package_name-${::mongodb::globals::version}", "mongodb-org-server-${::mongodb::globals::version}")
-          $client_package_name = pick("$::mongodb::globals::client_package_name-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
+          $server_package_name = pick("$::mongodb::globals::server_package_name=${::mongodb::globals::version}", "mongodb-org-server-${::mongodb::globals::version}")
+          $client_package_name = pick("$::mongodb::globals::client_package_name=${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
         } else {
           $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
           $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
@@ -48,8 +48,8 @@ class mongodb::params inherits mongodb::globals {
         $user  = pick($user, 'mongodb')
         $group = pick($group, 'mongodb')
         if $::mongodb::globals::version {
-          $server_package_name = pick("${::mongodb::globals::server_package_name}-${::mongodb::globals::version}", "mongodb-org-server-${::mongodb::globals::version}")
-          $client_package_name = pick("${::mongodb::globals::client_package_name}-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
+          $server_package_name = pick("${::mongodb::globals::server_package_name}=${::mongodb::globals::version}", "mongodb-org-server-${::mongodb::globals::version}")
+          $client_package_name = pick("${::mongodb::globals::client_package_name}=${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
         }
         else {
           $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
