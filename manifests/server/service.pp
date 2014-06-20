@@ -9,10 +9,9 @@ class mongodb::server::service {
   $port             = $mongodb::server::port
 
   $service_ensure = $ensure ? {
-    present => true,
     absent  => false,
     purged  => false,
-    default => $ensure
+    default => true
   }
 
   service { 'mongodb':
