@@ -13,12 +13,24 @@ class mongodb::params inherits mongodb::globals {
       if $mongodb::globals::manage_package_repo {
         $user        = pick($user, 'mongod')
         $group       = pick($group, 'mongod')
-        if $::mongodb::globals::version {
-          $server_package_name = pick("$::mongodb::globals::server_package_name-${::mongodb::globals::version}", "mongodb-org-server-${::mongodb::globals::version}")
-          $client_package_name = pick("$::mongodb::globals::client_package_name-${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
-        } else {
+        if ($::mongodb::globals::version == undef) {
           $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
           $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
+          $package_ensure = true
+          $package_ensure_client = true
+        } else {
+          # check if the version is greater than 2.6
+          if($::mongodb::globals::version >= '2.6.0') {
+            $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
+            $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
+            $package_ensure = $::mongodb::globals::version
+            $package_ensure_client = $::mongodb::globals::version
+          } else {
+            $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-10gen')
+            $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-10gen')
+            $package_ensure = $::mongodb::globals::version
+            $package_ensure_client = $::mongodb::globals::version #this is still needed in case they are only installing the client
+          }
         }
         $service_name = pick($::mongodb::globals::service_name, 'mongod')
         $config      = '/etc/mongod.conf'
@@ -46,18 +58,30 @@ class mongodb::params inherits mongodb::globals {
       }
     }
     'Debian': {
-      if $mongodb::globals::manage_package_repo {
+      if $::mongodb::globals::manage_package_repo {
         $user  = pick($user, 'mongodb')
         $group = pick($group, 'mongodb')
-        if $::mongodb::globals::version {
-          $server_package_name = pick("${::mongodb::globals::server_package_name}=${::mongodb::globals::version}", "mongodb-org-server-${::mongodb::globals::version}")
-          $client_package_name = pick("${::mongodb::globals::client_package_name}=${::mongodb::globals::version}", "mongodb-org-shell-${::mongodb::globals::version}")
-        }
-        else {
+        if ($::mongodb::globals::version == undef) {
           $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
           $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
+          $package_ensure = true
+          $package_ensure_client = true
+        } else {
+          # check if the version is greater than 2.6
+          if($::mongodb::globals::version >= '2.6.0') {
+            $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
+            $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
+            $package_ensure = $::mongodb::globals::version
+            $package_ensure_client = $::mongodb::globals::version
+            $service_name = pick($::mongodb::globals::service_name, 'mongod')
+          } else {
+            $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-10gen')
+            $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-10gen')
+            $package_ensure = $::mongodb::globals::version
+            $package_ensure_client = $::mongodb::globals::version #this is still needed in case they are only installing the client
+            $service_name = pick($::mongodb::globals::service_name, 'mongodb')
+          }
         }
-        $service_name = pick($::mongodb::globals::service_name, 'mongod')
         $config       = '/etc/mongod.conf'
         $dbpath       = '/var/lib/mongodb'
         $logpath      = '/var/log/mongodb/mongodb.log'
