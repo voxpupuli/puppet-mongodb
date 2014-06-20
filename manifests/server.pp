@@ -13,7 +13,7 @@ class mongodb::server (
   $service_name     = $mongodb::params::service_name,
   $service_status   = $mongodb::params::service_status,
 
-  $package_ensure  = $ensure,
+  $package_ensure  = $mongodb::params::package_ensure,
   $package_name    = $mongodb::params::server_package_name,
 
   $logpath         = $mongodb::params::logpath,
