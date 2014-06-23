@@ -74,15 +74,16 @@ class mongodb::params inherits mongodb::globals {
             $package_ensure = $::mongodb::globals::version
             $package_ensure_client = $::mongodb::globals::version
             $service_name = pick($::mongodb::globals::service_name, 'mongod')
+            $config       = '/etc/mongod.conf'
           } else {
             $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-10gen')
             $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-10gen')
             $package_ensure = $::mongodb::globals::version
             $package_ensure_client = $::mongodb::globals::version #this is still needed in case they are only installing the client
             $service_name = pick($::mongodb::globals::service_name, 'mongodb')
+            $config       = '/etc/mongodb.conf'
           }
         }
-        $config       = '/etc/mongod.conf'
         $dbpath       = '/var/lib/mongodb'
         $logpath      = '/var/log/mongodb/mongodb.log'
         $bind_ip      = ['127.0.0.1']
