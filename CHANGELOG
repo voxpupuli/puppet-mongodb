@@ -1,3 +1,25 @@
+##2014-05-27 - Release 0.8.0
+
+This feature features a rewritten mongodb_replset{} provider, includes several
+important bugfixes, ruby 1.8 support, and two new features.
+
+####Features
+- Rewritten mongodb_replset{}, featuring puppet resource support, prefetching,
+and flushing.
+- Add Ruby 1.8 compatibility.
+- Adds `syslog`, allowing you to configure mongodb to send all logging to the hosts syslog.
+- Add mongodb::replset, a wrapper class for hiera users.
+- Improved testing!
+
+####Bugfixes
+- Fixes the package names to work since 10gen renamed them again.
+- Fix provider name in the README.
+- Disallow `nojournal` and `journal` to be set at the same time.
+- Changed - to = for versioned install on Ubuntu.
+
+####Known Bugs
+* No known bugs
+
 2014-1-29 - Version 0.7.0
 
 Summary:

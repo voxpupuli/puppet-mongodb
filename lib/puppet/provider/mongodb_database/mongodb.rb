@@ -9,10 +9,14 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb) do
   def block_until_mongodb(tries = 10)
     begin
       mongo('--quiet', '--eval', 'db.getMongo()')
-    rescue
+    rescue => e
       debug('MongoDB server not ready, retrying')
       sleep 2
-      retry unless (tries -= 1) <= 0
+      if (tries -= 1) > 0
+        retry
+      else
+        raise e
+      end
     end
   end
 
@@ -26,7 +30,7 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb) do
 
   def exists?
     block_until_mongodb(@resource[:tries])
-    mongo("--quiet", "--eval", 'db.getMongo().getDBNames()').split(",").include?(@resource[:name])
+    mongo("--quiet", "--eval", 'db.getMongo().getDBNames()').chomp.split(",").include?(@resource[:name])
   end
 
 end
