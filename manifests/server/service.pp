@@ -16,9 +16,17 @@ class mongodb::server::service {
   service { 'mongodb':
     ensure    => $service_ensure,
     name      => $service_name,
-    enable    => $service_ensure,
+    enable    => $service_enable,
     provider  => $service_provider,
     hasstatus => true,
     status    => $service_status,
+  }
+  if $service_ensure {
+    mongodb_conn_validator { "mongodb":
+      server  => $bind_ip,
+      port    => $port,
+      timeout => '240',
+      require => Service['mongodb'],
+    }
   }
 }
