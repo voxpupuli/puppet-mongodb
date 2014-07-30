@@ -16,7 +16,7 @@ describe 'mongodb::server::install', :type => :class do
 
   shared_context 'with_custom_params' do
     let(:pre_condition) { [
-      "class mongodb::server { $package_ensure = true $package_name = 'custom_package_name' }",
+      "class mongodb::server { $package_ensure = true $package_name = 'custom_package_name' $dbpath = '/var/lib/mongo' $user = 'mongodb' }",
       "include mongodb::server"
     ]}
 
@@ -81,17 +81,6 @@ describe 'mongodb::server::install', :type => :class do
     it { should_not contain_class('mongodb::repo') }
   end
 
-
-  #describe 'it should create package and dbpath file' do
-  #  let(:pre_condition) { ["class mongodb::server { $package_ensure = true $dbpath = '/var/lib/mongo' $user = 'mongodb' $package_name = 'mongodb-server' }", "include mongodb::server"]}
-#
-#    it {
-#      should contain_package('mongodb_server').with({
-#        :ensure => 'present',
-#        :name   => 'mongodb-server',
-#      })
-#    }
-#  end
 
   context 'when deploying on RedHat' do
     let (:facts) { { :osfamily => 'RedHat' } }
