@@ -1,13 +1,17 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo::apt inherits mongodb::repo {
+
+  $ensure   = $::mongodb::repo::ensure
+  $location = $::mongodb::repo::location
+
   # we try to follow/reproduce the instruction
   # from http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
 
   include ::apt
 
-  if($::mongodb::repo::ensure == 'present' or $::mongodb::repo::ensure == true) {
+  if($ensure == 'present' or $ensure == true) {
     apt::source { 'downloads-distro.mongodb.org':
-      location    => $::mongodb::repo::location,
+      location    => $location,
       release     => 'dist',
       repos       => '10gen',
       key         => '9ECBEC467F0CEB10',
@@ -15,7 +19,6 @@ class mongodb::repo::apt inherits mongodb::repo {
       include_src => false,
     }
 
-    Apt::Source['downloads-distro.mongodb.org']->Package<|tag == 'mongodb'|>
   }
   else {
     apt::source { 'downloads-distro.mongodb.org':

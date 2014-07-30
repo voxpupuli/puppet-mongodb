@@ -1,25 +1,38 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
-  $ensure  = $mongodb::params::ensure,
-) inherits mongodb::params {
+
+  $ensure  = undef,
+
+) {
+
+  $url_prefix = 'http://downloads-distro.mongodb.org/repo'
+
   case $::osfamily {
     'RedHat', 'Linux': {
       $location = $::architecture ? {
-        'x86_64' => 'http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/',
-        'i686'   => 'http://downloads-distro.mongodb.org/repo/redhat/os/i686/',
-        'i386'   => 'http://downloads-distro.mongodb.org/repo/redhat/os/i686/',
+        'x86_64' => "${url_prefix}/redhat/os/x86_64/",
+        'i686'   => "${url_prefix}/redhat/os/i686/",
+        'i386'   => "${url_prefix}/redhat/os/i686/",
         default  => undef
       }
-      class { 'mongodb::repo::yum': }
+
+      anchor  { 'mongodb::repo::start': } ->
+      class   { 'mongodb::repo::yum':   } ->
+      anchor  { 'mongodb::repo::end':   }
+
     }
 
     'Debian': {
       $location = $::operatingsystem ? {
-        'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
-        'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
+        'Debian' => "${url_prefix}/debian-sysvinit",
+        'Ubuntu' => "${url_prefix}/ubuntu-upstart",
         default  => undef
       }
-      class { 'mongodb::repo::apt': }
+
+      anchor  { 'mongodb::repo::start': } ->
+      class   { 'mongodb::repo::apt':   } ->
+      anchor  { 'mongodb::repo::end':   }
+
     }
 
     default: {
@@ -28,4 +41,5 @@ class mongodb::repo (
       }
     }
   }
+
 }

@@ -9,18 +9,12 @@
 #   is repository dependent.
 #
 class mongodb::client (
-  $ensure       = $mongodb::params::ensure_client,
-  $package_name = $mongodb::params::client_package_name,
-) inherits mongodb::params {
-  case $::osfamily {
-    'RedHat', 'Linux': {
-      class { 'mongodb::client::install': }
-    }
-    'Debian': {
-      warning ('Debian client is included by default with server. Please use ::mongodb::server to install the mongo client for Debian family systems.')
-    }
-    default: {
-      # no action taken, failure happens in params.pp
-    }
-  }
+
+  $ensure       = true,
+  $package_name = $::mongodb::client::params::package_name
+
+) inherits mongodb::client::params {
+
+  include '::mongodb::client::install'
+
 }
