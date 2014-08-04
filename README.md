@@ -60,14 +60,14 @@ class {'::mongodb::server':
 }
 ```
 
-For Red Hat family systems, the client can be installed in a similar fashion:
+The client can be installed in a similar fashion:
 
-```
-puppet class {'::mongodb::client':}
+```puppet
+  class {'::mongodb::client':}
 ```
 
-Note that for Debian/Ubuntu family systems the client is installed with the 
-server. Using the client class will by default install the server.
+Note that for Debian/Ubuntu family systems, installing the client will also
+install the server (shared package).
 
 Although most distros come with a prepacked MongoDB server we recommend to
 use the 10gen/MongoDB software repository, because most of the current OS
@@ -75,21 +75,18 @@ packages are outdated and not appropriate for a production environment.
 To install MongoDB from 10gen repository:
 
 ```puppet
-class {'::mongodb::globals':
-  manage_package_repo => true,
-}->
-class {'::mongodb::server': }->
-class {'::mongodb::client': }
+  class {'::mongodb::globals':
+    manage_package_repo => true,
+  } ->
+  class {'::mongodb::server': } ->
+  class {'::mongodb::client': }
 ```
 
 ## Usage
 
-Most of the interaction for the server is done via `mongodb::server`. For
-more options please have a look at [mongodb::server](#class-mongodbserver).
-Also in this version we introduced `mongodb::globals`, which is meant more
-for future implementation, where you can configure the main settings for
-this module in a global way, to be used by other classes and defined resources.
-On its own it does nothing.
+Most of the interaction for the server is done via [mongodb::server](#class-mongodbserver).
+
+Global settings which will apply to all public classes may also be set via [mongodb::globals](#class-mongodbglobals).
 
 ### Create MongoDB database
 
@@ -114,16 +111,16 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 
 ####Public classes
 * `mongodb::server`: Installs and configure MongoDB
-* `mongodb::client`: Installs the MongoDB client shell (for Red Hat family systems)
+* `mongodb::client`: Installs the MongoDB client shell
 * `mongodb::globals`: Configure main settings in a global way
 
 ####Private classes
 * `mongodb::repo`: Manage 10gen/MongoDB software repository
 * `mongodb::repo::apt`: Manage Debian/Ubuntu apt 10gen/MongoDB repository
 * `mongodb::repo::yum`: Manage Redhat/CentOS apt 10gen/MongoDB repository
-* `mongodb::server::config`: Configures MongoDB configuration files
-* `mongodb::server::install`: Install MongoDB software packages
-* `mongodb::server::service`: Manages service
+* `mongodb::server::config`: Configures the primary MongoDB service
+* `mongodb::server::install`: Installs the primary MongoDB service software package
+* `mongodb::server::service`: Manages the primary MongoDB service
 * `mongodb::client::install`: Installs the MongoDB client software package
 
 ####Class: mongodb::globals
@@ -136,24 +133,13 @@ This class allows you to configure the main settings for this module in a
 global way, to be used by the other classes and defined resources. On its
 own it does nothing.
 
-#####`server_package_name`
-This setting can be used to override the default MongoDB server package
-name. If not specified, the module will use whatever package name is the
-default for your OS distro.
-
-#####`service_name`
-This setting can be used to override the default MongoDB service name. If not
-specified, the module will use whatever service name is the default for your OS distro.
+#####`manage_package_repo`
+Enables the 10gen/MongoDB software repository. The default is disabled.
 
 #####`service_provider`
 This setting can be used to override the default MongoDB service provider. If
 not specified, the module will use whatever service provider is the default for
 your OS distro.
-
-#####`service_status`
-This setting can be used to override the default status check command for
-your MongoDB service. If not specified, the module will use whatever service
-name is the default for your OS distro.
 
 #####`user`
 This setting can be used to override the default MongoDB user and owner of the
@@ -185,6 +171,33 @@ For more details about configuration parameters consult the
 
 #####`ensure`
 Used to ensure that the package is installed and the service is running, or that the package is absent/purged and the service is stopped. Valid values are true/false/present/absent/purged.
+
+#####`package_name`
+This setting can be used to override the default MongoDB server package
+name. If not specified, the module will use whatever package name is the
+default for your OS distro.
+
+#####`package_ensure`
+This setting can be used to override the default MongoDB package state. If
+not specified, the module will use the value of the `ensure` parameter.
+
+#####`service_ensure`
+This setting can be used to override the default MongoDB service run state. If
+not specified, the module will use the value of the `ensure` parameter.
+
+#####`service_enable`
+This setting can be used to override the default MongoDB service boot state. If
+not specified, the module will use the value of the `ensure` parameter.
+
+#####`service_name`
+This setting can be used to override the default MongoDB service name. If not
+specified, the module will use whatever service name is the default for your OS distro.
+
+#####`service_status`
+This setting can be used to override the default status check command for
+your MongoDB service. If not specified, the module will use whatever service
+name is the default for your OS distro.
+
 
 #####`config`
 Path of the config file. If not specified, the module will use the default
@@ -464,8 +477,6 @@ This module has been tested on:
 * CentOS 5/6
 
 For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml) definition.
-
-This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
 
 ## Development
 

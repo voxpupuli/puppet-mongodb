@@ -9,8 +9,12 @@
 #   is repository dependent.
 #
 class mongodb::client (
-  $ensure       = $mongodb::params::ensure_client,
-  $package_name = $mongodb::params::client_package_name,
-) inherits mongodb::params {
-  class { 'mongodb::client::install': }
+
+  $ensure       = true,
+  $package_name = $::mongodb::client::params::package_name
+
+) inherits mongodb::client::params {
+
+  include '::mongodb::client::install'
+
 }
