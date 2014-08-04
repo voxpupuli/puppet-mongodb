@@ -177,6 +177,10 @@ This setting can be used to override the default MongoDB server package
 name. If not specified, the module will use whatever package name is the
 default for your OS distro.
 
+#####`package_ensure`
+This setting can be used to override the default MongoDB package state. If
+not specified, the module will use the value of the `ensure` parameter.
+
 #####`service_ensure`
 This setting can be used to override the default MongoDB service run state. If
 not specified, the module will use the value of the `ensure` parameter.

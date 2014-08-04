@@ -21,7 +21,7 @@ class mongodb::server (
 
   $service_name     = $::mongodb::server::params::service_name,
 
-  $package_ensure   = true,
+  $package_ensure   = undef,
   $package_name     = $::mongodb::server::params::package_name,
 
   $logpath          = $::mongodb::server::params::logpath,
