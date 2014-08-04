@@ -177,6 +177,14 @@ This setting can be used to override the default MongoDB server package
 name. If not specified, the module will use whatever package name is the
 default for your OS distro.
 
+#####`service_ensure`
+This setting can be used to override the default MongoDB service run state. If
+not specified, the module will use the value of the `ensure` parameter.
+
+#####`service_enable`
+This setting can be used to override the default MongoDB service boot state. If
+not specified, the module will use the value of the `ensure` parameter.
+
 #####`service_name`
 This setting can be used to override the default MongoDB service name. If not
 specified, the module will use whatever service name is the default for your OS distro.
@@ -465,8 +473,6 @@ This module has been tested on:
 * CentOS 5/6
 
 For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml) definition.
-
-This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
 
 ## Development
 

@@ -9,8 +9,8 @@ class mongodb::server (
 
   # NOTE: use of globals is deprecated for the following vars
   $service_status   = $::mongodb::globals::service_status,
-  $service_enable   = pick($::mongodb::globals::service_enable, true),
-  $service_ensure   = pick($::mongodb::globals::service_ensure, 'running'),
+  $service_enable   = $::mongodb::globals::service_enable,
+  $service_ensure   = $::mongodb::globals::service_ensure,
 
   # Local vars
   $ensure           = true,
