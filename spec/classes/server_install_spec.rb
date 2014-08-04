@@ -112,7 +112,8 @@ describe 'mongodb::server::install', :type => :class do
   context 'when deploying on Debian' do
     let (:facts) { {
         :osfamily => 'Debian',
-        :lsbdistid  => 'Debian' # rquired for apt
+        :lsbdistid  => 'Debian', # required for apt
+        :lsbdistcodename => 'n/a', # required for apt
     }}
 
     context 'using defaults' do
