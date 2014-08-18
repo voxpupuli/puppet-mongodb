@@ -12,7 +12,7 @@ Puppet::Type.newtype(:mongodb_user) do
   def self.title_patterns
    [
     [
-     # pattern 01 to parse a title of the form <user>:<database>
+     #Pattern 01 to parse a title of the form <user>:<database>
      /^(.*):(.*)$/,
      [
       [:name, lambda{|x| x} ],
@@ -20,7 +20,9 @@ Puppet::Type.newtype(:mongodb_user) do
      ]
     ],
     [
-	 # pattern 02 to parse a title of the form <user>.Note that a title in this form will require database to be passed in separately
+	 #Pattern 02 to parse a title of the form <user>
+	 #Note that a title in this form will require database to be passed in separately
+	 #Provided for backwards compatibility
      /^(.*)$/,
      [
       [:name, lambda{|x| x} ]
@@ -31,9 +33,6 @@ Puppet::Type.newtype(:mongodb_user) do
   
   newparam(:name, :namevar => true) do
     desc "The name of the user."
-	defaultto do
-      :title
-    end
   end
 
   newparam(:database, :namevar => true) do
