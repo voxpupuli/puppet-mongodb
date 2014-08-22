@@ -24,7 +24,7 @@ class mongodb::params inherits mongodb::globals {
         $config      = '/etc/mongod.conf'
         $dbpath      = '/var/lib/mongodb'
         $logpath     = '/var/log/mongodb/mongod.log'
-        $pidfilepath = '/var/run/mongodb/mongod.pid'
+        $pidfilepath = '/var/run/mongod.pid'
         $bind_ip     = pick($bind_ip, ['127.0.0.1'])
         $fork        = true
       } else {
@@ -40,7 +40,7 @@ class mongodb::params inherits mongodb::globals {
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongodb.log'
         $bind_ip             = pick($bind_ip, ['127.0.0.1'])
-        $pidfilepath         = '/var/run/mongodb/mongodb.pid'
+        $pidfilepath         = '/var/run/mongod.pid'
         $fork                = true
         $journal             = true
       }
