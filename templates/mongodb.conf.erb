@@ -167,3 +167,8 @@ setParameter = <%= @set_parameter %>
 <% if @syslog -%>
 syslog = <%= @syslog %>
 <% end -%>
+<% if @ssl -%>
+sslOnNormalPorts = true
+sslPEMKeyFile = <%= @ssl_key %>
+sslCAFile = <%= @ssl_ca %>
+<% end -%>
