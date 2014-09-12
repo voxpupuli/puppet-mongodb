@@ -54,6 +54,8 @@ class mongodb::server (
   $keyfile         = undef,
   $set_parameter   = undef,
   $syslog          = undef,
+  
+  $config_content  = undef,
 
   # Deprecated parameters
   $master          = undef,
