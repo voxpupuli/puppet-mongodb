@@ -371,6 +371,17 @@ Used with the slave setting to specify the master instance from which
 this slave instance will replicate. Default: <>
 *Note*: deprecated – use replica sets
 
+#####`ssl`
+Set to true to enable ssl. Default: <>
+*Important*: You need to have ssl_key and ssl_ca set as well and files
+need to pre-exist on node.
+
+#####`ssl_key`
+Default: <>
+
+#####`ssl_ca`
+Default: <>
+
 ### Definitions
 
 #### Definition: mongodb:db
