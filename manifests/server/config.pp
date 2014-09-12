@@ -50,6 +50,9 @@ class mongodb::server::config {
   $profile         = $mongodb::server::profile
   $set_parameter   = $mongodb::server::set_parameter
   $syslog          = $mongodb::server::syslog
+  $ssl             = $mongodb::server::ssl
+  $ssl_key         = $mongodb::server::ssl_key
+  $ssl_ca          = $mongodb::server::ssl_ca
 
   File {
     owner => $user,
