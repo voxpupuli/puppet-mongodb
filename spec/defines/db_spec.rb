@@ -9,9 +9,9 @@ describe 'mongodb::db', :type => :define do
     }
   }
 
-  it 'should contain mongodb_database with mongodb::server requirement' do
+  it 'should contain mongodb_database with mongodb::server::end requirement' do
     should contain_mongodb_database('testdb')\
-      .with_require('Class[Mongodb::Server]')
+      .with_require('Anchor[mongodb::server::end]')
   end
 
   it 'should contain mongodb_user with mongodb_database requirement' do

@@ -54,6 +54,13 @@ class mongodb::server (
   $keyfile         = undef,
   $set_parameter   = undef,
   $syslog          = undef,
+  $dbs             = undef,
+  $dbdefaults      = {},
+  $users           = undef,
+  $userdefaults    = {},
+  $replsets        = undef,
+  $replsetdefaults = {},
+  $hieramerge      = false,
 
   # Deprecated parameters
   $master          = undef,
@@ -69,6 +76,12 @@ class mongodb::server (
     class { 'mongodb::server::config': }->
     class { 'mongodb::server::service': }->
     anchor { 'mongodb::server::end': }
+
+    # Continue init after the server is online
+    class { 'mongodb::server::dbs':       require => Anchor['mongodb::server::end'] }
+    class { 'mongodb::server::users':     require => Anchor['mongodb::server::end'] }
+    class { 'mongodb::server::replsets':  require => Anchor['mongodb::server::end'] }
+
   } else {
     anchor { 'mongodb::server::start': }->
     class { 'mongodb::server::service': }->
