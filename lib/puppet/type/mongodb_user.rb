@@ -10,7 +10,12 @@ Puppet::Type.newtype(:mongodb_user) do
   end
 
   newparam(:name, :namevar=>true) do
+    desc "The name of the resource."
+  end
+
+  newproperty(:username) do
     desc "The name of the user."
+    defaultto { @resource[:name] }
   end
 
   newproperty(:database) do
