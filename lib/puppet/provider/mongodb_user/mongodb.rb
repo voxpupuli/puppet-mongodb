@@ -7,15 +7,36 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
   def self.instances
     require 'json'
-    users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
 
-    users.collect do |user|
-        new(:name          => user['_id'],
-            :ensure        => :present,
-            :username      => user['user'],
-            :database      => user['db'],
-            :roles         => from_roles(user['roles'], user['db']),
-            :password_hash => user['credentials']['MONGODB-CR'])
+    if mongo_24?
+      dbs = JSON.parse mongo_eval('printjson(db.getMongo().getDBs()["databases"].map(function(db){return db["name"]}))') || 'admin'
+
+      allusers = []
+
+      dbs.each do |db|
+        users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())', db)
+
+        allusers += users.collect do |user|
+            new(:name          => user['_id'],
+                :ensure        => :present,
+                :username      => user['user'],
+                :database      => db,
+                :roles         => user['roles'].sort,
+                :password_hash => user['pwd'])
+        end
+      end
+      return allusers
+    else
+      users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
+
+      users.collect do |user|
+          new(:name          => user['_id'],
+              :ensure        => :present,
+              :username      => user['user'],
+              :database      => user['db'],
+              :roles         => from_roles(user['roles'], user['db']),
+              :password_hash => user['credentials']['MONGODB-CR'])
+      end
     end
   end
 
@@ -32,14 +53,26 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   mk_resource_methods
 
   def create
-    user = {
+
+
+    if mongo_24?
+      user = {
+        :user => @resource[:username],
+        :pwd => @resource[:password_hash],
+        :roles => @resource[:roles]
+      }
+
+      mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
+    else
+      user = {
         :user => @resource[:username],
         :pwd => @resource[:password_hash],
         :customData => { :createdBy => "Puppet Mongodb_user['#{@resource[:name]}']" },
         :roles => @resource[:roles]
-    }
+      }
 
-    mongo_eval("db.createUser(#{user.to_json})", @resource[:database])
+      mongo_eval("db.createUser(#{user.to_json})", @resource[:database])
+    end
 
     @property_hash[:ensure] = :present
     @property_hash[:username] = @resource[:username]
@@ -52,7 +85,11 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
 
   def destroy
-    mongo_eval("db.dropUser('#{@resource[:username]}')")
+    if mongo_24?
+      mongo_eval("db.removeUser('#{@resource[:username]}')")
+    else
+      mongo_eval("db.dropUser('#{@resource[:username]}')")
+    end
   end
 
   def exists?
@@ -70,14 +107,18 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   end
 
   def roles=(roles)
-    grant = roles-@resource[:roles]
-    if grant.length > 0
-      mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{grant. to_json})")
-    end
+    if mongo_24?
+      mongo_eval("db.system.users.update({user:'#{@resource[:username]}'}, { $set: {roles: #{@resource[:roles].to_json}}})")
+    else
+      grant = roles-@resource[:roles]
+      if grant.length > 0
+        mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{grant. to_json})")
+      end
 
-    revoke = @resource[:roles]-roles
-    if revoke.length > 0
-      mongo_eval("db.getSiblingDB('#{@resource[:database]}').revokeRolesFromUser('#{@resource[:username]}', #{revoke.to_json})")
+      revoke = @resource[:roles]-roles
+      if revoke.length > 0
+        mongo_eval("db.getSiblingDB('#{@resource[:database]}').revokeRolesFromUser('#{@resource[:username]}', #{revoke.to_json})")
+      end
     end
   end
 

@@ -23,7 +23,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
         cmd = mongorc_file + cmd
     end
 
-    mongo([db, '--quiet', '--eval', cmd])
+    out = mongo([db, '--quiet', '--eval', cmd])
+
+    out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
+    out
   end
 
   def mongo_eval(cmd, db = 'admin')
@@ -36,7 +39,16 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def mongo_version
-    self.mongo_version
+    self.class.mongo_version
+  end
+
+  def self.mongo_24?
+    v = self.mongo_version
+    ! v[/^2\.4\./].nil?
+  end
+
+  def mongo_24?
+    self.class.mongo_24?
   end
 
 end
