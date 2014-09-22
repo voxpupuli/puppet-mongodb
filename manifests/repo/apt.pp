@@ -11,7 +11,7 @@ class mongodb::repo::apt inherits mongodb::repo {
       release     => 'dist',
       repos       => '10gen',
       key         => '9ECBEC467F0CEB10',
-      key_server  => 'hkp://keyserver.ubuntu.com:80',
+      key_server  => 'keyserver.ubuntu.com',
       include_src => false,
     }
 
