@@ -18,7 +18,6 @@ class mongodb::globals (
   $version              = undef,
 
   $manage_package_repo  = undef,
-  $configpath           = undef,
 ) {
 
   # Setup of the repo only makes sense globally, so we are doing it here.
