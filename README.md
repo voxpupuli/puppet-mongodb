@@ -62,8 +62,8 @@ class {'::mongodb::server':
 
 For Red Hat family systems, the client can be installed in a similar fashion:
 
-```
-puppet class {'::mongodb::client':}
+```puppet
+class {'::mongodb::client':}
 ```
 
 Note that for Debian/Ubuntu family systems the client is installed with the 
