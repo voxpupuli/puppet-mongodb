@@ -9,11 +9,33 @@ Puppet::Type.newtype(:mongodb_user) do
     self[:roles] = Array(self[:roles]).sort!
   end
 
-  newparam(:name, :namevar=>true) do
+  def self.title_patterns
+   [
+    [
+     #Pattern 01 to parse a title of the form <user>:<database>
+     /^(.*):(.*)$/,
+     [
+      [:name, lambda{|x| x} ],
+      [:database, lambda{|x| x} ]
+     ]
+    ],
+    [
+	 #Pattern 02 to parse a title of the form <user>
+	 #Note that a title in this form will require database to be passed in separately
+	 #Provided for backwards compatibility
+     /^(.*)$/,
+     [
+      [:name, lambda{|x| x} ]
+     ]
+    ]
+   ]
+ end
+  
+  newparam(:name, :namevar => true) do
     desc "The name of the user."
   end
 
-  newparam(:database) do
+  newparam(:database, :namevar => true) do
     desc "The user's target database."
     defaultto do
       fail("Parameter 'database' must be set")

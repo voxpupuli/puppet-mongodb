@@ -402,6 +402,7 @@ mongodb_database { testdb:
   require  => Class['mongodb::server'],
 }
 ```
+
 #####`tries`
 The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
@@ -419,6 +420,17 @@ mongodb_user { testuser:
   require       => Class['mongodb::server'],
 }
 ```
+
+The title of this resource can be in one of two forms:
+
+* <name\> - e.g. "admin". This will use the title as the name parameter as below. You will be required to add a database parameter when using this title pattern.
+* <name\>:<database\> - e.g. "admin:myDb". This will split the title into two, using the first part for the name parameter, and the second as the database. You are not required to add a database parameter when using this title pattern.
+
+A mongodb_user resource is considered unique based on the combination of the name and database parameters.
+
+#####`name`
+The user name.
+
 #####`password_hash`
 Hex encoded md5 hash of "$username:mongo:$password".
 
