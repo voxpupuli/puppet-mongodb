@@ -32,7 +32,7 @@ class mongodb::params inherits mongodb::globals {
           }
         }
         $service_name = pick($::mongodb::globals::service_name, 'mongod')
-        $config       = '/etc/mongod.conf'
+        $config       = '/etc/mongodb.conf'
         $dbpath       = '/var/lib/mongodb'
         $logpath      = '/var/log/mongodb/mongod.log'
         $pidfilepath  = '/var/run/mongodb/mongod.pid'

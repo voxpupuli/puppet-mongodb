@@ -1,6 +1,6 @@
-# == Class: mongodb::db
+# == Define: mongodb::db
 #
-# Class for creating mongodb databases and users.
+# Define for creating mongodb databases and users.
 #
 # == Parameters
 #
@@ -21,7 +21,7 @@ define mongodb::db (
   mongodb_database { $name:
     ensure   => present,
     tries    => $tries,
-    require  => Class['mongodb::server'],
+    require  => Anchor['mongodb::server::end'],
   }
 
   if $password_hash {
@@ -37,7 +37,6 @@ define mongodb::db (
     password_hash => $hash,
     database      => $name,
     roles         => $roles,
-    require       => Mongodb_database[$name],
   }
 
 }
