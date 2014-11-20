@@ -1,48 +1,137 @@
-Puppet::Type.type(:mongodb_user).provide(:mongodb) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
+Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::Mongodb) do
 
   desc "Manage users for a MongoDB database."
 
   defaultfor :kernel => 'Linux'
 
-  commands :mongo => 'mongo'
+  def self.instances
+    require 'json'
 
-  def block_until_mongodb(tries = 10)
-    begin
-      mongo('--quiet', '--eval', 'db.getMongo()')
-    rescue
-      debug('MongoDB server not ready, retrying')
-      sleep 2
-      retry unless (tries -= 1) <= 0
+    if mongo_24?
+      dbs = JSON.parse mongo_eval('printjson(db.getMongo().getDBs()["databases"].map(function(db){return db["name"]}))') || 'admin'
+
+      allusers = []
+
+      dbs.each do |db|
+        users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())', db)
+
+        allusers += users.collect do |user|
+            new(:name          => user['_id'],
+                :ensure        => :present,
+                :username      => user['user'],
+                :database      => db,
+                :roles         => user['roles'].sort,
+                :password_hash => user['pwd'])
+        end
+      end
+      return allusers
+    else
+      users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
+
+      users.collect do |user|
+          new(:name          => user['_id'],
+              :ensure        => :present,
+              :username      => user['user'],
+              :database      => user['db'],
+              :roles         => from_roles(user['roles'], user['db']),
+              :password_hash => user['credentials']['MONGODB-CR'])
+      end
     end
   end
 
-  def create
-    mongo(@resource[:database], '--eval', "db.system.users.insert({user:\"#{@resource[:name]}\", pwd:\"#{@resource[:password_hash]}\", roles: #{@resource[:roles].inspect}})")
+  # Assign prefetched users based on username and database, not on id and name
+  def self.prefetch(resources)
+    users = instances
+    resources.each do |name, resource|
+      if provider = users.find { |user| user.username == resource[:username] and user.database == resource[:database] }
+        resources[name].provider = provider
+      end
+    end
   end
 
+  mk_resource_methods
+
+  def create
+
+
+    if mongo_24?
+      user = {
+        :user => @resource[:username],
+        :pwd => @resource[:password_hash],
+        :roles => @resource[:roles]
+      }
+
+      mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
+    else
+      user = {
+        :user => @resource[:username],
+        :pwd => @resource[:password_hash],
+        :customData => { :createdBy => "Puppet Mongodb_user['#{@resource[:name]}']" },
+        :roles => @resource[:roles]
+      }
+
+      mongo_eval("db.createUser(#{user.to_json})", @resource[:database])
+    end
+
+    @property_hash[:ensure] = :present
+    @property_hash[:username] = @resource[:username]
+    @property_hash[:database] = @resource[:database]
+    @property_hash[:password_hash] = ''
+    @property_hash[:rolse] = @resource[:roles]
+
+    exists? ? (return true) : (return false)
+  end
+
+
   def destroy
-    mongo(@resource[:database], '--quiet', '--eval', "db.removeUser(\"#{@resource[:name]}\")")
+    if mongo_24?
+      mongo_eval("db.removeUser('#{@resource[:username]}')")
+    else
+      mongo_eval("db.dropUser('#{@resource[:username]}')")
+    end
   end
 
   def exists?
-    block_until_mongodb(@resource[:tries])
-    mongo(@resource[:database], '--quiet', '--eval', "db.system.users.find({user:\"#{@resource[:name]}\"}).count()").strip.eql?('1')
-  end
-
-  def password_hash
-    mongo(@resource[:database], '--quiet', '--eval', "db.system.users.findOne({user:\"#{@resource[:name]}\"})[\"pwd\"]").strip
+    !(@property_hash[:ensure] == :absent or @property_hash[:ensure].nil?)
   end
 
   def password_hash=(value)
-    mongo(@resource[:database], '--quiet', '--eval', "db.system.users.update({user:\"#{@resource[:name]}\"}, { $set: {pwd:\"#{value}\"}})")
+    cmd = {
+        :updateUser => @resource[:username],
+        :pwd => @resource[:password_hash],
+        :digestPassword => false
+    }
+
+    mongo_eval("db.runCommand(#{cmd.to_json})", @resource[:database])
   end
 
-  def roles
-    mongo(@resource[:database], '--quiet', '--eval', "db.system.users.findOne({user:\"#{@resource[:name]}\"})[\"roles\"]").strip.split(",").sort
+  def roles=(roles)
+    if mongo_24?
+      mongo_eval("db.system.users.update({user:'#{@resource[:username]}'}, { $set: {roles: #{@resource[:roles].to_json}}})")
+    else
+      grant = roles-@resource[:roles]
+      if grant.length > 0
+        mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{grant. to_json})")
+      end
+
+      revoke = @resource[:roles]-roles
+      if revoke.length > 0
+        mongo_eval("db.getSiblingDB('#{@resource[:database]}').revokeRolesFromUser('#{@resource[:username]}', #{revoke.to_json})")
+      end
+    end
   end
 
-  def roles=(value)
-    mongo(@resource[:database], '--quiet', '--eval', "db.system.users.update({user:\"#{@resource[:name]}\"}, { $set: {roles: #{@resource[:roles].inspect}}})")
+  private
+
+  def self.from_roles(roles, db)
+    roles.map do |entry|
+        if entry['db'] == db
+            entry['role']
+        else
+            "#{entry['role']}@#{entry['db']}"
+        end
+    end.sort
   end
 
 end
