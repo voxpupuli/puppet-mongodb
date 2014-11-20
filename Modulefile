@@ -3,7 +3,7 @@ version '0.8.0'
 source 'git@github.com:puppetlabs/puppetlabs-mongodb.git'
 author 'puppetlabs'
 license 'Apache License Version 2.0'
-summary 'mongodb puppet module'
+summary 'Installs MongoDB on RHEL/Ubuntu/Debian.’
 description '10gen mongodb puppet module'
 project_page 'https://github.com/puppetlabs/puppetlabs-mongodb'
 
