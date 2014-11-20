@@ -71,6 +71,8 @@ class mongodb::params inherits mongodb::globals {
           $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
           $package_ensure = true
           $package_ensure_client = true
+          $service_name = pick($::mongodb::globals::service_name, 'mongod')
+          $config = '/etc/mongod.conf'
         } else {
           # check if the version is greater than 2.6
           if(versioncmp($::mongodb::globals::version, '2.6.0') >= 0) {
