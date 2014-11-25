@@ -57,7 +57,12 @@ class mongodb::params inherits mongodb::globals {
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongodb.log'
         $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
-        $pidfilepath         = '/var/run/mongodb/mongodb.pid'
+        if ($::operatingsystem == 'fedora' and versioncmp($::operatingsystemrelease, '22') >= 0 or
+            $::operatingsystem != 'fedora' and versioncmp($::operatingsystemrelease, '7.0') >= 0) {
+          $pidfilepath         = '/var/run/mongodb/mongod.pid'
+        } else {
+          $pidfilepath         = '/var/run/mongodb/mongodb.pid'
+        }
         $fork                = true
         $journal             = true
       }
