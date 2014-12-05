@@ -532,6 +532,28 @@ Array of 'host:port' of the replicaset members.
 
 It currently only adds members without options.
 
+#### Provider: mongodb_shard
+'mongodb_shard' can be used to create and manage MongoDB shards.
+*Note:* Removing a shard is not yet supported. Shard can only be added.
+
+```puppet
+mongodb_shard { 'rsmain':
+  member => 'rsmain/host1:27017',
+  keys   => [{'rsmain.foo' => {'name' => 1}}],
+}
+```
+#####`member`
+Member of the shard in the form;
+
+* [hostname]
+* [hostname]:[port]
+* [replica-set-name]/[hostname]
+* [replica-set-name]/[hostname]:port
+
+#####`keys`
+Sharding keys for a specific database. This variable should be an array
+of sharding keys.
+
 ## Limitations
 
 This module has been tested on:
