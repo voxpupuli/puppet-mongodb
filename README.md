@@ -331,6 +331,9 @@ MMS interval for mms monitoring. Default: None
 #####`configsvr`
 Use this setting to enable config server mode for mongod.
 
+#####`shardsvr`
+Use this setting to enable shard server mode for mongod.
+
 #####`replset`
 Use this setting to configure replication with replica sets. Specify a replica
 set name as an argument to this set. All hosts must have the same set name.

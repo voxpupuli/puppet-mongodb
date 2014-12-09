@@ -39,6 +39,7 @@ class mongodb::server::config {
   $only            = $mongodb::server::only
   $source          = $mongodb::server::source
   $configsvr       = $mongodb::server::configsvr
+  $shardsvr        = $mongodb::server::shardsvr
   $replset         = $mongodb::server::replset
   $rest            = $mongodb::server::rest
   $quiet           = $mongodb::server::quiet

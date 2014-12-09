@@ -137,6 +137,10 @@ directoryperdb = <%= @directoryperdb %>
 # Is the mongod instance a configuration server
 configsvr = <%= @configsvr %>
 <% end -%>
+<% if @shardsvr -%>
+# Is the mongod instance a shard server
+shardsvr = <%= @shardsvr %>
+<% end -%>
 <% if @replset -%>
 # Configure ReplicaSet membership
 replSet = <%= @replset %>
