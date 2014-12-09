@@ -38,6 +38,7 @@ class mongodb::server::config {
   $slave           = $mongodb::server::slave
   $only            = $mongodb::server::only
   $source          = $mongodb::server::source
+  $configsvr       = $mongodb::server::configsvr
   $replset         = $mongodb::server::replset
   $rest            = $mongodb::server::rest
   $quiet           = $mongodb::server::quiet

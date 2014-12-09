@@ -133,6 +133,10 @@ master = <%= @master %>
 # files in a distinct folder.
 directoryperdb = <%= @directoryperdb %>
 <% end -%>
+<% if @configsvr -%>
+# Is the mongod instance a configuration server
+configsvr = <%= @configsvr %>
+<% end -%>
 <% if @replset -%>
 # Configure ReplicaSet membership
 replSet = <%= @replset %>
