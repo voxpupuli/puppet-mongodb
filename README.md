@@ -45,6 +45,7 @@ For the 0.6 release, the MongoDB module now supports basic replicaset features
 * MongoDB configuration files.
 * MongoDB service.
 * MongoDB client.
+* MongoDB sharding support (mongos)
 * 10gen/mongodb apt/yum repository.
 
 ###Beginning with MongoDB
@@ -68,6 +69,15 @@ class {'::mongodb::client':}
 
 Note that for Debian/Ubuntu family systems the client is installed with the 
 server. Using the client class will by default install the server.
+
+If one plans to configure sharding for a Mongo deployment, the module offer
+the `mongos` installation. `mongos` can be installed the following way :
+
+```puppet
+class {'::mongodb::mongos' :
+  configdb => ['configsvr1.example.com:27018'],
+}
+```
 
 Although most distros come with a prepacked MongoDB server we recommend to
 use the 10gen/MongoDB software repository, because most of the current OS
@@ -116,6 +126,7 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 * `mongodb::server`: Installs and configure MongoDB
 * `mongodb::client`: Installs the MongoDB client shell (for Red Hat family systems)
 * `mongodb::globals`: Configure main settings in a global way
+* `mongodb::mongos`: Installs and configure Mongos server (for sharding support)
 
 ####Private classes
 * `mongodb::repo`: Manage 10gen/MongoDB software repository
@@ -125,6 +136,9 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 * `mongodb::server::install`: Install MongoDB software packages
 * `mongodb::server::service`: Manages service
 * `mongodb::client::install`: Installs the MongoDB client software package
+* `mongodb::mongos::config`: Configures Mongos configuration files
+* `mongodb::mongos::install`: Install Mongos software packages
+* `mongodb::mongos::service`: Manages Mongos service
 
 ####Class: mongodb::globals
 *Note:* most server specific defaults should be overridden in the `mongodb::server`
@@ -384,6 +398,54 @@ replicate. Default: <>
 Used with the slave setting to specify the master instance from which
 this slave instance will replicate. Default: <>
 *Note*: deprecated – use replica sets
+
+####Class: mongodb::mongos
+class. This class should only be used if you want to implement sharding within
+your mongodb deployment.
+
+This class allows you to configure the mongos daemon (responsible for routing)
+on your platform.
+
+#####`ensure`
+Used to ensure that the package is installed and the service is running, or that the package is absent/purged and the service is stopped. Valid values are true/false/present/absent/purged.
+
+#####`config`
+Path of the config file. If not specified, the module will use the default
+for your OS distro.
+
+#####`config_content`
+Path to the config template if the default doesn't match one needs.
+
+#####`configdb`
+Array of the config servers IP addresses the mongos should connect to.
+
+#####`service_name`
+This setting can be used to override the default Mongos service name. If not
+specified, the module will use whatever service name is the default for your OS distro.
+
+#####`service_provider`
+This setting can be used to override the default Mongos service provider. If
+not specified, the module will use whatever service provider is the default for
+your OS distro.
+
+#####`service_status`
+This setting can be used to override the default status check command for
+your Mongos service. If not specified, the module will use whatever service
+name is the default for your OS distro.
+
+#####`service_enable`
+This setting can be used to specify if the service should be enable at boot
+
+#####`service_ensure`
+This setting can be used to specify if the service should be running
+
+#####`package_ensure`
+This setting can be used to specify if puppet should install the package or not
+
+#####`package_name`
+This setting can be used to specify the name of the package that should be installed.
+If not specified, the module will use whatever service name is the default for your OS distro.
+
 
 ### Definitions
 
