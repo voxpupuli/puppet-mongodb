@@ -7,6 +7,20 @@ class mongodb::server::service {
   $service_status   = $mongodb::server::service_status
   $bind_ip          = $mongodb::server::bind_ip
   $port             = $mongodb::server::port
+  $configsvr        = $mongodb::server::configsvr
+  $shardsvr         = $mongodb::server::shardsvr
+
+  if !$port {
+    if $configsvr {
+      $port_real = 27019
+    } elsif $shardsvr {
+      $port_real = 27018
+    } else {
+      $port_real = 27017
+    }
+  } else {
+    $port_real = $port
+  }
 
   $service_ensure = $ensure ? {
     absent  => false,
@@ -23,10 +37,11 @@ class mongodb::server::service {
     hasstatus => true,
     status    => $service_status,
   }
+
   if $service_ensure {
     mongodb_conn_validator { "mongodb":
       server  => $bind_ip,
-      port    => $port,
+      port    => $port_real,
       timeout => '240',
       require => Service['mongodb'],
     }

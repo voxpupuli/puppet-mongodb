@@ -18,7 +18,9 @@ bind_ip = <%= Array(@bind_ip).join(',') %>
 # fork and run in background
 fork=<%= @fork %>
 <% end -%>
+<% if @port -%>
 port = <%= @port %>
+<% end -%>
 dbpath=<%= @dbpath %>
 <% if @pidfilepath -%>
 # location of pidfile

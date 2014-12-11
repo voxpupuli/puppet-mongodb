@@ -46,7 +46,7 @@ class mongodb (
   $logpath         = $mongodb::params::logpath,
   $logappend       = true,
   $fork            = $mongodb::params::fork,
-  $port            = 27017,
+  $port            = undef,
   $dbpath          = $mongodb::params::dbpath,
   $journal         = undef,
   $nojournal       = undef,
