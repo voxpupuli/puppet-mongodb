@@ -4,6 +4,7 @@
 #
 
 require 'spec_helper'
+require 'tempfile'
 
 describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
 
@@ -33,6 +34,11 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
   end
 
   describe '#exists?' do
+    before :each do
+      tmp = Tempfile.new('test')
+      @mongodconffile = tmp.path
+      provider.class.stubs(:get_mongod_conf_file).returns(@mongodconffile)
+    end
     describe 'when the replicaset does not exist' do
       it 'returns false' do
         provider.class.stubs(:mongo).returns(<<EOT)
@@ -64,6 +70,11 @@ EOT
   end
 
   describe '#members' do
+    before :each do
+      tmp = Tempfile.new('test')
+      @mongodconffile = tmp.path
+      provider.class.stubs(:get_mongod_conf_file).returns(@mongodconffile)
+    end
     it 'returns the members of a configured replicaset' do
       provider.class.stubs(:mongo).returns(<<EOT)
 {
@@ -91,6 +102,11 @@ EOT
   end
 
   describe 'members=' do
+    before :each do
+      tmp = Tempfile.new('test')
+      @mongodconffile = tmp.path
+      provider.class.stubs(:get_mongod_conf_file).returns(@mongodconffile)
+    end
     before :each do
       provider.class.stubs(:mongo).returns(<<EOT)
 {
