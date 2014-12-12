@@ -39,15 +39,16 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'create' do
     it 'creates a user' do
-      user = {
-        :user => 'new_user',
+      cmd = {
+        :createUser => 'new_user',
         :pwd => 'pass',
         :customData => { :createdBy => "Puppet Mongodb_user['new_user']" },
         :roles => ['role1','role2'],
+        :digestPassword => false,
       }
 
 
-      provider.expects(:mongo_eval).with("db.createUser(#{user.to_json})", 'new_database')
+      provider.expects(:mongo_eval).with("db.runCommand(#{cmd.to_json})", 'new_database')
       provider.create
     end
   end
