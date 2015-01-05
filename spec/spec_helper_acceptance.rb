@@ -36,7 +36,7 @@ RSpec.configure do |c|
       on hosts, 'puppet module install stahnma-epel'
       apply_manifest_on hosts, 'include epel'
       if fact('operatingsystemrelease') =~ /^7/
-        shell('yum install -y iptables-services')
+        on hosts, 'yum install -y iptables-services'
       end
       on hosts, 'service iptables stop'
     end
