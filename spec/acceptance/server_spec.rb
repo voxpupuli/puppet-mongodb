@@ -35,7 +35,12 @@ describe 'mongodb::server class' do
           puts "XXX uninstalls mongodb because changing the port with tengen doesn't work because they have a crappy init script"
           pp = <<-EOS
             class {'mongodb::globals': manage_package_repo => #{tengen}, }
-            -> class { 'mongodb::server': ensure => absent, }
+            -> class { 'mongodb::server':
+                 ensure => absent,
+                 package_ensure => absent,
+                 service_ensure => stopped,
+                 service_enable => false
+               }
             -> class { 'mongodb::client': ensure => absent, }
           EOS
           apply_manifest(pp, :catch_failures => true)
@@ -98,7 +103,12 @@ describe 'mongodb::server class' do
       it 'uninstalls mongodb' do
         pp = <<-EOS
           class {'mongodb::globals': manage_package_repo => #{tengen}, }
-          -> class { 'mongodb::server': ensure => absent, }
+          -> class { 'mongodb::server':
+               ensure => absent,
+               package_ensure => absent,
+               service_ensure => stopped,
+               service_enable => false
+             }
           -> class { 'mongodb::client': ensure => absent, }
         EOS
         apply_manifest(pp, :catch_failures => true)
