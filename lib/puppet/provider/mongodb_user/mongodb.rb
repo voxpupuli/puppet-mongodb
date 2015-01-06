@@ -1,13 +1,15 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
+
 Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::Mongodb) do
-
   desc "Manage users for a MongoDB database."
-
   defaultfor :kernel => 'Linux'
+  if RUBY_VERSION < '1.9.0'
+    confine :feature => [:orderedhash, :json]
+  else
+    confine :feature => [:json]
+  end
 
   def self.instances
-    require 'json'
-
     if mongo_24?
       dbs = JSON.parse mongo_eval('printjson(db.getMongo().getDBs()["databases"].map(function(db){return db["name"]}))') || 'admin'
 
@@ -53,8 +55,6 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   mk_resource_methods
 
   def create
-
-
     if mongo_24?
       user = {
         :user => @resource[:username],
@@ -64,21 +64,25 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
       mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
     else
-      user = {
-        :user => @resource[:username],
-        :pwd => @resource[:password_hash],
-        :customData => { :createdBy => "Puppet Mongodb_user['#{@resource[:name]}']" },
-        :roles => @resource[:roles]
-      }
+      if RUBY_VERSION < '1.9.0'
+        cmd = ActiveSupport::OrderedHash.new
+      else
+        cmd = Hash.new
+      end
+      cmd[:createUser] = @resource[:username]
+      cmd[:pwd] = @resource[:password_hash]
+      cmd[:customData] = { :createdBy => "Puppet Mongodb_user['#{@resource[:name]}']" }
+      cmd[:roles] = @resource[:roles]
+      cmd[:digestPassword] = false
 
-      mongo_eval("db.createUser(#{user.to_json})", @resource[:database])
+      mongo_eval("db.runCommand(#{cmd.to_json})", @resource[:database])
     end
 
     @property_hash[:ensure] = :present
     @property_hash[:username] = @resource[:username]
     @property_hash[:database] = @resource[:database]
     @property_hash[:password_hash] = ''
-    @property_hash[:rolse] = @resource[:roles]
+    @property_hash[:roles] = @resource[:roles]
 
     exists? ? (return true) : (return false)
   end
@@ -97,11 +101,14 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   end
 
   def password_hash=(value)
-    cmd = {
-        :updateUser => @resource[:username],
-        :pwd => @resource[:password_hash],
-        :digestPassword => false
-    }
+    if RUBY_VERSION < '1.9.0'
+      cmd = ActiveSupport::OrderedHash.new
+    else
+      cmd = Hash.new
+    end
+    cmd[:updateUser] = @resource[:username]
+    cmd[:pwd] = @resource[:password_hash]
+    cmd["digestPassword"] = false
 
     mongo_eval("db.runCommand(#{cmd.to_json})", @resource[:database])
   end
