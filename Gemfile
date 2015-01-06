@@ -8,6 +8,7 @@ group :development, :unit_tests do
   gem 'simplecov',               :require => false
   gem 'puppet_facts',            :require => false
   gem 'json',                    :require => false
+  gem 'activesupport', '3.1.0',  :require => false if RUBY_VERSION < '1.9.0'
 end
 
 group :system_tests do
