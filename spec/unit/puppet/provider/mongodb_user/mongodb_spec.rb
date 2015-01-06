@@ -1,6 +1,15 @@
 require 'spec_helper'
 require 'json'
 
+if RUBY_VERSION < "1.9"
+  require 'active_support/ordered_hash'
+  class OrderedHash < ActiveSupport::OrderedHash
+  end
+else
+  class OrderedHash < Hash
+  end
+end
+
 describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   let(:raw_users) do
@@ -39,15 +48,14 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'create' do
     it 'creates a user' do
-      user = {
-        :user => 'new_user',
-        :pwd => 'pass',
-        :customData => { :createdBy => "Puppet Mongodb_user['new_user']" },
-        :roles => ['role1','role2'],
-      }
+      cmd = OrderedHash.new
+      cmd[:createUser] => 'new_user'
+      cmd[:pwd] => 'pass'
+      cmd[:customData] => { :createdBy => "Puppet Mongodb_user['new_user']" }
+      cmd[:roles] => ['role1','role2']
+      cmd[:digestPassword] => false
 
-
-      provider.expects(:mongo_eval).with("db.createUser(#{user.to_json})", 'new_database')
+      provider.expects(:mongo_eval).with("db.runCommand(#{cmd.to_json})", 'new_database')
       provider.create
     end
   end
@@ -73,11 +81,10 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'password_hash=' do
     it 'changes a password_hash' do
-      cmd = {
-          :updateUser => 'new_user',
-          :pwd => 'pass',
-          :digestPassword => false
-      }
+      cmd = OrderedHash.new
+      cmd[:updateUser] => 'new_user'
+      cmd[:pwd] => 'pass'
+      cmd[:digestPassword] => false
       provider.expects(:mongo_eval).
         with("db.runCommand(#{cmd.to_json})", 'new_database')
       provider.password_hash=("newpass")
