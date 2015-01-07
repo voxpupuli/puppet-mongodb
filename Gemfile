@@ -27,8 +27,4 @@ else
   gem 'puppet', :require => false
 end
 
-if RUBY_VERSION < "1.9"
-  gem 'activesupport', '<=3.1.0', :require => false
-end
-
 # vim:ft=ruby
