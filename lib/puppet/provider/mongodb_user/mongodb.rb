@@ -1,24 +1,13 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
 Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::Mongodb) do
-  # In ruby 1.9+ Hashes are inherently ordered. In lesser versions of ruby
-  # we need to use an ordered_hash library to maintain the same behaviour.
-  # In mongo db.runCommand() must use an orderedHash *always* as the first
-  # JSON key must be the mongo db command.
-  if RUBY_VERSION < "1.9"
-    require 'active_support/ordered_hash'
-    class OrderedHash < ActiveSupport::OrderedHash
-    end
-  else
-    class OrderedHash < Hash
-    end
-  end
-  require 'json'
 
   desc "Manage users for a MongoDB database."
 
   defaultfor :kernel => 'Linux'
 
   def self.instances
+    require 'json'
+
     if mongo_24?
       dbs = JSON.parse mongo_eval('printjson(db.getMongo().getDBs()["databases"].map(function(db){return db["name"]}))') || 'admin'
 
@@ -64,6 +53,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   mk_resource_methods
 
   def create
+
+
     if mongo_24?
       user = {
         :user => @resource[:username],
@@ -73,21 +64,21 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
       mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
     else
-      cmd = OrderedHash.new
-      cmd[:createUser] = @resource[:username]
-      cmd[:pwd] = @resource[:password_hash]
-      cmd[:customData] = { :createdBy => "Puppet Mongodb_user['#{@resource[:name]}']" }
-      cmd[:roles] = @resource[:roles]
-      cmd[:digestPassword] = false
+      user = {
+        :user => @resource[:username],
+        :pwd => @resource[:password_hash],
+        :customData => { :createdBy => "Puppet Mongodb_user['#{@resource[:name]}']" },
+        :roles => @resource[:roles]
+      }
 
-      mongo_eval("db.runCommand(#{cmd.to_json})", @resource[:database])
+      mongo_eval("db.createUser(#{user.to_json})", @resource[:database])
     end
 
     @property_hash[:ensure] = :present
     @property_hash[:username] = @resource[:username]
     @property_hash[:database] = @resource[:database]
     @property_hash[:password_hash] = ''
-    @property_hash[:roles] = @resource[:roles]
+    @property_hash[:rolse] = @resource[:roles]
 
     exists? ? (return true) : (return false)
   end
@@ -106,10 +97,11 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   end
 
   def password_hash=(value)
-    cmd = OrderedHash.new
-    cmd[:updateUser] = @resource[:username]
-    cmd[:pwd] = @resource[:password_hash]
-    cmd["digestPassword"] = false
+    cmd = {
+        :updateUser => @resource[:username],
+        :pwd => @resource[:password_hash],
+        :digestPassword => false
+    }
 
     mongo_eval("db.runCommand(#{cmd.to_json})", @resource[:database])
   end
