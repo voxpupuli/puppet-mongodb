@@ -1,3 +1,4 @@
+require 'yaml'
 class Puppet::Provider::Mongodb < Puppet::Provider
 
   # Without initvars commands won't work.
@@ -22,8 +23,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     if mongorc_file
         cmd = mongorc_file + cmd
     end
-
-    out = mongo([db, '--quiet', '--eval', cmd])
+    config = YAML.load_file('/etc/mongod.conf')
+    port = config['net.port']
+    out = mongo([db, '--quiet', '--port', port, '--eval', cmd])
 
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
     out
