@@ -399,6 +399,17 @@ Used with the slave setting to specify the master instance from which
 this slave instance will replicate. Default: <>
 *Note*: deprecated – use replica sets
 
+#####`ssl`
+Set to true to enable ssl. Default: <>
+*Important*: You need to have ssl_key and ssl_ca set as well and files
+need to pre-exist on node.
+
+#####`ssl_key`
+Default: <>
+
+#####`ssl_ca`
+Default: <>
+
 ####Class: mongodb::mongos
 class. This class should only be used if you want to implement sharding within
 your mongodb deployment.
@@ -445,7 +456,6 @@ This setting can be used to specify if puppet should install the package or not
 #####`package_name`
 This setting can be used to specify the name of the package that should be installed.
 If not specified, the module will use whatever service name is the default for your OS distro.
-
 
 ### Definitions
 

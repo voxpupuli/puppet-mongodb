@@ -57,8 +57,10 @@ class mongodb::server (
   $keyfile         = undef,
   $set_parameter   = undef,
   $syslog          = undef,
-  
   $config_content  = undef,
+  $ssl             = undef,
+  $ssl_key         = undef,
+  $ssl_ca          = undef,
 
   # Deprecated parameters
   $master          = undef,
@@ -67,6 +69,10 @@ class mongodb::server (
   $source          = undef,
 ) inherits mongodb::params {
 
+
+  if $ssl {
+    validate_string($ssl_key, $ssl_ca)
+  }
 
   if ($ensure == 'present' or $ensure == true) {
     anchor { 'mongodb::server::start': }->

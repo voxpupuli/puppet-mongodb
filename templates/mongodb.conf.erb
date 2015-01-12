@@ -180,3 +180,8 @@ syslog = <%= @syslog %>
 <% if @quiet -%>
 quiet = <%= @quiet %>
 <% end -%>
+<% if @ssl -%>
+sslOnNormalPorts = true
+sslPEMKeyFile = <%= @ssl_key %>
+sslCAFile = <%= @ssl_ca %>
+<% end -%>
