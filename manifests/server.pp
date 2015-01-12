@@ -70,6 +70,10 @@ class mongodb::server (
 ) inherits mongodb::params {
 
 
+  if $ssl {
+    validate_string($ssl_key, $ssl_ca)
+  }
+
   if ($ensure == 'present' or $ensure == true) {
     anchor { 'mongodb::server::start': }->
     class { 'mongodb::server::install': }->
