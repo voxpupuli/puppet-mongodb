@@ -1,3 +1,4 @@
+require 'yaml'
 class Puppet::Provider::Mongodb < Puppet::Provider
 
   # Without initvars commands won't work.
@@ -17,13 +18,39 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     self.class.mongorc_file
   end
 
+  def self.get_mongod_conf_file
+    if File.exists? '/etc/mongod.conf'
+      file = '/etc/mongod.conf'
+    else
+      file = '/etc/mongodb.conf'
+    end
+    file
+  end
+
   # Mongo Command Wrapper
   def self.mongo_eval(cmd, db = 'admin')
     if mongorc_file
         cmd = mongorc_file + cmd
     end
+    file = get_mongod_conf_file
+    # The mongo conf is probably a key-value store, even though 2.6 is
+    # supposed to use YAML, because the config template is applied
+    # based on $::mongodb::globals::version which is the user will not
+    # necessarily set. This attempts to get the port from both types of
+    # config files.
+    config = YAML.load_file(file)
+    if config.kind_of?(Hash) # Using a valid YAML file for mongo 2.6
+      port = config['net.port']
+    else # It has to be a key-value config file
+      config = {}
+      File.readlines(file).collect do |line|
+         k,v = line.split('=')
+         config[k.rstrip] = v.lstrip.chomp if k and v
+      end
+      port = config['port']
+    end
 
-    out = mongo([db, '--quiet', '--eval', cmd])
+    out = mongo([db, '--quiet', '--port', port, '--eval', cmd])
 
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
     out
