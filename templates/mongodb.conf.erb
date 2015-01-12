@@ -18,7 +18,9 @@ bind_ip = <%= Array(@bind_ip).join(',') %>
 # fork and run in background
 fork=<%= @fork %>
 <% end -%>
+<% if @port -%>
 port = <%= @port %>
+<% end -%>
 dbpath=<%= @dbpath %>
 <% if @pidfilepath -%>
 # location of pidfile
@@ -132,6 +134,14 @@ master = <%= @master %>
 # Alters the storage pattern of the data directory to store each database
 # files in a distinct folder.
 directoryperdb = <%= @directoryperdb %>
+<% end -%>
+<% if @configsvr -%>
+# Is the mongod instance a configuration server
+configsvr = <%= @configsvr %>
+<% end -%>
+<% if @shardsvr -%>
+# Is the mongod instance a shard server
+shardsvr = <%= @shardsvr %>
 <% end -%>
 <% if @replset -%>
 # Configure ReplicaSet membership

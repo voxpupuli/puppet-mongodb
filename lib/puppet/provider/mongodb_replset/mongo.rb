@@ -95,8 +95,54 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
     false
   end
 
+  def self.get_mongod_conf_file
+    if File.exists? '/etc/mongod.conf'
+      file = '/etc/mongod.conf'
+    else
+      file = '/etc/mongodb.conf'
+    end
+    file
+  end
+
+  def self.get_conn_string
+    # TODO (spredzy) : Dirty hack
+    # to make the rs.conf() run on
+    # the proper mongodb connection
+    # Since we don't have access to
+    # instance properties at this time.
+    hash = {}
+    File.open(get_mongod_conf_file) do |fp|
+      fp.each do |line|
+        if !line.start_with?('#')
+          key, value = line.chomp.split(/\s*=\s*/)
+          hash[key] = value
+        end
+      end
+    end
+
+    if hash['bind_ip'] and ! hash['bind_ip'].eql? '0.0.0.0'
+      ip_real = hash['bind_ip']
+    else
+      ip_real = '127.0.0.1'
+    end
+
+    if hash['port']
+      port_real = hash['port']
+    elsif !hash['port'] and hash['configsvr']
+      port_real = 27019
+    elsif !hash['port'] and hash['shardsvr']
+      port_real = 27018
+    else
+      port_real = 27017
+    end
+
+    "#{ip_real}:#{port_real}"
+  end
+
   def self.get_replset_properties
-    output = mongo_command('rs.conf()')
+
+    conn_string = get_conn_string
+    output = mongo_command('rs.conf()', conn_string)
     if output['members']
       members = output['members'].collect do |val|
         val['host']
