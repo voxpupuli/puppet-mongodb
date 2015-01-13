@@ -64,14 +64,17 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
       mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
     else
-      user = {
-        :user => @resource[:username],
-        :pwd => @resource[:password_hash],
-        :customData => { :createdBy => "Puppet Mongodb_user['#{@resource[:name]}']" },
-        :roles => @resource[:roles]
+      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+      {
+        "createUser": "#{@resource[:username]}",
+        "pwd": "#{@resource[:password_hash]}",
+        "customData": {"createdBy": "Puppet Mongodb_user['#{@resource[:name]}']"},
+        "roles": #{@resource[:roles].to_json},
+        "digestPassword": false
       }
+      EOS
 
-      mongo_eval("db.createUser(#{user.to_json})", @resource[:database])
+      mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
     end
 
     @property_hash[:ensure] = :present
@@ -97,13 +100,15 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   end
 
   def password_hash=(value)
-    cmd = {
-        :updateUser => @resource[:username],
-        :pwd => @resource[:password_hash],
-        :digestPassword => false
+    cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+    {
+        "updateUser": "#{@resource[:username]}",
+        "pwd": "#{@resource[:password_hash]}",
+        "digestPassword": false
     }
+    EOS
 
-    mongo_eval("db.runCommand(#{cmd.to_json})", @resource[:database])
+    mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
   end
 
   def roles=(roles)

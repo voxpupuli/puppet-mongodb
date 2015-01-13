@@ -39,15 +39,17 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'create' do
     it 'creates a user' do
-      user = {
-        :user => 'new_user',
-        :pwd => 'pass',
-        :customData => { :createdBy => "Puppet Mongodb_user['new_user']" },
-        :roles => ['role1','role2'],
+      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+      {
+        "createUser": "new_user",
+        "pwd": "pass",
+        "customData": {"createdBy": "Puppet Mongodb_user['new_user']"},
+        "roles": ["role1","role2"],
+        "digestPassword": false
       }
+      EOS
 
-
-      provider.expects(:mongo_eval).with("db.createUser(#{user.to_json})", 'new_database')
+      provider.expects(:mongo_eval).with("db.runCommand(#{cmd_json})", 'new_database')
       provider.create
     end
   end
@@ -73,13 +75,15 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'password_hash=' do
     it 'changes a password_hash' do
-      cmd = {
-          :updateUser => 'new_user',
-          :pwd => 'pass',
-          :digestPassword => false
+      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+      {
+          "updateUser": "new_user",
+          "pwd": "pass",
+          "digestPassword": false
       }
+      EOS
       provider.expects(:mongo_eval).
-        with("db.runCommand(#{cmd.to_json})", 'new_database')
+        with("db.runCommand(#{cmd_json})", 'new_database')
       provider.password_hash=("newpass")
     end
   end
