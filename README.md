@@ -19,9 +19,9 @@ Installs MongoDB on RHEL/Ubuntu/Debian from OS repo, or alternatively from
 
 ### Deprecation Warning ###
 
-This release is a major refactoring of the module which means that the API may
-have changed in backwards incompatible ways. If your project depends on the old API,
-please pin your dependencies to 0.3 version to ensure your environments don't break.
+This module is still in beta which means the API is subject to change in
+backwards incompatible ways. If your project depends on an old API, please pin
+your dependencies to the necessary version to ensure your environments don't break.
 
 The current module design is undergoing review for potential 1.0 release. We welcome
 any feedback with regard to the APIs and patterns used in this release.
@@ -572,8 +572,8 @@ This module has been tested on:
 * Debian 6.* (squeeze)
 * Ubuntu 12.04.2 (precise)
 * Ubuntu 10.04.4 LTS (lucid)
-* RHEL 5/6
-* CentOS 5/6
+* RHEL 5/6/7
+* CentOS 5/6/7
 
 For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml) definition.
 

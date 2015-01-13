@@ -1,3 +1,18 @@
+##2015-01-13 - Release 0.10.0
+###Summary
+
+This release adds a number of significant features and several bug fixes.
+
+####Features
+- Adds support for sharding
+- Adds support for RHEL 7
+- Adds rudimentary support for SSL configuration
+- Adds support for the enterprise repository
+
+####Bugfixes
+- Fixes support for running on non-default ports
+- Fixes the idempotency of password setting (for mongo 2.6)
+
 ##2014-11-25 - Release 0.9.0
 ###Summary
 
