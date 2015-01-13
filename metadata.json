@@ -1,9 +1,9 @@
 {
   "name": "puppetlabs-mongodb",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "author": "puppetlabs",
   "summary": "Installs MongoDB on RHEL/Ubuntu/Debian.",
-  "license": "Apache License Version 2.0",
+  "license": "Apache-2.0",
   "source": "https://github.com/puppetlabs/puppetlabs-mongodb",
   "project_page": "https://github.com/puppetlabs/puppetlabs-mongodb",
   "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
@@ -12,14 +12,16 @@
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "5",
-        "6"
+        "6",
+        "7"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
         "5",
-        "6"
+        "6",
+        "7"
       ]
     },
     {
@@ -38,7 +40,7 @@
     }
   ],
   "dependencies": [
-    {"name":"puppetlabs/apt","version_requirement":">= 1.0.0"},
-    {"name":"puppetlabs/stdlib","version_requirement":">= 2.2.0"}
+    {"name":"puppetlabs/apt","version_requirement":">= 1.0.0 <2.0.0"},
+    {"name":"puppetlabs/stdlib","version_requirement":">= 2.2.0 <5.0.0"}
   ]
 }
