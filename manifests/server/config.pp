@@ -62,6 +62,20 @@ class mongodb::server::config {
   if ($logpath and $syslog) { fail('You cannot use syslog with logpath')}
 
   if ($ensure == 'present' or $ensure == true) {
+    # Install external mongo provider dependencies for ruby < 1.9.0
+    if versioncmp($::rubyversion, '1.9.0') < 0 {
+      # Active support provides ordered hashes and Ruby 1.8.7 must use ver 3.1.0 
+      package { 'activesupport':
+        ensure    => '3.1.0',
+        provider  => 'gem',
+      }
+      package { 'json':
+        ensure    => 'installed',
+        provider  => 'gem',
+      }
+      Package['activesupport'] -> Package<| provider == 'mongodb' |>
+      Package['json'] -> Package<| provider == 'mongodb' |>
+    }
 
     # Exists for future compatibility and clarity.
     if $auth {
