@@ -81,7 +81,7 @@ security.javascriptEnabled: <%= @noscripting %>
 <% if @bind_ip -%>
 net.bindIp:  <%= Array(@bind_ip).join(',') %>
 <% end -%>
-net.port: <%= @port %>
+net.port: <%= @port || 27017 %>
 <% if @objcheck -%>
 net.wireObjectCheck: <%= @objcheck %>
 <% end -%>
