@@ -39,12 +39,12 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'create' do
     it 'creates a user' do
-      cmd_json=<<-EOS.gsub(/$\n/, '')
+      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
       {
         "createUser": "new_user",
-        "pwd => "pass",
+        "pwd": "pass",
         "customData": {"createdBy": "Puppet Mongodb_user['new_user']"},
-        "roles": ["role1", "role2"],
+        "roles": ["role1","role2"],
         "digestPassword": false
       }
       EOS
@@ -75,7 +75,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'password_hash=' do
     it 'changes a password_hash' do
-      cmd_json=<<-EOS.gsub(/$\n/, '')
+      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
       {
           "updateUser": "new_user",
           "pwd": "pass",

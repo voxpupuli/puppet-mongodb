@@ -64,7 +64,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
       mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
     else
-      cmd_json=<<-EOS.gsub(/$\n/, '')
+      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
       {
         "createUser": "#{@resource[:username]}",
         "pwd": "#{@resource[:password_hash]}",
@@ -100,7 +100,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   end
 
   def password_hash=(value)
-    cmd_json=<<-EOS.gsub(/$\n/, '')
+    cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+    {
         "updateUser": "#{@resource[:username]}",
         "pwd": "#{@resource[:password_hash]}",
         "digestPassword": false
