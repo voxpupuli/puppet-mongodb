@@ -4,13 +4,13 @@ node 'mongos' {
     manage_package_repo => true,
   }->
   class {'::mongodb::server':
-    configsvr       => true,
-    bind_ip         => $::ipaddress,
+    configsvr => true,
+    bind_ip   => $::ipaddress,
   }->
   class {'::mongodb::client':
   }->
   class {'::mongodb::mongos':
-    configdb        => ["${::ipaddress}:27019"],
+    configdb => ["${::ipaddress}:27019"],
   }->
   mongodb_shard { 'rs1' :
     member => 'rs1/mongod1:27018',
