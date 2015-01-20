@@ -43,14 +43,15 @@ class mongodb::params inherits mongodb::globals {
           }
         }
         $service_name        = pick($::mongodb::globals::service_name, 'mongod')
-        $mongos_service_name = pick($::mongodb::globals::mongos_service_name, 'mongos')
-        $config              = '/etc/mongod.conf'
+        $mongos_service_name = pick($::mongodb::globals::mongos_service_name, 'mongos') 
+        $config              = '/etc/mongodb.conf'
         $mongos_config       = '/etc/mongos.conf'
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongod.log'
         $pidfilepath         = '/var/run/mongodb/mongod.pid'
         $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
         $fork                = true
+
       } else {
         # RedHat/CentOS doesn't come with a prepacked mongodb
         # so we assume that you are using EPEL repository.

@@ -506,8 +506,14 @@ mongodb_user { testuser:
   require       => Class['mongodb::server'],
 }
 ```
+<<<<<<< HEAD
 #####`username`
 Name of the mongodb user.
+=======
+
+#####`username`
+Name of the mongodb user
+>>>>>>> c6a78f338e348ddfd37078270fc2746f64594f88
 
 #####`password_hash`
 Hex encoded md5 hash of "$username:mongo:$password".
