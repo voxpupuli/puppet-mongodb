@@ -31,6 +31,17 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
       provider.create
       provider.flush
     end
+
+    it 'should create a replicaset with arbiter' do
+      provider.class.stubs(:get_replset_properties)
+      provider.stubs(:alive_members).returns(valid_members)
+      provider.stubs(:rs_arbiter).returns('mongo3:27017')
+      provider.expects('rs_initiate').with("{ _id: \"rs_test\", members: [ { _id: 0, host: \"mongo1:27017\" },{ _id: 1, host: \"mongo2:27017\" },{ _id: 2, host: \"mongo3:27017\", arbiterOnly: \"true\" } ] }", "mongo1:27017").returns(
+        { "info" => "Config now saved locally.  Should come online in about a minute.",
+          "ok"   => 1 } )
+      provider.create
+      provider.flush
+    end
   end
 
   describe '#exists?' do

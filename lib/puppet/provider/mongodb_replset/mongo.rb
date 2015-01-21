@@ -86,6 +86,14 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
     mongo_command("rs.remove(\"#{host}\")", master)
   end
 
+  def rs_arbiter
+    @resource[:arbiter]
+  end
+
+  def rs_add_arbiter(host, master)
+    mongo_command("rs.addArb(\"#{host}\")", master)
+  end
+
   def master_host(hosts)
     hosts.each do |host|
       status = db_ismaster(host)
@@ -180,7 +188,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
 
       # Create a replset configuration
       hostconf = alive_hosts.each_with_index.map do |host,id|
-        "{ _id: #{id}, host: \"#{host}\" }"
+        arbiter_conf = ""
+        if rs_arbiter == host
+          arbiter_conf = ", arbiterOnly: \"true\""
+        end
+        "{ _id: #{id}, host: \"#{host}\"#{arbiter_conf} }"
       end.join(',')
       conf = "{ _id: \"#{self.name}\", members: [ #{hostconf} ] }"
 
@@ -196,7 +208,12 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
         Puppet.debug "Current Hosts are: #{current_hosts.inspect}"
         newhosts = alive_hosts - current_hosts
         newhosts.each do |host|
-          output = rs_add(host, master)
+          output = {}
+          if rs_arbiter == host
+            output = rs_add_arbiter(host, master)
+          else
+            output = rs_add(host, master)
+          end
           if output['ok'] == 0
             raise Puppet::Error, "rs.add() failed to add host to replicaset #{self.name}: #{output['errmsg']}"
           end
