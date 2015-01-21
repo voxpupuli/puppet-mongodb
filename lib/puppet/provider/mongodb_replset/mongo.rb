@@ -119,13 +119,16 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
         end
       end
     end
-
-    if hash['bind_ip'] and ! hash['bind_ip'].eql? '0.0.0.0'
-      ip_real = hash['bind_ip']
-    else
-      ip_real = '127.0.0.1'
+    
+    if hash['bind_ip']
+      ip_bind = hash['bind_ip'].split(',').first
+      if ip_bind.eql? '0.0.0.0'
+        ip_real = '127.0.0.1'
+      else
+        ip_real = ip_bind
+      end
     end
-
+ 
     if hash['port']
       port_real = hash['port']
     elsif !hash['port'] and hash['configsvr']
