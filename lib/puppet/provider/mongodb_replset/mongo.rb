@@ -177,10 +177,10 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
           end
 
           # This node is alive and supposed to be a member of our set
-          Puppet.debug "Host #{self.name} is available for replset #{status['set']}"
+          Puppet.debug "Host #{host} is available for replset #{status['set']}"
           true
         elsif status.has_key?('info')
-          Puppet.debug "Host #{self.name} is alive but unconfigured: #{status['info']}"
+          Puppet.debug "Host #{host} is alive but unconfigured: #{status['info']}"
           true
         end
       rescue Puppet::ExecutionFailure
@@ -230,6 +230,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
       # Add members to an existing replset
       if master = master_host(alive_hosts)
         current_hosts = db_ismaster(master)['hosts']
+        Puppet.debug "Current Hosts are: #{current_hosts}"
         newhosts = alive_hosts - current_hosts
         newhosts.each do |host|
           output = rs_add(host, master)
