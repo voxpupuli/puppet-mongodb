@@ -230,7 +230,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
       # Add members to an existing replset
       if master = master_host(alive_hosts)
         current_hosts = db_ismaster(master)['hosts']
-        Puppet.debug "Current Hosts are: #{current_hosts}"
+        Puppet.debug "Current Hosts are: #{current_hosts.inspect}"
         newhosts = alive_hosts - current_hosts
         newhosts.each do |host|
           output = rs_add(host, master)
