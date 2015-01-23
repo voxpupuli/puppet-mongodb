@@ -94,4 +94,23 @@ describe 'mongodb::server::config', :type => :class do
     end
   end
 
+  describe 'when specifying syslog value' do
+    context 'it should be set to true' do
+      let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $dbpath = '/var/lib/mongo' $ensure = present $syslog = true }", "include mongodb::server"]}
+
+      it {
+        should contain_file('/etc/mongod.conf').with_content(/^syslog = true/)
+      }
+    end
+
+    context 'if logpath is also set an error should be raised' do
+      let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $dbpath = '/var/lib/mongo' $ensure = present $syslog = true $logpath ='/var/log/mongo/mongod.log' }", "include mongodb::server"]}
+
+      it {
+        expect { should contain_file('/etc/mongod.conf') }.to raise_error(Puppet::Error, /You cannot use syslog with logpath/)
+      }
+    end
+
+  end
+
 end

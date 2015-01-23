@@ -9,10 +9,14 @@ class mongodb::server::install {
       $file_ensure     = 'directory'
     }
     false:    {
-      $my_package_ensure = 'purged'
+      $my_package_ensure = 'absent'
       $file_ensure     = 'absent'
     }
     'absent': {
+      $my_package_ensure = 'absent'
+      $file_ensure     = 'absent'
+    }
+    'purged': {
       $my_package_ensure = 'purged'
       $file_ensure     = 'absent'
     }
@@ -23,8 +27,8 @@ class mongodb::server::install {
   }
 
   package { 'mongodb_server':
-    ensure  => $my_package_ensure,
-    name    => $package_name,
-    tag     => 'mongodb',
+    ensure => $my_package_ensure,
+    name   => $package_name,
+    tag    => 'mongodb',
   }
 }
