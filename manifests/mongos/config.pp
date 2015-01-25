@@ -12,7 +12,7 @@ class mongodb::mongos::config (
     if $config_content {
       $config_content_real = $config_content
     } else {
-      $config_content_real = template('mongodb/mongos.conf.erb')
+      $config_content_real = template('mongodb/mongodb-shard.conf.erb')
     }
 
     file { $config:

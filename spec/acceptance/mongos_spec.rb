@@ -9,7 +9,7 @@ describe 'mongodb::mongos class' do
       package_name = 'mongodb-server'
     end
     service_name = 'mongos'
-    config_file  = '/etc/mongos.conf'
+    config_file  = '/etc/mongodb-shard.conf'
 
     client_name  = 'mongo --version'
 
@@ -93,7 +93,7 @@ describe 'mongodb::mongos class' do
              }
           -> class { 'mongodb::client': ensure => absent, }
           -> class { 'mongodb::mongos':
-               ensure => absent,
+               ensure         => absent,
                package_ensure => absent,
                service_ensure => stopped,
                service_enable => false

@@ -9,6 +9,7 @@ class mongodb::params inherits mongodb::globals {
   $mongos_service_enable = pick($mongodb::globals::mongos_service_enable, true)
   $mongos_service_ensure = pick($mongodb::globals::mongos_service_ensure, 'running')
   $mongos_service_status = $mongodb::globals::mongos_service_status
+  $mongos_configdb       = '127.0.0.1:27019'
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
   case $::osfamily {
@@ -45,7 +46,7 @@ class mongodb::params inherits mongodb::globals {
         $service_name        = pick($::mongodb::globals::service_name, 'mongod')
         $mongos_service_name = pick($::mongodb::globals::mongos_service_name, 'mongos')
         $config              = '/etc/mongod.conf'
-        $mongos_config       = '/etc/mongos.conf'
+        $mongos_config       = '/etc/mongodb-shard.conf'
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongod.log'
         $pidfilepath         = '/var/run/mongodb/mongod.pid'
@@ -70,7 +71,7 @@ class mongodb::params inherits mongodb::globals {
         $mongos_package_name = pick($::mongodb::globals::mongos_package_name, 'mongodb-server')
         $service_name        = pick($::mongodb::globals::service_name, 'mongod')
         $config              = '/etc/mongodb.conf'
-        $mongos_config       = '/etc/mongos.conf'
+        $mongos_config       = '/etc/mongodb-shard.conf'
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongodb.log'
         $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
@@ -119,7 +120,7 @@ class mongodb::params inherits mongodb::globals {
           }
         }
         $mongos_service_name = pick($::mongodb::globals::mongos_service_name, 'mongos')
-        $mongos_config       = '/etc/mongos.conf'
+        $mongos_config       = '/etc/mongodb-shard.conf'
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongodb.log'
         $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
@@ -145,7 +146,7 @@ class mongodb::params inherits mongodb::globals {
         $service_name        = pick($::mongodb::globals::service_name, 'mongodb')
         $mongos_service_name = pick($::mongodb::globals::mongos_service_name, 'mongos')
         $config              = '/etc/mongodb.conf'
-        $mongos_config       = '/etc/mongos.conf'
+        $mongos_config       = '/etc/mongodb-shard.conf'
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongodb.log'
         $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])

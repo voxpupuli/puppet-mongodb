@@ -8,6 +8,12 @@ describe 'mongodb::mongos' do
     }
   end
 
+  let :params do
+    {
+      :configdb => ['127.0.0.1:27019']
+    }
+  end
+
   context 'with defaults' do
     it { should contain_class('mongodb::mongos::install') }
     it { should contain_class('mongodb::mongos::config') }

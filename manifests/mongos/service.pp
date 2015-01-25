@@ -5,6 +5,8 @@ class mongodb::mongos::service (
   $service_ensure   = $mongodb::mongos::service_ensure,
   $service_status   = $mongodb::mongos::service_status,
   $service_provider = $mongodb::mongos::service_provider,
+  $bind_ip          = $mongodb::mongos::bind_ip,
+  $port             = $mongodb::mongos::port,
 ) {
 
   $service_ensure_real = $service_ensure ? {
@@ -14,13 +16,19 @@ class mongodb::mongos::service (
     default => true
   }
 
+  if $port {
+    $port_real = $port
+  } else {
+    $port_real = '27017'
+  }
+
   if $::osfamily == 'RedHat' {
     file { '/etc/sysconfig/mongos' :
       ensure  => present,
       owner   => 'root',
       group   => 'root',
       mode    => '0755',
-      content => 'OPTIONS="--quiet -f /etc/mongos.conf"',
+      content => 'OPTIONS="--quiet -f /etc/mongodb-shard.conf"',
       before  => Service['mongos'],
     }
   }
@@ -41,6 +49,15 @@ class mongodb::mongos::service (
     provider  => $service_provider,
     hasstatus => true,
     status    => $service_status,
+  }
+
+  if $service_ensure {
+    mongodb_conn_validator { 'mongos':
+      server  => $bind_ip,
+      port    => $port_real,
+      timeout => '240',
+      require => Service['mongos'],
+    }
   }
 
 }
