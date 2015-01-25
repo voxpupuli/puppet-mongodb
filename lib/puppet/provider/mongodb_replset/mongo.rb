@@ -9,6 +9,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
   confine :true =>
     begin
       require 'json'
+      require 'yaml'
       true
     rescue LoadError
       false
@@ -105,19 +106,28 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
   end
 
   def self.get_conn_string
-    # TODO (spredzy) : Dirty hack
-    # to make the rs.conf() run on
-    # the proper mongodb connection
-    # Since we don't have access to
-    # instance properties at this time.
-    hash = {}
-    File.open(get_mongod_conf_file) do |fp|
-      fp.each do |line|
-        if !line.start_with?('#')
-          key, value = line.chomp.split(/\s*=\s*/)
-          hash[key] = value
-        end
+    file = get_mongod_conf_file
+    # The mongo conf is probably a key-value store, even though 2.6 is
+    # supposed to use YAML, because the config template is applied
+    # based on $::mongodb::globals::version which is the user will not
+    # necessarily set. This attempts to get the port from both types of
+    # config files.
+    config = YAML.load_file(file)
+    if config.kind_of?(Hash) # Using a valid YAML file for mongo 2.6
+      bindip = config['net.bindIp']
+      port = config['net.port']
+      shardsvr = config['sharding.clusterRole']
+      confsvr = config['sharding.clusterRole']
+    else # It has to be a key-value config file
+      config = {}
+      File.readlines(file).collect do |line|
+         k,v = line.split('=')
+         config[k.rstrip] = v.lstrip.chomp if k and v
       end
+      bindip = config['bind_ip']
+      port = config['port']
+      shardsvr = config['shardsvr']
+      confsvr = config['confsvr']
     end
     
     if hash['bind_ip']
@@ -129,11 +139,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
       end
     end
  
-    if hash['port']
-      port_real = hash['port']
-    elsif !hash['port'] and hash['configsvr']
+    if port
+      port_real = port
+    elsif !port and (confsvr.eql? 'configsvr' or confsvr.eql? 'true')
       port_real = 27019
-    elsif !hash['port'] and hash['shardsvr']
+    elsif !port and (shardsvr.eql? 'shardsvr' or shardsvr.eql? 'true')
       port_real = 27018
     else
       port_real = 27017
