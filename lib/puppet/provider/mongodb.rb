@@ -27,11 +27,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     file
   end
 
-  # Mongo Command Wrapper
-  def self.mongo_eval(cmd, db = 'admin')
-    if mongorc_file
-        cmd = mongorc_file + cmd
-    end
+  def self.get_conn_string
     file = get_mongod_conf_file
     # The mongo conf is probably a key-value store, even though 2.6 is
     # supposed to use YAML, because the config template is applied
@@ -40,17 +36,51 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     # config files.
     config = YAML.load_file(file)
     if config.kind_of?(Hash) # Using a valid YAML file for mongo 2.6
+      bindip = config['net.bindIp']
       port = config['net.port']
+      shardsvr = config['sharding.clusterRole']
+      confsvr = config['sharding.clusterRole']
     else # It has to be a key-value config file
       config = {}
       File.readlines(file).collect do |line|
          k,v = line.split('=')
          config[k.rstrip] = v.lstrip.chomp if k and v
       end
+      bindip = config['bind_ip']
       port = config['port']
+      shardsvr = config['shardsvr']
+      confsvr = config['confsvr']
     end
 
-    out = mongo([db, '--quiet', '--port', port, '--eval', cmd])
+    if bindip
+      first_ip_in_list = bindip.split(',').first
+      if first_ip_in_list.eql? '0.0.0.0'
+        ip_real = '127.0.0.1'
+      else
+        ip_real = first_ip_in_list
+      end
+    end
+
+    if port
+      port_real = port
+    elsif !port and (confsvr.eql? 'configsvr' or confsvr.eql? 'true')
+      port_real = 27019
+    elsif !port and (shardsvr.eql? 'shardsvr' or shardsvr.eql? 'true')
+      port_real = 27018
+    else
+      port_real = 27017
+    end
+
+    "#{ip_real}:#{port_real}"
+  end
+
+  # Mongo Command Wrapper
+  def self.mongo_eval(cmd, db = 'admin')
+    if mongorc_file
+        cmd = mongorc_file + cmd
+    end
+
+    out = mongo([db, '--quiet', '--host', get_conn_string, '--eval', cmd])
 
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
     out

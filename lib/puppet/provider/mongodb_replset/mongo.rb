@@ -2,14 +2,14 @@
 # Author: François Charlier <francois.charlier@enovance.com>
 #
 
-Puppet::Type.type(:mongodb_replset).provide(:mongo) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
+Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider::Mongodb) do
 
   desc "Manage hosts members for a replicaset."
 
   confine :true =>
     begin
       require 'json'
-      require 'yaml'
       true
     rescue LoadError
       false
@@ -103,53 +103,6 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
       file = '/etc/mongodb.conf'
     end
     file
-  end
-
-  def self.get_conn_string
-    file = get_mongod_conf_file
-    # The mongo conf is probably a key-value store, even though 2.6 is
-    # supposed to use YAML, because the config template is applied
-    # based on $::mongodb::globals::version which is the user will not
-    # necessarily set. This attempts to get the port from both types of
-    # config files.
-    config = YAML.load_file(file)
-    if config.kind_of?(Hash) # Using a valid YAML file for mongo 2.6
-      bindip = config['net.bindIp']
-      port = config['net.port']
-      shardsvr = config['sharding.clusterRole']
-      confsvr = config['sharding.clusterRole']
-    else # It has to be a key-value config file
-      config = {}
-      File.readlines(file).collect do |line|
-         k,v = line.split('=')
-         config[k.rstrip] = v.lstrip.chomp if k and v
-      end
-      bindip = config['bind_ip']
-      port = config['port']
-      shardsvr = config['shardsvr']
-      confsvr = config['confsvr']
-    end
-    
-    if hash['bind_ip']
-      ip_bind = hash['bind_ip'].split(',').first
-      if ip_bind.eql? '0.0.0.0'
-        ip_real = '127.0.0.1'
-      else
-        ip_real = ip_bind
-      end
-    end
- 
-    if port
-      port_real = port
-    elsif !port and (confsvr.eql? 'configsvr' or confsvr.eql? 'true')
-      port_real = 27019
-    elsif !port and (shardsvr.eql? 'shardsvr' or shardsvr.eql? 'true')
-      port_real = 27018
-    else
-      port_real = 27017
-    end
-
-    "#{ip_real}:#{port_real}"
   end
 
   def self.get_replset_properties
