@@ -76,9 +76,7 @@ describe 'mongodb::server class' do
       end
 
       describe command(client_name) do
-        it do
-          should return_exit_status 0
-        end
+        its(:exit_status) { should eq 0 }
       end
     end
 
