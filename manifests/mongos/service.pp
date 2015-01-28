@@ -22,6 +22,12 @@ class mongodb::mongos::service (
     $port_real = '27017'
   }
 
+  if $bind_ip == '0.0.0.0' {
+    $bind_ip_real = '127.0.0.1'
+  } else {
+    $bind_ip_real = $bind_ip
+  }
+
   if $::osfamily == 'RedHat' {
     file { '/etc/sysconfig/mongos' :
       ensure  => present,
@@ -51,9 +57,9 @@ class mongodb::mongos::service (
     status    => $service_status,
   }
 
-  if $service_ensure {
+  if $service_ensure_real {
     mongodb_conn_validator { 'mongos':
-      server  => $bind_ip,
+      server  => $bind_ip_real,
       port    => $port_real,
       timeout => '240',
       require => Service['mongos'],
