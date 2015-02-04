@@ -12,6 +12,7 @@ describe 'mongodb::mongos::service', :type => :class do
 
     let :pre_condition do          
       "class { 'mongodb::mongos':
+         configdb => ['127.0.0.1:27019'],
        }"
     end 
 
@@ -34,6 +35,7 @@ describe 'mongodb::mongos::service', :type => :class do
 
     let :pre_condition do
       "class { 'mongodb::mongos':
+         configdb => ['127.0.0.1:27019'],
        }"
     end
 

@@ -2,7 +2,8 @@
 # Author: François Charlier <francois.charlier@enovance.com>
 #
 
-Puppet::Type.type(:mongodb_replset).provide(:mongo) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
+Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider::Mongodb) do
 
   desc "Manage hosts members for a replicaset."
 
@@ -102,44 +103,6 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo) do
       file = '/etc/mongodb.conf'
     end
     file
-  end
-
-  def self.get_conn_string
-    # TODO (spredzy) : Dirty hack
-    # to make the rs.conf() run on
-    # the proper mongodb connection
-    # Since we don't have access to
-    # instance properties at this time.
-    hash = {}
-    File.open(get_mongod_conf_file) do |fp|
-      fp.each do |line|
-        if !line.start_with?('#')
-          key, value = line.chomp.split(/\s*=\s*/)
-          hash[key] = value
-        end
-      end
-    end
-    
-    if hash['bind_ip']
-      ip_bind = hash['bind_ip'].split(',').first
-      if ip_bind.eql? '0.0.0.0'
-        ip_real = '127.0.0.1'
-      else
-        ip_real = ip_bind
-      end
-    end
- 
-    if hash['port']
-      port_real = hash['port']
-    elsif !hash['port'] and hash['configsvr']
-      port_real = 27019
-    elsif !hash['port'] and hash['shardsvr']
-      port_real = 27018
-    else
-      port_real = 27017
-    end
-
-    "#{ip_real}:#{port_real}"
   end
 
   def self.get_replset_properties

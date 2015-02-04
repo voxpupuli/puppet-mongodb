@@ -2,7 +2,7 @@
 class mongodb::mongos (
   $ensure           = $mongodb::params::mongos_ensure,
   $config           = $mongodb::params::mongos_config,
-  $config_content   = $mongodb::params::mongos_config_content,
+  $config_content   = undef,
   $configdb         = $mongodb::params::mongos_configdb,
   $service_provider = $mongodb::params::mongos_service_provider,
   $service_name     = $mongodb::params::mongos_service_name,
@@ -11,6 +11,12 @@ class mongodb::mongos (
   $service_status   = $mongodb::params::mongos_service_status,
   $package_ensure   = $mongodb::params::package_ensure_mongos,
   $package_name     = $mongodb::params::mongos_package_name,
+  $unixsocketprefix = undef,
+  $pidfilepath      = undef,
+  $logpath          = undef,
+  $bind_ip          = undef,
+  $fork             = undef,
+  $port             = undef,
 ) inherits mongodb::params {
 
   if ($ensure == 'present' or $ensure == true) {

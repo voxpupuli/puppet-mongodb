@@ -12,12 +12,11 @@ describe 'mongodb::mongos::config' do
     end
 
     let :pre_condition do
-      "class { 'mongodb::mongos':
-       }"
+      "class { 'mongodb::mongos': }"
     end
 
     it {
-      should contain_file('/etc/mongos.conf')
+      should contain_file('/etc/mongodb-shard.conf')
     }
   end
 

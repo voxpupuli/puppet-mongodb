@@ -81,7 +81,9 @@ security.javascriptEnabled: <%= @noscripting %>
 <% if @bind_ip -%>
 net.bindIp:  <%= Array(@bind_ip).join(',') %>
 <% end -%>
-net.port: <%= @port || 27017 %>
+<% if @port -%>
+net.port: <%= @port %>
+<% end -%>
 <% if @objcheck -%>
 net.wireObjectCheck: <%= @objcheck %>
 <% end -%>
@@ -101,6 +103,14 @@ replication.replSetName: <%= @replset %>
 <% end -%>
 <% if @oplog_size -%>
 replication.oplogSizeMB: <%= @oplog_size %>
+<% end -%>
+
+# Sharding
+<% if @configsvr -%>
+sharding.clusterRole: configsvr
+<% end -%>
+<% if @shardsvr -%>
+sharding.clusterRole: shardsvr
 <% end -%>
 
 #Operation Profiling

@@ -1,4 +1,5 @@
-Puppet::Type.type(:mongodb_shard).provide(:mongo) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
+Puppet::Type.type(:mongodb_shard).provide(:mongo, :parent => Puppet::Provider::Mongodb ) do
 
   desc "Manage mongodb sharding."
 

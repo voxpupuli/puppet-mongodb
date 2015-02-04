@@ -13,6 +13,7 @@ describe 'mongodb::mongos::install', :type => :class do
 
     let :pre_condition do
       "class { 'mongodb::mongos':
+         configdb     => ['127.0.0.1:27019'],
          package_name => 'mongo-foo',
        }"
     end

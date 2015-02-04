@@ -22,6 +22,12 @@ class mongodb::server::service {
     $port_real = $port
   }
 
+  if $bind_ip == '0.0.0.0' {
+    $bind_ip_real = '127.0.0.1'
+  } else {
+    $bind_ip_real = $bind_ip
+  }
+
   $service_ensure = $ensure ? {
     absent  => false,
     purged  => false,
@@ -40,7 +46,7 @@ class mongodb::server::service {
 
   if $service_ensure {
     mongodb_conn_validator { 'mongodb':
-      server  => $bind_ip,
+      server  => $bind_ip_real,
       port    => $port_real,
       timeout => '240',
       require => Service['mongodb'],
