@@ -68,7 +68,7 @@ class mongodb::server::config {
   }
 
   if ($logpath) {
-    file { $dbpath:
+    file { $logpath:
       ensure  => directory,
       recurse => true,
       mode    => '0755',
