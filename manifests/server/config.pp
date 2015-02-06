@@ -53,6 +53,7 @@ class mongodb::server::config {
   $ssl             = $mongodb::server::ssl
   $ssl_key         = $mongodb::server::ssl_key
   $ssl_ca          = $mongodb::server::ssl_ca
+  $package_name    = $mongodb::server::package_name
 
   File {
     owner => $user,
@@ -69,12 +70,12 @@ class mongodb::server::config {
 
   if ($logpath) {
     file { $logpath:
-      ensure  => directory,
+      ensure  => present,
       recurse => true,
       mode    => '0755',
       owner   => $user,
       group   => $group,
-      require => File[$config]
+      require => Package[$package_name]
     }
   }
 
