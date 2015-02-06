@@ -70,7 +70,7 @@ class mongodb::server::config {
   if ($logpath) {
     file { $dbpath:
       ensure  => directory,
-      recurse => true
+      recurse => true,
       mode    => '0755',
       owner   => $user,
       group   => $group,
