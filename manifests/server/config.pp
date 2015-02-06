@@ -59,6 +59,14 @@ class mongodb::server::config {
     group => $group,
   }
 
+  file { '/etc/sysconfig/mongod':
+    content => template('mongodb/mongod.erb'),
+    mode    => '0644',
+    owner   => 'root',
+    group   => 'root',
+    notify  => Class['mongodb::server::service']
+  }
+
   if ($logpath and $syslog) { fail('You cannot use syslog with logpath')}
 
   if ($ensure == 'present' or $ensure == true) {
