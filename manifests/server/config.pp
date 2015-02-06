@@ -67,6 +67,17 @@ class mongodb::server::config {
     notify  => Class['mongodb::server::service']
   }
 
+  if ($logpath) {
+    file { $dbpath:
+      ensure  => directory,
+      recurse => true
+      mode    => '0755',
+      owner   => $user,
+      group   => $group,
+      require => File[$config]
+    }
+  }
+
   if ($logpath and $syslog) { fail('You cannot use syslog with logpath')}
 
   if ($ensure == 'present' or $ensure == true) {
@@ -108,6 +119,8 @@ class mongodb::server::config {
       ensure => absent,
       force  => true,
       backup => false,
+      owner   => $user,
+      group   => $group,
     }
     file { $config:
       ensure => absent
