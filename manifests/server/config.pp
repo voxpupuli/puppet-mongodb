@@ -113,7 +113,7 @@ class mongodb::server::config {
       mode    => '0755',
       owner   => $user,
       group   => $group,
-      require => File[$config]
+      require => Package[$package_name],
     }
   } else {
     file { $dbpath:
@@ -122,6 +122,7 @@ class mongodb::server::config {
       backup => false,
       owner   => $user,
       group   => $group,
+      require => Package[$package_name],
     }
     file { $config:
       ensure => absent
