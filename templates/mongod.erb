@@ -4,3 +4,13 @@ MONGO_USER=<%= @user %>
 <% if @group -%>
 MONGO_GROUP=<%= @group %>
 <% end -%>
+<% if @options -%>
+OPTIONS=<%= @options %>
+<% end -%>
+<% if @dbpath -%>
+DBPATH=<%= @dbpath %>
+<% end -%>
+<% if @pidfilepath -%>
+PIDFILE=<%= @pidfilepath %>
+<% end -%>
+PIDDIR=`dirname $PIDFILE`

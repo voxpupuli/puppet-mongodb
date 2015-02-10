@@ -54,6 +54,7 @@ class mongodb::server::config {
   $ssl_key         = $mongodb::server::ssl_key
   $ssl_ca          = $mongodb::server::ssl_ca
   $package_name    = $mongodb::server::package_name
+  $options         = $mongodb::server::options
 
   File {
     owner => $user,
