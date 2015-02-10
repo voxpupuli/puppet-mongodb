@@ -61,6 +61,7 @@ class mongodb::server (
   $ssl             = undef,
   $ssl_key         = undef,
   $ssl_ca          = undef,
+  $options         = undef,
 
   # Deprecated parameters
   $master          = undef,

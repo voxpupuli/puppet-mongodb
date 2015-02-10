@@ -53,10 +53,31 @@ class mongodb::server::config {
   $ssl             = $mongodb::server::ssl
   $ssl_key         = $mongodb::server::ssl_key
   $ssl_ca          = $mongodb::server::ssl_ca
+  $package_name    = $mongodb::server::package_name
+  $options         = $mongodb::server::options
 
   File {
     owner => $user,
     group => $group,
+  }
+
+  file { '/etc/sysconfig/mongod':
+    content => template('mongodb/mongod.erb'),
+    mode    => '0644',
+    owner   => 'root',
+    group   => 'root',
+    notify  => Class['mongodb::server::service']
+  }
+
+  if ($logpath) {
+    file { $logpath:
+      ensure  => present,
+      recurse => true,
+      mode    => '0755',
+      owner   => $user,
+      group   => $group,
+      require => Package[$package_name]
+    }
   }
 
   if ($logpath and $syslog) { fail('You cannot use syslog with logpath')}
@@ -93,13 +114,16 @@ class mongodb::server::config {
       mode    => '0755',
       owner   => $user,
       group   => $group,
-      require => File[$config]
+      require => Package[$package_name],
     }
   } else {
     file { $dbpath:
       ensure => absent,
       force  => true,
       backup => false,
+      owner   => $user,
+      group   => $group,
+      require => Package[$package_name],
     }
     file { $config:
       ensure => absent
