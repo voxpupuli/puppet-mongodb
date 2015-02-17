@@ -11,11 +11,11 @@ class mongodb::mongos (
   $service_status   = $mongodb::params::mongos_service_status,
   $package_ensure   = $mongodb::params::package_ensure_mongos,
   $package_name     = $mongodb::params::mongos_package_name,
-  $unixsocketprefix = undef,
-  $pidfilepath      = undef,
-  $logpath          = undef,
+  $unixsocketprefix = $mongodb::params::mongos_unixsocketprefix,
+  $pidfilepath      = $mongodb::params::mongos_pidfilepath,
+  $logpath          = $mongodb::params::mongos_logpath,
+  $fork             = $mongodb::params::mongos_fork,
   $bind_ip          = undef,
-  $fork             = undef,
   $port             = undef,
 ) inherits mongodb::params {
 
