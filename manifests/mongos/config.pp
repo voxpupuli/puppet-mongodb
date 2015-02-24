@@ -20,7 +20,6 @@ class mongodb::mongos::config (
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      notify  => Class['mongodb::mongos::service']
     }
 
   }

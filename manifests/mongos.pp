@@ -18,14 +18,25 @@ class mongodb::mongos (
   $fork             = $mongodb::params::mongos_fork,
   $bind_ip          = undef,
   $port             = undef,
+  $restart          = $mongodb::params::mongos_restart,
 ) inherits mongodb::params {
 
   if ($ensure == 'present' or $ensure == true) {
-    anchor { 'mongodb::mongos::start': }->
-    class { '::mongodb::mongos::install': }->
-    class { '::mongodb::mongos::config': }->
-    class { '::mongodb::mongos::service': }->
-    anchor { 'mongodb::mongos::end': }
+    if $restart {
+      anchor { 'mongodb::mongos::start': }->
+      class { 'mongodb::mongos::install': }->
+      # If $restart is true, notify the service on config changes (~>)
+      class { 'mongodb::mongos::config': }~>
+      class { 'mongodb::mongos::service': }->
+      anchor { 'mongodb::mongos::end': }
+    } else {
+      anchor { 'mongodb::mongos::start': }->
+      class { 'mongodb::mongos::install': }->
+      # If $restart is false, config changes won't restart the service (->)
+      class { 'mongodb::mongos::config': }->
+      class { 'mongodb::mongos::service': }->
+      anchor { 'mongodb::mongos::end': }
+    }
   } else {
     anchor { 'mongodb::mongos::start': }->
     class { '::mongodb::mongos::service': }->

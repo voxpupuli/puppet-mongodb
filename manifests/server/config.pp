@@ -97,7 +97,6 @@ class mongodb::server::config {
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      notify  => Class['mongodb::server::service']
     }
 
     file { $dbpath:
