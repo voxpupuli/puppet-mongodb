@@ -140,6 +140,7 @@ EOT
     end
 
     it 'adds missing members to an existing replicaset' do
+      allow(provider.class).to receive(:get_replset_properties)
       allow(provider).to receive(:rs_status).and_return({ "set" => "rs_test" })
       expect(provider).to receive('rs_add').twice.and_return({ 'ok' => 1 })
       provider.members=(valid_members)
