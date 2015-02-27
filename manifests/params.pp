@@ -43,15 +43,19 @@ class mongodb::params inherits mongodb::globals {
             $package_ensure_mongos = $::mongodb::globals::version
           }
         }
-        $service_name        = pick($::mongodb::globals::service_name, 'mongod')
-        $mongos_service_name = pick($::mongodb::globals::mongos_service_name, 'mongos')
-        $config              = '/etc/mongod.conf'
-        $mongos_config       = '/etc/mongodb-shard.conf'
-        $dbpath              = '/var/lib/mongodb'
-        $logpath             = '/var/log/mongodb/mongod.log'
-        $pidfilepath         = '/var/run/mongodb/mongod.pid'
-        $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
-        $fork                = true
+        $service_name            = pick($::mongodb::globals::service_name, 'mongod')
+        $mongos_service_name     = pick($::mongodb::globals::mongos_service_name, 'mongos')
+        $config                  = '/etc/mongod.conf'
+        $mongos_config           = '/etc/mongodb-shard.conf'
+        $dbpath                  = '/var/lib/mongodb'
+        $logpath                 = '/var/log/mongodb/mongod.log'
+        $pidfilepath             = '/var/run/mongodb/mongod.pid'
+        $bind_ip                 = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
+        $fork                    = true
+        $mongos_pidfilepath      = undef
+        $mongos_unixsocketprefix = undef
+        $mongos_logpath          = undef
+        $mongos_fork             = undef
       } else {
         # RedHat/CentOS doesn't come with a prepacked mongodb
         # so we assume that you are using EPEL repository.
@@ -77,9 +81,17 @@ class mongodb::params inherits mongodb::globals {
         $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
         if ($::operatingsystem == 'fedora' and versioncmp($::operatingsystemrelease, '22') >= 0 or
             $::operatingsystem != 'fedora' and versioncmp($::operatingsystemrelease, '7.0') >= 0) {
-          $pidfilepath         = '/var/run/mongodb/mongod.pid'
+          $pidfilepath             = '/var/run/mongodb/mongod.pid'
+          $mongos_pidfilepath      = '/var/run/mongodb/mongos.pid'
+          $mongos_unixsocketprefix = '/var/run/mongodb'
+          $mongos_logpath          = '/var/log/mongodb/mongodb-shard.log'
+          $mongos_fork             = true
         } else {
-          $pidfilepath         = '/var/run/mongodb/mongodb.pid'
+          $pidfilepath             = '/var/run/mongodb/mongodb.pid'
+          $mongos_pidfilepath      = undef
+          $mongos_unixsocketprefix = undef
+          $mongos_logpath          = undef
+          $mongos_fork             = undef
         }
         $fork                = true
         $journal             = true
@@ -119,11 +131,15 @@ class mongodb::params inherits mongodb::globals {
             $config = '/etc/mongodb.conf'
           }
         }
-        $mongos_service_name = pick($::mongodb::globals::mongos_service_name, 'mongos')
-        $mongos_config       = '/etc/mongodb-shard.conf'
-        $dbpath              = '/var/lib/mongodb'
-        $logpath             = '/var/log/mongodb/mongodb.log'
-        $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
+        $mongos_service_name     = pick($::mongodb::globals::mongos_service_name, 'mongos')
+        $mongos_config           = '/etc/mongodb-shard.conf'
+        $dbpath                  = '/var/lib/mongodb'
+        $logpath                 = '/var/log/mongodb/mongodb.log'
+        $bind_ip                 = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
+        $mongos_pidfilepath      = undef
+        $mongos_unixsocketprefix = undef
+        $mongos_logpath          = undef
+        $mongos_fork             = undef
       } else {
         # although we are living in a free world,
         # I would not recommend to use the prepacked
@@ -153,7 +169,11 @@ class mongodb::params inherits mongodb::globals {
         $pidfilepath         = $::mongodb::globals::pidfilepath
       }
       # avoid using fork because of the init scripts design
-      $fork = undef
+      $fork                    = undef
+      $mongos_pidfilepath      = undef
+      $mongos_unixsocketprefix = undef
+      $mongos_logpath          = undef
+      $mongos_fork             = undef
     }
     default: {
       fail("Osfamily ${::osfamily} and ${::operatingsystem} is not supported")
