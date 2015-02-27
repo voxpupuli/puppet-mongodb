@@ -67,17 +67,19 @@ class mongodb::server::config {
     # Exists for future compatibility and clarity.
     if $auth {
       $noauth = false
-      if $keyfile {
-        file { $keyfile:
-          content => inline_template($key),
-          owner   => $user,
-          group   => $group,
-          mode    => '0400',
-        }
-      }
     }
     else {
       $noauth = true
+    }
+    if $keyfile and $key {
+      validate_string($key)
+      validate_re($key,'.{6}')
+      file { $keyfile:
+        content => $key,
+        owner   => $user,
+        group   => $group,
+        mode    => '0400',
+      }
     }
 
     #Pick which config content to use
