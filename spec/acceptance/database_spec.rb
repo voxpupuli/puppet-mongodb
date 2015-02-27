@@ -30,15 +30,23 @@ describe 'mongodb_database' do
               class { 'mongodb::globals': manage_package_repo => #{tengen}, version => #{version.nil? ? 'undef' : version} }
               -> class { 'mongodb::server': }
               -> class { 'mongodb::client': }
-              -> mongodb_database { 'testdb': ensure => present }
+              -> mongodb::db { 'testdb1':
+                user     => 'testuser',
+                password => 'testpass',
+              }
+              -> mongodb::db { 'testdb2':
+                user     => 'testuser',
+                password => 'testpass',
+              }
             EOS
 
             apply_manifest(pp, :catch_failures => true)
             apply_manifest(pp, :catch_changes  => true)
           end
 
-          it 'should create the database' do
-            shell("mongo testdb --eval 'printjson(db.getMongo().getDBs())'")
+          it 'should create the databases' do
+            shell("mongo testdb1 --eval 'printjson(db.getMongo().getDBs())'")
+            shell("mongo testdb2 --eval 'printjson(db.getMongo().getDBs())'")
           end
         end
 
@@ -63,14 +71,22 @@ describe 'mongodb_database' do
               class { 'mongodb::globals': manage_package_repo => #{tengen}, }
               -> class { 'mongodb::server': port => 27018 }
               -> class { 'mongodb::client': }
-              -> mongodb_database { 'testdb': ensure => present }
+              -> mongodb::db { 'testdb1':
+                user     => 'testuser',
+                password => 'testpass',
+              }
+              -> mongodb::db { 'testdb2':
+                user     => 'testuser',
+                password => 'testpass',
+              }
             EOS
 
             apply_manifest(pp, :catch_failures => true)
             apply_manifest(pp, :catch_changes  => true)
           end
           it 'should create the database' do
-            shell("mongo testdb --port 27018 --eval 'printjson(db.getMongo().getDBs())'")
+            shell("mongo testdb1 --port 27018 --eval 'printjson(db.getMongo().getDBs())'")
+            shell("mongo testdb2 --port 27018 --eval 'printjson(db.getMongo().getDBs())'")
           end
         end
       end
