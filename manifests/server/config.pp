@@ -46,6 +46,7 @@ class mongodb::server::config {
   $slowms          = $mongodb::server::slowms
   $keyfile         = $mongodb::server::keyfile
   $key             = $mongodb::server::key
+  $ipv6            = $mongodb::server::ipv6
   $bind_ip         = $mongodb::server::bind_ip
   $directoryperdb  = $mongodb::server::directoryperdb
   $profile         = $mongodb::server::profile

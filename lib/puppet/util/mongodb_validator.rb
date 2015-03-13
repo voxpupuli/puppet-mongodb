@@ -1,6 +1,6 @@
 require 'socket'
 require 'timeout'
-
+require 'ipaddr'
 
 module Puppet
   module Util
@@ -9,7 +9,7 @@ module Puppet
       attr_reader :mongodb_port
 
       def initialize(mongodb_server, mongodb_port)
-        @mongodb_server = mongodb_server
+        @mongodb_server = IPAddr.new(mongodb_server).to_s
         @mongodb_port   = mongodb_port
       end
 
