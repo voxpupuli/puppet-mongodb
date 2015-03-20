@@ -2,6 +2,7 @@
 class mongodb::params inherits mongodb::globals {
   $ensure                = true
   $mongos_ensure         = true
+  $ipv6                  = undef
   $service_enable        = pick($mongodb::globals::service_enable, true)
   $service_ensure        = pick($mongodb::globals::service_ensure, 'running')
   $service_status        = $mongodb::globals::service_status

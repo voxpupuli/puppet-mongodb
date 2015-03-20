@@ -78,6 +78,9 @@ security.javascriptEnabled: <%= @noscripting %>
 
 
 # Net
+<% if @ipv6 -%>
+net.ipv6=<%= @ipv6 %>
+<% end -%>
 <% if @bind_ip -%>
 net.bindIp:  <%= Array(@bind_ip).join(',') %>
 <% end -%>

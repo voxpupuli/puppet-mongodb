@@ -15,6 +15,7 @@ class mongodb::globals (
 
   $user                 = undef,
   $group                = undef,
+  $ipv6                 = undef,
   $bind_ip              = undef,
 
   $version              = undef,

@@ -39,6 +39,15 @@ describe 'mongodb::server::config', :type => :class do
 
   end
 
+  describe 'with specific bind_ip values and ipv6' do
+    let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $dbpath = '/var/lib/mongo' $ensure = present $bind_ip = ['127.0.0.1', 'fd00:beef:dead:55::143'] $ipv6 = true }", "include mongodb::server"]}
+
+    it {
+      should contain_file('/etc/mongod.conf').with_content(/bind_ip\s=\s127\.0\.0\.1\,fd00:beef:dead:55::143/)
+      should contain_file('/etc/mongod.conf').with_content(/ipv6=true/)
+    }
+  end
+
   describe 'with specific bind_ip values' do
     let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $dbpath = '/var/lib/mongo' $ensure = present $bind_ip = ['127.0.0.1', '10.1.1.13']}", "include mongodb::server"]}
 
