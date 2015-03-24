@@ -14,7 +14,11 @@ node 'mongos' {
   }->
   mongodb_shard { 'rs1' :
     member => 'rs1/mongod1:27018',
-    keys   => [{'rs1.foo' => {'name' => 1}}],
+    keys   => [{
+      'rs1.foo' => {
+        'name' => 1
+      }
+    }],
   }
 
 }
