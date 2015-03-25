@@ -137,10 +137,6 @@ class mongodb::params inherits mongodb::globals {
         $dbpath                  = '/var/lib/mongodb'
         $logpath                 = '/var/log/mongodb/mongodb.log'
         $bind_ip                 = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
-        $mongos_pidfilepath      = undef
-        $mongos_unixsocketprefix = undef
-        $mongos_logpath          = undef
-        $mongos_fork             = undef
       } else {
         # although we are living in a free world,
         # I would not recommend to use the prepacked
