@@ -44,7 +44,7 @@ storage.journal.enabled: false
 storage.journal.enabled: true
 <% end -%>
 <% if @noprealloc -%>
-storage.preallocDataFiles: <%= @noprealloc %>
+storage.preallocDataFiles: <%= !@noprealloc %>
 <% end -%>
 <% if @nssize -%>
 storage.nsSize: <%= @nssize %>
