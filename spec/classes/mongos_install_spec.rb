@@ -19,7 +19,7 @@ describe 'mongodb::mongos::install', :type => :class do
     end
 
     it {
-      should contain_package('mongodb_mongos').with({
+      is_expected.to contain_package('mongodb_mongos').with({
         :ensure => 'present',
         :name   => 'mongo-foo',
       })
