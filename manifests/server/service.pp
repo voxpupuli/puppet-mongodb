@@ -29,10 +29,10 @@ class mongodb::server::service {
   }
 
   $service_ensure = $ensure ? {
-    absent  => false,
-    purged  => false,
-    stopped => false,
-    default => true
+    'absent'  => false,
+    'purged'  => false,
+    'stopped' => false,
+    default   => true
   }
 
   service { 'mongodb':
