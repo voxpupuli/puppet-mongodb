@@ -63,7 +63,7 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
 }
 EOT
         provider.class.prefetch(resources)
-        resource.provider.exists?.should eql false
+        expect(resource.provider.exists?).to eql false
       end
     end
 
@@ -77,7 +77,7 @@ EOT
 }
 EOT
         provider.class.prefetch(resources)
-        resource.provider.exists?.should eql true
+        expect(resource.provider.exists?).to eql true
       end
     end
   end
@@ -110,7 +110,7 @@ EOT
 }
 EOT
       provider.class.prefetch(resources)
-      resource.provider.members.should =~ valid_members
+      expect(resource.provider.members).to match_array(valid_members)
     end
   end
 
