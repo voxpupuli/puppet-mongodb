@@ -42,6 +42,7 @@ class mongodb::server (
   $oplog_size      = undef,
   $nohints         = undef,
   $nohttpinterface = undef,
+  $nethttpenabled	 = undef,
   $noscripting     = undef,
   $notablescan     = undef,
   $noprealloc      = undef,
