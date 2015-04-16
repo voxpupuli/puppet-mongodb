@@ -35,6 +35,13 @@ class mongodb::params inherits mongodb::globals {
             $package_ensure        = $::mongodb::globals::version
             $package_ensure_client = $::mongodb::globals::version
             $package_ensure_mongos = $::mongodb::globals::version
+            if(versioncmp($::mongodb::globals::version, '2.6.7') >= 0) {
+              $config        = '/etc/mongod.conf'
+              $mongos_config = '/etc/mongos.conf'
+            } else {
+              $config        = '/etc/mongodb.conf'
+              $mongos_config = '/etc/mongodb-shard.conf'
+            }
           } else {
             $server_package_name   = pick($::mongodb::globals::server_package_name, 'mongodb-10gen')
             $client_package_name   = pick($::mongodb::globals::client_package_name, 'mongodb-10gen')
@@ -46,8 +53,6 @@ class mongodb::params inherits mongodb::globals {
         }
         $service_name            = pick($::mongodb::globals::service_name, 'mongod')
         $mongos_service_name     = pick($::mongodb::globals::mongos_service_name, 'mongos')
-        $config                  = '/etc/mongod.conf'
-        $mongos_config           = '/etc/mongodb-shard.conf'
         $dbpath                  = '/var/lib/mongodb'
         $logpath                 = '/var/log/mongodb/mongod.log'
         $pidfilepath             = '/var/run/mongodb/mongod.pid'
