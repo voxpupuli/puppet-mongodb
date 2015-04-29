@@ -1,5 +1,6 @@
 # PRIVATE CLASS: do not call directly
 class mongodb::mongos::service (
+  $service_manage   = $mongodb::mongos::service_manage,
   $service_name     = $mongodb::mongos::service_name,
   $service_enable   = $mongodb::mongos::service_enable,
   $service_ensure   = $mongodb::mongos::service_ensure,
@@ -48,21 +49,23 @@ class mongodb::mongos::service (
     before  => Service['mongos'],
   }
 
-  service { 'mongos':
-    ensure    => $service_ensure_real,
-    name      => $service_name,
-    enable    => $service_enable,
-    provider  => $service_provider,
-    hasstatus => true,
-    status    => $service_status,
-  }
+  if $service_manage {
+    service { 'mongos':
+      ensure    => $service_ensure_real,
+      name      => $service_name,
+      enable    => $service_enable,
+      provider  => $service_provider,
+      hasstatus => true,
+      status    => $service_status,
+    }
 
-  if $service_ensure_real {
-    mongodb_conn_validator { 'mongos':
-      server  => $bind_ip_real,
-      port    => $port_real,
-      timeout => '240',
-      require => Service['mongos'],
+    if $service_ensure_real {
+      mongodb_conn_validator { 'mongos':
+        server  => $bind_ip_real,
+        port    => $port_real,
+        timeout => '240',
+        require => Service['mongos'],
+      }
     }
   }
 

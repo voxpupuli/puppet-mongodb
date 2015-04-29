@@ -4,6 +4,7 @@ class mongodb::mongos (
   $config           = $mongodb::params::mongos_config,
   $config_content   = undef,
   $configdb         = $mongodb::params::mongos_configdb,
+  $service_manage   = $mongodb::params::mongos_service_manage,
   $service_provider = $mongodb::params::mongos_service_provider,
   $service_name     = $mongodb::params::mongos_service_name,
   $service_enable   = $mongodb::params::mongos_service_enable,

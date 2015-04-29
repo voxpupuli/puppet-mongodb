@@ -169,6 +169,14 @@ This setting can be used to override the default status check command for
 your MongoDB service. If not specified, the module will use whatever service
 name is the default for your OS distro.
 
+##### `mongod_service_manage`
+This setting can be used to override the default management of the mongod service.
+By default the module will manage the mongod process.
+
+##### `mongos_service_manage`
+This setting can be used to override the default management of the mongos service.
+By default the module will manage the mongos process.
+
 #####`user`
 This setting can be used to override the default MongoDB user and owner of the
 service and related files in the file system. If not specified, the module will
@@ -422,6 +430,11 @@ Default: <>
 #####`ssl_ca`
 Default: <>
 
+
+#####`service_manage`
+Whether or not the MongoDB service resource should be part of the catalog.
+Default: true
+
 ####Class: mongodb::mongos
 class. This class should only be used if you want to implement sharding within
 your mongodb deployment.
@@ -441,6 +454,10 @@ Path to the config template if the default doesn't match one needs.
 
 #####`configdb`
 Array of the config servers IP addresses the mongos should connect to.
+
+#####`service_manage`
+Whether or not the MongoDB sharding service resource should be part of the catalog.
+Default: true
 
 #####`service_name`
 This setting can be used to override the default Mongos service name. If not
