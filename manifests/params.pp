@@ -75,7 +75,7 @@ class mongodb::params inherits mongodb::globals {
         $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb')
         $mongos_package_name = pick($::mongodb::globals::mongos_package_name, 'mongodb-server')
         $service_name        = pick($::mongodb::globals::service_name, 'mongod')
-        $config              = '/etc/mongodb.conf'
+        $config              = '/etc/mongod.conf'
         $mongos_config       = '/etc/mongodb-shard.conf'
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongodb.log'
