@@ -46,7 +46,7 @@ Puppet::Type.type(:mongodb_conn_validator).provide(:tcp_port) do
 
   # @api private
   def validator
-    @validator ||= Puppet::Util::MongodbValidator.new(resource[:server], resource[:port])
+    @validator ||= Puppet::Util::MongodbValidator.new(resource[:name], resource[:server], resource[:port])
   end
 
 end
