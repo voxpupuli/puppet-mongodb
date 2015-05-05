@@ -59,24 +59,27 @@ describe 'mongodb::server class' do
       end
 
       describe package(package_name) do
-        it { should be_installed }
+        it { is_expected.to be_installed }
       end
 
       describe file(config_file) do
-        it { should be_file }
+        it { is_expected.to be_file }
       end
 
       describe service(service_name) do
-         it { should be_enabled }
-         it { should be_running }
+         it { is_expected.to be_enabled }
+         it { is_expected.to be_running }
       end
 
       describe port(27017) do
-        it { should be_listening }
+        it { is_expected.to be_listening }
       end
 
       describe command(client_name) do
-        its(:exit_status) { should eq 0 }
+        describe '#exit_status' do
+          subject { super().exit_status }
+          it { is_expected.to eq 0 }
+        end
       end
     end
 
@@ -93,7 +96,7 @@ describe 'mongodb::server class' do
       end
 
       describe port(27018) do
-        it { should be_listening }
+        it { is_expected.to be_listening }
       end
     end
 

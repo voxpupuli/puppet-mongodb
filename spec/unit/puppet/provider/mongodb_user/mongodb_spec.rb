@@ -63,13 +63,13 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'exists?' do
     it 'checks if user exists' do
-      provider.exists?.should eql false
+      expect(provider.exists?).to eql false
     end
   end
 
   describe 'password_hash' do
     it 'returns a password_hash' do
-      instance.password_hash.should == "pass"
+      expect(instance.password_hash).to eq("pass")
     end
   end
 
@@ -90,7 +90,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'roles' do
     it 'returns a sorted roles' do
-      instance.roles.should == ['role1', 'role2']
+      expect(instance.roles).to eq(['role1', 'role2'])
     end
   end
 

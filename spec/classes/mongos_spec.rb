@@ -15,16 +15,16 @@ describe 'mongodb::mongos' do
   end
 
   context 'with defaults' do
-    it { should contain_class('mongodb::mongos::install') }
-    it { should contain_class('mongodb::mongos::config') }
-    it { should contain_class('mongodb::mongos::service') }
+    it { is_expected.to contain_class('mongodb::mongos::install') }
+    it { is_expected.to contain_class('mongodb::mongos::config') }
+    it { is_expected.to contain_class('mongodb::mongos::service') }
   end
 
   context 'when deploying on Solaris' do
     let :facts do
       { :osfamily        => 'Solaris' }
     end
-    it { expect { should raise_error(Puppet::Error) } }
+    it { expect { is_expected.to raise_error(Puppet::Error) } }
   end
 
 end
