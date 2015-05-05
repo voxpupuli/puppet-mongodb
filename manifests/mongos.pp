@@ -21,15 +21,15 @@ class mongodb::mongos (
 
   if ($ensure == 'present' or $ensure == true) {
     anchor { 'mongodb::mongos::start': }->
-    class { 'mongodb::mongos::install': }->
-    class { 'mongodb::mongos::config': }->
-    class { 'mongodb::mongos::service': }->
+    class { '::mongodb::mongos::install': }->
+    class { '::mongodb::mongos::config': }->
+    class { '::mongodb::mongos::service': }->
     anchor { 'mongodb::mongos::end': }
   } else {
     anchor { 'mongodb::mongos::start': }->
-    class { 'mongodb::mongos::service': }->
-    class { 'mongodb::mongos::config': }->
-    class { 'mongodb::mongos::install': }->
+    class { '::mongodb::mongos::service': }->
+    class { '::mongodb::mongos::config': }->
+    class { '::mongodb::mongos::install': }->
     anchor { 'mongodb::mongos::end': }
   }
 

@@ -78,15 +78,15 @@ class mongodb::server (
 
   if ($ensure == 'present' or $ensure == true) {
     anchor { 'mongodb::server::start': }->
-    class { 'mongodb::server::install': }->
-    class { 'mongodb::server::config': }->
-    class { 'mongodb::server::service': }->
+    class { '::mongodb::server::install': }->
+    class { '::mongodb::server::config': }->
+    class { '::mongodb::server::service': }->
     anchor { 'mongodb::server::end': }
   } else {
     anchor { 'mongodb::server::start': }->
-    class { 'mongodb::server::service': }->
-    class { 'mongodb::server::config': }->
-    class { 'mongodb::server::install': }->
+    class { '::mongodb::server::service': }->
+    class { '::mongodb::server::config': }->
+    class { '::mongodb::server::install': }->
     anchor { 'mongodb::server::end': }
   }
 }

@@ -10,10 +10,10 @@ class mongodb::mongos::service (
 ) {
 
   $service_ensure_real = $service_ensure ? {
-    absent  => false,
-    purged  => false,
-    stopped => false,
-    default => true
+    'absent'  => false,
+    'purged'  => false,
+    'stopped' => false,
+    default   => true
   }
 
   if $port {
@@ -30,7 +30,7 @@ class mongodb::mongos::service (
 
   if $::osfamily == 'RedHat' {
     file { '/etc/sysconfig/mongos' :
-      ensure  => present,
+      ensure  => file,
       owner   => 'root',
       group   => 'root',
       mode    => '0755',
@@ -40,7 +40,7 @@ class mongodb::mongos::service (
   }
 
   file { '/etc/init.d/mongos' :
-    ensure  => present,
+    ensure  => file,
     content => template("mongodb/mongos/${::osfamily}/mongos.erb"),
     owner   => 'root',
     group   => 'root',

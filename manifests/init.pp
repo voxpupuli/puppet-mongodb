@@ -101,7 +101,7 @@ class mongodb (
     settings to mongodb::server. Please verify this works in a safe test
     environment.': }
 
-  class { 'mongodb::server':
+  class { '::mongodb::server':
     package_name    => $packagename,
     logpath         => $logpath,
     logappend       => $logappend,

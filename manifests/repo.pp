@@ -17,7 +17,7 @@ class mongodb::repo (
         }
         $description = 'MongoDB/10gen Repository'
       }
-      class { 'mongodb::repo::yum': }
+      class { '::mongodb::repo::yum': }
     }
 
     'Debian': {
@@ -26,7 +26,7 @@ class mongodb::repo (
         'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
         default  => undef
       }
-      class { 'mongodb::repo::apt': }
+      class { '::mongodb::repo::apt': }
     }
 
     default: {
