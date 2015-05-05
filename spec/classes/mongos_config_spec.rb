@@ -16,7 +16,7 @@ describe 'mongodb::mongos::config' do
     end
 
     it {
-      should contain_file('/etc/mongodb-shard.conf')
+      is_expected.to contain_file('/etc/mongodb-shard.conf')
     }
   end
 

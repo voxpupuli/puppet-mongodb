@@ -17,11 +17,11 @@ describe 'mongodb::mongos::service', :type => :class do
     end 
 
     describe 'include init script' do
-      it { should contain_file('/etc/init.d/mongos') }
+      it { is_expected.to contain_file('/etc/init.d/mongos') }
     end
 
     describe 'configure the mongos service' do
-      it { should contain_service('mongos') }
+      it { is_expected.to contain_service('mongos') }
     end
   end
 
@@ -40,15 +40,15 @@ describe 'mongodb::mongos::service', :type => :class do
     end
 
     describe 'include mongos sysconfig file' do
-      it { should contain_file('/etc/sysconfig/mongos') }
+      it { is_expected.to contain_file('/etc/sysconfig/mongos') }
     end
 
     describe 'include init script' do
-      it { should contain_file('/etc/init.d/mongos') }
+      it { is_expected.to contain_file('/etc/init.d/mongos') }
     end
 
     describe 'configure the mongos service' do
-      it { should contain_service('mongos') }
+      it { is_expected.to contain_service('mongos') }
     end
   end
 
