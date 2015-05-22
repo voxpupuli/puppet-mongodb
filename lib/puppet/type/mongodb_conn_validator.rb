@@ -12,11 +12,12 @@ Puppet::Type.newtype(:mongodb_conn_validator) do
   end
 
   newparam(:name, :namevar => true) do
-    desc 'An arbitrary name used as the identity of the resource.'
+    desc 'An arbitrary name used as the identity of the resource. It can also be the connection string to test (ie. 127.0.0.1:27017)'
   end
 
   newparam(:server) do
     desc 'An array containing DNS names or IP addresses of the server where mongodb should be running.'
+    defaultto '127.0.0.1'
     munge do |value|
       Array(value).first
     end
@@ -24,6 +25,7 @@ Puppet::Type.newtype(:mongodb_conn_validator) do
 
   newparam(:port) do
     desc 'The port that the mongodb server should be listening on.'
+    defaultto '27017'
   end
 
   newparam(:timeout) do
