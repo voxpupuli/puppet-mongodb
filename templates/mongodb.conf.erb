@@ -177,6 +177,9 @@ keyFile = <%= @keyfile %>
 <% if @set_parameter -%>
 setParameter = <%= @set_parameter %>
 <% end -%>
+<% if @storage_engine -%>
+storageEngine = <%= @storage_engine %>
+<% end -%>
 <% if @syslog -%>
 syslog = <%= @syslog %>
 <% end -%>
