@@ -7,12 +7,14 @@ class mongodb::params inherits mongodb::globals {
   $service_enable        = pick($mongodb::globals::service_enable, true)
   $service_ensure        = pick($mongodb::globals::service_ensure, 'running')
   $service_status        = $mongodb::globals::service_status
+  $restart               = true
 
   $mongos_service_manage = pick($mongodb::globals::mongos_service_manage, true)
   $mongos_service_enable = pick($mongodb::globals::mongos_service_enable, true)
   $mongos_service_ensure = pick($mongodb::globals::mongos_service_ensure, 'running')
   $mongos_service_status = $mongodb::globals::mongos_service_status
   $mongos_configdb       = '127.0.0.1:27019'
+  $mongos_restart        = true
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
   case $::osfamily {
