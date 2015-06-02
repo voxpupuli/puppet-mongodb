@@ -26,11 +26,19 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, :parent => Puppet::Provid
   end
 
   def create
-    mongo_eval('db.dummyData.insert({"created_by_puppet": 1})', @resource[:name])
+    if db_ismaster
+      mongo_eval('db.dummyData.insert({"created_by_puppet": 1})', @resource[:name])
+    else
+      Puppet.warning 'Database creation is available only from master host'
+    end
   end
 
   def destroy
-    mongo_eval('db.dropDatabase()', @resource[:name])
+    if db_ismaster
+      mongo_eval('db.dropDatabase()', @resource[:name])
+    else
+      Puppet.warning 'Database removal is available only from master host'
+    end
   end
 
   def exists?

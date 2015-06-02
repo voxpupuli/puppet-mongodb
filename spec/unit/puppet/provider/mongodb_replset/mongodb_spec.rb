@@ -22,13 +22,29 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
   let(:provider) { described_class.new(resource) }
 
   describe '#create' do
+    before :each do
+      tmp = Tempfile.new('test')
+      @mongodconffile = tmp.path
+      allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
+      allow(provider.class).to receive(:mongo).and_return(<<EOT)
+{
+        "ismaster" : false,
+        "secondary" : false,
+        "info" : "can't get local.system.replset config from self or any seed (EMPTYCONFIG)",
+        "isreplicaset" : true
+}
+EOT
+    end
+
     it 'should create a replicaset' do
       allow(provider.class).to receive(:get_replset_properties)
       allow(provider).to receive(:alive_members).and_return(valid_members)
+      allow(provider).to receive(:master_host).and_return(false)
       expect(provider).to receive('rs_initiate').with("{ _id: \"rs_test\", members: [ { _id: 0, host: \"mongo1:27017\" },{ _id: 1, host: \"mongo2:27017\" },{ _id: 2, host: \"mongo3:27017\" } ] }", "mongo1:27017").and_return({
         "info" => "Config now saved locally.  Should come online in about a minute.",
         "ok"   => 1,
       })
+      allow(provider).to receive(:db_ismaster).and_return('{"ismaster" : true}')
       provider.create
       provider.flush
     end
@@ -36,11 +52,13 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
     it 'should create a replicaset with arbiter' do
       allow(provider.class).to receive(:get_replset_properties)
       allow(provider).to receive(:alive_members).and_return(valid_members)
+      allow(provider).to receive(:master_host).and_return(false)
       allow(provider).to receive(:rs_arbiter).and_return('mongo3:27017')
       expect(provider).to receive('rs_initiate').with("{ _id: \"rs_test\", members: [ { _id: 0, host: \"mongo1:27017\" },{ _id: 1, host: \"mongo2:27017\" },{ _id: 2, host: \"mongo3:27017\", arbiterOnly: \"true\" } ] }", "mongo1:27017").and_return({
         "info" => "Config now saved locally.  Should come online in about a minute.",
         "ok"   => 1,
       })
+      allow(provider).to receive(:db_ismaster).and_return('{"ismaster" : true}')
       provider.create
       provider.flush
     end
@@ -52,9 +70,10 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
       @mongodconffile = tmp.path
       allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
     end
+
     describe 'when the replicaset does not exist' do
       it 'returns false' do
-        allow(provider.class).to receive(:mongo).and_return(<<EOT)
+        allow(provider.class).to receive(:mongo_eval).and_return(<<EOT)
 {
 	"startupStatus" : 3,
 	"info" : "run rs.initiate(...) if not yet done for the set",
@@ -69,7 +88,7 @@ EOT
 
     describe 'when the replicaset exists' do
       it 'returns true' do
-        allow(provider.class).to receive(:mongo).and_return(<<EOT)
+        allow(provider.class).to receive(:mongo_eval).and_return(<<EOT)
 {
 	"_id" : "rs_test",
 	"version" : 1,
@@ -89,7 +108,7 @@ EOT
       allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
     end
     it 'returns the members of a configured replicaset' do
-      allow(provider.class).to receive(:mongo).and_return(<<EOT)
+      allow(provider.class).to receive(:mongo_eval).and_return(<<EOT)
 {
 	"_id" : "rs_test",
 	"version" : 1,
@@ -121,7 +140,7 @@ EOT
       allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
     end
     before :each do
-      allow(provider.class).to receive(:mongo).and_return(<<EOT)
+      allow(provider.class).to receive(:mongo_eval).and_return(<<EOT)
 {
 	"setName" : "rs_test",
 	"ismaster" : true,
@@ -141,7 +160,7 @@ EOT
 
     it 'adds missing members to an existing replicaset' do
       allow(provider.class).to receive(:get_replset_properties)
-      allow(provider).to receive(:rs_status).and_return({ "set" => "rs_test" })
+      allow(provider).to receive(:rs_status).and_return({ 'set' => 'rs_test' })
       expect(provider).to receive('rs_add').twice.and_return({ 'ok' => 1 })
       provider.members=(valid_members)
       provider.flush

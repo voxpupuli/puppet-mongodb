@@ -398,6 +398,22 @@ Use this setting to enable shard server mode for mongod.
 Use this setting to configure replication with replica sets. Specify a replica
 set name as an argument to this set. All hosts must have the same set name.
 
+#####`replset_members`
+An array of member hosts for the replica set.
+Mutually exclusive with `replset_config` param.
+
+#####`replset_config`
+A hash that is used to configure the replica set.
+Mutually exclusive with `replset_members` param.
+
+```puppet
+class mongodb::server {
+  replset        => 'rsmain',
+  replset_config => { 'rsmain' => { ensure  => present, members => ['host1:27017', 'host2:27017', 'host3:27017']  }  }
+
+}
+```
+
 #####`rest`
 Set to true to enable a simple REST interface. Default: false
 
@@ -472,6 +488,23 @@ You should not set this for MongoDB versions < 3.x
 
 #####`restart`
 Specifies whether the service should be restarted on config changes. Default: 'true'
+
+#####`create_admin`
+Allows to create admin user for admin database.
+Redefine these parameters if needed:
+
+#####`admin_username`
+Administrator user name
+
+#####`admin_password`
+Administrator user password
+
+#####`admin_roles`
+Administrator user roles
+
+#####`store_creds`
+Store admin credentials in mongorc.js file. Uses with `create_admin` parameter
+
 
 ####Class: mongodb::mongos
 class. This class should only be used if you want to implement sharding within
@@ -564,6 +597,9 @@ The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 #### Provider: mongodb_user
 'mongodb_user' can be used to create and manage users within MongoDB database.
+
+*Note:* if replica set is enabled, replica initialization has to come before
+any user operations.
 
 ```puppet
 mongodb_user { testuser:
