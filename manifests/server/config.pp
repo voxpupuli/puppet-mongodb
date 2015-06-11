@@ -85,7 +85,6 @@ class mongodb::server::config {
       }
     }
 
-    notify{"mongo_extras: storage engine is: ${::storage_engine} ${::mongodb::server::storage_engine}":}
     if empty($storage_engine) {
       $storage_engine_internal = undef
     } else {
@@ -97,10 +96,8 @@ class mongodb::server::config {
     if $config_content {
       $cfg_content = $config_content
     } elsif (versioncmp($version, '2.6.0') >= 0) {
-      notify{"mongo_extras: using template 2.6 '${::storage_engine}' '${::mongodb::server::storage_engine}' '${storage_engine}' '${mongodb::server::storage_engine}'":}
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
     } else {
-      notify{"mongo_extras: using default template. ${::storage_engine} ${::mongodb::server::storage_engine}":}
       # Fall back to oldest most basic config
       $cfg_content = template('mongodb/mongodb.conf.erb')
     }
