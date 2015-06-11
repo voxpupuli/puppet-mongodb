@@ -85,7 +85,6 @@ class mongodb::server::config {
       }
     }
 
-    notify{"mongo_extras: storage engine is: ${::storage_engine} ${::mongodb::server::storage_engine}":}
     if empty($storage_engine) {
       $storage_engine_internal = undef
     } else {
