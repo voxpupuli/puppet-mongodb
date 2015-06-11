@@ -531,7 +531,7 @@ The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 ```puppet
 mongodb_user { testuser:
-  username      => 'testuser',
+  name          => 'testuser',
   ensure        => present,
   password_hash => mongodb_password('testuser', 'p@ssw0rd'),
   database      => testdb,
