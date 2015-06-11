@@ -55,6 +55,7 @@ class mongodb::server::config {
   $ssl             = $mongodb::server::ssl
   $ssl_key         = $mongodb::server::ssl_key
   $ssl_ca          = $mongodb::server::ssl_ca
+  $storage_engine  = $mongodb::server::storage_engine
 
   File {
     owner => $user,
@@ -87,8 +88,11 @@ class mongodb::server::config {
     if $config_content {
       $cfg_content = $config_content
     } elsif (versioncmp($mongodb::globals::version, '2.6.0') >= 0) {
+      notify{"mongo_extras: using template 2.6 '${::storage_engine}' '${::mongodb::server::storage_engine}' '${storage_engine}' '${mongodb::server::storage_engine}'":}
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
     } else {
+      notify{"mongo_extras: using default template. ${::storage_engine} ${::mongodb::server::storage_engine}":}
+      # Fall back to oldest most basic config
       $cfg_content = template('mongodb/mongodb.conf.erb')
     }
 
