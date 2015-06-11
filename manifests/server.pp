@@ -79,13 +79,6 @@ class mongodb::server (
     validate_string($ssl_key, $ssl_ca)
   }
 
-  notify{"mongo_extras: storage engine is: ${::storage_engine} ${::mongodb::server::storage_engine}":}
-  if empty($storage_engine) {
-    $storage_engine_internal = undef
-  } else {
-    $storage_engine_internal = $storage_engine
-  }
-
   if ($ensure == 'present' or $ensure == true) {
     if $restart {
       anchor { 'mongodb::server::start': }->
