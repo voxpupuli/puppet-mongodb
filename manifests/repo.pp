@@ -1,12 +1,20 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
   $ensure  = $mongodb::params::ensure,
+  $version = $mongodb::params::version,
 ) inherits mongodb::params {
   case $::osfamily {
     'RedHat', 'Linux': {
       if $mongodb::globals::use_enterprise_repo == true {
         $location = 'https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/stable/$basearch/'
         $description = 'MongoDB Enterprise Repository'
+      }
+      elsif (versioncmp($version, '3.0.0') >= 0) {
+        $mongover = split($version, '[.]')
+        $location = $::architecture ? {
+          'x86_64' => "http://repo.mongodb.org/yum/redhat/${::operatingsystemmajrelease}/mongodb-org/${mongover[0]}.${mongover[1]}/x86_64/",
+          default  => undef
+        }
       }
       else {
         $location = $::architecture ? {
