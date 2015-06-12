@@ -434,6 +434,12 @@ Default: <>
 Whether or not the MongoDB service resource should be part of the catalog.
 Default: true
 
+#####`storage_engine`
+Only needed for MongoDB 3.x versions, where it's possible to select the
+'wiredTiger' engine in addition to the default 'mmapv1' engine. If not set, the
+config is left out and mongo will default to 'mmapv1'.
+You should not set this for MongoDB versions < 3.x
+
 #####`restart`
 Specifies whether the service should be restarted on config changes. Default: 'true'
 

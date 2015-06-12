@@ -39,6 +39,14 @@ describe 'mongodb::server::config', :type => :class do
 
   end
 
+  describe 'when specifying storage_engine' do
+    let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $dbpath = '/var/lib/mongo' $ensure = present $version='3.0.3' $storage_engine = 'SomeEngine' $storage_engine_internal = 'SomeEngine' $user = 'mongod' $group = 'mongod' $port = 29017 $bind_ip = ['0.0.0.0'] $fork = true $logpath ='/var/log/mongo/mongod.log' $logappend = true}", "include mongodb::server"]}
+
+    it {
+      is_expected.to contain_file('/etc/mongod.conf').with_content(/storage.engine:\sSomeEngine/)
+    }
+  end
+
   describe 'with specific bind_ip values and ipv6' do
     let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $dbpath = '/var/lib/mongo' $ensure = present $bind_ip = ['127.0.0.1', 'fd00:beef:dead:55::143'] $ipv6 = true }", "include mongodb::server"]}
 
