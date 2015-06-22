@@ -96,8 +96,8 @@ net.http.RESTInterfaceEnabled: true
 <% if @maxconns -%>
 net.maxIncomingConnections: <%= @maxconns %>
 <% end -%>
-<% if @nohttpinterface -%>
-net.http.enabled: <%= @nohttpinterface %>
+<% if ! @nohttpinterface.nil? -%>
+net.http.enabled: <%= ! @nohttpinterface %>
 <% end -%>
 
 #Replication
