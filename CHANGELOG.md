@@ -1,3 +1,19 @@
+## 2015-06-22 - Release 0.11.0
+### Summary
+
+#### Features
+- Add arbiter support to to `mongodb_replset`
+- Add `mongod_service_manage`, `mongos_service_manage`, and `ipv6` to `mongodb::globals`
+- Add `service_manage`, `unitxsocketprefix`, `pidfilepath`, `logpath`, `fork`, `bind_ip`, `port`, and `restart` to `mongodb::mongos` class
+- Add `key`, `ipv6`, `service_manage`, and `restart` to `mongodb::server` class
+- Allow mongodb\_conn\_validator to take an array of nodes via composite namevar
+
+#### Bugfixes
+- Update to long apt repo key and bump compatibility to include apt 2
+- Fix `nohttpinterface` on >= 2.6
+- Fix connection validation when bind\_ip is 0.0.0.0
+- Fix mongodb\_conn\_validator to use default port in shard mode
+
 ##2015-01-13 - Release 0.10.0
 ###Summary
 
