@@ -87,8 +87,92 @@ class mongodb::server::config {
     if $config_content {
       $cfg_content = $config_content
     } elsif (versioncmp($mongodb::globals::version, '2.6.0') >= 0) {
+      # Template uses:
+      # - $auth
+      # - $bind_ip
+      # - $configsvr
+      # - $dbpath
+      # - $directoryperdb
+      # - $fork
+      # - $ipv6
+      # - $jounal
+      # - $keyfile
+      # - $logappend
+      # - $logpath
+      # - $maxconns
+      # - $nohttpinteface
+      # - $nojournal
+      # - $noprealloc
+      # - $noscripting
+      # - $nssize
+      # - $objcheck
+      # - $oplog_size
+      # - $pidfilepath
+      # - $port
+      # - $profile
+      # - $quota
+      # - $quotafiles
+      # - $replset
+      # - $rest
+      # - $set_parameter
+      # - $shardsvr
+      # - $slowms
+      # - $smallfiles
+      # - $syslog
+      # - $verbose
+      # - $verbositylevel
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
     } else {
+      # Template uses:
+      # - $auth
+      # - $bind_ip
+      # - $configsvr
+      # - $cpu
+      # - $dbpath
+      # - $diaglog
+      # - $directoryperdb
+      # - $fork
+      # - $ipv6
+      # - $jounal
+      # - $keyfile
+      # - $logappend
+      # - $logpath
+      # - $master
+      # - $maxconns
+      # - $mms_interval
+      # - $mms_name
+      # - $mms_token
+      # - $noauth
+      # - $nohints
+      # - $nohttpinteface
+      # - $nojournal
+      # - $noprealloc
+      # - $noscripting
+      # - $notablescan
+      # - $nssize
+      # - $objcheck
+      # - $only
+      # - $oplog_size
+      # - $pidfilepath
+      # - $port
+      # - $profile
+      # - $quiet
+      # - $quota
+      # - $quotafiles
+      # - $replset
+      # - $rest
+      # - $set_parameter
+      # - $shardsvr
+      # - $slave
+      # - $slowms
+      # - $smallfiles
+      # - $source
+      # - $ssl
+      # - $ssl_ca
+      # - $ssl_key
+      # - $syslog
+      # - $verbose
+      # - $verbositylevel
       $cfg_content = template('mongodb/mongodb.conf.erb')
     }
 

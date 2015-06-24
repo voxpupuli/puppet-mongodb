@@ -613,6 +613,10 @@ For a full list of tested operating systems please have a look at the [.nodeset.
 
 This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
 
+### Apt module support
+
+While this module supports both 1.x and 2.x versions of the puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or 2.0.1.
+
 ## Development
 
 Puppet Labs modules on the Puppet Forge are open projects, and community
