@@ -87,7 +87,7 @@ oplogSize = <%= @oplog_size %>
 # Ignore query hints
 nohints = <%= @nohints %>
 <% end -%>
-<% if @nohttpinterface -%>
+<% if ! @nohttpinterface.nil? -%>
 # Disable the HTTP interface (Defaults to localhost:27018).
 nohttpinterface = <%= @nohttpinterface %>
 <% end -%>
