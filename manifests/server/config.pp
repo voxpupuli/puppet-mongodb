@@ -55,6 +55,7 @@ class mongodb::server::config {
   $ssl             = $mongodb::server::ssl
   $ssl_key         = $mongodb::server::ssl_key
   $ssl_ca          = $mongodb::server::ssl_ca
+  $storage_engine  = $mongodb::server::storage_engine
 
   File {
     owner => $user,
@@ -123,6 +124,7 @@ class mongodb::server::config {
       # - $verbositylevel
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
     } else {
+      # Fall back to oldest most basic config.
       # Template uses:
       # - $auth
       # - $bind_ip
