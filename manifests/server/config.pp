@@ -86,7 +86,7 @@ class mongodb::server::config {
     #Pick which config content to use
     if $config_content {
       $cfg_content = $config_content
-    } elsif (versioncmp($mongodb::globals::version, '2.6.0') >= 0) {
+    } elsif (versioncmp($version, '2.6.0') >= 0) {
       # Template uses:
       # - $auth
       # - $bind_ip
@@ -123,6 +123,7 @@ class mongodb::server::config {
       # - $verbositylevel
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
     } else {
+      # Fall back to oldest most basic config.
       # Template uses:
       # - $auth
       # - $bind_ip
