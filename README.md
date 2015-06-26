@@ -92,6 +92,19 @@ class {'::mongodb::server': }->
 class {'::mongodb::client': }
 ```
 
+Having a local copy of MongoDB repository (that is managed by your private modules)
+you can still enjoy the charms of `mongodb::params` that manage packages.
+To disable managing of repository, but still enable managing packages:
+
+```puppet
+class {'::mongodb::globals':
+  manage_package_repo => false,
+  manage_package      => true,
+}->
+class {'::mongodb::server': }->
+class {'::mongodb::client': }
+```
+
 ## Usage
 
 Most of the interaction for the server is done via `mongodb::server`. For
