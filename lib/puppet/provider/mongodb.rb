@@ -76,11 +76,27 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   # Mongo Command Wrapper
   def self.mongo_eval(cmd, db = 'admin')
+    retry_count = 10
+    retry_sleep = 3
     if mongorc_file
         cmd = mongorc_file + cmd
     end
 
-    out = mongo([db, '--quiet', '--host', get_conn_string, '--eval', cmd])
+    out = nil
+    retry_count.times do |n|
+      begin
+        out = mongo([db, '--quiet', '--host', get_conn_string, '--eval', cmd])
+      rescue => e
+        debug "Request failed: '#{e.message}' Retry: '#{n}'"
+        sleep retry_sleep
+        next
+      end
+      break
+    end
+
+    if !out
+     fail "Could not evalute MongoDB shell command: #{cmd}"
+    end
 
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
     out
