@@ -21,10 +21,23 @@ class mongodb::repo (
     }
 
     'Debian': {
-      $location = $::operatingsystem ? {
-        'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
-        'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
-        default  => undef
+      if(versioncmp($::mongodb::globals::version, '3.0.0') >= 0) {
+        $location = $::operatingsystem ? {
+          'Debian' => 'http://repo.mongodb.org/apt/debian',
+          'Ubuntu' => 'http://repo.mongodb.org/apt/ubuntu',
+          default  => undef,
+        }
+        $release = "${::lsbdistcodename}/mongodb-org/stable"
+        $repos = 'multiverse'
+      }
+      else {
+        $location = $::operatingsystem ? {
+          'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
+          'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
+          default  => undef
+        }
+        $release = 'dist'
+        $repos = '10gen'
       }
       class { '::mongodb::repo::apt': }
     }
@@ -34,5 +47,7 @@ class mongodb::repo (
         fail("Unsupported managed repository for osfamily: ${::osfamily}, operatingsystem: ${::operatingsystem}, module ${module_name} currently only supports managing repos for osfamily RedHat, Debian and Ubuntu")
       }
     }
+
   }
+
 }
