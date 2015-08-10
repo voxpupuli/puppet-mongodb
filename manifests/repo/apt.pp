@@ -14,8 +14,11 @@ class mongodb::repo::apt inherits mongodb::repo {
       key_server  => 'hkp://keyserver.ubuntu.com:80',
       include_src => false,
     }
-    #remove the old and unfortunately named repo
+    #remove the old and unfortunately named repos
     apt::source { 'downloads-distro.mongodb.org':
+      ensure => absent,
+    }
+    apt::source { 'repo.mongodb.org':
       ensure => absent,
     }
     Class['apt::update']->Package<|tag == 'mongodb'|>
