@@ -21,7 +21,7 @@ class mongodb::repo (
     }
 
     'Debian': {
-      if(versioncmp($::mongodb::globals::version, '3.0.0') >= 0) {
+      if(versioncmp($::mongodb::globals::version, '3.0.0') >= 0 or $::mongodb::globals::version == undef) {
         $location = $::operatingsystem ? {
           'Debian' => 'http://repo.mongodb.org/apt/debian',
           'Ubuntu' => 'http://repo.mongodb.org/apt/ubuntu',
