@@ -38,7 +38,6 @@ class mongodb (
   $enable_10gen    = undef,
 
   $init            = $mongodb::params::service_provider,
-  $location        = '',
   $packagename     = undef,
   $version         = undef,
   $servicename     = $mongodb::params::service_name,

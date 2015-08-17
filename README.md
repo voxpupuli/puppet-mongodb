@@ -92,6 +92,19 @@ class {'::mongodb::server': }->
 class {'::mongodb::client': }
 ```
 
+If you don't want to use the 10gen/MongoDB software repository or the OS packages,
+you can point the module to a custom one.
+To install MongoDB from a custom repository:
+
+```puppet
+class {'::mongodb::globals':
+  manage_package_repo => true,
+  repo_location => 'http://example.com/repo'
+}->
+class {'::mongodb::server': }->
+class {'::mongodb::client': }
+```
+
 Having a local copy of MongoDB repository (that is managed by your private modules)
 you can still enjoy the charms of `mongodb::params` that manage packages.
 To disable managing of repository, but still enable managing packages:
@@ -214,6 +227,10 @@ module will use the default for your OS distro.
 The version of MonogDB to install/manage. This is a simple way of providing
 a specific version such as '2.2' or '2.4' for example. If not specified,
 the module will use the default for your OS distro.
+
+#####`repo_location`
+This setting can be used to override the default MongoDB repository location.
+If not specified, the module will use the default repository for your OS distro.
 
 ####Class: mongodb::server
 
