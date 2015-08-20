@@ -23,6 +23,7 @@ class mongodb::globals (
   $version               = undef,
 
   $manage_package_repo   = undef,
+  $manage_package        = undef,
 
   $use_enterprise_repo   = undef,
 ) {

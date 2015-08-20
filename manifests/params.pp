@@ -16,11 +16,13 @@ class mongodb::params inherits mongodb::globals {
   $mongos_configdb       = '127.0.0.1:27019'
   $mongos_restart        = true
 
+  $manage_package        = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
+
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
   case $::osfamily {
     'RedHat', 'Linux': {
 
-      if $mongodb::globals::manage_package_repo {
+      if $manage_package {
         $user        = pick($::mongodb::globals::user, 'mongod')
         $group       = pick($::mongodb::globals::group, 'mongod')
         if ($::mongodb::globals::version == undef) {
@@ -105,7 +107,7 @@ class mongodb::params inherits mongodb::globals {
       }
     }
     'Debian': {
-      if $::mongodb::globals::manage_package_repo {
+      if $manage_package {
         $user  = pick($::mongodb::globals::user, 'mongodb')
         $group = pick($::mongodb::globals::group, 'mongodb')
         if ($::mongodb::globals::version == undef) {
