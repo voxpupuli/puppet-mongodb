@@ -41,7 +41,11 @@ class mongodb::repo (
           default  => undef
         }
         $release     = "${::lsbdistcodename}/mongodb-org/${mongover[0]}.${mongover[1]}"
-        $repos       = 'multiverse'
+        $repos       = $::operatingsystem ? {
+          'Debian' => 'main',
+          'Ubuntu' => 'multiverse',
+          default => undef
+        }
         $key         = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
         $key_server  = 'hkp://keyserver.ubuntu.com:80'
       } else {
