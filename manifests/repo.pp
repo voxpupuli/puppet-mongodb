@@ -1,12 +1,24 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
   $ensure  = $mongodb::params::ensure,
+  $version = $mongodb::params::version
 ) inherits mongodb::params {
   case $::osfamily {
     'RedHat', 'Linux': {
       if $mongodb::globals::use_enterprise_repo == true {
         $location = 'https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/stable/$basearch/'
         $description = 'MongoDB Enterprise Repository'
+      }
+      elsif (versioncmp($version, '3.0.0') >= 0) {
+        $mongover = split($version, '[.]')
+        if $::operatingsystem == 'AmazonLinux' {
+          $location = "https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/${mongover[0]}.${mongover[1]}/x86_64/"
+        } else {
+          $location = $::architecture ? {
+            'x86_64' => "http://repo.mongodb.org/yum/redhat/${::operatingsystemmajrelease}/mongodb-org/${mongover[0]}.${mongover[1]}/x86_64/",
+            default  => undef
+          }
+        }
       }
       else {
         $location = $::architecture ? {
@@ -21,10 +33,27 @@ class mongodb::repo (
     }
 
     'Debian': {
-      $location = $::operatingsystem ? {
-        'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
-        'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
-        default  => undef
+      if (versioncmp($version, '3.0.0') >= 0) {
+        $mongover = split($version, '[.]')
+        $location = $::operatingsystem ? {
+          'Debian' => 'https://repo.mongodb.org/apt/debian',
+          'Ubuntu' => 'https://repo.mongodb.org/apt/ubuntu',
+          default  => undef
+        }
+        $release     = "${::lsbdistcodename}/mongodb-org/${mongover[0]}.${mongover[1]}"
+        $repos       = 'multiverse'
+        $key         = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
+        $key_server  = 'hkp://keyserver.ubuntu.com:80'
+      } else {
+        $location = $::operatingsystem ? {
+          'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
+          'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
+          default  => undef
+        }
+        $release     = 'dist'
+        $repos       = '10gen'
+        $key         = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
+        $key_server  = 'hkp://keyserver.ubuntu.com:80'
       }
       class { '::mongodb::repo::apt': }
     }
