@@ -186,6 +186,16 @@ class mongodb::params inherits mongodb::globals {
   }
 
   case $::operatingsystem {
+    'Debian': {
+      case $::operatingsystemmajrelease {
+        '8': {
+          $service_provider = pick($service_provider, 'systemd')
+        }
+        default: {
+          $service_provider = pick($service_provider, 'debian')
+        }
+      }
+    }
     'Ubuntu': {
       $service_provider = pick($service_provider, 'upstart')
     }
@@ -193,5 +203,4 @@ class mongodb::params inherits mongodb::globals {
       $service_provider = undef
     }
   }
-
 }
