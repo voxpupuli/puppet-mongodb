@@ -55,6 +55,8 @@ class mongodb::server::config {
   $ssl             = $mongodb::server::ssl
   $ssl_key         = $mongodb::server::ssl_key
   $ssl_ca          = $mongodb::server::ssl_ca
+  $storage_engine  = $mongodb::server::storage_engine
+  $version         = $mongodb::server::version
 
   File {
     owner => $user,
@@ -83,10 +85,17 @@ class mongodb::server::config {
       }
     }
 
+    if empty($storage_engine) {
+      $storage_engine_internal = undef
+    } else {
+      $storage_engine_internal = $storage_engine
+    }
+
+
     #Pick which config content to use
     if $config_content {
       $cfg_content = $config_content
-    } elsif (versioncmp($mongodb::globals::version, '2.6.0') >= 0) {
+    } elsif (versioncmp($version, '2.6.0') >= 0) {
       # Template uses:
       # - $auth
       # - $bind_ip
@@ -123,6 +132,7 @@ class mongodb::server::config {
       # - $verbositylevel
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
     } else {
+      # Fall back to oldest most basic config
       # Template uses:
       # - $auth
       # - $bind_ip
@@ -170,6 +180,7 @@ class mongodb::server::config {
       # - $ssl
       # - $ssl_ca
       # - $ssl_key
+      # - storage_engine_internal
       # - $syslog
       # - $verbose
       # - $verbositylevel
