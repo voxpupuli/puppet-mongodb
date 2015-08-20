@@ -12,5 +12,7 @@ class mongodb::client (
   $ensure       = $mongodb::params::package_ensure_client,
   $package_name = $mongodb::params::client_package_name,
 ) inherits mongodb::params {
-  class { '::mongodb::client::install': }
+  anchor { '::mongodb::client::start': } ->
+  class { '::mongodb::client::install': } ->
+  anchor { '::mongodb::client::end': }
 }
