@@ -94,6 +94,10 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
     mongo_command("rs.addArb(\"#{host}\")", master)
   end
 
+  def auth_enabled
+    @resource[:auth_enabled]
+  end
+
   def master_host(hosts)
     hosts.each do |host|
       status = db_ismaster(host)
@@ -135,6 +139,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
   end
 
   def alive_members(hosts)
+    alive = []
     hosts.select do |host|
       begin
         Puppet.debug "Checking replicaset member #{host} ..."
@@ -142,6 +147,12 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
         if status.has_key?('errmsg') and status['errmsg'] == 'not running with --replSet'
           raise Puppet::Error, "Can't configure replicaset #{self.name}, host #{host} is not supposed to be part of a replicaset."
         end
+
+        if auth_enabled and status.has_key?('errmsg') and (status['errmsg'].include? "unauthorized" or status['errmsg'].include? "not authorized")
+          Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
+          alive.push(host)
+        end
+
         if status.has_key?('set')
           if status['set'] != self.name
             raise Puppet::Error, "Can't configure replicaset #{self.name}, host #{host} is already part of another replicaset."
@@ -149,17 +160,15 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
 
           # This node is alive and supposed to be a member of our set
           Puppet.debug "Host #{host} is available for replset #{status['set']}"
-          true
+          alive.push(host)
         elsif status.has_key?('info')
           Puppet.debug "Host #{host} is alive but unconfigured: #{status['info']}"
-          true
         end
       rescue Puppet::ExecutionFailure
         Puppet.warning "Can't connect to replicaset member #{host}."
-
-        false
       end
     end
+    return alive
   end
 
   def set_members
@@ -225,10 +234,17 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
   end
 
   def mongo_command(command, host, retries=4)
-    self.class.mongo_command(command,host,retries)
+    self.class.mongo_command(command,host,retries,auth_enabled)
   end
 
-  def self.mongo_command(command, host=nil, retries=4)
+  def self.mongo_command(command, host=nil, retries=4, auth_enabled=false)
+    if auth_enabled and command =~ 'rs.initiate'
+      # We can't setup replica from any hosts except localhost
+      # if authentication is enabled
+      # User can't be created before replica set initialization
+      # So we can't use user credentials for auth
+      host = '127.0.0.1'
+    end
     # Allow waiting for mongod to become ready
     # Wait for 2 seconds initially and double the delay at each retry
     wait = 2
