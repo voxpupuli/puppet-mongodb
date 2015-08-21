@@ -144,8 +144,8 @@ class mongodb::params inherits mongodb::globals {
         $mongos_config           = '/etc/mongodb-shard.conf'
         $dbpath                  = '/var/lib/mongodb'
         $logpath                 = '/var/log/mongodb/mongodb.log'
-        $pidfilepath             = '/var/run/mongod.pid'
         $bind_ip                 = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
+        $pidfilepath             = undef
       } else {
         # although we are living in a free world,
         # I would not recommend to use the prepacked
