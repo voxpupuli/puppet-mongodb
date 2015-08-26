@@ -56,18 +56,25 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
 
     if mongo_24?
+      if @resource[:password_hash]
+        Puppet.fail("password_hash can't be set on MongoDB older than 3.0; use password instead")
+      end
       user = {
         :user => @resource[:username],
-        :pwd => @resource[:password_hash],
+        :pwd => @resource[:password],
         :roles => @resource[:roles]
       }
 
       mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
     else
+      if password_hash = @resource[:password_hash]
+      elsif @resource[:password]
+        password_hash = Puppet::Util::MongodbMd5er.md5(@resource[:username],@resource[:password])
+      end
       cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
       {
         "createUser": "#{@resource[:username]}",
-        "pwd": "#{@resource[:password_hash]}",
+        "pwd": "#{password_hash}",
         "customData": {"createdBy": "Puppet Mongodb_user['#{@resource[:name]}']"},
         "roles": #{@resource[:roles].to_json},
         "digestPassword": false
@@ -111,6 +118,21 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
     mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
   end
 
+  def password=(value)
+    if mongo_24?
+      mongo_eval("db.changeUserPassword('#{@resource[:username]}','#{value}')", @resource[:database])
+    else
+      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+      {
+          "updateuser": "#{@resource[:username]}",
+          "pwd": "#{@resource[:password]}",
+          "digestpassword": true
+      }
+      EOS
+
+      mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+    end
+  end
   def roles=(roles)
     if mongo_24?
       mongo_eval("db.system.users.update({user:'#{@resource[:username]}'}, { $set: {roles: #{@resource[:roles].to_json}}})")

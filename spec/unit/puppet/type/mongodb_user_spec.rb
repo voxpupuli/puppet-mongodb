@@ -22,9 +22,14 @@ describe Puppet::Type.type(:mongodb_user) do
     expect(@user[:tries]).to eq(5)
   end
 
-  it 'should accept a password' do
+  it 'should accept a password hash' do
     @user[:password_hash] = 'foo'
     expect(@user[:password_hash]).to eq('foo')
+  end
+
+  it 'should accept a plaintext password' do
+    @user[:password] = 'foo'
+    expect(@user[:password]).to eq('foo')
   end
 
   it 'should use default role' do

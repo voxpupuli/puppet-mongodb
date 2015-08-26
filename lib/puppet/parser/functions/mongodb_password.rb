@@ -1,4 +1,4 @@
-require 'digest/md5'
+require File.expand_path(File.join(File.dirname(__FILE__),'..','..','util','mongodb_md5er'))
 
 module Puppet::Parser::Functions
   newfunction(:mongodb_password, :type => :rvalue, :doc => <<-EOS
@@ -9,6 +9,6 @@ module Puppet::Parser::Functions
     raise(Puppet::ParseError, 'mongodb_password(): Wrong number of arguments ' +
       "given (#{args.size} for 2)") if args.size != 2
 
-    Digest::MD5.hexdigest("#{args[0]}:mongo:#{args[1]}")
+    Puppet::Util::MongodbMd5er.md5(args[0],args[1])
   end
 end
