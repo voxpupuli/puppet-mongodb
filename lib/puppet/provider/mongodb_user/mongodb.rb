@@ -60,26 +60,35 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   def create
     if db_ismaster
       if mongo_24?
-        user = {
-          :user => @resource[:username],
-          :pwd => @resource[:password_hash],
-          :roles => @resource[:roles]
-        }
+	if @resource[:password_hash]
+	  Puppet.fail("password_hash can't be set on MongoDB older than 3.0; use password instead")
+	end
+	user = {
+	  :user => @resource[:username],
+	  :pwd => @resource[:password],
+	  :roles => @resource[:roles]
+	}
 
-        mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
+	mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
       else
-        cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
-        {
-          "createUser": "#{@resource[:username]}",
-          "pwd": "#{@resource[:password_hash]}",
-          "customData": {"createdBy": "Puppet Mongodb_user['#{@resource[:name]}']"},
-          "roles": #{@resource[:roles].to_json},
-          "digestPassword": false
-        }
-        EOS
+	if password_hash = @resource[:password_hash]
+	elsif @resource[:password]
+	  password_hash = Puppet::Util::MongodbMd5er.md5(@resource[:username],@resource[:password])
+	end
+	cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+	{
+	  "createUser": "#{@resource[:username]}",
+	  "pwd": "#{password_hash}",
+	  "customData": {"createdBy": "Puppet Mongodb_user['#{@resource[:name]}']"},
+	  "roles": #{@resource[:roles].to_json},
+	  "digestPassword": false
+	}
+	EOS
 
         mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
       end
+    else
+      Puppet.warning 'User creation is available only from master host'
 
       @property_hash[:ensure] = :present
       @property_hash[:username] = @resource[:username]
@@ -88,8 +97,6 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
       @property_hash[:roles] = @resource[:roles]
 
       exists? ? (return true) : (return false)
-    else
-      Puppet.warning 'User creation is available only from master host'
     end
   end
 
@@ -125,6 +132,21 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
     end
   end
 
+  def password=(value)
+    if mongo_24?
+      mongo_eval("db.changeUserPassword('#{@resource[:username]}','#{value}')", @resource[:database])
+    else
+      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+      {
+          "updateuser": "#{@resource[:username]}",
+          "pwd": "#{@resource[:password]}",
+          "digestpassword": true
+      }
+      EOS
+
+      mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+    end
+  end
   def roles=(roles)
     if db_ismaster
       if mongo_24?
