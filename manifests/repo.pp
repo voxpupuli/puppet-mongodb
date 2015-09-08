@@ -1,11 +1,15 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
-  $ensure  = $mongodb::params::ensure,
-  $version = $mongodb::params::version,
+  $ensure        = $mongodb::params::ensure,
+  $version       = $mongodb::params::version,
+  $repo_location = undef,
 ) inherits mongodb::params {
   case $::osfamily {
     'RedHat', 'Linux': {
-      if $mongodb::globals::use_enterprise_repo == true {
+      if ($repo_location != undef){
+        $location = $repo_location
+        $description = 'MongoDB Custom Repository'
+      } elsif $mongodb::globals::use_enterprise_repo == true {
         $location = 'https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/stable/$basearch/'
         $description = 'MongoDB Enterprise Repository'
       }
@@ -25,14 +29,19 @@ class mongodb::repo (
         }
         $description = 'MongoDB/10gen Repository'
       }
+
       class { '::mongodb::repo::yum': }
     }
 
     'Debian': {
-      $location = $::operatingsystem ? {
-        'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
-        'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
-        default  => undef
+      if ($repo_location != undef){
+        $location = $repo_location
+      }else{
+        $location = $::operatingsystem ? {
+          'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
+          'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
+          default  => undef
+        }
       }
       class { '::mongodb::repo::apt': }
     }
