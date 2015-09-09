@@ -30,6 +30,8 @@ class mongodb::globals (
 
   $repo_location         = undef,
   $use_enterprise_repo   = undef,
+
+  $pidfilepath           = undef,
 ) {
 
   # Setup of the repo only makes sense globally, so we are doing it here.
