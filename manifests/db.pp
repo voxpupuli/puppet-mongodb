@@ -12,8 +12,8 @@
 #
 define mongodb::db (
   $user,
-  $password_hash = false,
-  $password      = false,
+  $password_hash = undef,
+  $password      = undef,
   $roles         = ['dbAdmin'],
   $tries         = 10,
 ) {
@@ -24,17 +24,10 @@ define mongodb::db (
     require => Class['mongodb::server'],
   }
 
-  if $password_hash {
-    $hash = $password_hash
-  } elsif $password {
-    $hash = mongodb_password($user, $password)
-  } else {
-    fail("Parameter 'password_hash' or 'password' should be provided to mongodb::db.")
-  }
-
   mongodb_user { "User ${user} on db ${name}":
     ensure        => present,
-    password_hash => $hash,
+    password_hash => $password_hash,
+    password      => $password,
     username      => $user,
     database      => $name,
     roles         => $roles,
