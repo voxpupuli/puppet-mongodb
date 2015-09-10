@@ -74,12 +74,12 @@ class mongodb::server (
   # Do not redefine 'admin_roles' parameter
   # if you want to get full access for admin user
   $admin_roles     = ['userAdmin', 'readWrite', 'dbAdmin',
-                       'dbAdminAnyDatabase', 'readAnyDatabase',
-                       'readWriteAnyDatabase', 'userAdminAnyDatabase',
-                       'clusterAdmin', 'clusterManager', 'clusterMonitor',
-                       'hostManager', 'root', 'restore'],
+                      'dbAdminAnyDatabase', 'readAnyDatabase',
+                      'readWriteAnyDatabase', 'userAdminAnyDatabase',
+                      'clusterAdmin', 'clusterManager', 'clusterMonitor',
+                      'hostManager', 'root', 'restore'],
 
-  # E.g. { 'relica_name' = { auth_enabled => true, members => ['10.0.0.1', '10.0.0.2'] } }
+  # E.g. { 'relica_name' = { members => ['10.0.0.1', '10.0.0.2'] } }
   $replica_sets   = undef,
 
   # Deprecated parameters
@@ -106,7 +106,7 @@ class mongodb::server (
         group   => 'root',
         mode    => '0644',
         content => template('mongodb/mongorc.js.erb'),
-        path    => "/root/.mongorc.js",
+        path    => '/root/.mongorc.js',
         before  => Anchor['mongodb::server::start'],
       }
     }
