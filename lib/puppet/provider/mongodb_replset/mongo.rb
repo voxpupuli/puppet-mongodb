@@ -67,23 +67,34 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
   private
 
   def db_ismaster(host)
-    mongo_command("db.isMaster()", host)
+    mongo_command('db.isMaster()', host)
   end
 
   def rs_initiate(conf, master)
+    if auth_enabled
+      status = rs_status(master)
+      if status.has_key?('errmsg') and (status['errmsg'].include? "unauthorized" or status['errmsg'].include? "not authorized")
+        # MongoDB localhost exception
+        # http://docs.mongodb.org/manual/core/authentication/#localhost-exception
+        return mongo_command("rs.initiate(#{conf})", '127.0.0.1')
+      else
+        # Do not need in additional checks because host was checked before in alive_hosts
+        return mongo_command("rs.initiate(#{conf})", master)
+      end
+    end
     return mongo_command("rs.initiate(#{conf})", master)
   end
 
   def rs_status(host)
-    mongo_command("rs.status()", host)
+    mongo_command('rs.status()', host)
   end
 
   def rs_add(host, master)
-    mongo_command("rs.add(\"#{host}\")", master)
+    mongo_command("rs.add('#{host}')", master)
   end
 
   def rs_remove(host, master)
-    mongo_command("rs.remove(\"#{host}\")", master)
+    mongo_command("rs.remove('#{host}')", master)
   end
 
   def rs_arbiter
@@ -91,7 +102,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
   end
 
   def rs_add_arbiter(host, master)
-    mongo_command("rs.addArb(\"#{host}\")", master)
+    mongo_command("rs.addArb('#{host}')", master)
+  end
+
+  def auth_enabled
+    self.class.auth_enabled
   end
 
   def master_host(hosts)
@@ -135,10 +150,23 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
   end
 
   def alive_members(hosts)
+    alive = []
     hosts.select do |host|
       begin
         Puppet.debug "Checking replicaset member #{host} ..."
         status = rs_status(host)
+        if auth_enabled
+          if status.has_key?('errmsg') and (status['errmsg'].include? "unauthorized" or status['errmsg'].include? "not authorized")
+            Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
+            Puppet.debug "Trying check status with authentication"
+            status = mongo_command('rs.status()', host, true)
+            if status.has_key?('errmsg') and (status['errmsg'].include? "unauthorized" or status['errmsg'].include? "not authorized")
+              Puppet.warning "Authentication with admin credentials has failed. This host #{host} can be anavailable for replica. Trying to use it"
+              alive.push(host)
+            end
+          end
+        end
+
         if status.has_key?('errmsg') and status['errmsg'] == 'not running with --replSet'
           raise Puppet::Error, "Can't configure replicaset #{self.name}, host #{host} is not supposed to be part of a replicaset."
         end
@@ -146,20 +174,19 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
           if status['set'] != self.name
             raise Puppet::Error, "Can't configure replicaset #{self.name}, host #{host} is already part of another replicaset."
           end
-
           # This node is alive and supposed to be a member of our set
           Puppet.debug "Host #{host} is available for replset #{status['set']}"
-          true
+          alive.push(host)
         elsif status.has_key?('info')
           Puppet.debug "Host #{host} is alive but unconfigured: #{status['info']}"
-          true
+          alive.push(host)
         end
       rescue Puppet::ExecutionFailure
         Puppet.warning "Can't connect to replicaset member #{host}."
-
         false
       end
     end
+    alive
   end
 
   def set_members
@@ -183,7 +210,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
       alive_hosts = []
     end
 
-    if @property_flush[:ensure] == :present and @property_hash[:ensure] != :present
+    if @property_flush[:ensure] == :present and @property_hash[:ensure] != :present and !master_host(alive_hosts)
       Puppet.debug "Initializing the replset #{self.name}"
 
       # Create a replset configuration
@@ -201,6 +228,22 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
       if output['ok'] == 0
         raise Puppet::Error, "rs.initiate() failed for replicaset #{self.name}: #{output['errmsg']}"
       end
+
+      retry_count = 10
+      retry_sleep = 3
+      retry_count.times do |n|
+        begin
+          if db_ismaster(alive_hosts[0])['ismaster']
+            Puppet.debug 'Replica set initialization has successfully ended'
+            return
+          else
+            Puppet.debug "Wainting for replica initialization. Retry: #{retry_count}"
+            sleep retry_sleep
+            next
+          end
+        end
+      end
+      raise Puppet::Error, "rs.initiate() failed for replicaset #{self.name}: host #{alive_hosts[0]} didn't become master"
     else
       # Add members to an existing replset
       if master = master_host(alive_hosts)
@@ -225,7 +268,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
   end
 
   def mongo_command(command, host, retries=4)
-    self.class.mongo_command(command,host,retries)
+    self.class.mongo_command(command, host, retries)
   end
 
   def self.mongo_command(command, host=nil, retries=4)
@@ -236,7 +279,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
       args = Array.new
       args << '--quiet'
       args << ['--host',host] if host
-      args << ['--eval',"printjson(#{command})"]
+      if auth_enabled
+        args << ['--eval',"#{mongorc_file} printjson(#{command})"]
+      else
+        args << ['--eval',"printjson(#{command})"]
+      end
       output = mongo(args.flatten)
     rescue Puppet::ExecutionFailure => e
       if e =~ /Error: couldn't connect to server/ and wait <= 2**max_wait
@@ -253,6 +300,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
     output.gsub!(/ISODate\((.+?)\)/, '\1 ')
     output.gsub!(/Timestamp\((.+?)\)/, '[\1]')
     output.gsub!(/ObjectId\(([^)]*)\)/, '\1')
+    output.gsub!(/^Error\:.+/, '')
 
     #Hack to avoid non-json empty sets
     output = "{}" if output == "null\n"

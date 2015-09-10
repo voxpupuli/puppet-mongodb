@@ -67,6 +67,21 @@ class mongodb::server (
   $restart         = $mongodb::params::restart,
   $storage_engine  = undef,
 
+  $create_admin    = true,
+  $create_mongo_rc = true,
+  $admin_username  = 'admin',
+  $admin_password  = 'changeme',
+  # Do not redefine 'admin_roles' parameter
+  # if you want to get full access for admin user
+  $admin_roles     = ['userAdmin', 'readWrite', 'dbAdmin',
+                      'dbAdminAnyDatabase', 'readAnyDatabase',
+                      'readWriteAnyDatabase', 'userAdminAnyDatabase',
+                      'clusterAdmin', 'clusterManager', 'clusterMonitor',
+                      'hostManager', 'root', 'restore'],
+
+  # E.g. { 'relica_name' = { members => ['10.0.0.1', '10.0.0.2'] } }
+  $replica_sets   = undef,
+
   # Deprecated parameters
   $master          = undef,
   $slave           = undef,
@@ -77,6 +92,47 @@ class mongodb::server (
 
   if $ssl {
     validate_string($ssl_key, $ssl_ca)
+  }
+
+  if $admin_password {
+    validate_string($admin_password)
+  }
+
+  if $create_admin {
+    if $create_mongo_rc {
+      file { 'mongodb_rc':
+        ensure  => present,
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        content => template('mongodb/mongorc.js.erb'),
+        path    => '/root/.mongorc.js',
+        before  => Anchor['mongodb::server::start'],
+      }
+    }
+
+    mongodb::db { 'admin':
+      user     => $admin_username,
+      password => $admin_password,
+      roles    => $admin_roles,
+    }
+    Anchor['mongodb::server::end'] -> Mongodb::Db['admin']
+  }
+
+  if $replset {
+    if $replica_sets {
+      validate_hash($replica_sets)
+
+      class { 'mongodb::replset':
+        sets => $replica_sets,
+      }
+      Anchor['mongodb::server::end'] -> Class['mongodb::replset']
+      if $create_admin {
+        Class['mongodb::replset'] -> Mongodb::Db['admin']
+      }
+    } else {
+      fail('You must set replica set members if replica is enabled')
+    }
   }
 
   if ($ensure == 'present' or $ensure == true) {

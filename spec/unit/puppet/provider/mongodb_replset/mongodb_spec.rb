@@ -22,6 +22,16 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
   let(:provider) { described_class.new(resource) }
 
   describe '#create' do
+    before :each do
+      allow(provider.class).to receive(:mongo).and_return(<<EOT)
+{
+        "ismaster" : false,
+        "secondary" : false,
+        "info" : "can't get local.system.replset config from self or any seed (EMPTYCONFIG)",
+        "isreplicaset" : true
+}
+EOT
+    end
     it 'should create a replicaset' do
       allow(provider.class).to receive(:get_replset_properties)
       allow(provider).to receive(:alive_members).and_return(valid_members)
@@ -29,6 +39,7 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
         "info" => "Config now saved locally.  Should come online in about a minute.",
         "ok"   => 1,
       })
+      allow(provider.class).to receive(:mongo).and_return('{"ismaster" : true}')
       provider.create
       provider.flush
     end
@@ -41,6 +52,7 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
         "info" => "Config now saved locally.  Should come online in about a minute.",
         "ok"   => 1,
       })
+      allow(provider.class).to receive(:mongo).and_return('{"ismaster" : true}')
       provider.create
       provider.flush
     end
@@ -50,7 +62,10 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
     before :each do
       tmp = Tempfile.new('test')
       @mongodconffile = tmp.path
+      tmp_rc = Tempfile.new('test_rc')
+      @mongodb_rc = tmp_rc.path
       allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
+      allow(provider.class).to receive(:mongorc_file).and_return(@mongodb_rc)
     end
     describe 'when the replicaset does not exist' do
       it 'returns false' do

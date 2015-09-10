@@ -398,6 +398,16 @@ Use this setting to enable shard server mode for mongod.
 Use this setting to configure replication with replica sets. Specify a replica
 set name as an argument to this set. All hosts must have the same set name.
 
+#####`replica_sets`
+Sets of nodes for replica.
+
+```puppet
+class mongodb::server {
+  replet       => 'rsmain',
+  replica_sets => { 'rsmain' => { ensure  => present, members => ['host1:27017', 'host2:27017', 'host3:27017'] } }
+}
+```
+
 #####`rest`
 Set to true to enable a simple REST interface. Default: false
 
@@ -527,6 +537,23 @@ If not specified, the module will use whatever service name is the default for y
 #####`restart`
 Specifies whether the service should be restarted on config changes. Default: 'true'
 
+#####`create_admin`
+Allows to create admin user for admin database.
+Redefine these parameters if needed:
+
+#####`admin_username`
+Administrator user name
+
+#####`admin_password`
+Administrator user password
+
+#####`admin_roles`
+Administrator user roles
+
+#####`create_mongo_rc`
+Store admin credentials in mongorc.js file. Uses with `create_admin` parameter
+
+
 ### Definitions
 
 #### Definition: mongodb:db
@@ -564,6 +591,9 @@ The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 #### Provider: mongodb_user
 'mongodb_user' can be used to create and manage users within MongoDB database.
+
+*Note:* if replica set is enabled, replica initialization has to come before
+any user operations.
 
 ```puppet
 mongodb_user { testuser:

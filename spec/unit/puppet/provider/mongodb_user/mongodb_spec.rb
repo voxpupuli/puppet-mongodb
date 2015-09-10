@@ -24,8 +24,9 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
   let(:provider) { resource.provider }
 
   before :each do
-     provider.class.stubs(:mongo_eval).with('printjson(db.system.users.find().toArray())').returns(raw_users)
-     provider.class.stubs(:mongo_version).returns('2.6.x')
+    provider.class.stubs(:mongo_eval).with('printjson(db.system.users.find().toArray())').returns(raw_users)
+    provider.class.stubs(:mongo_version).returns('2.6.x')
+    allow(provider.class).to receive(:db_ismaster).and_return(true)
   end
 
   let(:instance) { provider.class.instances.first }
@@ -34,6 +35,13 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
     it 'returns an array of users' do
       usernames = provider.class.instances.collect {|x| x.username }
       expect(parsed_users).to match_array(usernames)
+    end
+  end
+
+  describe 'empty self.instances from slave' do
+    it 'doesn`t retrun array of users' do
+      allow(provider.class).to receive(:db_ismaster).and_return(false)
+      expect(provider.class.instances).to match_array([])
     end
   end
 
