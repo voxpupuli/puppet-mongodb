@@ -19,8 +19,8 @@ define mongodb::db (
 ) {
 
   mongodb_database { $name:
-    ensure  => present,
-    tries   => $tries,
+    ensure => present,
+    tries  => $tries,
   }
 
   if $password_hash {
