@@ -9,11 +9,6 @@ describe 'mongodb::db', :type => :define do
     }
   }
 
-  it 'should contain mongodb_database with mongodb::server requirement' do
-    is_expected.to contain_mongodb_database('testdb')\
-      .with_require('Class[Mongodb::Server]')
-  end
-
   it 'should contain mongodb_user with mongodb_database requirement' do
     is_expected.to contain_mongodb_user('User testuser on db testdb').with({
       'username' => 'testuser',

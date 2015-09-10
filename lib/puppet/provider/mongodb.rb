@@ -1,4 +1,5 @@
 require 'yaml'
+require 'json'
 class Puppet::Provider::Mongodb < Puppet::Provider
 
   # Without initvars commands won't work.
@@ -72,6 +73,29 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     end
 
     "#{ip_real}:#{port_real}"
+  end
+
+  def self.db_ismaster
+    cmd_ismaster = 'printjson(db.isMaster())'
+    if mongorc_file
+        cmd_ismaster = mongorc_file + cmd_ismaster
+    end
+    out = mongo(['admin', '--quiet', '--host', get_conn_string, '--eval', cmd_ismaster])
+    out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
+    out.gsub!(/ISODate\((.+?)\)/, '\1 ')
+    res = JSON.parse out
+
+    return res['ismaster']
+  end
+
+  def self.auth_enabled
+    auth_enabled = false
+    file = get_mongod_conf_file
+    config = YAML.load_file(file)
+    if config.kind_of?(Hash)
+      auth_enabled = config['security.authorization']
+    end
+    return auth_enabled
   end
 
   # Mongo Command Wrapper

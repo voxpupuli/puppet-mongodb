@@ -13,6 +13,44 @@ describe 'mongodb::server' do
     it { is_expected.to contain_class('mongodb::server::config') }
   end
 
+  context 'mongodb_rc file' do
+    let(:params) do
+      {
+        :create_admin    => true,
+        :create_mongo_rc => true,
+      }
+    end
+    it { is_expected.to contain_file('mongodb_rc').with(:ensure => 'present', :path => '/root/.mongorc.js') }
+  end
+
+  context 'admin database and user' do
+    let(:params) do
+      {
+        :create_admin   => true,
+        :admin_username => 'test',
+        :admin_password => 'test',
+      }
+     end
+    it { is_expected.to contain_mongodb__db('admin').with(:user => 'test', :password => 'test').that_requires('Anchor[mongodb::server::end]') }
+  end
+
+  context 'ordering with replica enabled' do
+    let(:params) do
+      {
+        :replset      => true,
+        :replica_sets => { 'test' => { 'members' => ['10.0.0.1', '10.0.0.2'] } },
+      }
+    end
+    it { is_expected.to contain_mongodb__db('admin').that_requires('Class[mongodb::replset]') }
+  end
+
+  context 'when replica set is not defined' do
+    let(:params) do
+      { :replset => true, }
+    end
+    it { expect { is_expected.to raise_error(Puppet::Error) } }
+  end
+
   context 'when deploying on Solaris' do
     let :facts do
       { :osfamily        => 'Solaris' }

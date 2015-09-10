@@ -4,6 +4,7 @@ vendor/
 spec/fixtures/
 .vagrant/
 .bundle/
+.bundled_gems/
 coverage/
 .idea/
 *.iml

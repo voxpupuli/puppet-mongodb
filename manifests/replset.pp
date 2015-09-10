@@ -1,4 +1,5 @@
 # Wrapper class useful for hiera based deployments
+# Internal class, do not call directly
 
 class mongodb::replset(
   $sets = undef
