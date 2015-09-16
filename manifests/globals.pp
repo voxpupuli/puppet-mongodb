@@ -27,6 +27,9 @@ class mongodb::globals (
 
   $manage_package_repo   = undef,
   $manage_package        = undef,
+  $repo_proxy            = undef,
+  $proxy_username        = undef,
+  $proxy_password        = undef,
 
   $repo_location         = undef,
   $use_enterprise_repo   = undef,
@@ -39,6 +42,7 @@ class mongodb::globals (
     class { '::mongodb::repo':
       ensure        => present,
       repo_location => $repo_location,
+      proxy         => $repo_proxy,
     }
   }
 }
