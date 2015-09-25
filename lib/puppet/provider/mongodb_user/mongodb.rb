@@ -102,7 +102,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
         mongo_eval("db.dropUser('#{@resource[:username]}')")
       end
     else
-      Puppet.warning 'User removal is available only from master host'
+      mongo_eval("db.dropUser('#{@resource[:username]}')")
     end
   end
 
@@ -130,12 +130,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
       if mongo_24?
         mongo_eval("db.system.users.update({user:'#{@resource[:username]}'}, { $set: {roles: #{@resource[:roles].to_json}}})")
       else
-        grant = roles-@resource[:roles]
+        grant = roles-@property_hash[:roles]
         if grant.length > 0
           mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{grant. to_json})")
         end
 
-        revoke = @resource[:roles]-roles
+        revoke = @property_hash[:roles]-roles
         if revoke.length > 0
           mongo_eval("db.getSiblingDB('#{@resource[:database]}').revokeRolesFromUser('#{@resource[:username]}', #{revoke.to_json})")
         end

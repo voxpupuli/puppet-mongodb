@@ -109,22 +109,27 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'roles=' do
     it 'changes nothing' do
+      resource.provider.set(:name => 'new_user', :ensure => :present, :roles => ['role1','role2'])
       provider.expects(:mongo_eval).times(0)
       provider.roles=(['role1', 'role2'])
     end
 
     it 'grant a role' do
-      provider.expects(:mongo_eval).with("db.getSiblingDB('new_database').grantRolesToUser('new_user', [\"role3\"])")
+      resource.provider.set(:name => 'new_user', :ensure => :present, :roles => ['role1','role2'])
+      provider.expects(:mongo_eval).
+        with("db.getSiblingDB('new_database').grantRolesToUser('new_user', [\"role3\"])")
       provider.roles=(['role1', 'role2', 'role3'])
     end
 
     it 'revokes a role' do
+      resource.provider.set(:name => 'new_user', :ensure => :present, :roles => ['role1','role2'])
       provider.expects(:mongo_eval).
         with("db.getSiblingDB('new_database').revokeRolesFromUser('new_user', [\"role1\"])")
       provider.roles=(['role2'])
     end
 
     it 'exchanges a role' do
+      resource.provider.set(:name => 'new_user', :ensure => :present, :roles => ['role1','role2'])
       provider.expects(:mongo_eval).
         with("db.getSiblingDB('new_database').revokeRolesFromUser('new_user', [\"role1\"])")
       provider.expects(:mongo_eval).
