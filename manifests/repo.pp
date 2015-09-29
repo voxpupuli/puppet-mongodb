@@ -39,12 +39,34 @@ class mongodb::repo (
     'Debian': {
       if ($repo_location != undef){
         $location = $repo_location
-      }else{
+      } elsif (versioncmp($version, '3.0.0') >= 0) {
+        $mongover = split($version, '[.]')
+        case $::operatingsystem {
+          'Debian': {
+            $location = 'http://repo.mongodb.org/apt/debian'
+            $repos = 'main'
+            # FIXME: for the moment only Debian 'Wheezy' is supported
+            $release = "wheezy/mongodb-org/${$mongover[0]}.${$mongover[1]}"
+          }
+          'Ubuntu': {
+            $location = 'http://repo.mongodb.org/apt/ubuntu'
+            $release = "${::lsbdistcodename}/mongodb-org/${$mongover[0]}.${$mongover[1]}"
+            $repos = 'multiverse'
+          }
+          default: {
+            if($ensure == 'present' or $ensure == true) {
+              fail("Unsupported managed repository for operatingsystem: ${::operatingsystem}, module ${module_name} currently only supports managing repos for operatingsystem Debian and Ubuntu")
+            }
+          }
+        }
+      } else {
         $location = $::operatingsystem ? {
           'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
           'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
           default  => undef
         }
+        $release = 'dist'
+        $repos = '10gen'
       }
       class { '::mongodb::repo::apt': }
     }
