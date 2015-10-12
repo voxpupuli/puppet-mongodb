@@ -30,7 +30,9 @@ systemLog.verbosity: 5
 
 #Process Management
 <% if @fork -%>
-processManagement.fork: <%= @fork %>
+processManagement.fork: true
+<% else -%>
+processManagement.fork: false
 <% end -%>
 <% if @pidfilepath -%>
 processManagement.pidFilePath: <%= @pidfilepath %>
