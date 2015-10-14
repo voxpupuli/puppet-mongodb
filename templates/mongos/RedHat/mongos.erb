@@ -25,7 +25,7 @@ INSTANCE=`basename $0`
 
 # By default OPTIONS just points to the /etc/mongod.conf config file
 # This can be overriden in /etc/sysconfig/mongod
-OPTIONS=" -f /etc/mongodb-shard.conf"
+OPTIONS=" -f <%=@config%>"
 
 PID_PATH=/var/run/mongodb
 PID_FILE=${PID_PATH}/${INSTANCE}.pid

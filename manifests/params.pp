@@ -16,6 +16,10 @@ class mongodb::params inherits mongodb::globals {
   $mongos_configdb       = '127.0.0.1:27019'
   $mongos_restart        = true
 
+  $logrotate             = 'rename'
+  $mongos_append         = true
+  $mongos_logrotate      = 'rename'
+
   $manage_package        = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.

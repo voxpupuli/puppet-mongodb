@@ -20,6 +20,7 @@ class mongodb::server (
   $package_name    = $mongodb::params::server_package_name,
 
   $logpath         = $mongodb::params::logpath,
+  $logrotate       = $mongodb::params::logrotate,
   $bind_ip         = $mongodb::params::bind_ip,
   $ipv6            = undef,
   $logappend       = true,
