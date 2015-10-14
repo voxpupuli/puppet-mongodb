@@ -17,6 +17,7 @@ class mongodb::params inherits mongodb::globals {
   $mongos_restart        = true
 
   $logrotate             = 'rename'
+  $mongos_logrotate      = 'rename'
 
   $manage_package        = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
 

@@ -19,6 +19,7 @@ class mongodb::mongos (
   $bind_ip          = undef,
   $port             = undef,
   $restart          = $mongodb::params::mongos_restart,
+  $logrotate        = $mongodb::params::mongos_logrotate,
 ) inherits mongodb::params {
 
   if ($ensure == 'present' or $ensure == true) {
