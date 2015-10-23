@@ -7,3 +7,5 @@ spec/fixtures/
 coverage/
 .idea/
 *.iml
+.ruby-*
+log/

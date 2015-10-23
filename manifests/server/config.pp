@@ -18,6 +18,11 @@ class mongodb::server::config {
   $cpu             = $mongodb::server::cpu
   $auth            = $mongodb::server::auth
   $noath           = $mongodb::server::noauth
+  $create_admin    = $mongodb::server::create_admin
+  $admin_username  = $mongodb::server::admin_username
+  $admin_password  = $mongodb::server::admin_password
+  $store_creds     = $mongodb::server::store_creds
+  $rcfile          = $mongodb::server::rcfile
   $verbose         = $mongodb::server::verbose
   $verbositylevel  = $mongodb::server::verbositylevel
   $objcheck        = $mongodb::server::objcheck
@@ -208,6 +213,20 @@ class mongodb::server::config {
       backup => false,
     }
     file { $config:
+      ensure => absent
+    }
+  }
+
+  if $auth and $store_creds {
+    file { $rcfile:
+      ensure  => present,
+      content => template('mongodb/mongorc.js.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644'
+    }
+  } else {
+    file { $rcfile:
       ensure => absent
     }
   }
