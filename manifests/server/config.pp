@@ -223,7 +223,7 @@ class mongodb::server::config {
       content => template('mongodb/mongorc.js.erb'),
       owner   => 'root',
       group   => 'root',
-      mode    => '0644'
+      mode    => '0640'
     }
   } else {
     file { $rcfile:
