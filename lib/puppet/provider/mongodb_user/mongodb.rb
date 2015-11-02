@@ -85,7 +85,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
       @property_hash[:username] = @resource[:username]
       @property_hash[:database] = @resource[:database]
       @property_hash[:password_hash] = ''
-      @property_hash[:rolse] = @resource[:roles]
+      @property_hash[:roles] = @resource[:roles]
 
       exists? ? (return true) : (return false)
     else
