@@ -1,3 +1,19 @@
+## 2015-08-18 - Release 0.12.0
+### Summary
+
+####Features
+- Retry Mongo shell commands
+- Engine selection support
+
+####Bugfixes
+- Debian 8 will use the systemd provider
+- Fix 'undefined variable' for mongos_service variables
+- Fix an issue with replset
+- Fix a logic issue with (no)prealloc
+- Do not start installing the client before the repo is setup
+- Intelligently respond if authtication and replication are set
+- Docs updates
+
 ## 2015-06-22 - Release 0.11.0
 ### Summary
 
