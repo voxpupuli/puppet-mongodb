@@ -232,6 +232,15 @@ the module will use the default for your OS distro.
 This setting can be used to override the default MongoDB repository location.
 If not specified, the module will use the default repository for your OS distro.
 
+#####`repo_proxy`
+This will allow you to set a proxy for your repository in case you are behind a corporate firewall. Currently this is only supported with yum repositories
+
+#####`proxy_username`
+This sets the username for the proxyserver, should authentication be required
+
+#####`proxy_password`
+This sets the password for the proxyserver, should authentication be required
+
 ####Class: mongodb::server
 
 Most of the parameters manipulate the mongod.conf file.

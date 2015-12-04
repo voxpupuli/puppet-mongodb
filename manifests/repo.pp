@@ -1,8 +1,11 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
-  $ensure        = $mongodb::params::ensure,
-  $version       = $mongodb::params::version,
-  $repo_location = undef,
+  $ensure         = $mongodb::params::ensure,
+  $version        = $mongodb::params::version,
+  $repo_location  = undef,
+  $proxy          = undef,
+  $proxy_username = undef,
+  $proxy_password = undef,
 ) inherits mongodb::params {
   case $::osfamily {
     'RedHat', 'Linux': {
