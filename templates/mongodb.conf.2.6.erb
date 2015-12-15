@@ -1,6 +1,6 @@
-# mongo.conf - generated from Puppet
+#mongo.conf - generated from Puppet
 
-# System Log
+#System Log
 
 <% if @logpath -%>
 systemLog.path: <%= @logpath %>
@@ -80,7 +80,7 @@ security.javascriptEnabled: <%= @noscripting %>
 <% end -%>
 
 
-# Net
+#Net
 <% if @ipv6 -%>
 net.ipv6=<%= @ipv6 %>
 <% end -%>
@@ -111,7 +111,7 @@ replication.replSetName: <%= @replset %>
 replication.oplogSizeMB: <%= @oplog_size %>
 <% end -%>
 
-# Sharding
+#Sharding
 <% if @configsvr -%>
 sharding.clusterRole: configsvr
 <% end -%>
