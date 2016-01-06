@@ -9,8 +9,39 @@ describe 'mongodb::server' do
   end
 
   context 'with defaults' do
-    it { is_expected.to contain_class('mongodb::server::install') }
-    it { is_expected.to contain_class('mongodb::server::config') }
+    it { is_expected.to compile.with_all_deps }
+    it { is_expected.to contain_class('mongodb::server::install').
+        that_comes_before('Class[mongodb::server::config]') }
+    it { is_expected.to contain_class('mongodb::server::config').
+        that_notifies('Class[mongodb::server::service]') }
+    it { is_expected.to contain_class('mongodb::server::service') }
+  end
+
+  context 'with create_admin => true' do
+    let(:params) do 
+      {
+        :create_admin   => true,
+        :admin_username => 'admin',
+        :admin_password => 'password'
+      }
+    end
+    it { is_expected.to compile.with_all_deps }
+    it { is_expected.to contain_class('mongodb::server::install').
+        that_comes_before('Class[mongodb::server::config]') }
+    it { is_expected.to contain_class('mongodb::server::config').
+        that_notifies('Class[mongodb::server::service]') }
+    it { is_expected.to contain_class('mongodb::server::service') }
+
+    it {
+        is_expected.to contain_mongodb__db('admin').with({
+          'user'     => 'admin',
+          'password' => 'password',
+          'roles'    => ["userAdmin", "readWrite", "dbAdmin", "dbAdminAnyDatabase",
+                         "readAnyDatabase", "readWriteAnyDatabase", "userAdminAnyDatabase",
+                         "clusterAdmin", "clusterManager", "clusterMonitor", "hostManager",
+                         "root", "restore"]
+        }).that_requires('Anchor[mongodb::server::end]')
+      }
   end
 
   context 'when deploying on Solaris' do
@@ -55,6 +86,76 @@ describe 'mongodb::server' do
         end
         it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/net\.http\.enabled: true/) }
       end
+    end
+  end
+
+  context 'when setting up replicasets' do
+    context 'should fail if providing both replica_sets and replset_members' do
+      let(:params) do
+        {
+          :replset          => 'rsTest',
+          :replset_members  => [
+            'mongo1:27017',
+            'mongo2:27017',
+            'mongo3:27017'
+          ],
+          :replica_sets     => {}
+        }
+      end
+
+      it { expect { is_expected.to raise_error(/Puppet::Error: You can provide either replset_members or replica_sets, not both/) } }
+    end
+
+    context 'should setup using replica_sets hash' do
+      let(:rsConf) do
+        {
+          'rsTest' => {
+            'members' => [
+              'mongo1:27017',
+              'mongo2:27017',
+              'mongo3:27017',
+            ],
+            'arbiter' => 'mongo3:27017'
+          }
+        }
+      end
+
+      let(:params) do
+        {
+          :replset        => 'rsTest',
+          :replset_config => rsConf
+        }
+      end
+
+      it { is_expected.to contain_class('mongodb::replset').with_sets(rsConf) }
+    end
+
+    context 'should setup using replset_members' do
+      let(:rsConf) do
+        {
+          'rsTest' => {
+            'ensure'  => 'present',
+            'members' => [
+              'mongo1:27017',
+              'mongo2:27017',
+              'mongo3:27017'
+            ]
+          }
+        }
+      end
+
+      let(:params) do
+        {
+          :replset         => 'rsTest',
+          :replset_members => [
+            'mongo1:27017',
+            'mongo2:27017',
+            'mongo3:27017'
+          ]
+        }
+      end
+
+      it { is_expected.to contain_class('mongodb::replset').with_sets(rsConf) }
     end
   end
 end

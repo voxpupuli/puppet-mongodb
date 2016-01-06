@@ -1,4 +1,5 @@
 require 'yaml'
+require 'json'
 class Puppet::Provider::Mongodb < Puppet::Provider
 
   # Without initvars commands won't work.
@@ -74,20 +75,76 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     "#{ip_real}:#{port_real}"
   end
 
+  def self.db_ismaster
+    cmd_ismaster = 'printjson(db.isMaster())'
+    if mongorc_file
+        cmd_ismaster = mongorc_file + cmd_ismaster
+    end
+    out = mongo(['admin', '--quiet', '--host', get_conn_string, '--eval', cmd_ismaster])
+    out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
+    out.gsub!(/ISODate\((.+?)\)/, '\1 ')
+    out.gsub!(/^Error\:.+/, '')
+    res = JSON.parse out
+
+    return res['ismaster']
+  end
+
+  def db_ismaster
+    self.class.db_ismaster
+  end
+
+  def self.auth_enabled
+    auth_enabled = false
+    file = get_mongod_conf_file
+    config = YAML.load_file(file)
+    if config.kind_of?(Hash)
+      auth_enabled = config['security.authorization']
+    else # It has to be a key-value store
+      config = {}
+      File.readlines(file).collect do |line|
+        k,v = line.split('=')
+        config[k.rstrip] = v.lstrip.chomp if k and v
+      end
+      auth_enabled = config['auth']
+    end
+    return auth_enabled
+  end
+
   # Mongo Command Wrapper
-  def self.mongo_eval(cmd, db = 'admin')
+  def self.mongo_eval(cmd, db = 'admin', retries = 10, host = nil)
+    retry_count = retries
+    retry_sleep = 3
     if mongorc_file
         cmd = mongorc_file + cmd
     end
 
-    out = mongo([db, '--quiet', '--host', get_conn_string, '--eval', cmd])
+    out = nil
+    retry_count.times do |n|
+      begin
+        if host
+          out = mongo([db, '--quiet', '--host', host, '--eval', cmd])
+        else
+          out = mongo([db, '--quiet', '--host', get_conn_string, '--eval', cmd])
+        end
+      rescue => e
+        Puppet.debug "Request failed: '#{e.message}' Retry: '#{n}'"
+        sleep retry_sleep
+        next
+      end
+      break
+    end
+
+    if !out
+      raise Puppet::ExecutionFailure, "Could not evalute MongoDB shell command: #{cmd}"
+    end
 
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
+    out.gsub!(/^Error\:.+/, '')
     out
   end
 
-  def mongo_eval(cmd, db = 'admin')
-    self.class.mongo_eval(cmd, db)
+  def mongo_eval(cmd, db = 'admin', retries = 10, host = nil)
+    self.class.mongo_eval(cmd, db, retries, host)
   end
 
   # Mongo Version checker

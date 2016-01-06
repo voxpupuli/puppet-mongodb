@@ -10,8 +10,7 @@ describe 'mongodb::db', :type => :define do
   }
 
   it 'should contain mongodb_database with mongodb::server requirement' do
-    is_expected.to contain_mongodb_database('testdb')\
-      .with_require('Class[Mongodb::Server]')
+    is_expected.to contain_mongodb_database('testdb')
   end
 
   it 'should contain mongodb_user with mongodb_database requirement' do

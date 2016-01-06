@@ -92,6 +92,49 @@ class {'::mongodb::server': }->
 class {'::mongodb::client': }
 ```
 
+If you don't want to use the 10gen/MongoDB software repository or the OS packages,
+you can point the module to a custom one.
+To install MongoDB from a custom repository:
+
+```puppet
+class {'::mongodb::globals':
+  manage_package_repo => true,
+  repo_location => 'http://example.com/repo'
+}->
+class {'::mongodb::server': }->
+class {'::mongodb::client': }
+```
+
+For Debian/Ubuntu you should also specify the aptkey, release and repos parameters:
+
+```puppet
+class {'::mongodb::globals':
+  manage_package_repo => true,
+  repo_location => 'http://example.com/repo'
+  repo_location       => 'http://example.com/repo',                             
+  repo_aptkey         => '42F3E95A2C4F08279C4960ADD68FA50FEA312927',            
+  repo_release        => "${::lsbdistcodename}/mongodb-org/stable",                                                
+  repo_repos          => 'multiverse',                       
+}->
+class {'::mongodb::server': }->
+class {'::mongodb::client': }
+```
+
+
+
+Having a local copy of MongoDB repository (that is managed by your private modules)
+you can still enjoy the charms of `mongodb::params` that manage packages.
+To disable managing of repository, but still enable managing packages:
+
+```puppet
+class {'::mongodb::globals':
+  manage_package_repo => false,
+  manage_package      => true,
+}->
+class {'::mongodb::server': }->
+class {'::mongodb::client': }
+```
+
 ## Usage
 
 Most of the interaction for the server is done via `mongodb::server`. For
@@ -201,6 +244,19 @@ module will use the default for your OS distro.
 The version of MonogDB to install/manage. This is a simple way of providing
 a specific version such as '2.2' or '2.4' for example. If not specified,
 the module will use the default for your OS distro.
+
+#####`repo_location`
+This setting can be used to override the default MongoDB repository location.
+If not specified, the module will use the default repository for your OS distro.
+
+#####`repo_proxy`
+This will allow you to set a proxy for your repository in case you are behind a corporate firewall. Currently this is only supported with yum repositories
+
+#####`proxy_username`
+This sets the username for the proxyserver, should authentication be required
+
+#####`proxy_password`
+This sets the password for the proxyserver, should authentication be required
 
 ####Class: mongodb::server
 
@@ -368,6 +424,22 @@ Use this setting to enable shard server mode for mongod.
 Use this setting to configure replication with replica sets. Specify a replica
 set name as an argument to this set. All hosts must have the same set name.
 
+#####`replset_members`
+An array of member hosts for the replica set.
+Mutually exclusive with `replset_config` param.
+
+#####`replset_config`
+A hash that is used to configure the replica set.
+Mutually exclusive with `replset_members` param.
+
+```puppet
+class mongodb::server {
+  replset        => 'rsmain',
+  replset_config => { 'rsmain' => { ensure  => present, members => ['host1:27017', 'host2:27017', 'host3:27017']  }  }
+
+}
+```
+
 #####`rest`
 Set to true to enable a simple REST interface. Default: false
 
@@ -434,8 +506,31 @@ Default: <>
 Whether or not the MongoDB service resource should be part of the catalog.
 Default: true
 
+#####`storage_engine`
+Only needed for MongoDB 3.x versions, where it's possible to select the
+'wiredTiger' engine in addition to the default 'mmapv1' engine. If not set, the
+config is left out and mongo will default to 'mmapv1'.
+You should not set this for MongoDB versions < 3.x
+
 #####`restart`
 Specifies whether the service should be restarted on config changes. Default: 'true'
+
+#####`create_admin`
+Allows to create admin user for admin database.
+Redefine these parameters if needed:
+
+#####`admin_username`
+Administrator user name
+
+#####`admin_password`
+Administrator user password
+
+#####`admin_roles`
+Administrator user roles
+
+#####`store_creds`
+Store admin credentials in mongorc.js file. Uses with `create_admin` parameter
+
 
 ####Class: mongodb::mongos
 class. This class should only be used if you want to implement sharding within
@@ -528,6 +623,9 @@ The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 #### Provider: mongodb_user
 'mongodb_user' can be used to create and manage users within MongoDB database.
+
+*Note:* if replica set is enabled, replica initialization has to come before
+any user operations.
 
 ```puppet
 mongodb_user { testuser:

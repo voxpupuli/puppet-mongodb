@@ -1,6 +1,6 @@
-# mongo.conf - generated from Puppet
+#mongo.conf - generated from Puppet
 
-# System Log
+#System Log
 
 <% if @logpath -%>
 systemLog.path: <%= @logpath %>
@@ -44,7 +44,7 @@ storage.journal.enabled: false
 storage.journal.enabled: true
 <% end -%>
 <% if @noprealloc -%>
-storage.preallocDataFiles: <%= @noprealloc %>
+storage.preallocDataFiles: <%= !@noprealloc %>
 <% end -%>
 <% if @nssize -%>
 storage.nsSize: <%= @nssize %>
@@ -60,6 +60,9 @@ storage.quota.enforced: <%= @quota %>
 <% if @quotafiles -%>
 storage.quota.maxFilesPerDB: <%= @quotafiles %>
 <% end -%>
+<% end -%>
+<% if @storage_engine_internal -%>
+storage.engine: <%= @storage_engine_internal %>
 <% end -%>
 
 
@@ -77,7 +80,7 @@ security.javascriptEnabled: <%= @noscripting %>
 <% end -%>
 
 
-# Net
+#Net
 <% if @ipv6 -%>
 net.ipv6=<%= @ipv6 %>
 <% end -%>
@@ -108,7 +111,7 @@ replication.replSetName: <%= @replset %>
 replication.oplogSizeMB: <%= @oplog_size %>
 <% end -%>
 
-# Sharding
+#Sharding
 <% if @configsvr -%>
 sharding.clusterRole: configsvr
 <% end -%>
