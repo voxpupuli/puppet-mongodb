@@ -42,7 +42,7 @@ class mongodb::repo (
     'Debian': {
       if ($repo_location != undef){
         $location = $repo_location
-        $apt_key = $repos_aptkey
+        $apt_key = $repo_aptkey
         $apt_release = $repo_aptrelease
         $apt_repos = $repo_aptrepos
       }
