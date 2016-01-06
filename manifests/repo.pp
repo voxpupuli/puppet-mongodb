@@ -27,6 +27,7 @@ class mongodb::repo (
           'Ubuntu' => 'http://repo.mongodb.org/apt/ubuntu',
           default  => undef,
         }
+        $aptkey = '42F3E95A2C4F08279C4960ADD68FA50FEA312927'
         if versioncmp($::mongodb::globals::version, '3.1.0') < 0 {
           $release = "${::lsbdistcodename}/mongodb-org/3.0"
         }
@@ -47,6 +48,7 @@ class mongodb::repo (
           'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
           default  => undef
         }
+        $aptkey = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
         $release = 'dist'
         $repos = '10gen'
       }

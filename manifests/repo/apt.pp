@@ -10,24 +10,14 @@ class mongodb::repo::apt inherits mongodb::repo {
       location    => $::mongodb::repo::location,
       release     => $::mongodb::repo::release,
       repos       => $::mongodb::repo::repos,
-      key         => '42F3E95A2C4F08279C4960ADD68FA50FEA312927',
+      key         => $::mongodb::repo::aptkey,
       key_server  => 'hkp://keyserver.ubuntu.com:80',
       include_src => false,
-    }
-    #remove the old and unfortunately named repos
-    apt::source { 'downloads-distro.mongodb.org':
-      ensure => absent,
-    }
-    apt::source { 'repo.mongodb.org':
-      ensure => absent,
     }
     Class['apt::update']->Package<|tag == 'mongodb'|>
   }
   else {
     apt::source { 'mongodb':
-      ensure => absent,
-    }
-    apt::source { 'downloads-distro.mongodb.org':
       ensure => absent,
     }
   }
