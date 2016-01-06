@@ -27,7 +27,18 @@ class mongodb::repo (
           'Ubuntu' => 'http://repo.mongodb.org/apt/ubuntu',
           default  => undef,
         }
-        $release = "${::lsbdistcodename}/mongodb-org/stable"
+        if versioncmp($::mongodb::globals::version, '3.1.0') < 0 {
+          $release = "${::lsbdistcodename}/mongodb-org/3.0"
+        }
+        elsif versioncmp($::mongodb::globals::version, '3.2.0') < 0 {
+          $release = "${::lsbdistcodename}/mongodb-org/3.1"
+        }
+        elsif versioncmp($::mongodb::globals::version, '3.3.0') < 0 {
+          $release = "${::lsbdistcodename}/mongodb-org/3.2"
+        }
+        else {
+          $release = "${::lsbdistcodename}/mongodb-org/stable"
+        }
         $repos = 'multiverse'
       }
       else {
