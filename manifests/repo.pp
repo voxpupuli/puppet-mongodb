@@ -42,7 +42,7 @@ class mongodb::repo (
     'Debian': {
       if ($repo_location != undef){
         $location = $repo_location
-        $aptkey = $repos_aptkey
+        $apt_key = $repos_aptkey
         $release = $repo_release
         $repos = $repo_repos
       }
@@ -53,7 +53,7 @@ class mongodb::repo (
             'Ubuntu' => 'http://repo.mongodb.org/apt/ubuntu',
             default  => undef,
           }
-          $aptkey = '42F3E95A2C4F08279C4960ADD68FA50FEA312927'
+          $apt_key = '42F3E95A2C4F08279C4960ADD68FA50FEA312927'
           if versioncmp($version, '3.1.0') < 0 {
             $release = "${::lsbdistcodename}/mongodb-org/3.0"
           }
@@ -74,7 +74,7 @@ class mongodb::repo (
             'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
             default  => undef
           }
-          $aptkey = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
+          $apt_key = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
           $release = 'dist'
           $repos = '10gen'
         }

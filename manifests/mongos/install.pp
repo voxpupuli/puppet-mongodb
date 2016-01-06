@@ -6,11 +6,11 @@ class mongodb::mongos::install (
 
 
   #mongos package does not create the "mongodb" user and group
-  group {'mongodb': 
+  group {'mongodb':
     ensure => present,
   }
   user {'mongodb':
-    gid => 'mongodb',
+    gid     => 'mongodb',
     require => Group['mongodb'],
   }
 
