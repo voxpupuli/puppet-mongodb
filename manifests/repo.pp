@@ -1,14 +1,14 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
-  $ensure         = $mongodb::params::ensure,
-  $version        = $mongodb::params::version,
-  $repo_location  = undef,
-  $repo_aptkey    = undef,
-  $repo_release   = undef,
-  $repo_repos     = undef,
-  $proxy          = undef,
-  $proxy_username = undef,
-  $proxy_password = undef,
+  $ensure          = $mongodb::params::ensure,
+  $version         = $mongodb::params::version,
+  $repo_location   = undef,
+  $repo_aptkey     = undef,
+  $repo_aptrelease = undef,
+  $repo_aptrepos   = undef,
+  $proxy           = undef,
+  $proxy_username  = undef,
+  $proxy_password  = undef,
 ) inherits mongodb::params {
   case $::osfamily {
     'RedHat', 'Linux': {
@@ -43,8 +43,8 @@ class mongodb::repo (
       if ($repo_location != undef){
         $location = $repo_location
         $apt_key = $repos_aptkey
-        $release = $repo_release
-        $repos = $repo_repos
+        $apt_release = $repo_aptrelease
+        $apt_repos = $repo_aptrepos
       }
       else {
         if(versioncmp($version, '3.0.0') >= 0 or $version == undef) {
