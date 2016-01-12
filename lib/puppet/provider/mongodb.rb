@@ -135,7 +135,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     end
 
     if !out
-      raise Puppet::ExecutionFailure, "Could not evalute MongoDB shell command: #{cmd}"
+      raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}"
     end
 
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')

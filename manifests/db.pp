@@ -6,7 +6,7 @@
 #
 #  user - Database username.
 #  password_hash - Hashed password. Hex encoded md5 hash of "$username:mongo:$password".
-#  password - Plain text user password. This is UNSAFE, use 'password_hash' unstead.
+#  password - Plain text user password. This is UNSAFE, use 'password_hash' instead.
 #  roles (default: ['dbAdmin']) - array with user roles.
 #  tries (default: 10) - The maximum amount of two second tries to wait MongoDB startup.
 #
@@ -32,12 +32,13 @@ define mongodb::db (
   }
 
   mongodb_user { "User ${user} on db ${name}":
-    ensure        => present,
-    password_hash => $hash,
-    username      => $user,
-    database      => $name,
-    roles         => $roles,
-    require       => Mongodb_database[$name],
+    ensure         => present,
+    username       => $user,
+    password_hash  => $hash,
+    password_plain => $password,
+    database       => $name,
+    roles          => $roles,
+    require        => Mongodb_database[$name],
   }
 
 }

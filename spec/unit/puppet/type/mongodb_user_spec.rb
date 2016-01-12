@@ -6,7 +6,7 @@ describe Puppet::Type.type(:mongodb_user) do
     @user = Puppet::Type.type(:mongodb_user).new(
               :name => 'test',
               :database => 'testdb',
-              :password_hash => 'pass')
+              :password_hash => '24fed24b83566e4d1f033f33f7caa658')
   end
 
   it 'should accept a user name' do
@@ -44,14 +44,8 @@ describe Puppet::Type.type(:mongodb_user) do
 
   it 'should require a database' do
     expect {
-      Puppet::Type.type(:mongodb_user).new({:name => 'test', :password_hash => 'pass'})
+      Puppet::Type.type(:mongodb_user).new({:name => 'test', :password_hash => '24fed24b83566e4d1f033f33f7caa658'})
     }.to raise_error(Puppet::Error, 'Parameter \'database\' must be set')
-  end
-
-  it 'should require a password_hash' do
-    expect {
-      Puppet::Type.type(:mongodb_user).new({:name => 'test', :database => 'testdb'})
-    }.to raise_error(Puppet::Error, 'Property \'password_hash\' must be set. Use mongodb_password() for creating hash.')
   end
 
   it 'should sort roles' do
@@ -59,7 +53,7 @@ describe Puppet::Type.type(:mongodb_user) do
     @user = Puppet::Type.type(:mongodb_user).new(
               :name => 'test',
               :database => 'testdb',
-              :password_hash => 'pass',
+              :password_hash => '24fed24b83566e4d1f033f33f7caa658',
               :roles => ['b', 'a'])
     expect(@user[:roles]).to eq(['a', 'b'])
   end
