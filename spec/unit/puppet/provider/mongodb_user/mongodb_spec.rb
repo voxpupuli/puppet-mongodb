@@ -6,19 +6,20 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   let(:raw_users) do
     [
-      { '_id' => 'admin.root', 'user' => 'root', 'db' => 'admin', 'credentials' => { 'MONGODB-CR' => 'pass' }, 'roles' => [ { 'role' => 'role2', 'db' => 'admin' },  { 'role' => 'role1', 'db' => 'admin' } ] }
+      { '_id' => 'admin.root', 'user' => 'root', 'db' => 'admin', 'credentials' => { 'MONGODB-CR' => '24fed24b83566e4d1f033f33f7caa658' }, 'roles' => [ { 'role' => 'role2', 'db' => 'admin' },  { 'role' => 'role1', 'db' => 'admin' } ] }
     ].to_json
   end
 
   let(:parsed_users) { %w(root) }
 
   let(:resource) { Puppet::Type.type(:mongodb_user).new(
-    { :ensure        => :present,
-      :name          => 'new_user',
-      :database      => 'new_database',
-      :password_hash => 'pass',
-      :roles         => ['role1', 'role2'],
-      :provider      => described_class.name
+    { :ensure         => :present,
+      :name           => 'new_user',
+      :database       => 'new_database',
+      :password_plain => 'pass',
+      :password_hash  => '24fed24b83566e4d1f033f33f7caa658', #must correspond to password_plain, or the provider complains
+      :roles          => ['role1', 'role2'],
+      :provider       => described_class.name
     }
   )}
 
@@ -55,7 +56,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
       cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
       {
         "createUser": "new_user",
-        "pwd": "pass",
+        "pwd": "24fed24b83566e4d1f033f33f7caa658",
         "customData": {"createdBy": "Puppet Mongodb_user['new_user']"},
         "roles": ["role1","role2"],
         "digestPassword": false
@@ -82,7 +83,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'password_hash' do
     it 'returns a password_hash' do
-      expect(instance.password_hash).to eq("pass")
+      expect(instance.password_hash).to eq("24fed24b83566e4d1f033f33f7caa658")
     end
   end
 
@@ -91,7 +92,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
       cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
       {
           "updateUser": "new_user",
-          "pwd": "pass",
+          "pwd": "24fed24b83566e4d1f033f33f7caa658",
           "digestPassword": false
       }
       EOS

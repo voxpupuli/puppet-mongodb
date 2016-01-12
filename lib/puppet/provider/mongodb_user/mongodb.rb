@@ -60,9 +60,11 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   def create
     if db_ismaster
       if mongo_24?
+        #if mongodb <= 2, the creation of the user involves a plaintext password (hashes are not accepted)
+        fail("Property 'password_plain' must be set for mongoDB 2.4.x.") unless @resource[:password_plain]
         user = {
           :user => @resource[:username],
-          :pwd => @resource[:password_hash],
+          :pwd => @resource[:password_plain],
           :roles => @resource[:roles]
         }
 
@@ -84,6 +86,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
       @property_hash[:ensure] = :present
       @property_hash[:username] = @resource[:username]
       @property_hash[:database] = @resource[:database]
+      @property_hash[:password_plain] = '' #plaintext password is needed for mongodb <= 2.4
       @property_hash[:password_hash] = ''
       @property_hash[:roles] = @resource[:roles]
 
@@ -112,14 +115,20 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
   def password_hash=(value)
     if db_ismaster
-      cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
-      {
-          "updateUser": "#{@resource[:username]}",
-          "pwd": "#{@resource[:password_hash]}",
-          "digestPassword": false
-      }
-      EOS
-      mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+      #if mongodb is 2.4 or less, the API call is different
+      if mongo_24?
+        #this API call requires a plaintext password and does not accept hashes like the newer versions of mongodb do
+        mongo_eval("db.changeUserPassword('#{@resource[:username]}', '#{@resource[:password_plain]}')", @resource[:database])
+      else
+        cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
+        {
+            "updateUser": "#{@resource[:username]}",
+            "pwd": "#{@resource[:password_hash]}",
+            "digestPassword": false
+        }
+        EOS
+        mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+      end
     else
       Puppet.warning 'User password operations are available only from master host'
     end
