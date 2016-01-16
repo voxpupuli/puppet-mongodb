@@ -80,7 +80,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     if mongorc_file
         cmd_ismaster = mongorc_file + cmd_ismaster
     end
-    out = mongo(['admin', '--quiet', '--host', get_conn_string, '--eval', cmd_ismaster])
+    out = mongo(['admin', '--quiet', '--ipv6', '--host', get_conn_string, '--eval', cmd_ismaster])
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
     out.gsub!(/ISODate\((.+?)\)/, '\1 ')
     out.gsub!(/^Error\:.+/, '')
@@ -122,9 +122,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     retry_count.times do |n|
       begin
         if host
-          out = mongo([db, '--quiet', '--host', host, '--eval', cmd])
+          out = mongo([db, '--quiet', '--ipv6', '--host', host, '--eval', cmd])
         else
-          out = mongo([db, '--quiet', '--host', get_conn_string, '--eval', cmd])
+          out = mongo([db, '--quiet', '--ipv6', '--host', get_conn_string, '--eval', cmd])
         end
       rescue => e
         Puppet.debug "Request failed: '#{e.message}' Retry: '#{n}'"
