@@ -16,7 +16,7 @@ class mongodb::repo (
         $location = 'https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/stable/$basearch/'
         $description = 'MongoDB Enterprise Repository'
       }
-      elsif (versioncmp($version, '3.0.0') >= 0) {
+      elsif $version and (versioncmp($version, '3.0.0') >= 0) {
         $mongover = split($version, '[.]')
         $location = $::architecture ? {
           'x86_64' => "http://repo.mongodb.org/yum/redhat/${::operatingsystemmajrelease}/mongodb-org/${mongover[0]}.${mongover[1]}/x86_64/",

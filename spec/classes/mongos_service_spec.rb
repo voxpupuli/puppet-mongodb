@@ -5,8 +5,9 @@ describe 'mongodb::mongos::service', :type => :class do
   context 'on Debian with service_manage set to true' do
     let :facts do
       {
-        :osfamily        => 'Debian',
-        :operatingsystem => 'Debian',
+        :osfamily               => 'Debian',
+        :operatingsystem        => 'Debian',
+        :operatingsystemrelease => '7.0',
       }
     end
 
@@ -29,8 +30,9 @@ describe 'mongodb::mongos::service', :type => :class do
   context 'on Debian with service_manage set to false' do
     let :facts do
       {
-        :osfamily        => 'Debian',
-        :operatingsystem => 'Debian',
+        :osfamily               => 'Debian',
+        :operatingsystem        => 'Debian',
+        :operatingsystemrelease => '7.0',
       }
     end
 
@@ -50,8 +52,9 @@ describe 'mongodb::mongos::service', :type => :class do
   context 'on RedHat with service_manage set to true' do
     let :facts do
       {
-        :osfamily        => 'RedHat',
-        :operatingsystem => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystem        => 'RedHat',
+        :operatingsystemrelease => '7.0',
       }
     end
 
@@ -78,8 +81,9 @@ describe 'mongodb::mongos::service', :type => :class do
   context 'on RedHat with service_manage set to false' do
     let :facts do
       {
-        :osfamily        => 'RedHat',
-        :operatingsystem => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystem        => 'RedHat',
+        :operatingsystemrelease => '7.0',
       }
     end
 

@@ -5,9 +5,10 @@ describe 'mongodb::repo', :type => :class do
   context 'when deploying on Debian' do
     let :facts do
       {
-        :osfamily        => 'Debian',
-        :operatingsystem => 'Debian',
-        :lsbdistid       => 'Debian',
+        :osfamily               => 'Debian',
+        :operatingsystem        => 'Debian',
+        :operatingsystemrelease => '7.0',
+        :lsbdistid              => 'Debian',
       }
     end
 
@@ -19,8 +20,9 @@ describe 'mongodb::repo', :type => :class do
   context 'when deploying on CentOS' do
     let :facts do
       {
-        :osfamily        => 'RedHat',
-        :operatingsystem => 'CentOS',
+        :osfamily               => 'RedHat',
+        :operatingsystem        => 'CentOS',
+        :operatingsystemrelease => '7.0',
       }
     end
 
@@ -32,8 +34,9 @@ describe 'mongodb::repo', :type => :class do
   context 'when yumrepo has a proxy set' do
     let :facts do
       {
-        :osfamily        => 'RedHat',
-        :operatingsystem => 'RedHat',
+        :osfamily               => 'RedHat',
+        :operatingsystem        => 'RedHat',
+        :operatingsystemrelease => '7.0',
       }
     end
     let :params do

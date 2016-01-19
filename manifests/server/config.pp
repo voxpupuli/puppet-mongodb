@@ -100,7 +100,7 @@ class mongodb::server::config {
     #Pick which config content to use
     if $config_content {
       $cfg_content = $config_content
-    } elsif (versioncmp($version, '2.6.0') >= 0) {
+    } elsif $version and (versioncmp($version, '2.6.0') >= 0) {
       # Template uses:
       # - $auth
       # - $bind_ip
