@@ -44,6 +44,14 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     ipv6
   end
 
+  def mongo_cmd(db, host, cmd)
+    if ipv6_is_enabled
+      out = mongo([db, '--quiet', '--ipv6', '--host', host, '--eval', cmd])
+    else
+      out = mongo([db, '--quiet', '--host', host, '--eval', cmd])
+    end
+  end
+
   def self.get_conn_string
     file = get_mongod_conf_file
     # The mongo conf is probably a key-value store, even though 2.6 is
@@ -99,13 +107,8 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     if mongorc_file
         cmd_ismaster = mongorc_file + cmd_ismaster
     end
-    has_ipv6 = ipv6_is_enabled
-    if has_ipv6
-      ipv6 = '--ipv6'
-    else
-      ipv6 = ''
-    end
-    out = mongo(['admin', '--quiet', ipv6, '--host', get_conn_string, '--eval', cmd_ismaster])
+    db = 'admin'
+    mongo_cmd(db, get_conn_string, cmd_ismaster)
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
     out.gsub!(/ISODate\((.+?)\)/, '\1 ')
     out.gsub!(/^Error\:.+/, '')
@@ -143,19 +146,13 @@ class Puppet::Provider::Mongodb < Puppet::Provider
         cmd = mongorc_file + cmd
     end
 
-    has_ipv6 = ipv6_is_enabled
-    if has_ipv6
-      ipv6 = '--ipv6'
-    else
-      ipv6 = ''
-    end
     out = nil
     retry_count.times do |n|
       begin
         if host
-          out = mongo([db, '--quiet', ipv6, '--host', host, '--eval', cmd])
+          mongo_cmd(db, host, cmd)
         else
-          out = mongo([db, '--quiet', ipv6, '--host', get_conn_string, '--eval', cmd])
+          mongo_cmd(db, get_conn_string, cmd)
         end
       rescue => e
         Puppet.debug "Request failed: '#{e.message}' Retry: '#{n}'"
