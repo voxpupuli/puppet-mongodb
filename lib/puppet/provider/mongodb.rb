@@ -44,7 +44,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     ipv6
   end
 
-  def mongo_cmd(db, host, cmd)
+  def self.mongo_cmd(db, host, cmd)
     if ipv6_is_enabled
       out = mongo([db, '--quiet', '--ipv6', '--host', host, '--eval', cmd])
     else
@@ -108,7 +108,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
         cmd_ismaster = mongorc_file + cmd_ismaster
     end
     db = 'admin'
-    mongo_cmd(db, get_conn_string, cmd_ismaster)
+    out = mongo_cmd(db, get_conn_string, cmd_ismaster)
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
     out.gsub!(/ISODate\((.+?)\)/, '\1 ')
     out.gsub!(/^Error\:.+/, '')
@@ -150,9 +150,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     retry_count.times do |n|
       begin
         if host
-          mongo_cmd(db, host, cmd)
+          out = mongo_cmd(db, host, cmd)
         else
-          mongo_cmd(db, get_conn_string, cmd)
+          out = mongo_cmd(db, get_conn_string, cmd)
         end
       rescue => e
         Puppet.debug "Request failed: '#{e.message}' Retry: '#{n}'"
