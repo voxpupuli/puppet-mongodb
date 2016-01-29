@@ -1,5 +1,4 @@
 # Wrapper class useful for hiera based deployments
-
 class mongodb::replset(
   $sets = undef
 ) {
