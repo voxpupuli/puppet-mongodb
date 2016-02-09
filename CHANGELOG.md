@@ -1,6 +1,30 @@
-## Unreleased
+## 2016-02-08 - Release 0.12.0
 ### Summary
-- support setting a proxy for yum repositories with or without user/password authentication
+There are a number of bugfixes and features added in this release including, mongo db 3 engine support, ipv6 support and repo and yum improvements.
+
+#### Features
+- Distinguish between repo and package mgmt
+- Immplement retries for MongoDB shell commands
+- Initiate replica set creation from localhost if auth is enabled
+- Added specific service provider for Debian
+- mongo db 3 engine selection support
+- added an option to set a custom repository location
+- Improve support for MongoDB authentication and replicaset
+- Add yum proxy options
+- Enable IPv6 in mongodb provider
+
+#### Bugfixes
+- Fix mongodb_user username => name
+- ensure that the client install does not start before the repo setup
+- Fix replset not working on mongo 3.x
+- Prealloc setting needs to be negated
+- Add mongoDB >=3.x new yum repo location
+- Add pidfilepath to globals when used in params
+- Normalize spacing in template
+- Switch to comparing current roles value with @property
+- Fix versioncmp when version is undef
+- Do not add blank parameter in ipv4
+- Apply module sync
 
 ## 2015-06-22 - Release 0.11.0
 ### Summary
