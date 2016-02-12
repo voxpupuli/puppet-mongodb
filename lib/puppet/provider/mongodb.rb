@@ -108,7 +108,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   def self.db_ismaster
     cmd_ismaster = 'printjson(db.isMaster())'
     if mongorc_file
-        cmd_ismaster = mongorc_file + cmd_ismaster
+      cmd_ismaster = mongorc_file + cmd_ismaster
     end
     db = 'admin'
     out = mongo_cmd(db, get_conn_string, cmd_ismaster)
@@ -134,7 +134,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     retry_count = retries
     retry_sleep = 3
     if mongorc_file
-        cmd = mongorc_file + cmd
+      cmd = mongorc_file + cmd
     end
 
     out = nil
