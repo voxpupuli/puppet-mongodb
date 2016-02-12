@@ -67,11 +67,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def self.mongo_cmd(db, host, cmd)
-    if ipv6_is_enabled
-      out = mongo([db, '--quiet', '--ipv6', '--host', host, '--eval', cmd])
-    else
-      out = mongo([db, '--quiet', '--host', host, '--eval', cmd])
-    end
+    args = [db, '--quiet', '--host', host]
+    args.push('--ipv6') if ipv6_is_enabled
+    args += ['--eval', cmd]
+    mongo(args)
   end
 
   def self.get_conn_string
