@@ -41,6 +41,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       config_hash['bindip'] = config['net.bindIp']
       config_hash['port'] = config['net.port']
       config_hash['ipv6'] = config['net.ipv6']
+      config_hash['ssl'] = config['net.ssl.mode']
+      config_hash['sslcert'] = config['net.ssl.PEMKeyFile']
+      config_hash['sslca'] = config['net.ssl.CAFile']
       config_hash['auth'] = config['security.authorization']
       config_hash['shardsvr'] = config['sharding.clusterRole']
       config_hash['confsvr'] = config['sharding.clusterRole']
@@ -53,6 +56,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       config_hash['bindip'] = config['bind_ip']
       config_hash['port'] = config['port']
       config_hash['ipv6'] = config['ipv6']
+      config_hash['ssl'] = config['sslMode']
+      config_hash['sslcert'] = config['sslPEMKeyFile']
+      config_hash['sslca'] = config['sslCAFile']
       config_hash['auth'] = config['auth']
       config_hash['shardsvr'] = config['shardsvr']
       config_hash['confsvr'] = config['confsvr']
@@ -66,9 +72,28 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     config['ipv6']
   end
 
+  def self.ssl_is_enabled(config=nil)
+    config ||= get_mongo_conf
+    ssl_mode = config.fetch('ssl')
+    ssl_mode.nil? ? false : ssl_mode != 'disabled'
+  end
+
   def self.mongo_cmd(db, host, cmd)
+    config = get_mongo_conf
+
     args = [db, '--quiet', '--host', host]
-    args.push('--ipv6') if ipv6_is_enabled
+    args.push('--ipv6') if ipv6_is_enabled(config)
+
+    if ssl_is_enabled(config)
+      args.push('--ssl')
+      args += ['--sslPEMKeyFile', config['sslcert']]
+
+      ssl_ca = config['sslca']
+      unless ssl_ca.nil?
+        args += ['--sslCAFile', ssl_ca]
+      end
+    end
+
     args += ['--eval', cmd]
     mongo(args)
   end

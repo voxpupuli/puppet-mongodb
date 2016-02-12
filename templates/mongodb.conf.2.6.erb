@@ -102,6 +102,13 @@ net.maxIncomingConnections: <%= @maxconns %>
 <% if ! @nohttpinterface.nil? -%>
 net.http.enabled: <%= ! @nohttpinterface %>
 <% end -%>
+<% if @ssl -%>
+net.ssl.mode: requireSSL
+net.ssl.PEMKeyFile: <%= @ssl_key %>
+<% if @ssl_ca -%>
+net.ssl.CAFile: <%= @ssl_ca %>
+<% end -%>
+<% end -%>
 
 #Replication
 <% if @replset -%>
