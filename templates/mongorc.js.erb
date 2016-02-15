@@ -22,6 +22,6 @@ if (authRequired()) {
   }
   catch (err) {
     // This isn't catching authentication errors as I'd expect...
-    return;
+    abort('Unknown error')
   }
 }
