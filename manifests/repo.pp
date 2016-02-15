@@ -39,12 +39,37 @@ class mongodb::repo (
     'Debian': {
       if ($repo_location != undef){
         $location = $repo_location
-      }else{
+      }
+      elsif (versioncmp($version, '3.0.0') >= 0) {
+        $mongover = split($version, '[.]')
+        $location = $::operatingsystem ? {
+          'Debian' => 'https://repo.mongodb.org/apt/debian',
+          'Ubuntu' => 'https://repo.mongodb.org/apt/ubuntu',
+          default  => undef
+        }
+        # Temp hack. Need to follow https://jira.mongodb.org/browse/SERVER-18329
+        if ($::lsbdistcodename == 'jessie') {
+          $release     = "wheezy/mongodb-org/${mongover[0]}.${mongover[1]}"
+        } else {
+          $release     = "${::lsbdistcodename}/mongodb-org/${mongover[0]}.${mongover[1]}"
+        }
+        $repos       = $::operatingsystem ? {
+          'Debian' => 'main',
+          'Ubuntu' => 'multiverse',
+          default => undef
+        }
+        $key         = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
+        $key_server  = 'hkp://keyserver.ubuntu.com:80'
+      } else {
         $location = $::operatingsystem ? {
           'Debian' => 'http://downloads-distro.mongodb.org/repo/debian-sysvinit',
           'Ubuntu' => 'http://downloads-distro.mongodb.org/repo/ubuntu-upstart',
           default  => undef
         }
+        $release     = 'dist'
+        $repos       = '10gen'
+        $key         = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
+        $key_server  = 'hkp://keyserver.ubuntu.com:80'
       }
       class { '::mongodb::repo::apt': }
     }
