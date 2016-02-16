@@ -206,6 +206,15 @@ class mongodb::server::config {
       group   => $group,
       require => File[$config]
     }
+
+    if $pidfilepath {
+      file { $pidfilepath:
+        ensure => file,
+        mode   => '0644',
+        owner  => $user,
+        group  => $group,
+      }
+    }
   } else {
     file { $dbpath:
       ensure => absent,
