@@ -88,8 +88,8 @@ To install MongoDB from 10gen repository:
 class {'::mongodb::globals':
   manage_package_repo => true,
 }->
-class {'::mongodb::server': }->
-class {'::mongodb::client': }
+class {'::mongodb::client': } ->
+class {'::mongodb::server': }
 ```
 
 If you don't want to use the 10gen/MongoDB software repository or the OS packages,
