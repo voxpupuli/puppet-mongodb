@@ -67,7 +67,7 @@ For Red Hat family systems, the client can be installed in a similar fashion:
 class {'::mongodb::client':}
 ```
 
-Note that for Debian/Ubuntu family systems the client is installed with the 
+Note that for Debian/Ubuntu family systems the client is installed with the
 server. Using the client class will by default install the server.
 
 If one plans to configure sharding for a Mongo deployment, the module offer
@@ -427,11 +427,11 @@ class mongodb::server {
 Set to true to enable a simple REST interface. Default: false
 
 #####`quiet`
-Runs the mongod or mongos instance in a quiet mode that attempts to limit the 
+Runs the mongod or mongos instance in a quiet mode that attempts to limit the
 amount of output. This option suppresses : "output from database commands, including drop, dropIndexes, diagLogging, validate, and clean", "replication activity", "connection accepted events" and "connection closed events".
 Default: false
 
-> For production systems this option is **not** recommended as it may make tracking 
+> For production systems this option is **not** recommended as it may make tracking
 problems during particular connections much more difficult.
 
 #####`slowms`
@@ -476,8 +476,9 @@ this slave instance will replicate. Default: <>
 
 #####`ssl`
 Set to true to enable ssl. Default: <>
-*Important*: You need to have ssl_key and ssl_ca set as well and files
-need to pre-exist on node.
+*Important*: You need to have ssl_key set as well, and the file needs to
+pre-exist on node. If you wish to use certificate validation, ssl_ca must also
+be set.
 
 #####`ssl_key`
 Default: <>

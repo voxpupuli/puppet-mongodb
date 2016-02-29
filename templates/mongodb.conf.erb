@@ -186,5 +186,7 @@ quiet = <%= @quiet %>
 <% if @ssl -%>
 sslOnNormalPorts = true
 sslPEMKeyFile = <%= @ssl_key %>
+<% if @ssl_ca -%>
 sslCAFile = <%= @ssl_ca %>
+<% end -%>
 <% end -%>
