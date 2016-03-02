@@ -26,7 +26,7 @@ class mongodb::params inherits mongodb::globals {
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
   case $::osfamily {
-    'RedHat', 'Linux': {
+    'RedHat', 'Linux', 'Suse': {
 
       if $manage_package {
         $user        = pick($::mongodb::globals::user, 'mongod')
