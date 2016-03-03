@@ -442,7 +442,7 @@ Default: 100 ms
 Specify the path to a key file to store authentication information. This option
 is only useful for the connection between replica set members. Default: None
 
-#####'key'
+#####`key`
 Specify the key contained within the keyfile. This option
 is only useful for the connection between replica set members. Default: None
 
