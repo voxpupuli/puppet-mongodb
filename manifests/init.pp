@@ -32,7 +32,6 @@
 #
 # Copyright 2013 PuppetLabs
 #
-
 class mongodb (
   # Deprecated parameters
   $enable_10gen    = undef,
