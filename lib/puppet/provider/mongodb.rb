@@ -181,7 +181,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       raise Puppet::ExecutionFailure, "Could not evalute MongoDB shell command: #{cmd}"
     end
 
-    out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
+    ['ObjectId','NumberLong'].each do |data_type|
+      out.gsub!(/#{data_type}\(([^)]*)\)/, '\1')
+    end
     out.gsub!(/^Error\:.+/, '')
     out
   end
