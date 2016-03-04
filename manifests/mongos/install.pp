@@ -4,6 +4,16 @@ class mongodb::mongos::install (
   $package_name             = $mongodb::mongos::package_name,
 ) {
 
+
+  #mongos package does not create the "mongodb" user and group
+  group {'mongodb':
+    ensure => present,
+  }
+  user {'mongodb':
+    gid     => 'mongodb',
+    require => Group['mongodb'],
+  }
+
   case $package_ensure {
     true:     {
       $my_package_ensure = 'present'

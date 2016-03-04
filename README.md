@@ -105,6 +105,23 @@ class {'::mongodb::server': }->
 class {'::mongodb::client': }
 ```
 
+For Debian/Ubuntu you should also specify the aptkey, release and repos parameters:
+
+```puppet
+class {'::mongodb::globals':
+  manage_package_repo => true,
+  repo_location => 'http://example.com/repo'
+  repo_location       => 'http://example.com/repo',                             
+  repo_aptkey         => '42F3E95A2C4F08279C4960ADD68FA50FEA312927',            
+  repo_release        => "${::lsbdistcodename}/mongodb-org/stable",                                                
+  repo_repos          => 'multiverse',                       
+}->
+class {'::mongodb::server': }->
+class {'::mongodb::client': }
+```
+
+
+
 Having a local copy of MongoDB repository (that is managed by your private modules)
 you can still enjoy the charms of `mongodb::params` that manage packages.
 To disable managing of repository, but still enable managing packages:

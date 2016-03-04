@@ -31,6 +31,9 @@ class mongodb::globals (
   $proxy_password        = undef,
 
   $repo_location         = undef,
+  $repo_aptkey           = undef,
+  $repo_aptrelease       = undef,
+  $repo_aptrepos         = undef,
   $use_enterprise_repo   = undef,
 
   $pidfilepath           = undef,
@@ -39,9 +42,14 @@ class mongodb::globals (
   # Setup of the repo only makes sense globally, so we are doing it here.
   if($manage_package_repo) {
     class { '::mongodb::repo':
-      ensure        => present,
-      repo_location => $repo_location,
-      proxy         => $repo_proxy,
+      ensure          => present,
+      repo_location   => $repo_location,
+      repo_aptkey     => $repo_aptkey,
+      repo_aptrelease => $repo_release,
+      repo_aptrepos   => $repo_repos,
+      proxy           => $repo_proxy,
+      proxy_username  => $proxy_username,
+      proxy_password  => $proxy_password,
     }
   }
 }
