@@ -40,7 +40,7 @@ class mongodb::repo (
       if ($repo_location != undef){
         $location = $repo_location
       }
-      elsif (versioncmp($version, '3.0.0') >= 0) {
+      elsif $version and (versioncmp($version, '3.0.0') >= 0) {
         $mongover = split($version, '[.]')
         $location = $::operatingsystem ? {
           'Debian' => 'https://repo.mongodb.org/apt/debian',
