@@ -1,3 +1,28 @@
+## Release 0.13.0
+### Summary 
+Adds several new large features, including the support of mongodb 3.x. Also applies numerous bugfixes, mainly around fixing errors being thrown and syntax issues.
+
+#### Features
+- Adds mongodb_version fact.
+- Add mongodb 3.x.
+- Update to current msync configs.
+- Now ensures that the pidfile exists and is writable.
+- Simplified configuration parsing.
+- Made argument handling more extensible.
+- Added SSL support.
+- Made ssl_ca optional when using SSL.
+- Added $maxconns to mongodb::server::config.
+- Added Suse to operating systems.
+
+#### Bugfixes
+- Removes empty lines between doc and definition.
+- Fix when using admin params : catalog: Found 1 dependency cycle: issue.
+- Some syntax error fixes.
+- Cleaned up provider formatting.
+- Parse NumberLong data type from mongodb outputs to generate valid json.
+- Checks if $version is defined before versioncmp.
+- Fixed deprecation warning for use of configtimeout.
+
 ## 2016-02-08 - Release 0.12.0
 ### Summary
 There are a number of bugfixes and features added in this release including, mongo db 3 engine support, ipv6 support and repo and yum improvements.
