@@ -29,11 +29,14 @@ systemLog.verbosity: 5
 <% end -%>
 
 #Process Management
-<% if @fork -%>
-processManagement.fork: <%= @fork %>
-<% end -%>
-<% if @pidfilepath -%>
-processManagement.pidFilePath: <%= @pidfilepath %>
+<% if @fork or @pidfilepath -%>
+processManagement:
+  <%- if @fork -%>
+  fork: <%= @fork %>
+  <%- end -%>
+  <%- if @pidfilepath -%>
+  pidFilePath: <%= @pidfilepath %>
+  <%- end -%>
 <% end -%>
 
 #Storage
