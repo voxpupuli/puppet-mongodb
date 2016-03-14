@@ -266,8 +266,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
     end
 
     # Dirty hack to remove JavaScript objects
-    output.gsub!(/ISODate\((.+?)\)/, '\1 ')
-    output.gsub!(/Timestamp\((.+?)\)/, '[\1]')
+    output.gsub!(/\w+\((.+?)\)/, '\1')
 
     #Hack to avoid non-json empty sets
     output = "{}" if output == "null\n"
