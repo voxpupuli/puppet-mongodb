@@ -142,7 +142,7 @@ describe 'mongodb::server::config', :type => :class do
           with_ensure('present').
           with_owner('root').
           with_group('root').
-          with_mode('0644').
+          with_mode('0600').
           with_content(/db.auth\('admin', 'password'\)/)
       }
     end
