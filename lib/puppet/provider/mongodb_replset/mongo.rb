@@ -196,7 +196,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
       hostconf = alive_hosts.each_with_index.map do |host,id|
         arbiter_conf = ""
         if rs_arbiter == host
-          arbiter_conf = ", arbiterOnly: \"true\""
+          arbiter_conf = ", arbiterOnly: true"
         end
         "{ _id: #{id}, host: \"#{host}\"#{arbiter_conf} }"
       end.join(',')
@@ -266,6 +266,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
     end
 
     # Dirty hack to remove JavaScript objects
+    output.gsub!(/Timestamp\(([^,]+?),.*\)/, '\1')
     output.gsub!(/\w+\((.+?)\)/, '\1')
 
     #Hack to avoid non-json empty sets

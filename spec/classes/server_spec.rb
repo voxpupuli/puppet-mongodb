@@ -3,8 +3,10 @@ require 'spec_helper'
 describe 'mongodb::server' do
   let :facts do
     {
-      :osfamily        => 'Debian',
-      :operatingsystem => 'Debian',
+        :osfamily => 'Debian',
+        :operatingsystem => 'Debian',
+        :root_home => '/root',
+        :operatingsystemmajrelease => '14.04'
     }
   end
 
@@ -18,11 +20,11 @@ describe 'mongodb::server' do
   end
 
   context 'with create_admin => true' do
-    let(:params) do 
+    let(:params) do
       {
-        :create_admin   => true,
-        :admin_username => 'admin',
-        :admin_password => 'password'
+          :create_admin => true,
+          :admin_username => 'admin',
+          :admin_password => 'password'
       }
     end
     it { is_expected.to compile.with_all_deps }
@@ -33,20 +35,23 @@ describe 'mongodb::server' do
     it { is_expected.to contain_class('mongodb::server::service') }
 
     it {
-        is_expected.to contain_mongodb__db('admin').with({
-          'user'     => 'admin',
-          'password' => 'password',
-          'roles'    => ["userAdmin", "readWrite", "dbAdmin", "dbAdminAnyDatabase",
-                         "readAnyDatabase", "readWriteAnyDatabase", "userAdminAnyDatabase",
-                         "clusterAdmin", "clusterManager", "clusterMonitor", "hostManager",
-                         "root", "restore"]
-        }).that_requires('Anchor[mongodb::server::end]')
-      }
+      is_expected.to contain_mongodb__db('admin').with({
+                                                           'user' => 'admin',
+                                                           'password' => 'password',
+                                                           'roles' => ["userAdmin", "readWrite", "dbAdmin", "dbAdminAnyDatabase",
+                                                                       "readAnyDatabase", "readWriteAnyDatabase", "userAdminAnyDatabase",
+                                                                       "clusterAdmin", "clusterManager", "clusterMonitor", "hostManager",
+                                                                       "root", "restore"]
+                                                       }).that_requires('Anchor[mongodb::server::end]')
+    }
   end
 
   context 'when deploying on Solaris' do
     let :facts do
-      { :osfamily        => 'Solaris' }
+      {:osfamily => 'Solaris',
+       :root_home => '/root',
+      :operatingsystemmajrelease => '14.04'
+      }
     end
     it { expect { is_expected.to raise_error(Puppet::Error) } }
   end
@@ -57,13 +62,13 @@ describe 'mongodb::server' do
     end
     context "sets nohttpinterface to true when true" do
       let(:params) do
-        { :nohttpinterface => true, }
+        {:nohttpinterface => true, }
       end
       it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/nohttpinterface = true/) }
     end
     context "sets nohttpinterface to false when false" do
       let(:params) do
-        { :nohttpinterface => false, }
+        {:nohttpinterface => false, }
       end
       it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/nohttpinterface = false/) }
     end
@@ -76,13 +81,13 @@ describe 'mongodb::server' do
       end
       context "sets net.http.enabled false when true" do
         let(:params) do
-          { :nohttpinterface => true, }
+          {:nohttpinterface => true, }
         end
         it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/net\.http\.enabled: false/) }
       end
       context "sets net.http.enabled true when false" do
         let(:params) do
-          { :nohttpinterface => false, }
+          {:nohttpinterface => false, }
         end
         it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/net\.http\.enabled: true/) }
       end
@@ -93,13 +98,13 @@ describe 'mongodb::server' do
     context 'should fail if providing both replica_sets and replset_members' do
       let(:params) do
         {
-          :replset          => 'rsTest',
-          :replset_members  => [
-            'mongo1:27017',
-            'mongo2:27017',
-            'mongo3:27017'
-          ],
-          :replica_sets     => {}
+            :replset => 'rsTest',
+            :replset_members => [
+                'mongo1:27017',
+                'mongo2:27017',
+                'mongo3:27017'
+            ],
+            :replica_sets => {}
         }
       end
 
@@ -109,21 +114,21 @@ describe 'mongodb::server' do
     context 'should setup using replica_sets hash' do
       let(:rsConf) do
         {
-          'rsTest' => {
-            'members' => [
-              'mongo1:27017',
-              'mongo2:27017',
-              'mongo3:27017',
-            ],
-            'arbiter' => 'mongo3:27017'
-          }
+            'rsTest' => {
+                'members' => [
+                    'mongo1:27017',
+                    'mongo2:27017',
+                    'mongo3:27017',
+                ],
+                'arbiter' => 'mongo3:27017'
+            }
         }
       end
 
       let(:params) do
         {
-          :replset        => 'rsTest',
-          :replset_config => rsConf
+            :replset => 'rsTest',
+            :replset_config => rsConf
         }
       end
 
@@ -133,25 +138,25 @@ describe 'mongodb::server' do
     context 'should setup using replset_members' do
       let(:rsConf) do
         {
-          'rsTest' => {
-            'ensure'  => 'present',
-            'members' => [
-              'mongo1:27017',
-              'mongo2:27017',
-              'mongo3:27017'
-            ]
-          }
+            'rsTest' => {
+                'ensure' => 'present',
+                'members' => [
+                    'mongo1:27017',
+                    'mongo2:27017',
+                    'mongo3:27017'
+                ]
+            }
         }
       end
 
       let(:params) do
         {
-          :replset         => 'rsTest',
-          :replset_members => [
-            'mongo1:27017',
-            'mongo2:27017',
-            'mongo3:27017'
-          ]
+            :replset => 'rsTest',
+            :replset_members => [
+                'mongo1:27017',
+                'mongo2:27017',
+                'mongo3:27017'
+            ]
         }
       end
 

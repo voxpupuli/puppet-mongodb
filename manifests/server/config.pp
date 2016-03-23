@@ -64,6 +64,13 @@ class mongodb::server::config {
   $storage_engine  = $mongodb::server::storage_engine
   $version         = $mongodb::server::version
 
+  if $auth == true and $::mongodb_is_master=='not_installed' {
+    $real_auth=false
+  }
+  else {
+    $real_auth=$auth
+  }
+
   File {
     owner => $user,
     group => $group,
