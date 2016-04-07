@@ -3,14 +3,16 @@ require 'spec_helper'
 describe 'mongodb::mongos' do
   let :facts do
     {
-      :osfamily        => 'Debian',
-      :operatingsystem => 'Debian',
+        :osfamily => 'Debian',
+        :operatingsystem => 'Debian',
+        :root_home => '/root',
+        :operatingsystemmajrelease => '14.04',
     }
   end
 
   let :params do
     {
-      :configdb => ['127.0.0.1:27019']
+        :configdb => ['127.0.0.1:27019']
     }
   end
 
@@ -21,8 +23,7 @@ describe 'mongodb::mongos' do
   end
 
   context 'when deploying on Solaris' do
-    let :facts do
-      { :osfamily        => 'Solaris' }
+    let :facts do {:osfamily => 'Solaris', }
     end
     it { expect { is_expected.to raise_error(Puppet::Error) } }
   end

@@ -34,6 +34,9 @@ class mongodb::globals (
   $use_enterprise_repo   = undef,
 
   $pidfilepath           = undef,
+
+  $create_admin          = false,
+  $admin_username        = 'admin',
 ) {
 
   # Setup of the repo only makes sense globally, so we are doing it here.

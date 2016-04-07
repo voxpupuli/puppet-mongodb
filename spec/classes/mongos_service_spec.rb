@@ -5,17 +5,19 @@ describe 'mongodb::mongos::service', :type => :class do
   context 'on Debian with service_manage set to true' do
     let :facts do
       {
-        :osfamily               => 'Debian',
-        :operatingsystem        => 'Debian',
-        :operatingsystemrelease => '7.0',
+          :osfamily => 'Debian',
+          :operatingsystem => 'Debian',
+          :operatingsystemrelease => '7.0',
+          :root_home => '/root',
+          :operatingsystemmajrelease => '14.04'
       }
     end
 
-    let :pre_condition do          
+    let :pre_condition do
       "class { 'mongodb::mongos':
          configdb => ['127.0.0.1:27019'],
        }"
-    end 
+    end
 
     describe 'include init script' do
       it { is_expected.to contain_file('/etc/init.d/mongos') }
@@ -30,9 +32,11 @@ describe 'mongodb::mongos::service', :type => :class do
   context 'on Debian with service_manage set to false' do
     let :facts do
       {
-        :osfamily               => 'Debian',
-        :operatingsystem        => 'Debian',
-        :operatingsystemrelease => '7.0',
+          :osfamily => 'Debian',
+          :operatingsystem => 'Debian',
+          :operatingsystemrelease => '7.0',
+          :operatingsystemmajrelease => '14.04',
+          :root_home  => '/root'
       }
     end
 
@@ -52,9 +56,11 @@ describe 'mongodb::mongos::service', :type => :class do
   context 'on RedHat with service_manage set to true' do
     let :facts do
       {
-        :osfamily               => 'RedHat',
-        :operatingsystem        => 'RedHat',
-        :operatingsystemrelease => '7.0',
+          :osfamily => 'RedHat',
+          :operatingsystem => 'RedHat',
+          :operatingsystemrelease => '7.0',
+          :operatingsystemmajrelease => '14.04',
+          :root_home  => '/root'
       }
     end
 
@@ -81,9 +87,11 @@ describe 'mongodb::mongos::service', :type => :class do
   context 'on RedHat with service_manage set to false' do
     let :facts do
       {
-        :osfamily               => 'RedHat',
-        :operatingsystem        => 'RedHat',
-        :operatingsystemrelease => '7.0',
+          :osfamily => 'RedHat',
+          :operatingsystem => 'RedHat',
+          :operatingsystemrelease => '7.0',
+          :operatingsystemmajrelease => '14.04',
+          :root_home  => '/root'
       }
     end
 

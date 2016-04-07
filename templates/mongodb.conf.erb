@@ -46,7 +46,7 @@ cpu = <%= @cpu %>
 noauth=<%= @noauth %>
 <% end -%>
 <% if @auth and not @noauth -%>
-auth=<%= @auth %>
+auth=<%= @real_auth %>
 <% end -%>
 <% if @verbose -%>
 # Verbose logging output.

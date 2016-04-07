@@ -69,16 +69,17 @@ class mongodb::server (
   $ssl_ca          = undef,
   $restart         = $mongodb::params::restart,
   $storage_engine  = undef,
+  $version = $mongodb::params::version,
 
   $create_admin    = $mongodb::params::create_admin,
   $admin_username  = $mongodb::params::admin_username,
   $admin_password  = undef,
   $store_creds     = $mongodb::params::store_creds,
   $admin_roles     = ['userAdmin', 'readWrite', 'dbAdmin',
-                      'dbAdminAnyDatabase', 'readAnyDatabase',
-                      'readWriteAnyDatabase', 'userAdminAnyDatabase',
-                      'clusterAdmin', 'clusterManager', 'clusterMonitor',
-                      'hostManager', 'root', 'restore'],
+    'dbAdminAnyDatabase', 'readAnyDatabase',
+    'readWriteAnyDatabase', 'userAdminAnyDatabase',
+    'clusterAdmin', 'clusterManager', 'clusterMonitor',
+    'hostManager', 'root', 'restore'],
 
   # Deprecated parameters
   $master          = undef,
@@ -96,14 +97,14 @@ class mongodb::server (
     if $restart {
       anchor { 'mongodb::server::start': }->
       class { 'mongodb::server::install': }->
-      # If $restart is true, notify the service on config changes (~>)
+        # If $restart is true, notify the service on config changes (~>)
       class { 'mongodb::server::config': }~>
       class { 'mongodb::server::service': }->
       anchor { 'mongodb::server::end': }
     } else {
       anchor { 'mongodb::server::start': }->
       class { 'mongodb::server::install': }->
-      # If $restart is false, config changes won't restart the service (->)
+        # If $restart is false, config changes won't restart the service (->)
       class { 'mongodb::server::config': }->
       class { 'mongodb::server::service': }->
       anchor { 'mongodb::server::end': }
@@ -158,18 +159,43 @@ class mongodb::server (
           }
         }
       }
-
-      # Wrap the replset class
-      class { 'mongodb::replset':
-        sets => $replset_config_REAL
-      }
-      Anchor['mongodb::server::end'] -> Class['mongodb::replset']
-
-      # Make sure that the ordering is correct
-      if $create_admin {
-        Class['mongodb::replset'] -> Mongodb::Db['admin']
-      }
-
     }
+
+    # Wrap the replset class
+    class { 'mongodb::replset':
+      sets => $replset_config_REAL
+    }
+    Anchor['mongodb::server::end'] -> Class['mongodb::replset']
+
+    # Make sure that the ordering is correct
+    if $create_admin {
+      Class['mongodb::replset'] -> Mongodb::Db['admin']
+      if $::mongodb_is_master == 'not_installed' and $auth == true and $noauth != true and versioncmp($version, '2.6.0') >= 0  {
+        file_line{ 'enable_authentication' :
+          ensure  =>  present,
+          path    => $config,
+          match   => 'security.authorization:',
+          line    => 'security.authorization: enabled',
+          require => [Class['mongodb::replset'], Mongodb::Db['admin'] ]
+        }
+        if $keyfile {
+          file_line{ 'enable_keyfile' :
+            ensure  =>  present,
+            path    => $config,
+            line    => "security.keyFile: ${keyfile}",
+            require => [Class['mongodb::replset'], Mongodb::Db['admin']],
+            notify  => Exec['/sbin/restart mongod']
+          }
+        }
+
+        exec{ '/sbin/restart mongod':
+          user        => 'root',
+          refreshonly => true,
+          cwd         => '/tmp',
+          subscribe   => File_line['enable_authentication']
+        }
+      }
+    }
+
   }
 }
