@@ -22,7 +22,7 @@ describe 'mongodb::server::config', :type => :class do
       })
 
       is_expected.to contain_file('/etc/mongod.conf').with_content(/^dbpath=\/var\/lib\/mongo/)
-      is_expected.to contain_file('/etc/mongod.conf').with_content(/bind_ip\s=\s0\.0\.0\.0/)
+      is_expected.to contain_file('/etc/mongod.conf').with_content(/bindIp\s=\s0\.0\.0\.0/)
       is_expected.to contain_file('/etc/mongod.conf').with_content(/^port = 29017$/)
       is_expected.to contain_file('/etc/mongod.conf').with_content(/^logappend=true/)
       is_expected.to contain_file('/etc/mongod.conf').with_content(/^logpath=\/var\/log\/mongo\/mongod\.log/)
@@ -53,7 +53,7 @@ describe 'mongodb::server::config', :type => :class do
     let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $dbpath = '/var/lib/mongo' $rcfile = '/root/.mongorc.js' $ensure = present $bind_ip = ['127.0.0.1', 'fd00:beef:dead:55::143'] $ipv6 = true }", "include mongodb::server"]}
 
     it {
-      is_expected.to contain_file('/etc/mongod.conf').with_content(/bind_ip\s=\s127\.0\.0\.1\,fd00:beef:dead:55::143/)
+      is_expected.to contain_file('/etc/mongod.conf').with_content(/bindIp\s=\s127\.0\.0\.1\,fd00:beef:dead:55::143/)
       is_expected.to contain_file('/etc/mongod.conf').with_content(/ipv6=true/)
     }
   end
@@ -62,7 +62,7 @@ describe 'mongodb::server::config', :type => :class do
     let(:pre_condition) { ["class mongodb::server { $config = '/etc/mongod.conf' $dbpath = '/var/lib/mongo' $rcfile = '/root/.mongorc.js' $ensure = present $bind_ip = ['127.0.0.1', '10.1.1.13']}", "include mongodb::server"]}
 
     it {
-      is_expected.to contain_file('/etc/mongod.conf').with_content(/bind_ip\s=\s127\.0\.0\.1\,10\.1\.1\.13/)
+      is_expected.to contain_file('/etc/mongod.conf').with_content(/bindIp\s=\s127\.0\.0\.1\,10\.1\.1\.13/)
     }
   end
 
