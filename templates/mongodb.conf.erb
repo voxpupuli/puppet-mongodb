@@ -15,7 +15,7 @@ ipv6=<%= @ipv6 %>
 # Set this option to configure the mongod or mongos process to bind to and
 # listen for connections from applications on this address.
 # You may concatenate a list of comma separated values to bind mongod to multiple IP addresses.
-bind_ip = <%= Array(@bind_ip).join(',') %>
+bindIp = <%= Array(@bind_ip).join(',') %>
 <% end -%>
 <% if @fork -%>
 # fork and run in background
