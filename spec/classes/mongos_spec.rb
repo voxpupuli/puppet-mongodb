@@ -1,12 +1,7 @@
 require 'spec_helper'
 
 describe 'mongodb::mongos' do
-  let :facts do
-    {
-      :osfamily        => 'Debian',
-      :operatingsystem => 'Debian',
-    }
-  end
+  with_debian_facts
 
   let :params do
     {
