@@ -3,8 +3,10 @@ require 'spec_helper'
 describe 'mongodb::server' do
   let :facts do
     {
-      :osfamily        => 'Debian',
       :operatingsystem => 'Debian',
+      :operatingsystemmajrelease => 8,
+      :osfamily        => 'Debian',
+      :root_home       => '/root',
     }
   end
 
@@ -18,7 +20,7 @@ describe 'mongodb::server' do
   end
 
   context 'with create_admin => true' do
-    let(:params) do 
+    let(:params) do
       {
         :create_admin   => true,
         :admin_username => 'admin',
