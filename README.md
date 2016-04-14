@@ -195,13 +195,17 @@ This setting can be used to override the default status check command for
 your MongoDB service. If not specified, the module will use whatever service
 name is the default for your OS distro.
 
-##### `mongod_service_manage`
+#####`mongod_service_manage`
 This setting can be used to override the default management of the mongod service.
 By default the module will manage the mongod process.
 
-##### `mongos_service_manage`
+#####`mongos_service_manage`
 This setting can be used to override the default management of the mongos service.
 By default the module will manage the mongos process.
+
+#####`manage_config`
+This setting can be used to override the default management of the MongoDB
+configuration file.
 
 #####`user`
 This setting can be used to override the default MongoDB user and owner of the
@@ -212,6 +216,14 @@ use the default for your OS distro.
 This setting can be used to override the default MongoDB user group to be used
 for related files in the file system. If not specified, the module will use
 the default for your OS distro.
+
+#####`config_owner`
+This setting can be used to override the default MongoDB configuration file's owner. If
+not specified, the module will default to the 'root' user as the owner.
+
+#####`config_group`
+This setting can be used to override the default MongoDB configuration file's group. If
+not specified, the module will default to the 'root' group as the group owner.
 
 #####`ipv6`
 This setting is used to configure MongoDB to turn on ipv6 support. If not specified

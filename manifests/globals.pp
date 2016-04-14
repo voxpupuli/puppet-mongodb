@@ -19,6 +19,8 @@ class mongodb::globals (
 
   $user                  = undef,
   $group                 = undef,
+  $config_owner          = undef,
+  $config_group          = undef,
   $ipv6                  = undef,
   $bind_ip               = undef,
 
@@ -26,6 +28,7 @@ class mongodb::globals (
 
   $manage_package_repo   = undef,
   $manage_package        = undef,
+  $manage_config         = undef,
   $repo_proxy            = undef,
   $proxy_username        = undef,
   $proxy_password        = undef,
