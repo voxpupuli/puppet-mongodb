@@ -69,7 +69,7 @@ class mongodb::server (
   $ssl_ca          = undef,
   $restart         = $mongodb::params::restart,
   $storage_engine  = undef,
-  $version = $mongodb::params::version,
+  $version         = $mongodb::params::version,
 
   $create_admin    = $mongodb::params::create_admin,
   $admin_username  = $mongodb::params::admin_username,
@@ -97,14 +97,14 @@ class mongodb::server (
     if $restart {
       anchor { 'mongodb::server::start': }->
       class { 'mongodb::server::install': }->
-        # If $restart is true, notify the service on config changes (~>)
+      # If $restart is true, notify the service on config changes (~>)
       class { 'mongodb::server::config': }~>
       class { 'mongodb::server::service': }->
       anchor { 'mongodb::server::end': }
     } else {
       anchor { 'mongodb::server::start': }->
       class { 'mongodb::server::install': }->
-        # If $restart is false, config changes won't restart the service (->)
+      # If $restart is false, config changes won't restart the service (->)
       class { 'mongodb::server::config': }->
       class { 'mongodb::server::service': }->
       anchor { 'mongodb::server::end': }
