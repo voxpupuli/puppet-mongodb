@@ -116,7 +116,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
 
   def self.get_replset_properties
     conn_string = get_conn_string
-    output = mongo_command('rs.conf()', conn_string)
+    begin
+      output = mongo_command('rs.conf()', conn_string)
+    rescue Puppet::ExecutionFailure => e
+      output = {}
+    end
     if output['members']
       members = output['members'].collect do |val|
         val['host']
@@ -266,6 +270,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
     end
 
     # Dirty hack to remove JavaScript objects
+    output.gsub!(/\w+\((?!")(\d+).+?(?<!")\)/, '\1')  # Remove extra parameters from 'Timestamp(1462971623, 1)' Objects
     output.gsub!(/\w+\((.+?)\)/, '\1')
 
     #Hack to avoid non-json empty sets
