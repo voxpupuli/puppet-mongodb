@@ -205,7 +205,11 @@ class mongodb::params inherits mongodb::globals {
       }
     }
     'Ubuntu': {
-      $service_provider = pick($service_provider, 'upstart')
+      if versioncmp($::operatingsystemmajrelease, '16') >= 0 {
+        $service_provider = pick($service_provider, 'systemd')
+      } else {
+        $service_provider = pick($service_provider, 'upstart')
+      }
     }
     default: {
       $service_provider = undef
