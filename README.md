@@ -505,7 +505,11 @@ Default: False
 Set to true to disable fqdn SSL cert check
 Default: False
 
-##### `service_manage`
+#####`ssl_mode`
+Ssl authorization mode. Valid options are: requireSSL, preferSSL, allowSSL.
+Default: requireSSL
+
+#####`service_manage`
 Whether or not the MongoDB service resource should be part of the catalog.
 Default: true
 
