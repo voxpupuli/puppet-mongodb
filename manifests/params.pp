@@ -21,6 +21,7 @@ class mongodb::params inherits mongodb::globals {
   $mongos_restart        = true
 
   $manage_package        = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
+  $pidfilemode           = pick($mongodb::globals::pidfilemode, '0644')
 
   $version = $::mongodb::globals::version
 

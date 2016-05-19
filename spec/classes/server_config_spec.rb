@@ -149,4 +149,10 @@ describe 'mongodb::server::config', :type => :class do
     end
   end
 
+  describe 'with custom pidfilemode' do
+    let(:pre_condition) { "class { 'mongodb::server': config => '/etc/mongod.conf', dbpath => '/var/lib/mongo', rcfile => '/root/.mongorc.js', pidfilepath => '/var/run/mongodb/mongod.pid', pidfilemode => '0640' }" }
+
+    it { is_expected.to contain_file('/var/run/mongodb/mongod.pid').with_mode('0640') }
+  end
+
 end
