@@ -38,15 +38,15 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     config = YAML.load_file(file)
     config_hash = Hash.new
     if config.kind_of?(Hash) # Using a valid YAML file for mongo 2.6
-      config_hash['bindip'] = config['net.bindIp']
-      config_hash['port'] = config['net.port']
-      config_hash['ipv6'] = config['net.ipv6']
-      config_hash['ssl'] = config['net.ssl.mode']
-      config_hash['sslcert'] = config['net.ssl.PEMKeyFile']
-      config_hash['sslca'] = config['net.ssl.CAFile']
-      config_hash['auth'] = config['security.authorization']
-      config_hash['shardsvr'] = config['sharding.clusterRole']
-      config_hash['confsvr'] = config['sharding.clusterRole']
+      config_hash['bindip'] = config['net']['bindIp']
+      config_hash['port'] = config['net']['port']
+      config_hash['ipv6'] = config['net']['ipv6']
+      config_hash['ssl'] = config['net']['ssl.mode']
+      config_hash['sslcert'] = config['net']['ssl.PEMKeyFile']
+      config_hash['sslca'] = config['net']['ssl.CAFile']
+      config_hash['auth'] = config['security']['authorization']
+      config_hash['shardsvr'] = config['sharding']['clusterRole']
+      config_hash['confsvr'] = config['sharding']['clusterRole']
     else # It has to be a key-value config file
       config = {}
       File.readlines(file).collect do |line|
