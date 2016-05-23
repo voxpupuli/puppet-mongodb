@@ -1,5 +1,29 @@
+## Release 0.14.0
+### Summary
+This breaking release increases the lower bound of the puppetlabs-apt dependency to the 2.x series of apt and puppetlabs-stdlib to >= 4.4.0. The operating system metadata is also updated to reflect modern systems.
+
+### Backwards-incompatible change
+- Increase apt lower dependency to >= 2.1.0
+- Increase stdlib lower dependency to >= 4.4.0
+- Drop RHEL & Centos 5
+- Drop Debian 6
+- Drop Ubuntu 10.04
+
+### Features
+- Add `mongodb_is_master` fact
+- Add `mongodb::db::db_name` parameter for exported resource deduplication
+- Add Debian 8 compatibility
+- Add Ubuntu 14.04 compatibility
+- Add Ubuntu 16.04 compatibility
+- Add puppet 3.x 4.x compatibility metadata
+
+### Bugfixes
+- Catch unconfigured replset configuration queries
+- Fix timestamp and other javascript object removal
+- Correct permissions on .mongorc.js to 600
+
 ## Release 0.13.0
-### Summary 
+### Summary
 Adds several new large features, including the support of mongodb 3.x. Also applies numerous bugfixes, mainly around fixing errors being thrown and syntax issues.
 
 #### Features
