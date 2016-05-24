@@ -80,7 +80,8 @@ class mongodb (
   $key             = undef,
   $ipv6            = undef,
   $bind_ip         = undef,
-  $pidfilepath     = undef
+  $pidfilepath     = undef,
+  $databases       = {}
 ) inherits mongodb::params {
 
   if $enable_10gen {
@@ -141,4 +142,6 @@ class mongodb (
     pidfilepath     => $pidfilepath,
   }
 
+  # to make hiera usable with databases configuration
+  create_resources('mongodb::db', $databases)
 }
