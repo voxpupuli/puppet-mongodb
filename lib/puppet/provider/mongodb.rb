@@ -150,7 +150,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def self.auth_enabled(config=nil)
     config ||= get_mongo_conf
-    config['auth']
+    config['auth'] && config['auth'] != 'disabled'
   end
 
   # Mongo Command Wrapper
