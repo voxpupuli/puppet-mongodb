@@ -8,6 +8,7 @@ class mongodb::server::config {
 
   $dbpath          = $mongodb::server::dbpath
   $pidfilepath     = $mongodb::server::pidfilepath
+  $pidfilemode     = $mongodb::server::pidfilemode
   $logpath         = $mongodb::server::logpath
   $logappend       = $mongodb::server::logappend
   $fork            = $mongodb::server::fork
@@ -123,6 +124,7 @@ class mongodb::server::config {
       # - $objcheck
       # - $oplog_size
       # - $pidfilepath
+      # - $pidfilemode
       # - $port
       # - $profile
       # - $quota
@@ -173,6 +175,7 @@ class mongodb::server::config {
       # - $only
       # - $oplog_size
       # - $pidfilepath
+      # - $pidfilemode
       # - $port
       # - $profile
       # - $quiet
@@ -208,13 +211,13 @@ class mongodb::server::config {
       mode    => '0755',
       owner   => $user,
       group   => $group,
-      require => File[$config]
+      require => File[$config],
     }
 
     if $pidfilepath {
       file { $pidfilepath:
         ensure => file,
-        mode   => '0644',
+        mode   => $pidfilemode,
         owner  => $user,
         group  => $group,
       }
@@ -226,7 +229,7 @@ class mongodb::server::config {
       backup => false,
     }
     file { $config:
-      ensure => absent
+      ensure => absent,
     }
   }
 
@@ -236,11 +239,11 @@ class mongodb::server::config {
       content => template('mongodb/mongorc.js.erb'),
       owner   => 'root',
       group   => 'root',
-      mode    => '0600'
+      mode    => '0600',
     }
   } else {
     file { $rcfile:
-      ensure => absent
+      ensure => absent,
     }
   }
 }
