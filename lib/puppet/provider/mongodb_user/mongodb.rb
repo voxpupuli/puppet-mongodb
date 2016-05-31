@@ -159,7 +159,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
           "#{entry['role']}@#{entry['db']}"
         end
       elsif entry.instance_of? String
-      if entry.end_with? "@#{db}"
+        if entry.end_with? "@#{db}"
           entry.gsub(/^(.*)@.*$/, '\1')
         else
           entry
@@ -173,30 +173,26 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
   end
   
   def role_hashes(roles, db)
-    roles.map do |entry|
+    roles.sort.map do |entry|
       if entry.instance_of? Hash and entry.has_key? 'role'
-        if entry.has_key? 'db'
-          entry
+        if entry['db'] == db
+          entry['role']
         else
-          { 
-            'role' => entry['role'], 
-            'db' => db 
-          }
+          entry
         end
       elsif entry.instance_of? String
-        if entry.include? '@'
+        if entry.end_with? "@#{db}"
+          entry.gsub(/^(.*)@.*$/, '\1')
+        elsif entry.include? '@'
           { 
             'role' => entry.gsub(/^(.*)@.*$/, '\1'),
             'db'   => entry.gsub(/^.*@(.*)$/, '\1'),
           }
         else
-          { 
-            'role' => entry['role'], 
-            'db' => db 
-          }
+          entry
         end
       end
-    end.sort
+    end
   end
   
 end
