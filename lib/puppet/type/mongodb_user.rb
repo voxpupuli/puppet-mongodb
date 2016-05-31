@@ -38,7 +38,7 @@ Puppet::Type.newtype(:mongodb_user) do
   newproperty(:roles, :array_matching => :all) do
     desc "The user's roles."
     defaultto ['dbAdmin']
-    newvalue(/^\w+$/)
+    newvalue(/^\w+@?\w+$/)
 
     # Pretty output for arrays.
     def should_to_s(value)

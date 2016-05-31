@@ -35,7 +35,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
                 :ensure        => :present,
                 :username      => user['user'],
                 :database      => user['db'],
-                :roles         => from_roles(user['roles'], user['db']),
+                :roles         => role_strings(user['roles'], user['db']),
                 :password_hash => user['credentials']['MONGODB-CR'])
         end
       end
@@ -67,13 +67,13 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
         }
 
         mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
-      else
+      else      
         cmd_json=<<-EOS.gsub(/^\s*/, '').gsub(/$\n/, '')
         {
           "createUser": "#{@resource[:username]}",
           "pwd": "#{@resource[:password_hash]}",
           "customData": {"createdBy": "Puppet Mongodb_user['#{@resource[:name]}']"},
-          "roles": #{@resource[:roles].to_json},
+          "roles": #{role_hashes(@resource[:roles], @resource[:database]).to_json},
           "digestPassword": false
         }
         EOS
@@ -130,14 +130,17 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
       if mongo_24?
         mongo_eval("db.system.users.update({user:'#{@resource[:username]}'}, { $set: {roles: #{@resource[:roles].to_json}}})")
       else
-        grant = roles-@property_hash[:roles]
+        current_roles = role_strings(roles, @resource[:database])
+        desired_roles = role_strings(@property_hash[:roles], @resource[:database])
+        
+        grant = (current_roles-desired_roles)
         if grant.length > 0
-          mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{grant. to_json})")
+          mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{role_hashes(grant, @resource[:database]).to_json})")
         end
 
-        revoke = @property_hash[:roles]-roles
+        revoke = (desired_roles-current_roles)
         if revoke.length > 0
-          mongo_eval("db.getSiblingDB('#{@resource[:database]}').revokeRolesFromUser('#{@resource[:username]}', #{revoke.to_json})")
+          mongo_eval("db.getSiblingDB('#{@resource[:database]}').revokeRolesFromUser('#{@resource[:username]}', #{role_hashes(revoke, @resource[:database]).to_json})")
         end
       end
     else
@@ -147,14 +150,53 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 
   private
 
-  def self.from_roles(roles, db)
+  def self.role_strings(roles, db)
     roles.map do |entry|
+      if entry.instance_of? Hash and entry.has_key? 'role'
         if entry['db'] == db
-            entry['role']
+          entry['role']
         else
-            "#{entry['role']}@#{entry['db']}"
+          "#{entry['role']}@#{entry['db']}"
         end
+      elsif entry.instance_of? String
+      if entry.end_with? "@#{db}"
+          entry.gsub(/^(.*)@.*$/, '\1')
+        else
+          entry
+        end
+      end
     end.sort
   end
-
+  
+  def role_strings(roles, db)
+    self.class.role_strings(roles, db)
+  end
+  
+  def role_hashes(roles, db)
+    roles.map do |entry|
+      if entry.instance_of? Hash and entry.has_key? 'role'
+        if entry.has_key? 'db'
+          entry
+        else
+          { 
+            'role' => entry['role'], 
+            'db' => db 
+          }
+        end
+      elsif entry.instance_of? String
+        if entry.include? '@'
+          { 
+            'role' => entry.gsub(/^(.*)@.*$/, '\1'),
+            'db'   => entry.gsub(/^.*@(.*)$/, '\1'),
+          }
+        else
+          { 
+            'role' => entry['role'], 
+            'db' => db 
+          }
+        end
+      end
+    end.sort
+  end
+  
 end
