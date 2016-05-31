@@ -150,7 +150,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def self.auth_enabled(config=nil)
     config ||= get_mongo_conf
-    config['auth']
+    config['auth'] && config['auth'] != 'disabled'
   end
 
   # Mongo Command Wrapper
@@ -178,7 +178,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     end
 
     if !out
-      raise Puppet::ExecutionFailure, "Could not evalute MongoDB shell command: #{cmd}"
+      raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}"
     end
 
     ['ObjectId','NumberLong'].each do |data_type|
