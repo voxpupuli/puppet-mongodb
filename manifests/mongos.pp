@@ -3,6 +3,7 @@ class mongodb::mongos (
   $ensure           = $mongodb::params::mongos_ensure,
   $config           = $mongodb::params::mongos_config,
   $config_content   = undef,
+  $config_template  = undef,
   $configdb         = $mongodb::params::mongos_configdb,
   $service_manage   = $mongodb::params::mongos_service_manage,
   $service_provider = undef,

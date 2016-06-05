@@ -5,6 +5,7 @@ class mongodb::server::config {
   $group           = $mongodb::server::group
   $config          = $mongodb::server::config
   $config_content  = $mongodb::server::config_content
+  $config_template = $mongodb::server::config_template
 
   $dbpath          = $mongodb::server::dbpath
   $pidfilepath     = $mongodb::server::pidfilepath
@@ -102,6 +103,8 @@ class mongodb::server::config {
     #Pick which config content to use
     if $config_content {
       $cfg_content = $config_content
+    } elsif $config_template {
+      $cfg_content = template($config_template)
     } elsif $version and (versioncmp($version, '2.6.0') >= 0) {
       # Template uses:
       # - $auth
