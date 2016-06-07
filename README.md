@@ -531,6 +531,9 @@ Path of the config file. If not specified, the module will use the default
 for your OS distro.
 
 #####`config_content`
+Config content if the default doesn't match one needs.
+
+#####`config_template`
 Path to the config template if the default doesn't match one needs.
 
 #####`configdb`
