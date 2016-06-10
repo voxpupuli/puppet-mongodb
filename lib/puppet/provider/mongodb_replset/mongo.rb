@@ -69,11 +69,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
   end
 
   def rs_initiate(conf, master)
-    if auth_enabled
-      return mongo_command("rs.initiate(#{conf})", initialize_host)
-    else
       return mongo_command("rs.initiate(#{conf})", master)
-    end
   end
 
   def rs_status(host)
@@ -183,6 +179,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
     end
 
     if ! @property_flush[:members].empty?
+
       # Find the alive members so we don't try to add dead members to the replset
       alive_hosts = alive_members(@property_flush[:members])
       dead_hosts  = @property_flush[:members] - alive_hosts
@@ -207,7 +204,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
       conf = "{ _id: \"#{self.name}\", members: [ #{hostconf} ] }"
 
       # Set replset members with the first host as the master
-      output = rs_initiate(conf, alive_hosts[0])
+      output = rs_initiate(conf, auth_enabled ? initialize_host : alive_hosts[0])
       if output['ok'] == 0
         raise Puppet::Error, "rs.initiate() failed for replicaset #{self.name}: #{output['errmsg']}"
       end
@@ -218,14 +215,15 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
 
       retry_limit.times do |n|
         begin
-          if db_ismaster(alive_hosts[0])['ismaster']
-            Puppet.debug 'Replica set initialization has successfully ended'
-            return
-          else
-            Puppet.debug "Wainting for replica initialization. Retry: #{n}"
-            sleep retry_sleep
-            next
-          end
+          alive_hosts.each { |host|
+            if(db_ismaster(host))['ismaster']
+              Puppet.debug 'Replica set initialization has successfully ended'
+              return
+            end
+          }
+          Puppet.debug "Wainting for replica initialization. Retry: #{n}"
+          sleep retry_sleep
+          next
         end
       end
       raise Puppet::Error, "rs.initiate() failed for replicaset #{self.name}: host #{alive_hosts[0]} didn't become master"
@@ -234,6 +232,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
       # Add members to an existing replset
       Puppet.debug "Adding member to existing replset #{self.name}"
       if master = master_host(alive_hosts)
+
         master_data = db_ismaster(master)
         current_hosts = master_data['hosts']
         current_hosts = current_hosts + master_data['arbiters'] if master_data.has_key?('arbiters')
@@ -241,11 +240,10 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
         newhosts = alive_hosts - current_hosts
         Puppet.debug "New Hosts are: #{newhosts.inspect}"
         newhosts.each do |host|
-          output = {}
           if rs_arbiter == host
-            output = rs_add_arbiter(host, master)
+            output = rs_add_arbiter(host, auth_enabled ? initialize_host : master)
           else
-            output = rs_add(host, master)
+            output = rs_add(host, auth_enabled ? initialize_host : master)
           end
           if output['ok'] == 0
             raise Puppet::Error, "rs.add() failed to add host to replicaset #{self.name}: #{output['errmsg']}"
