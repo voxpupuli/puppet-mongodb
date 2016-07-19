@@ -1,4 +1,4 @@
-# mongo.conf - generated from Puppet
+# mongodb.conf - generated from Puppet
 
 
 <% if @logpath -%>
@@ -87,7 +87,7 @@ oplogSize = <%= @oplog_size %>
 # Ignore query hints
 nohints = <%= @nohints %>
 <% end -%>
-<% if @nohttpinterface -%>
+<% if ! @nohttpinterface.nil? -%>
 # Disable the HTTP interface (Defaults to localhost:27018).
 nohttpinterface = <%= @nohttpinterface %>
 <% end -%>
@@ -186,5 +186,7 @@ quiet = <%= @quiet %>
 <% if @ssl -%>
 sslOnNormalPorts = true
 sslPEMKeyFile = <%= @ssl_key %>
+<% if @ssl_ca -%>
 sslCAFile = <%= @ssl_ca %>
+<% end -%>
 <% end -%>

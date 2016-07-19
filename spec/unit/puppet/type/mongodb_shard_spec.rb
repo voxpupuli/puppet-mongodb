@@ -7,17 +7,17 @@ describe Puppet::Type.type(:mongodb_shard) do
   end
 
   it 'should accept a shard name' do
-    @shard[:name].should == 'test'
+    expect(@shard[:name]).to eq('test')
   end
 
   it 'should accept a member' do
     @shard[:member] = 'rs_test/mongo1:27017'
-    @shard[:member].should == 'rs_test/mongo1:27017'
+    expect(@shard[:member]).to eq('rs_test/mongo1:27017')
   end
 
   it 'should accept a keys array' do
     @shard[:keys] = [{'foo.bar' => {'name' => 1}}]
-    @shard[:keys].should == [{'foo.bar' => {'name' => 1}}]
+    expect(@shard[:keys]).to eq([{'foo.bar' => {'name' => 1}}])
   end
 
   it 'should require a name' do

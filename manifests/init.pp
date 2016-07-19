@@ -32,13 +32,11 @@
 #
 # Copyright 2013 PuppetLabs
 #
-
 class mongodb (
   # Deprecated parameters
   $enable_10gen    = undef,
 
   $init            = $mongodb::params::service_provider,
-  $location        = '',
   $packagename     = undef,
   $version         = undef,
   $servicename     = $mongodb::params::service_name,
@@ -82,7 +80,8 @@ class mongodb (
   $key             = undef,
   $ipv6            = undef,
   $bind_ip         = undef,
-  $pidfilepath     = undef
+  $pidfilepath     = undef,
+  $pidfilemode     = undef
 ) inherits mongodb::params {
 
   if $enable_10gen {
@@ -101,7 +100,7 @@ class mongodb (
     settings to mongodb::server. Please verify this works in a safe test
     environment.': }
 
-  class { 'mongodb::server':
+  class { '::mongodb::server':
     package_name    => $packagename,
     logpath         => $logpath,
     logappend       => $logappend,

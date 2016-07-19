@@ -67,7 +67,7 @@ For Red Hat family systems, the client can be installed in a similar fashion:
 class {'::mongodb::client':}
 ```
 
-Note that for Debian/Ubuntu family systems the client is installed with the 
+Note that for Debian/Ubuntu family systems the client is installed with the
 server. Using the client class will by default install the server.
 
 If one plans to configure sharding for a Mongo deployment, the module offer
@@ -87,6 +87,32 @@ To install MongoDB from 10gen repository:
 ```puppet
 class {'::mongodb::globals':
   manage_package_repo => true,
+}->
+class {'::mongodb::client': } ->
+class {'::mongodb::server': }
+```
+
+If you don't want to use the 10gen/MongoDB software repository or the OS packages,
+you can point the module to a custom one.
+To install MongoDB from a custom repository:
+
+```puppet
+class {'::mongodb::globals':
+  manage_package_repo => true,
+  repo_location => 'http://example.com/repo'
+}->
+class {'::mongodb::server': }->
+class {'::mongodb::client': }
+```
+
+Having a local copy of MongoDB repository (that is managed by your private modules)
+you can still enjoy the charms of `mongodb::params` that manage packages.
+To disable managing of repository, but still enable managing packages:
+
+```puppet
+class {'::mongodb::globals':
+  manage_package_repo => false,
+  manage_package      => true,
 }->
 class {'::mongodb::server': }->
 class {'::mongodb::client': }
@@ -169,6 +195,14 @@ This setting can be used to override the default status check command for
 your MongoDB service. If not specified, the module will use whatever service
 name is the default for your OS distro.
 
+##### `mongod_service_manage`
+This setting can be used to override the default management of the mongod service.
+By default the module will manage the mongod process.
+
+##### `mongos_service_manage`
+This setting can be used to override the default management of the mongos service.
+By default the module will manage the mongos process.
+
 #####`user`
 This setting can be used to override the default MongoDB user and owner of the
 service and related files in the file system. If not specified, the module will
@@ -193,6 +227,19 @@ module will use the default for your OS distro.
 The version of MonogDB to install/manage. This is a simple way of providing
 a specific version such as '2.2' or '2.4' for example. If not specified,
 the module will use the default for your OS distro.
+
+#####`repo_location`
+This setting can be used to override the default MongoDB repository location.
+If not specified, the module will use the default repository for your OS distro.
+
+#####`repo_proxy`
+This will allow you to set a proxy for your repository in case you are behind a corporate firewall. Currently this is only supported with yum repositories
+
+#####`proxy_username`
+This sets the username for the proxyserver, should authentication be required
+
+#####`proxy_password`
+This sets the password for the proxyserver, should authentication be required
 
 ####Class: mongodb::server
 
@@ -360,15 +407,31 @@ Use this setting to enable shard server mode for mongod.
 Use this setting to configure replication with replica sets. Specify a replica
 set name as an argument to this set. All hosts must have the same set name.
 
+#####`replset_members`
+An array of member hosts for the replica set.
+Mutually exclusive with `replset_config` param.
+
+#####`replset_config`
+A hash that is used to configure the replica set.
+Mutually exclusive with `replset_members` param.
+
+```puppet
+class mongodb::server {
+  replset        => 'rsmain',
+  replset_config => { 'rsmain' => { ensure  => present, members => ['host1:27017', 'host2:27017', 'host3:27017']  }  }
+
+}
+```
+
 #####`rest`
 Set to true to enable a simple REST interface. Default: false
 
 #####`quiet`
-Runs the mongod or mongos instance in a quiet mode that attempts to limit the 
+Runs the mongod or mongos instance in a quiet mode that attempts to limit the
 amount of output. This option suppresses : "output from database commands, including drop, dropIndexes, diagLogging, validate, and clean", "replication activity", "connection accepted events" and "connection closed events".
 Default: false
 
-> For production systems this option is **not** recommended as it may make tracking 
+> For production systems this option is **not** recommended as it may make tracking
 problems during particular connections much more difficult.
 
 #####`slowms`
@@ -379,7 +442,7 @@ Default: 100 ms
 Specify the path to a key file to store authentication information. This option
 is only useful for the connection between replica set members. Default: None
 
-#####'key'
+#####`key`
 Specify the key contained within the keyfile. This option
 is only useful for the connection between replica set members. Default: None
 
@@ -413,14 +476,45 @@ this slave instance will replicate. Default: <>
 
 #####`ssl`
 Set to true to enable ssl. Default: <>
-*Important*: You need to have ssl_key and ssl_ca set as well and files
-need to pre-exist on node.
+*Important*: You need to have ssl_key set as well, and the file needs to
+pre-exist on node. If you wish to use certificate validation, ssl_ca must also
+be set.
 
 #####`ssl_key`
 Default: <>
 
 #####`ssl_ca`
 Default: <>
+
+#####`service_manage`
+Whether or not the MongoDB service resource should be part of the catalog.
+Default: true
+
+#####`storage_engine`
+Only needed for MongoDB 3.x versions, where it's possible to select the
+'wiredTiger' engine in addition to the default 'mmapv1' engine. If not set, the
+config is left out and mongo will default to 'mmapv1'.
+You should not set this for MongoDB versions < 3.x
+
+#####`restart`
+Specifies whether the service should be restarted on config changes. Default: 'true'
+
+#####`create_admin`
+Allows to create admin user for admin database.
+Redefine these parameters if needed:
+
+#####`admin_username`
+Administrator user name
+
+#####`admin_password`
+Administrator user password
+
+#####`admin_roles`
+Administrator user roles
+
+#####`store_creds`
+Store admin credentials in mongorc.js file. Uses with `create_admin` parameter
+
 
 ####Class: mongodb::mongos
 class. This class should only be used if you want to implement sharding within
@@ -437,10 +531,17 @@ Path of the config file. If not specified, the module will use the default
 for your OS distro.
 
 #####`config_content`
+Config content if the default doesn't match one needs.
+
+#####`config_template`
 Path to the config template if the default doesn't match one needs.
 
 #####`configdb`
 Array of the config servers IP addresses the mongos should connect to.
+
+#####`service_manage`
+Whether or not the MongoDB sharding service resource should be part of the catalog.
+Default: true
 
 #####`service_name`
 This setting can be used to override the default Mongos service name. If not
@@ -468,6 +569,9 @@ This setting can be used to specify if puppet should install the package or not
 #####`package_name`
 This setting can be used to specify the name of the package that should be installed.
 If not specified, the module will use whatever service name is the default for your OS distro.
+
+#####`restart`
+Specifies whether the service should be restarted on config changes. Default: 'true'
 
 ### Definitions
 
@@ -507,9 +611,12 @@ The maximum amount of two second tries to wait MongoDB startup. Default: 10
 #### Provider: mongodb_user
 'mongodb_user' can be used to create and manage users within MongoDB database.
 
+*Note:* if replica set is enabled, replica initialization has to come before
+any user operations.
+
 ```puppet
 mongodb_user { testuser:
-  username      => 'testuser',
+  name          => 'testuser',
   ensure        => present,
   password_hash => mongodb_password('testuser', 'p@ssw0rd'),
   database      => testdb,
@@ -590,6 +697,10 @@ This module has been tested on:
 For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml) definition.
 
 This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
+
+### Apt module support
+
+While this module supports both 1.x and 2.x versions of the puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or 2.0.1.
 
 ## Development
 
