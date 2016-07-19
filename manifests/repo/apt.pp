@@ -15,10 +15,10 @@ class mongodb::repo::apt inherits mongodb::repo {
       include_src => false,
     }
 
-    Apt::Source['mongodb']->Package<|tag == 'mongodb'|>
+    Apt::Source['downloads-distro.mongodb.org']->Package<|tag == 'mongodb'|>
   }
   else {
-    apt::source { 'mongodb':
+    apt::source { 'downloads-distro.mongodb.org':
       ensure => absent,
     }
   }
