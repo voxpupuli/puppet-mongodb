@@ -35,8 +35,8 @@ class mongodb::server::service {
     'stopped' => false,
     default   => true
   }
-  if $::operatingsystem = 'Ubuntu' {
-    if $service_provider = 'upstart' {
+  if $::operatingsystem == 'Ubuntu' {
+    if $service_provider == 'upstart' {
       file { '/etc/init.d/mongodb' :
         ensure  => file,
         content => template("mongodb/mongodb/Ubuntu/mongo.erb"),
