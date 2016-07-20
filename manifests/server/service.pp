@@ -35,23 +35,25 @@ class mongodb::server::service {
     'stopped' => false,
     default   => true
   }
-  if $service_provider = 'upstart' {
-    file { '/etc/init.d/mongodb' :
-      ensure  => file,
-      content => template("mongodb/mongodb/${::osfamily}/mongo.erb"),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0755',
-      before  => Service['mongodb'],
-    }
-  } else {
-    file { '/lib/systemd/system/mongod.service' :
-      ensure  => file,
-      content => template("mongodb/mongodb/${::osfamily}/mongod.service.erb"),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0755',
-      before  => Service['mongodb'],
+  if $::operatingsystem = 'Ubuntu' {
+    if $service_provider = 'upstart' {
+      file { '/etc/init.d/mongodb' :
+        ensure  => file,
+        content => template("mongodb/mongodb/${::osfamily}/mongo.erb"),
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0755',
+        before  => Service['mongodb'],
+      }
+    } else {
+      file { '/lib/systemd/system/mongod.service' :
+        ensure  => file,
+        content => template("mongodb/mongodb/${::osfamily}/mongod.service.erb"),
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0755',
+        before  => Service['mongodb'],
+      }
     }
   }
 
