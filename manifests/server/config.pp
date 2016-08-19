@@ -3,9 +3,12 @@ class mongodb::server::config {
   $ensure          = $mongodb::server::ensure
   $user            = $mongodb::server::user
   $group           = $mongodb::server::group
+  $manage_config   = $mongodb::server::manage_config
   $config          = $mongodb::server::config
   $config_content  = $mongodb::server::config_content
   $config_template = $mongodb::server::config_template
+  $config_owner    = $mongodb::server::config_owner
+  $config_group    = $mongodb::server::config_group
 
   $dbpath          = $mongodb::server::dbpath
   $pidfilepath     = $mongodb::server::pidfilepath
@@ -202,11 +205,13 @@ class mongodb::server::config {
       $cfg_content = template('mongodb/mongodb.conf.erb')
     }
 
-    file { $config:
-      content => $cfg_content,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
+    if $manage_config and !defined(File[$config]) {
+      file { $config:
+        content => $cfg_content,
+        owner   => $config_owner,
+        group   => $config_group,
+        mode    => '0644',
+      }
     }
 
     file { $dbpath:

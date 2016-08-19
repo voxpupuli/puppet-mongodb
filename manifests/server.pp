@@ -4,6 +4,8 @@ class mongodb::server (
 
   $user             = $mongodb::params::user,
   $group            = $mongodb::params::group,
+  $config_owner     = $mongodb::params::config_owner,
+  $config_group     = $mongodb::params::config_group,
 
   $config           = $mongodb::params::config,
   $dbpath           = $mongodb::params::dbpath,
@@ -17,6 +19,7 @@ class mongodb::server (
   $service_enable   = $mongodb::params::service_enable,
   $service_ensure   = $mongodb::params::service_ensure,
   $service_status   = $mongodb::params::service_status,
+  $manage_config    = $mongodb::params::manage_config,
 
   $package_ensure  = $mongodb::params::package_ensure,
   $package_name    = $mongodb::params::server_package_name,
@@ -146,14 +149,14 @@ class mongodb::server (
       if $replset_config {
         validate_hash($replset_config)
 
-        # Copy it to REAL value
-        $replset_config_REAL = $replset_config
+        # Copy it to real value
+        $replset_config_real = $replset_config
 
       } else {
         validate_array($replset_members)
 
         # Build up a config hash
-        $replset_config_REAL = {
+        $replset_config_real = {
           "${replset}" => {
             'ensure'   => 'present',
             'members'  => $replset_members
@@ -163,7 +166,7 @@ class mongodb::server (
 
       # Wrap the replset class
       class { 'mongodb::replset':
-        sets => $replset_config_REAL
+        sets => $replset_config_real
       }
       Anchor['mongodb::server::end'] -> Class['mongodb::replset']
 
