@@ -147,13 +147,13 @@ class mongodb::server (
         validate_hash($replset_config)
 
         # Copy it to REAL value
-        $replset_config_REAL = $replset_config
+        $_replset_config = $replset_config
 
       } else {
         validate_array($replset_members)
 
         # Build up a config hash
-        $replset_config_REAL = {
+        $_replset_config = {
           "${replset}" => {
             'ensure'   => 'present',
             'members'  => $replset_members
@@ -163,8 +163,11 @@ class mongodb::server (
 
       # Wrap the replset class
       class { 'mongodb::replset':
-        sets => $replset_config_REAL
+        sets => $_replset_config
       }
+
+      $replset_config_REAL = $_replset_config  # lint:ignore:variable_is_lowercase required for compatibility
+
       Anchor['mongodb::server::end'] -> Class['mongodb::replset']
 
       # Make sure that the ordering is correct
