@@ -143,5 +143,13 @@ operationProfiling.slowOpThresholdMs: <%= @slowms %>
 
 
 <% if @set_parameter -%>
-setParameter: <%= @set_parameter %>
+setParameter: 
+<% if @set_parameter.is_a?(Array) -%>
+<% @set_parameter.each do |p| -%> 
+  <%= p -%>
 <% end -%>
+<% else -%>
+  <%= @set_parameter -%>
+<% end -%>
+<% end -%>
+
