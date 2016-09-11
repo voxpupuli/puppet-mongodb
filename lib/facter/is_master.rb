@@ -10,7 +10,7 @@ Facter.add('mongodb_is_master') do
 
       if $?.success?
         mongo_output = Facter::Core::Execution.exec("mongo --quiet --eval \"#{e}printjson(db.isMaster())\"")
-        JSON.parse(mongo_output.gsub(/ISODate\((.+?)\)/, '\1 '))['ismaster'] ||= false
+        JSON.parse(mongo_output.gsub(/(ISODate|ObjectId)\((.+?)\)/, '\2 '))['ismaster'] ||= false
       else
         'not_responding'
       end
