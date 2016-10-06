@@ -15,12 +15,12 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 4.0"
   - rvm: 2.1.5
     bundler_args: --without system_tests
-    env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
+    env: PUPPET_GEM_VERSION="~> 3.0" FACTER_GEM_VERSION="~> 2.2" FUTURE_PARSER="yes"
   - rvm: 2.1.5
     bundler_args: --without system_tests
-    env: PUPPET_GEM_VERSION="~> 3.0"
+    env: PUPPET_GEM_VERSION="~> 3.0" FACTER_GEM_VERSION="~> 2.2"
   - rvm: 1.9.3
     bundler_args: --without system_tests
-    env: PUPPET_GEM_VERSION="~> 3.0"
+    env: PUPPET_GEM_VERSION="~> 3.0" FACTER_GEM_VERSION="~> 2.1"
 notifications:
   email: false
