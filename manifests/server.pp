@@ -97,17 +97,17 @@ class mongodb::server (
   if ($ensure == 'present' or $ensure == true) {
     if $restart {
       anchor { 'mongodb::server::start': }->
-      class { 'mongodb::server::install': }->
+      class { '::mongodb::server::install': }->
       # If $restart is true, notify the service on config changes (~>)
-      class { 'mongodb::server::config': }~>
-      class { 'mongodb::server::service': }->
+      class { '::mongodb::server::config': }~>
+      class { '::mongodb::server::service': }->
       anchor { 'mongodb::server::end': }
     } else {
       anchor { 'mongodb::server::start': }->
-      class { 'mongodb::server::install': }->
+      class { '::mongodb::server::install': }->
       # If $restart is false, config changes won't restart the service (->)
-      class { 'mongodb::server::config': }->
-      class { 'mongodb::server::service': }->
+      class { '::mongodb::server::config': }->
+      class { '::mongodb::server::service': }->
       anchor { 'mongodb::server::end': }
     }
   } else {
@@ -162,7 +162,7 @@ class mongodb::server (
       }
 
       # Wrap the replset class
-      class { 'mongodb::replset':
+      class { '::mongodb::replset':
         sets => $_replset_config
       }
 

@@ -1,5 +1,16 @@
 ## Release 0.14.0
 ### Summary
+Resolved dependency cycle globals -> repo -> params -> globals by making mongodb::repo no longer inherit params.
+
+### Bugfixes
+- in repo.pp, removed "inherits mongodb::params" and add "include ::mongodb::globals". Make $ensure and $version mandatory parameters
+- in globals.pp, add $version parameter to invocation of ::mongodb::repo
+- in mongos.pp, changed relative class names to absolute
+- in server.pp, changed relative class names to absolute
+- in spec/classes/repo_spec.rb added 'ensure' and 'version' to parameters
+
+## Release 0.14.0
+### Summary
 This breaking release increases the lower bound of the puppetlabs-apt dependency to the 2.x series of apt and puppetlabs-stdlib to >= 4.4.0. The operating system metadata is also updated to reflect modern systems.
 
 ### Backwards-incompatible change
