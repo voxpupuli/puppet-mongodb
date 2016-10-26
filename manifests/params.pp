@@ -12,7 +12,7 @@ class mongodb::params inherits mongodb::globals {
   $admin_username        = 'admin'
   $store_creds           = false
   $rcfile                = "${::root_home}/.mongorc.js"
-
+  
   $mongos_service_manage = pick($mongodb::globals::mongos_service_manage, true)
   $mongos_service_enable = pick($mongodb::globals::mongos_service_enable, true)
   $mongos_service_ensure = pick($mongodb::globals::mongos_service_ensure, 'running')
@@ -22,7 +22,8 @@ class mongodb::params inherits mongodb::globals {
 
   $manage_package        = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
   $pidfilemode           = pick($mongodb::globals::pidfilemode, '0644')
-
+  $createpidfile         = pick($mongodb::globals::createpidfile, true)
+  
   $version = $::mongodb::globals::version
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
