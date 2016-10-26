@@ -10,6 +10,7 @@ class mongodb::server::config {
   $dbpath          = $mongodb::server::dbpath
   $pidfilepath     = $mongodb::server::pidfilepath
   $pidfilemode     = $mongodb::server::pidfilemode
+  $createpidfile   = $mongodb::server::createpidfile
   $logpath         = $mongodb::server::logpath
   $logappend       = $mongodb::server::logappend
   $fork            = $mongodb::server::fork
@@ -221,11 +222,18 @@ class mongodb::server::config {
     }
 
     if $pidfilepath {
-      file { $pidfilepath:
-        ensure => file,
-        mode   => $pidfilemode,
-        owner  => $user,
-        group  => $group,
+      if $createpidfile {
+        file { $pidfilepath:
+          ensure => file,
+          mode   => $pidfilemode,
+          owner  => $user,
+          group  => $group,
+        }
+      } else {
+        file { $pidfilepath:
+          ensure => absent,
+          backup => false,
+        }
       }
     }
   } else {
