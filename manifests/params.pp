@@ -23,7 +23,7 @@ class mongodb::params inherits mongodb::globals {
   $manage_package        = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
   $pidfilemode           = pick($mongodb::globals::pidfilemode, '0644')
   $createpidfile         = pick($mongodb::globals::createpidfile, true)
-  
+
   $version = $::mongodb::globals::version
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
