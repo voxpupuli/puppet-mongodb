@@ -12,7 +12,7 @@ class mongodb::params inherits mongodb::globals {
   $admin_username        = 'admin'
   $store_creds           = false
   $rcfile                = "${::root_home}/.mongorc.js"
-  
+
   $mongos_service_manage = pick($mongodb::globals::mongos_service_manage, true)
   $mongos_service_enable = pick($mongodb::globals::mongos_service_enable, true)
   $mongos_service_ensure = pick($mongodb::globals::mongos_service_ensure, 'running')
