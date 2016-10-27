@@ -69,7 +69,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
   end
 
   def rs_initiate(conf, master)
-    if auth_enabled
+    if auth_enabled && auth_enabled != 'disabled'
       return mongo_command("rs.initiate(#{conf})", initialize_host)
     else
       return mongo_command("rs.initiate(#{conf})", master)
