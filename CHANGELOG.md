@@ -1,3 +1,11 @@
+## Release 0.16.0
+### Summary
+We fixed a critical bug where we lost idempotency in 0.15.0. The patch that fix
+this problem will be part of this release.
+
+### Bugfixes
+- Recursively manage only user/group for dbpath
+
 ## Release 0.15.0
 ### Summary
 The addition of several new functional features which will help with management and multiple bug fixes.
