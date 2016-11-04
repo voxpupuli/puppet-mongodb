@@ -4,4 +4,4 @@
   docker_sets: []
 
 spec/spec_helper.rb:
-  allow_deprecations: true
+  allow_deprecations: true
