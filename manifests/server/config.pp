@@ -236,11 +236,6 @@ class mongodb::server::config {
           owner  => $user,
           group  => $group,
         }
-      } else {
-        file { $pidfilepath:
-          ensure => absent,
-          backup => false,
-        }
       }
     }
   } else {
