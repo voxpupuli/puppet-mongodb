@@ -11,7 +11,7 @@ class mongodb::server::config {
   $dbpath_fix      = $mongodb::server::dbpath_fix
   $pidfilepath     = $mongodb::server::pidfilepath
   $pidfilemode     = $mongodb::server::pidfilemode
-  $manage_pidfile   = $mongodb::server::manage_pidfile
+  $manage_pidfile  = $mongodb::server::manage_pidfile
   $logpath         = $mongodb::server::logpath
   $logappend       = $mongodb::server::logappend
   $fork            = $mongodb::server::fork
