@@ -11,7 +11,7 @@ class mongodb::server::config {
   $dbpath_fix      = $mongodb::server::dbpath_fix
   $pidfilepath     = $mongodb::server::pidfilepath
   $pidfilemode     = $mongodb::server::pidfilemode
-  $createpidfile   = $mongodb::server::createpidfile
+  $manage_pidfile   = $mongodb::server::manage_pidfile
   $logpath         = $mongodb::server::logpath
   $logappend       = $mongodb::server::logappend
   $fork            = $mongodb::server::fork
@@ -229,7 +229,7 @@ class mongodb::server::config {
     }
 
     if $pidfilepath {
-      if $createpidfile {
+      if $manage_pidfile {
         file { $pidfilepath:
           ensure => file,
           mode   => $pidfilemode,

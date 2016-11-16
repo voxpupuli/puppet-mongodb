@@ -35,7 +35,7 @@ class mongodb::globals (
 
   $pidfilepath           = undef,
   $pidfilemode           = undef,
-  $createpidfile         = undef,
+  $manage_pidfile         = undef,
 ) {
 
   # Setup of the repo only makes sense globally, so we are doing it here.
