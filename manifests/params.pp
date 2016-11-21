@@ -13,7 +13,7 @@ class mongodb::params inherits mongodb::globals {
   $handle_creds          = true
   $store_creds           = false
   $rcfile                = "${::root_home}/.mongorc.js"
-  $dbpath_fix            = true
+  $dbpath_fix            = false
 
   $mongos_service_manage = pick($mongodb::globals::mongos_service_manage, true)
   $mongos_service_enable = pick($mongodb::globals::mongos_service_enable, true)

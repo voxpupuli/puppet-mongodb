@@ -27,6 +27,7 @@ describe 'mongodb::server::config', type: :class do
       is_expected.to contain_file('/etc/mongod.conf').with_content(%r{^fork=true})
 
       is_expected.to contain_file('/root/.mongorc.js').with(ensure: 'absent')
+      is_expected.to_not contain_exec('fix dbpath permissions')
     }
   end
 
@@ -149,4 +150,17 @@ describe 'mongodb::server::config', type: :class do
 
     it { is_expected.to contain_file('/var/run/mongodb/mongod.pid').with_mode('0640') }
   end
+
+  describe 'with dbpath_fix enabled' do
+      let(:pre_condition) { "class { 'mongodb::server': config => '/etc/mongod.conf', dbpath => '/var/lib/mongo', rcfile => '/root/.mongorc.js', dbpath_fix => true, user => 'foo', group => 'bar' }" }
+
+    it {
+      is_expected.to contain_exec('fix dbpath permissions').with(
+        :command   => 'chown -R foo:bar /var/lib/mongo',
+        :path      => ['/usr/bin', '/bin'],
+        :onlyif    => "find /var/lib/mongo -not -user foo -o -not -group bar -print -quit | grep -q '.*'")
+      is_expected.to contain_exec('fix dbpath permissions').that_subscribes_to('File[/var/lib/mongo]')
+    }
+  end
+
 end
