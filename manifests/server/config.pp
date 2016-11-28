@@ -213,7 +213,7 @@ class mongodb::server::config {
 
     file { $dbpath:
       ensure  => directory,
-      mode    => '0755',
+      mode    => '0644',
       owner   => $user,
       group   => $group,
       require => File[$config],
