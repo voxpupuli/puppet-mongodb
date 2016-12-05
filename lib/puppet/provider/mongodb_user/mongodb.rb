@@ -32,6 +32,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
         begin
           users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
         rescue Puppet::ExecutionFailure
+          Puppet.warning 'Failed to load user info'
           users = []
         end
 
@@ -83,7 +84,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
         }
         EOS
 
-        mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+        result = JSON.parse mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+
+        if result['ok'] == 0
+          raise Puppet::ExecutionFailure, "Failed to add mongo user #{@resource[:username]}: #{result['errmsg']}"
+        end
+        return false
       end
 
       @property_hash[:ensure] = :present
