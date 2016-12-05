@@ -28,7 +28,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
         end
         return allusers
       else
-        users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
+        # This can fail in 3.x before the admin user is created.
+        begin
+          users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
+        rescue Puppet::ExecutionFailure
+          users = []
+        end
 
         users.collect do |user|
             new(:name          => user['_id'],
