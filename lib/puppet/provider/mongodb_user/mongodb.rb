@@ -37,12 +37,22 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
         end
 
         users.collect do |user|
+          if user['credentials']['SCRAM-SHA-1']
+            cred = user['credentials']['SCRAM-SHA-1']
+            new(:name          => user['_id'],
+                :ensure        => :present,
+                :username      => user['user'],
+                :database      => user['db'],
+                :roles         => from_roles(user['roles'], user['db']),
+                :password_hash => user['credentials']['SCRAM-SHA-1'])
+          else
             new(:name          => user['_id'],
                 :ensure        => :present,
                 :username      => user['user'],
                 :database      => user['db'],
                 :roles         => from_roles(user['roles'], user['db']),
                 :password_hash => user['credentials']['MONGODB-CR'])
+          end
         end
       end
     else

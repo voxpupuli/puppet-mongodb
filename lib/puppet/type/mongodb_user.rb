@@ -56,6 +56,33 @@ Puppet::Type.newtype(:mongodb_user) do
       fail("Property 'password_hash' must be set. Use mongodb_password() for creating hash.") if provider.database == :absent
     end
     newvalue(/^\w+$/)
+
+    def insync?(is)
+      # In older server versions, |is| will just be a password hash, so
+      # check that.
+      if is == self.should
+        return true
+      end
+
+      # Otherwise, we have a new-style scram password hash.  Convert our
+      # user-supplied parameter to this, then compare them.
+      require 'base64'
+      require 'digest'
+      require 'openssl'
+
+      salt = Base64.decode64 is['salt']
+      iters = is['iterationCount']
+      salted_pw = OpenSSL::PKCS5::pbkdf2_hmac(self.should, salt, iters, 20, 'SHA1')
+      client_key = OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), salted_pw, "Client Key")
+      stored_key = Digest::SHA1.digest client_key
+      server_key = OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), salted_pw, "Server Key")
+
+      if Base64.decode64(is['storedKey']) == stored_key and Base64.decode64(is['serverKey']) == server_key
+        return true
+      else
+        return false
+      end
+    end
   end
 
   autorequire(:package) do
