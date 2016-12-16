@@ -212,11 +212,15 @@ class mongodb::server::config {
     }
 
     file { $dbpath:
-      ensure  => directory,
-      mode    => '0755',
-      owner   => $user,
-      group   => $group,
-      require => File[$config],
+      ensure   => directory,
+      mode     => '0755',
+      owner    => $user,
+      group    => $group,
+      selrange => 's0',
+      selrole  => 'object_r',
+      seltype  => 'mongod_var_lib_t',
+      seluser  => 'system_u',
+      require  => File[$config],
     }
 
     if $dbpath_fix {
