@@ -8,8 +8,10 @@ class mongodb::server::config {
   $config_template = $mongodb::server::config_template
 
   $dbpath          = $mongodb::server::dbpath
+  $dbpath_fix      = $mongodb::server::dbpath_fix
   $pidfilepath     = $mongodb::server::pidfilepath
   $pidfilemode     = $mongodb::server::pidfilemode
+  $manage_pidfile  = $mongodb::server::manage_pidfile
   $logpath         = $mongodb::server::logpath
   $logappend       = $mongodb::server::logappend
   $fork            = $mongodb::server::fork
@@ -210,22 +212,30 @@ class mongodb::server::config {
     }
 
     file { $dbpath:
-      ensure   => directory,
-      mode     => '0755',
-      owner    => $user,
-      group    => $group,
-      recurse  => true,
-      purge    => false,
-      checksum => 'none',
-      require  => File[$config],
+      ensure  => directory,
+      mode    => '0755',
+      owner   => $user,
+      group   => $group,
+      require => File[$config],
+    }
+
+    if $dbpath_fix {
+      exec { 'fix dbpath permissions':
+        command   => "chown -R ${user}:${group} ${dbpath}",
+        path      => ['/usr/bin', '/bin'],
+        onlyif    => "find ${dbpath} -not -user ${user} -o -not -group ${group} -print -quit | grep -q '.*'",
+        subscribe => File[$dbpath]
+      }
     }
 
     if $pidfilepath {
-      file { $pidfilepath:
-        ensure => file,
-        mode   => $pidfilemode,
-        owner  => $user,
-        group  => $group,
+      if $manage_pidfile {
+        file { $pidfilepath:
+          ensure => file,
+          mode   => $pidfilemode,
+          owner  => $user,
+          group  => $group,
+        }
       }
     }
   } else {
