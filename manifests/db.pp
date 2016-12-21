@@ -7,7 +7,7 @@
 #  user - Database username.
 #  db_name - Database name. Defaults to $name.
 #  password_hash - Hashed password. Hex encoded md5 hash of "$username:mongo:$password".
-#  password - Plain text user password. This is UNSAFE, use 'password_hash' unstead.
+#  password - Plain text user password. This is UNSAFE, use 'password_hash' instead.
 #  roles (default: ['dbAdmin']) - array with user roles.
 #  tries (default: 10) - The maximum amount of two second tries to wait MongoDB startup.
 #

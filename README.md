@@ -263,6 +263,9 @@ it's data. If not specified, the module will use the default for your OS distro.
 Specify a file location to hold the PID or process ID of the mongod process.
 If not specified, the module will use the default for your OS distro.
 
+#####`manage_pidfile`
+Should puppet create the pidfile. Mondod 6.2.10 will not start if pidfile exists
+
 #####`logpath`
 Specify the path to a file name for the log file that will hold all diagnostic
 logging information. Unless specified, mongod will output all log information

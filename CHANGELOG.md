@@ -1,3 +1,28 @@
+## Release 0.16.0
+### Summary
+We fixed a critical bug where we lost idempotency in 0.15.0. The patch that fix
+this problem will be part of this release.
+
+### Bugfixes
+- Recursively manage only user/group for dbpath
+
+## Release 0.15.0
+### Summary
+The addition of several new functional features which will help with management and multiple bug fixes.
+
+### Features
+- Added ability to set PID file mode.
+- Recursively manage the contents of dbpath directory.
+- Now alllows custom templates.
+- Addition of mongo listen port before creating facter.
+
+### Bugfixes
+- Now allows hyphens in database names.
+- Now converts MongoDB ObjectID objects to generic JSON.
+- Use the same regex that the mongodb provider does when correcting for ObjectID values in the isMaster response.
+- Fixes to ensure that the auth property for config is parsed correctly.
+- Now checks if mongo is up before evaluating is_master fact.
+
 ## Release 0.14.0
 ### Summary
 This breaking release increases the lower bound of the puppetlabs-apt dependency to the 2.x series of apt and puppetlabs-stdlib to >= 4.4.0. The operating system metadata is also updated to reflect modern systems.
