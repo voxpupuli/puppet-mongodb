@@ -39,7 +39,7 @@ class mongodb::server::service {
     if $service_provider == 'upstart' {
       file { '/etc/init.d/mongodb' :
         ensure  => file,
-        content => template("mongodb/mongodb/Ubuntu/mongo.erb"),
+        content => template('mongodb/mongodb/Ubuntu/mongo.erb'),
         owner   => 'root',
         group   => 'root',
         mode    => '0755',
@@ -48,7 +48,7 @@ class mongodb::server::service {
     } else {
       file { '/lib/systemd/system/mongod.service' :
         ensure  => file,
-        content => template("mongodb/mongodb/Ubuntu/mongod.service.erb"),
+        content => template('mongodb/mongodb/Ubuntu/mongod.service.erb'),
         owner   => 'root',
         group   => 'root',
         mode    => '0755',
