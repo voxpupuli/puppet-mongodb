@@ -4,6 +4,12 @@ describe 'mongodb::repo', :type => :class do
 
   context 'when deploying on Debian' do
     with_debian_facts
+    let :params do
+      {
+        :ensure => 'present',
+        :version => '1.2.3',
+      }
+    end
 
     it {
       is_expected.to contain_class('mongodb::repo::apt')
@@ -12,7 +18,12 @@ describe 'mongodb::repo', :type => :class do
 
   context 'when deploying on CentOS' do
     with_centos_facts
-
+    let :params do
+      {
+        :ensure => 'present',
+        :version => '1.2.3',
+      }
+    end
     it {
       is_expected.to contain_class('mongodb::repo::yum')
     }
@@ -23,6 +34,8 @@ describe 'mongodb::repo', :type => :class do
 
     let :params do
       {
+        :ensure => 'present',
+        :version => '1.2.3',
         :proxy => 'http://proxy-server:8080',
         :proxy_username => 'proxyuser1',
         :proxy_password => 'proxypassword1',

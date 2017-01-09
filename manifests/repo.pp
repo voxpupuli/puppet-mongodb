@@ -1,18 +1,19 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
-  $ensure         = $mongodb::params::ensure,
-  $version        = $mongodb::params::version,
+  $ensure,
+  $version,
   $repo_location  = undef,
   $proxy          = undef,
   $proxy_username = undef,
   $proxy_password = undef,
-) inherits mongodb::params {
+)  {
+  include ::mongodb::globals
   case $::osfamily {
     'RedHat', 'Linux': {
       if ($repo_location != undef){
         $location = $repo_location
         $description = 'MongoDB Custom Repository'
-      } elsif $mongodb::globals::use_enterprise_repo == true {
+      } elsif $::mongodb::globals::use_enterprise_repo == true {
         $location = 'https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/stable/$basearch/'
         $description = 'MongoDB Enterprise Repository'
       }

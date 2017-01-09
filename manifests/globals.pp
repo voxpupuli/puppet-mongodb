@@ -40,8 +40,12 @@ class mongodb::globals (
 
   # Setup of the repo only makes sense globally, so we are doing it here.
   if($manage_package_repo) {
+    if(! $version) {
+      fail('Version must be specified when manage_package_repo is set to true')
+    }
     class { '::mongodb::repo':
       ensure        => present,
+      version       => $version,
       repo_location => $repo_location,
       proxy         => $repo_proxy,
     }
