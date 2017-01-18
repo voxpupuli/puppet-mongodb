@@ -285,6 +285,10 @@ will use the default for your OS distro. Example: bind_ip=['127.0.0.1', '192.168
 Set to true to add new entries to the end of the logfile rather than overwriting
 the content of the log when the process restarts. Default: True
 
+#####`system_logrotate`
+Set to reopen for mongo to close a log file then reopen it so that logrotations handled
+outside of mongo perform as expected. Default: undef
+
 #####`fork`
 Set to true to fork server process at launch time. The default setting depends on
 the operating system.
