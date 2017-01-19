@@ -1,4 +1,4 @@
-## Release 0.14.0
+## Release 0.14.1
 ### Summary
 Resolved dependency cycle globals -> repo -> params -> globals by making mongodb::repo no longer inherit params.
 
