@@ -2,6 +2,7 @@
 ---
 .travis.yml:
   docker_sets: []
-
+appveyor.yml:
+  delete: true
 spec/spec_helper.rb:
   allow_deprecations: true
