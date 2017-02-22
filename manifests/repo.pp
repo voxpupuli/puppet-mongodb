@@ -13,7 +13,8 @@ class mongodb::repo (
         $location = $repo_location
         $description = 'MongoDB Custom Repository'
       } elsif $mongodb::globals::use_enterprise_repo == true {
-        $location = 'https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/stable/$basearch/'
+        $mongover = split($version, '[.]')
+        $location = "https://repo.mongodb.com/yum/redhat/\$releasever/mongodb-enterprise/${mongover[0]}.${mongover[1]}/\$basearch/"
         $description = 'MongoDB Enterprise Repository'
       }
       elsif $version and (versioncmp($version, '3.0.0') >= 0) {
