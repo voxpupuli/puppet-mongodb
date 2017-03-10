@@ -15,7 +15,8 @@ class mongodb::repo::apt inherits mongodb::repo {
       include_src => false,
     }
 
-    Apt::Source['mongodb']->Package<|tag == 'mongodb'|>
+    #this gets handled by our base class
+    #Apt::Source['mongodb']->Package<|tag == 'mongodb'|>
   }
   else {
     apt::source { 'mongodb':
