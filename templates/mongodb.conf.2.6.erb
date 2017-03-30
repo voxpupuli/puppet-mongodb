@@ -8,6 +8,9 @@ systemLog.destination: file
 <% if @logappend -%>
 systemLog.logAppend: <%= @logappend %>
 <% end -%>
+<% if @system_logrotate -%>
+systemLog.logRotate: <%= @system_logrotate %>
+<% end -%>
 <% elsif @syslog -%>
 systemLog.destination: syslog
 <% end -%>
@@ -110,6 +113,9 @@ net.ssl.mode: requireSSL
 net.ssl.PEMKeyFile: <%= @ssl_key %>
 <% if @ssl_ca -%>
 net.ssl.CAFile: <%= @ssl_ca %>
+<% end -%>
+<% if @ssl_weak_cert -%>
+net.ssl.weakCertificateValidation: <%= @ssl_weak_cert %>
 <% end -%>
 <% end -%>
 

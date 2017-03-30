@@ -1,3 +1,14 @@
+## Release 0.17.0
+### Summary
+Adding features to improve spec testing, and added ability to manage pidfile creation
+
+## Bugfixes
+- gettext and spec.opts fixes
+- MODULES-3631 - msync Gemfile for 1.0 frozen strings
+- MODULES-3956 - MongoDB 3.12 creates pid file and checks in init script
+- MODULES-3704 - Update gemfile template to be identical
+- Allow deprecation errors
+
 ## Release 0.16.0
 ### Summary
 We fixed a critical bug where we lost idempotency in 0.15.0. The patch that fix

@@ -20,65 +20,67 @@ class mongodb::server (
   $service_ensure   = $mongodb::params::service_ensure,
   $service_status   = $mongodb::params::service_status,
 
-  $package_ensure  = $mongodb::params::package_ensure,
-  $package_name    = $mongodb::params::server_package_name,
+  $package_ensure   = $mongodb::params::package_ensure,
+  $package_name     = $mongodb::params::server_package_name,
 
-  $logpath         = $mongodb::params::logpath,
-  $bind_ip         = $mongodb::params::bind_ip,
-  $ipv6            = undef,
-  $logappend       = true,
-  $fork            = $mongodb::params::fork,
-  $port            = undef,
-  $journal         = $mongodb::params::journal,
-  $nojournal       = undef,
-  $smallfiles      = undef,
-  $cpu             = undef,
-  $auth            = false,
-  $noauth          = undef,
-  $verbose         = undef,
-  $verbositylevel  = undef,
-  $objcheck        = undef,
-  $quota           = undef,
-  $quotafiles      = undef,
-  $diaglog         = undef,
-  $directoryperdb  = undef,
-  $profile         = undef,
-  $maxconns        = undef,
-  $oplog_size      = undef,
-  $nohints         = undef,
-  $nohttpinterface = undef,
-  $noscripting     = undef,
-  $notablescan     = undef,
-  $noprealloc      = undef,
-  $nssize          = undef,
-  $mms_token       = undef,
-  $mms_name        = undef,
-  $mms_interval    = undef,
-  $replset         = undef,
-  $replset_config  = undef,
-  $replset_members = undef,
-  $configsvr       = undef,
-  $shardsvr        = undef,
-  $rest            = undef,
-  $quiet           = undef,
-  $slowms          = undef,
-  $keyfile         = undef,
-  $key             = undef,
-  $set_parameter   = undef,
-  $syslog          = undef,
-  $config_content  = undef,
-  $config_template = undef,
-  $ssl             = undef,
-  $ssl_key         = undef,
-  $ssl_ca          = undef,
-  $restart         = $mongodb::params::restart,
-  $storage_engine  = undef,
+  $logpath          = $mongodb::params::logpath,
+  $bind_ip          = $mongodb::params::bind_ip,
+  $ipv6             = undef,
+  $logappend        = true,
+  $system_logrotate = undef,
+  $fork             = $mongodb::params::fork,
+  $port             = undef,
+  $journal          = $mongodb::params::journal,
+  $nojournal        = undef,
+  $smallfiles       = undef,
+  $cpu              = undef,
+  $auth             = false,
+  $noauth           = undef,
+  $verbose          = undef,
+  $verbositylevel   = undef,
+  $objcheck         = undef,
+  $quota            = undef,
+  $quotafiles       = undef,
+  $diaglog          = undef,
+  $directoryperdb   = undef,
+  $profile          = undef,
+  $maxconns         = undef,
+  $oplog_size       = undef,
+  $nohints          = undef,
+  $nohttpinterface  = undef,
+  $noscripting      = undef,
+  $notablescan      = undef,
+  $noprealloc       =  undef,
+  $nssize           = undef,
+  $mms_token        = undef,
+  $mms_name         = undef,
+  $mms_interval     = undef,
+  $replset          = undef,
+  $replset_config   = undef,
+  $replset_members  = undef,
+  $configsvr        = undef,
+  $shardsvr         = undef,
+  $rest             = undef,
+  $quiet            = undef,
+  $slowms           = undef,
+  $keyfile          = undef,
+  $key              = undef,
+  $set_parameter    = undef,
+  $syslog           = undef,
+  $config_content   = undef,
+  $config_template  = undef,
+  $ssl              = undef,
+  $ssl_key          = undef,
+  $ssl_ca           = undef,
+  $ssl_weak_cert    = false,
+  $restart          = $mongodb::params::restart,
+  $storage_engine   = undef,
 
-  $create_admin    = $mongodb::params::create_admin,
-  $admin_username  = $mongodb::params::admin_username,
-  $admin_password  = undef,
-  $store_creds     = $mongodb::params::store_creds,
-  $admin_roles     = ['userAdmin', 'readWrite', 'dbAdmin',
+  $create_admin     = $mongodb::params::create_admin,
+  $admin_username   = $mongodb::params::admin_username,
+  $admin_password   = undef,
+  $store_creds      = $mongodb::params::store_creds,
+  $admin_roles      = ['userAdmin', 'readWrite', 'dbAdmin',
                       'dbAdminAnyDatabase', 'readAnyDatabase',
                       'readWriteAnyDatabase', 'userAdminAnyDatabase',
                       'clusterAdmin', 'clusterManager', 'clusterMonitor',
@@ -94,30 +96,31 @@ class mongodb::server (
 
   if $ssl {
     validate_string($ssl_key, $ssl_ca)
+    validate_bool($ssl_weak_cert)
   }
 
   if ($ensure == 'present' or $ensure == true) {
     if $restart {
-      anchor { 'mongodb::server::start': }->
-      class { 'mongodb::server::install': }->
+      anchor { 'mongodb::server::start': }
+      -> class { 'mongodb::server::install': }
       # If $restart is true, notify the service on config changes (~>)
-      class { 'mongodb::server::config': }~>
-      class { 'mongodb::server::service': }->
-      anchor { 'mongodb::server::end': }
+      -> class { 'mongodb::server::config': }
+      ~> class { 'mongodb::server::service': }
+      -> anchor { 'mongodb::server::end': }
     } else {
-      anchor { 'mongodb::server::start': }->
-      class { 'mongodb::server::install': }->
+      anchor { 'mongodb::server::start': }
+      -> class { 'mongodb::server::install': }
       # If $restart is false, config changes won't restart the service (->)
-      class { 'mongodb::server::config': }->
-      class { 'mongodb::server::service': }->
-      anchor { 'mongodb::server::end': }
+      -> class { 'mongodb::server::config': }
+      -> class { 'mongodb::server::service': }
+      -> anchor { 'mongodb::server::end': }
     }
   } else {
-    anchor { 'mongodb::server::start': }->
-    class { '::mongodb::server::service': }->
-    class { '::mongodb::server::config': }->
-    class { '::mongodb::server::install': }->
-    anchor { 'mongodb::server::end': }
+    anchor { 'mongodb::server::start': }
+    -> class { '::mongodb::server::service': }
+    -> class { '::mongodb::server::config': }
+    -> class { '::mongodb::server::install': }
+    -> anchor { 'mongodb::server::end': }
   }
 
   if $create_admin {
