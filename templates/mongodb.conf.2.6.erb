@@ -111,6 +111,9 @@ net.ssl.PEMKeyFile: <%= @ssl_key %>
 <% if @ssl_ca -%>
 net.ssl.CAFile: <%= @ssl_ca %>
 <% end -%>
+<% if @ssl_weak_cert -%>
+net.ssl.weakCertificateValidation: <%= @ssl_weak_cert %>
+<% end -%>
 <% end -%>
 
 #Replication
