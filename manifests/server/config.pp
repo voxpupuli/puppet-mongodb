@@ -6,7 +6,6 @@ class mongodb::server::config {
   $config           = $mongodb::server::config
   $config_content   = $mongodb::server::config_content
   $config_template  = $mongodb::server::config_template
-
   $dbpath           = $mongodb::server::dbpath
   $dbpath_fix       = $mongodb::server::dbpath_fix
   $pidfilepath      = $mongodb::server::pidfilepath
@@ -28,7 +27,7 @@ class mongodb::server::config {
   $admin_password   = $mongodb::server::admin_password
   $store_creds      = $mongodb::server::store_creds
   $rcfile           = $mongodb::server::rcfile
-  $verbose          =  $mongodb::server::verbose
+  $verbose          = $mongodb::server::verbose
   $verbositylevel   = $mongodb::server::verbositylevel
   $objcheck         = $mongodb::server::objcheck
   $quota            = $mongodb::server::quota
@@ -66,6 +65,7 @@ class mongodb::server::config {
   $ssl              = $mongodb::server::ssl
   $ssl_key          = $mongodb::server::ssl_key
   $ssl_ca           = $mongodb::server::ssl_ca
+  $ssl_weak_cert    = $mongodb::server::ssl_weak_cert
   $storage_engine   = $mongodb::server::storage_engine
   $version          = $mongodb::server::version
 
@@ -144,6 +144,7 @@ class mongodb::server::config {
       # - $ssl
       # - $ssl_ca
       # - $ssl_key
+      # - $ssl_weak_cert
       # - $syslog
       # - $system_logrotate
       # - $verbose
@@ -199,6 +200,7 @@ class mongodb::server::config {
       # - $ssl
       # - $ssl_ca
       # - $ssl_key
+      # - $ssl_weak_cert
       # - storage_engine_internal
       # - $syslog
       # - $verbose

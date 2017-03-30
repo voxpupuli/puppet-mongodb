@@ -23,7 +23,7 @@ Puppet::Type.newtype(:mongodb_user) do
     defaultto do
       fail("Parameter 'database' must be set") if provider.database == :absent
     end
-    newvalues(/^\w+$/)
+    newvalues(/^[\w-]+$/)
   end
 
   newparam(:tries) do

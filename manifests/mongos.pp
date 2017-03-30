@@ -24,26 +24,26 @@ class mongodb::mongos (
 
   if ($ensure == 'present' or $ensure == true) {
     if $restart {
-      anchor { 'mongodb::mongos::start': }->
-      class { 'mongodb::mongos::install': }->
+      anchor { 'mongodb::mongos::start': }
+      -> class { 'mongodb::mongos::install': }
       # If $restart is true, notify the service on config changes (~>)
-      class { 'mongodb::mongos::config': }~>
-      class { 'mongodb::mongos::service': }->
-      anchor { 'mongodb::mongos::end': }
+      -> class { 'mongodb::mongos::config': }
+      ~> class { 'mongodb::mongos::service': }
+      -> anchor { 'mongodb::mongos::end': }
     } else {
-      anchor { 'mongodb::mongos::start': }->
-      class { 'mongodb::mongos::install': }->
+      anchor { 'mongodb::mongos::start': }
+      -> class { 'mongodb::mongos::install': }
       # If $restart is false, config changes won't restart the service (->)
-      class { 'mongodb::mongos::config': }->
-      class { 'mongodb::mongos::service': }->
-      anchor { 'mongodb::mongos::end': }
+      -> class { 'mongodb::mongos::config': }
+      -> class { 'mongodb::mongos::service': }
+      -> anchor { 'mongodb::mongos::end': }
     }
   } else {
-    anchor { 'mongodb::mongos::start': }->
-    class { '::mongodb::mongos::service': }->
-    class { '::mongodb::mongos::config': }->
-    class { '::mongodb::mongos::install': }->
-    anchor { 'mongodb::mongos::end': }
+    anchor { 'mongodb::mongos::start': }
+    -> class { '::mongodb::mongos::service': }
+    -> class { '::mongodb::mongos::config': }
+    -> class { '::mongodb::mongos::install': }
+    -> anchor { 'mongodb::mongos::end': }
   }
 
 }

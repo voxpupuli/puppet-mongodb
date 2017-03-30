@@ -493,6 +493,10 @@ Default: <>
 #####`ssl_ca`
 Default: <>
 
+#####`ssl_weak_cert`
+Set to true to disable mandatory SSL client authentication
+Default: False
+
 #####`service_manage`
 Whether or not the MongoDB service resource should be part of the catalog.
 Default: true

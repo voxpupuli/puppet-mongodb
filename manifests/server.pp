@@ -50,7 +50,7 @@ class mongodb::server (
   $nohttpinterface  = undef,
   $noscripting      = undef,
   $notablescan      = undef,
-  $noprealloc       = undef,
+  $noprealloc       =  undef,
   $nssize           = undef,
   $mms_token        = undef,
   $mms_name         = undef,
@@ -72,6 +72,7 @@ class mongodb::server (
   $ssl              = undef,
   $ssl_key          = undef,
   $ssl_ca           = undef,
+  $ssl_weak_cert    = false,
   $restart          = $mongodb::params::restart,
   $storage_engine   = undef,
 
@@ -95,30 +96,31 @@ class mongodb::server (
 
   if $ssl {
     validate_string($ssl_key, $ssl_ca)
+    validate_bool($ssl_weak_cert)
   }
 
   if ($ensure == 'present' or $ensure == true) {
     if $restart {
-      anchor { 'mongodb::server::start': }->
-      class { 'mongodb::server::install': }->
+      anchor { 'mongodb::server::start': }
+      -> class { 'mongodb::server::install': }
       # If $restart is true, notify the service on config changes (~>)
-      class { 'mongodb::server::config': }~>
-      class { 'mongodb::server::service': }->
-      anchor { 'mongodb::server::end': }
+      -> class { 'mongodb::server::config': }
+      ~> class { 'mongodb::server::service': }
+      -> anchor { 'mongodb::server::end': }
     } else {
-      anchor { 'mongodb::server::start': }->
-      class { 'mongodb::server::install': }->
+      anchor { 'mongodb::server::start': }
+      -> class { 'mongodb::server::install': }
       # If $restart is false, config changes won't restart the service (->)
-      class { 'mongodb::server::config': }->
-      class { 'mongodb::server::service': }->
-      anchor { 'mongodb::server::end': }
+      -> class { 'mongodb::server::config': }
+      -> class { 'mongodb::server::service': }
+      -> anchor { 'mongodb::server::end': }
     }
   } else {
-    anchor { 'mongodb::server::start': }->
-    class { '::mongodb::server::service': }->
-    class { '::mongodb::server::config': }->
-    class { '::mongodb::server::install': }->
-    anchor { 'mongodb::server::end': }
+    anchor { 'mongodb::server::start': }
+    -> class { '::mongodb::server::service': }
+    -> class { '::mongodb::server::config': }
+    -> class { '::mongodb::server::install': }
+    -> anchor { 'mongodb::server::end': }
   }
 
   if $create_admin {
