@@ -36,8 +36,7 @@ Facter.add('mongodb_is_master') do
       Facter::Core::Execution.exec("mongo --quiet #{mongoPort} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
 
       if $?.success?
-        mongo_output = Facter::Core::Execution.exec("mongo --quiet #{mongoPort} --eval \"#{e}printjson(db.isMaster())\"")
-        JSON.parse(mongo_output.gsub(/ISODate\((.+?)\)/, '\1 '))['ismaster'] ||= false
+        Facter::Core::Execution.exec("mongo --quiet #{mongoPort} --eval \"#{e}db.isMaster().ismaster\"")
       else
         'not_responding'
       end
