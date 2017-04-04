@@ -1,11 +1,10 @@
 language: ruby
-rvm: 1.9.3
+rvm: 2.1.9
 notifications:
         email:
                 - icalvete@gmail.com
 env:
-        - PUPPET_VERSION=2.7.21
-        - PUPPET_VERSION=3.3.0
+        - PUPPET_VERSION=3.8.5
 script: ./script/cibuild
 before_script:
  - chmod +x ./script/cibuild
