@@ -76,6 +76,9 @@ class mongodb::server::config {
 
   if ($logpath and $syslog) { fail('You cannot use syslog with logpath')}
 
+  $logpath_list = split($logpath, '/')
+  $logdir = join(delete_at($logpath_list, -1), '/')
+
   if ($ensure == 'present' or $ensure == true) {
 
     # Exists for future compatibility and clarity.
@@ -245,6 +248,14 @@ class mongodb::server::config {
           group  => $group,
         }
       }
+    }
+
+    file { $logdir:
+      ensure  => directory,
+      mode    => '0755',
+      owner   => $user,
+      group   => $group,
+      require => File[$config]
     }
   } else {
     file { $dbpath:
