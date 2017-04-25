@@ -47,12 +47,7 @@ class mongodb::repo (
           'Ubuntu' => 'https://repo.mongodb.org/apt/ubuntu',
           default  => undef
         }
-        # Temp hack. Need to follow https://jira.mongodb.org/browse/SERVER-18329
-        if ($::lsbdistcodename == 'jessie') {
-          $release     = "wheezy/mongodb-org/${mongover[0]}.${mongover[1]}"
-        } else {
-          $release     = "${::lsbdistcodename}/mongodb-org/${mongover[0]}.${mongover[1]}"
-        }
+        $release     = "${::lsbdistcodename}/mongodb-org/${mongover[0]}.${mongover[1]}"
         $repos       = $::operatingsystem ? {
           'Debian' => 'main',
           'Ubuntu' => 'multiverse',
