@@ -275,6 +275,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
 
     #Hack to avoid non-json empty sets
     output = "{}" if output == "null\n"
+    output = "{}" if output == "\nnull\n"
 
     # Parse the JSON output and return
     JSON.parse(output)

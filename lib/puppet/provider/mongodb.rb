@@ -41,6 +41,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       config_hash['bindip'] = config['net.bindIp']
       config_hash['port'] = config['net.port']
       config_hash['ipv6'] = config['net.ipv6']
+      config_hash['allowInvalidHostnames'] = config['net.ssl.allowInvalidHostnames']
       config_hash['ssl'] = config['net.ssl.mode']
       config_hash['sslcert'] = config['net.ssl.PEMKeyFile']
       config_hash['sslca'] = config['net.ssl.CAFile']
@@ -57,6 +58,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       config_hash['port'] = config['port']
       config_hash['ipv6'] = config['ipv6']
       config_hash['ssl'] = config['sslOnNormalPorts']
+      config_hash['allowInvalidHostnames'] = config['allowInvalidHostnames']
       config_hash['sslcert'] = config['sslPEMKeyFile']
       config_hash['sslca'] = config['sslCAFile']
       config_hash['auth'] = config['auth']
@@ -78,11 +80,17 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     ssl_mode.nil? ? false : ssl_mode != 'disabled'
   end
 
+  def self.ssl_invalid_hostnames(config=nil)
+    config ||= get_mongo_conf
+    config['allowInvalidHostnames']
+  end
+
   def self.mongo_cmd(db, host, cmd)
     config = get_mongo_conf
 
     args = [db, '--quiet', '--host', host]
     args.push('--ipv6') if ipv6_is_enabled(config)
+    args.push('--sslAllowInvalidHostnames') if ssl_invalid_hostnames(config)
 
     if ssl_is_enabled(config)
       args.push('--ssl')
@@ -139,6 +147,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     out.gsub!(/ObjectId\(([^)]*)\)/, '\1')
     out.gsub!(/ISODate\((.+?)\)/, '\1 ')
     out.gsub!(/^Error\:.+/, '')
+    out.gsub!(/^.*warning\:.+/, '') # remove warnings if sslAllowInvalidHostnames is true
     res = JSON.parse out
 
     return res['ismaster']
@@ -185,6 +194,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       out.gsub!(/#{data_type}\(([^)]*)\)/, '\1')
     end
     out.gsub!(/^Error\:.+/, '')
+    out.gsub!(/^.*warning\:.+/, '') # remove warnings if sslAllowInvalidHostnames is true
     out
   end
 

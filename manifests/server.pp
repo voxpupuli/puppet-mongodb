@@ -73,6 +73,7 @@ class mongodb::server (
   $ssl_key          = undef,
   $ssl_ca           = undef,
   $ssl_weak_cert    = false,
+  $ssl_invalid_hostnames  = false,
   $restart          = $mongodb::params::restart,
   $storage_engine   = undef,
 
@@ -97,6 +98,7 @@ class mongodb::server (
   if $ssl {
     validate_string($ssl_key, $ssl_ca)
     validate_bool($ssl_weak_cert)
+    validate_bool($ssl_invalid_hostnames)
   }
 
   if ($ensure == 'present' or $ensure == true) {

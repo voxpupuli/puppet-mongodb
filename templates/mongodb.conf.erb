@@ -196,4 +196,7 @@ sslCAFile = <%= @ssl_ca %>
 # - after 3.0.0: sslAllowConnectionsWithoutCertificates
 sslWeakCertificateValidation = <%= @ssl_weak_cert %>
 <% end -%>
+<% if @ssl_invalid_hostnames -%>
+net.ssl.allowInvalidHostnames = <%= @ssl_invalid_hostnames %>
+<% end -%>
 <% end -%>

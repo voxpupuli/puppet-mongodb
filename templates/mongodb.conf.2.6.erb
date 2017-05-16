@@ -88,7 +88,7 @@ security.javascriptEnabled: <%= @noscripting %>
 
 #Net
 <% if @ipv6 -%>
-net.ipv6=<%= @ipv6 %>
+net.ipv6: <%= @ipv6 %>
 <% end -%>
 <% if @bind_ip -%>
 net.bindIp:  <%= Array(@bind_ip).join(',') %>
@@ -116,6 +116,9 @@ net.ssl.CAFile: <%= @ssl_ca %>
 <% end -%>
 <% if @ssl_weak_cert -%>
 net.ssl.weakCertificateValidation: <%= @ssl_weak_cert %>
+<% end -%>
+<% if @ssl_invalid_hostnames -%>
+net.ssl.allowInvalidHostnames: <%= @ssl_invalid_hostnames %>
 <% end -%>
 <% end -%>
 

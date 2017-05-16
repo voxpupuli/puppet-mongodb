@@ -501,6 +501,10 @@ Default: <>
 Set to true to disable mandatory SSL client authentication
 Default: False
 
+##### `ssl_invalid_hostnames`
+Set to true to disable fqdn SSL cert check
+Default: False
+
 ##### `service_manage`
 Whether or not the MongoDB service resource should be part of the catalog.
 Default: true
