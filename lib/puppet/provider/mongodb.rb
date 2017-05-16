@@ -56,7 +56,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       config_hash['bindip'] = config['bind_ip']
       config_hash['port'] = config['port']
       config_hash['ipv6'] = config['ipv6']
-      config_hash['ssl'] = config['sslMode']
+      config_hash['ssl'] = config['sslOnNormalPorts']
       config_hash['sslcert'] = config['sslPEMKeyFile']
       config_hash['sslca'] = config['sslCAFile']
       config_hash['auth'] = config['auth']
