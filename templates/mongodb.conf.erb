@@ -184,7 +184,6 @@ syslog = <%= @syslog %>
 quiet = <%= @quiet %>
 <% end -%>
 <% if @ssl -%>
-sslMode = requireSSL
 sslOnNormalPorts = true
 sslPEMKeyFile = <%= @ssl_key %>
 <% if @ssl_ca -%>
