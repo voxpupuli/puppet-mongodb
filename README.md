@@ -4,13 +4,13 @@
 
 #### Table of Contents
 
-1. [Overview] (#overview)
+1. [Overview](#overview)
 2. [Module Description - What does the module do?](#module-description)
 3. [Setup - The basics of getting started with mongodb](#setup)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-6. [Limitations - OS compatibility, etc.] (#limitations)
-7. [Development - Guide for contributing to the module] (#development)
+6. [Limitations - OS compatibility, etc.](#limitations)
+7. [Development - Guide for contributing to the module](#development)
 
 ## Overview
 
