@@ -53,7 +53,7 @@ class mongodb::repo (
           'Ubuntu' => 'multiverse',
           default => undef
         }
-        $key         = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
+        $key         = 'A15703C6'
         $key_server  = 'hkp://keyserver.ubuntu.com:80'
       } else {
         $location = $::operatingsystem ? {
@@ -63,7 +63,7 @@ class mongodb::repo (
         }
         $release     = 'dist'
         $repos       = '10gen'
-        $key         = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
+        $key         = '7F0CEB10'
         $key_server  = 'hkp://keyserver.ubuntu.com:80'
       }
       class { '::mongodb::repo::apt': }

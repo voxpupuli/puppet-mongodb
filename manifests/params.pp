@@ -7,7 +7,7 @@ class mongodb::params inherits mongodb::globals {
   $service_enable        = pick($mongodb::globals::service_enable, true)
   $service_ensure        = pick($mongodb::globals::service_ensure, 'running')
   $service_status        = $mongodb::globals::service_status
-  $restart               = true
+  $restart               = false
   $create_admin          = false
   $admin_username        = 'admin'
   $store_creds           = false
