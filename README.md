@@ -223,6 +223,10 @@ for connections from applications on this address. If not specified, the
 module will use the default for your OS distro.
 *Note:* This value should be passed as an array.
 
+##### `use_enterprise_repo`
+When `manage_package_repo` is set to true, this setting indicates if it will
+use the Community Edition (false, the default) or the Enterprise one (true).
+
 ##### `version`
 The version of MonogDB to install/manage. This is a simple way of providing
 a specific version such as '2.2' or '2.4' for example. If not specified,
