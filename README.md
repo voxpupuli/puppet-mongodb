@@ -2,15 +2,15 @@
 
 [![Build Status](https://travis-ci.org/puppetlabs/puppetlabs-mongodb.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-mongodb)
 
-####Table of Contents
+#### Table of Contents
 
-1. [Overview] (#overview)
+1. [Overview](#overview)
 2. [Module Description - What does the module do?](#module-description)
 3. [Setup - The basics of getting started with mongodb](#setup)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-6. [Limitations - OS compatibility, etc.] (#limitations)
-7. [Development - Guide for contributing to the module] (#development)
+6. [Limitations - OS compatibility, etc.](#limitations)
+7. [Development - Guide for contributing to the module](#development)
 
 ## Overview
 
@@ -26,7 +26,7 @@ your dependencies to the necessary version to ensure your environments don't bre
 The current module design is undergoing review for potential 1.0 release. We welcome
 any feedback with regard to the APIs and patterns used in this release.
 
-##Module Description
+## Module Description
 
 The MongoDB module manages mongod server installation and configuration of the
 mongod daemon. For the time being it supports only a single MongoDB server
@@ -39,7 +39,7 @@ For the 0.6 release, the MongoDB module now supports basic replicaset features
 
 ## Setup
 
-###What MongoDB affects
+### What MongoDB affects
 
 * MongoDB package.
 * MongoDB configuration files.
@@ -48,7 +48,7 @@ For the 0.6 release, the MongoDB module now supports basic replicaset features
 * MongoDB sharding support (mongos)
 * 10gen/mongodb apt/yum repository.
 
-###Beginning with MongoDB
+### Beginning with MongoDB
 
 If you just want a server installation with the default options you can run
 `include '::mongodb::server'`. If you need to customize configuration
@@ -148,13 +148,13 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 
 ### Classes
 
-####Public classes
+#### Public classes
 * `mongodb::server`: Installs and configure MongoDB
 * `mongodb::client`: Installs the MongoDB client shell (for Red Hat family systems)
 * `mongodb::globals`: Configure main settings in a global way
 * `mongodb::mongos`: Installs and configure Mongos server (for sharding support)
 
-####Private classes
+#### Private classes
 * `mongodb::repo`: Manage 10gen/MongoDB software repository
 * `mongodb::repo::apt`: Manage Debian/Ubuntu apt 10gen/MongoDB repository
 * `mongodb::repo::yum`: Manage Redhat/CentOS apt 10gen/MongoDB repository
@@ -166,7 +166,7 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 * `mongodb::mongos::install`: Install Mongos software packages
 * `mongodb::mongos::service`: Manages Mongos service
 
-####Class: mongodb::globals
+#### Class: mongodb::globals
 *Note:* most server specific defaults should be overridden in the `mongodb::server`
 class. This class should only be used if you are using a non-standard OS or
 if you are changing elements such as `version` or `manage_package_repo` that
@@ -176,21 +176,21 @@ This class allows you to configure the main settings for this module in a
 global way, to be used by the other classes and defined resources. On its
 own it does nothing.
 
-#####`server_package_name`
+##### `server_package_name`
 This setting can be used to override the default MongoDB server package
 name. If not specified, the module will use whatever package name is the
 default for your OS distro.
 
-#####`service_name`
+##### `service_name`
 This setting can be used to override the default MongoDB service name. If not
 specified, the module will use whatever service name is the default for your OS distro.
 
-#####`service_provider`
+##### `service_provider`
 This setting can be used to override the default MongoDB service provider. If
 not specified, the module will use whatever service provider is the default for
 your OS distro.
 
-#####`service_status`
+##### `service_status`
 This setting can be used to override the default status check command for
 your MongoDB service. If not specified, the module will use whatever service
 name is the default for your OS distro.
@@ -203,222 +203,226 @@ By default the module will manage the mongod process.
 This setting can be used to override the default management of the mongos service.
 By default the module will manage the mongos process.
 
-#####`user`
+##### `user`
 This setting can be used to override the default MongoDB user and owner of the
 service and related files in the file system. If not specified, the module will
 use the default for your OS distro.
 
-#####`group`
+##### `group`
 This setting can be used to override the default MongoDB user group to be used
 for related files in the file system. If not specified, the module will use
 the default for your OS distro.
 
-#####`ipv6`
+##### `ipv6`
 This setting is used to configure MongoDB to turn on ipv6 support. If not specified
 and ipv6 address is passed to MongoDB bind_ip it will just fail.
 
-#####`bind_ip`
+##### `bind_ip`
 This setting can be used to configure MonogDB process to bind to and listen
 for connections from applications on this address. If not specified, the
 module will use the default for your OS distro.
 *Note:* This value should be passed as an array.
 
-#####`version`
+##### `use_enterprise_repo`
+When `manage_package_repo` is set to true, this setting indicates if it will
+use the Community Edition (false, the default) or the Enterprise one (true).
+
+##### `version`
 The version of MonogDB to install/manage. This is a simple way of providing
 a specific version such as '2.2' or '2.4' for example. If not specified,
 the module will use the default for your OS distro.
 
-#####`repo_location`
+##### `repo_location`
 This setting can be used to override the default MongoDB repository location.
 If not specified, the module will use the default repository for your OS distro.
 
-#####`repo_proxy`
+##### `repo_proxy`
 This will allow you to set a proxy for your repository in case you are behind a corporate firewall. Currently this is only supported with yum repositories
 
-#####`proxy_username`
+##### `proxy_username`
 This sets the username for the proxyserver, should authentication be required
 
-#####`proxy_password`
+##### `proxy_password`
 This sets the password for the proxyserver, should authentication be required
 
-####Class: mongodb::server
+#### Class: mongodb::server
 
 Most of the parameters manipulate the mongod.conf file.
 
 For more details about configuration parameters consult the
 [MongoDB Configuration File Options](http://docs.mongodb.org/manual/reference/configuration-options/).
 
-#####`ensure`
+##### `ensure`
 Used to ensure that the package is installed and the service is running, or that the package is absent/purged and the service is stopped. Valid values are true/false/present/absent/purged.
 
-#####`config`
+##### `config`
 Path of the config file. If not specified, the module will use the default
 for your OS distro.
 
-#####`dbpath`
+##### `dbpath`
 Set this value to designate a directory for the mongod instance to store
 it's data. If not specified, the module will use the default for your OS distro.
 
-#####`pidfilepath`
+##### `pidfilepath`
 Specify a file location to hold the PID or process ID of the mongod process.
 If not specified, the module will use the default for your OS distro.
 
-#####`manage_pidfile`
+##### `manage_pidfile`
 Should puppet create the pidfile. Mondod 6.2.10 will not start if pidfile exists
 
-#####`logpath`
+##### `logpath`
 Specify the path to a file name for the log file that will hold all diagnostic
 logging information. Unless specified, mongod will output all log information
 to the standard output.
 
-#####`ipv6`
+##### `ipv6`
 This setting has to be true to configure MongoDB to turn on ipv6 support. If not specified
 and ipv6 address is passed to MongoDB bind_ip it will just fail.
 
-#####`bind_ip`
+##### `bind_ip`
 Set this option to configure the mongod or mongos process to bind to and listen
 for connections from applications on this address. If not specified, the module
 will use the default for your OS distro. Example: bind_ip=['127.0.0.1', '192.168.0.3']
 *Note*: bind_ip accepts an array as a value.
 
-#####`logappend`
+##### `logappend`
 Set to true to add new entries to the end of the logfile rather than overwriting
 the content of the log when the process restarts. Default: True
 
-#####`system_logrotate`
+##### `system_logrotate`
 Set to reopen for mongo to close a log file then reopen it so that logrotations handled
 outside of mongo perform as expected. Default: undef
 
-#####`fork`
+##### `fork`
 Set to true to fork server process at launch time. The default setting depends on
 the operating system.
 
-#####`port`
+##### `port`
 Specifies a TCP port for the server instance to listen for client connections.
 Default: 27017
 
-#####`journal`
+##### `journal`
 Set to true to enable operation journaling to ensure write durability and
 data consistency. Default: on 64-bit systems true and on 32-bit systems false
 
-#####`nojournal`
+##### `nojournal`
 Set nojournal = true to disable durability journaling. By default, mongod
 enables journaling in 64-bit versions after v2.0.
 Default: on 64-bit systems  false and on 32-bit systems true
 
 *Note*: You must use journal to enable journaling on 32-bit systems.
 
-#####`smallfiles`
+##### `smallfiles`
 Set to true to modify MongoDB to use a smaller default data file size.
 Specifically, smallfiles reduces the initial size for data files and
 limits them to 512 megabytes.  Default: false
 
-#####`cpu`
+##### `cpu`
 Set to true to force mongod to report every four seconds CPU utilization
 and the amount of time that the processor waits for I/O operations to
 complete (i.e. I/O wait.) Default: false
 
-#####`auth`
+##### `auth`
 Set to true to enable database authentication for users connecting from
 remote hosts. If no users exist, the localhost interface will continue
 to have access to the database until you create the first user.
 Default: false
 
-#####`noauth`
+##### `noauth`
 Disable authentication. Currently the default. Exists for future compatibility
  and clarity.
 
-#####`verbose`
+##### `verbose`
 Increases the amount of internal reporting returned on standard output or in
 the log file generated by `logpath`. Default: false
 
-#####`verbositylevel`
+##### `verbositylevel`
 MongoDB has the following levels of verbosity: v, vv, vvv, vvvv and vvvvv.
 Default: None
 
-#####`objcheck`
+##### `objcheck`
 Forces the mongod to validate all requests from clients upon receipt to ensure
 that clients never insert invalid documents into the database.
 Default: on v2.4 default to true and on earlier version to false
 
-#####`quota`
+##### `quota`
 Set to true to enable a maximum limit for the number of data files each database
 can have. The default quota is 8 data files, when quota is true. Default: false
 
-#####`quotafiles`
+##### `quotafiles`
 Modify limit on the number of data files per database. This option requires the
 `quota` setting. Default: 8
 
-#####`diaglog`
+##### `diaglog`
 Creates a very verbose diagnostic log for troubleshooting and recording various
 errors.  Valid values: 0, 1, 2, 3 and 7.
 For more information please refer to [MongoDB Configuration File Options](http://docs.mongodb.org/manual/reference/configuration-options/).
 
-#####`directoryperdb`
+##### `directoryperdb`
 Set to true to modify the storage pattern of the data directory to store each
 database’s files in a distinct folder. Default: false
 
-#####`profile`
+##### `profile`
 Modify this value to changes the level of database profiling, which inserts
 information about operation performance into output of mongod or the
 log file if specified by `logpath`.
 
-#####`maxconns`
+##### `maxconns`
 Specifies a value to set the maximum number of simultaneous connections
 that MongoDB will accept. Default: depends on system (i.e. ulimit and file descriptor)
 limits. Unless set, MongoDB will not limit its own connections.
 
-#####`oplog_size`
+##### `oplog_size`
 Specifies a maximum size in megabytes for the replication operation log
 (e.g. oplog.) mongod creates an oplog based on the maximum amount of space
 available. For 64-bit systems, the oplog is typically 5% of available disk space.
 
-#####`nohints`
+##### `nohints`
 Ignore query hints. Default: None
 
-#####`nohttpinterface`
+##### `nohttpinterface`
 Set to true to disable the HTTP interface. This command will override the rest
 and disable the HTTP interface if you specify both. Default: false
 
-#####`noscripting`
+##### `noscripting`
 Set noscripting = true to disable the scripting engine. Default: false
 
-#####`notablescan`
+##### `notablescan`
 Set notablescan = true to forbid operations that require a table scan. Default: false
 
-#####`noprealloc`
+##### `noprealloc`
 Set noprealloc = true to disable the preallocation of data files. This will shorten
 the start up time in some cases, but can cause significant performance penalties
 during normal operations. Default: false
 
-#####`nssize`
+##### `nssize`
 Use this setting to control the default size for all newly created namespace
 files (i.e .ns). Default: 16
 
-#####`mms_token`
+##### `mms_token`
 MMS token for mms monitoring. Default: None
 
-#####`mms_name`
+##### `mms_name`
 MMS identifier for mms monitoring. Default: None
 
-#####`mms_interval`
+##### `mms_interval`
 MMS interval for mms monitoring. Default: None
 
-#####`configsvr`
+##### `configsvr`
 Use this setting to enable config server mode for mongod.
 
-#####`shardsvr`
+##### `shardsvr`
 Use this setting to enable shard server mode for mongod.
 
-#####`replset`
+##### `replset`
 Use this setting to configure replication with replica sets. Specify a replica
 set name as an argument to this set. All hosts must have the same set name.
 
-#####`replset_members`
+##### `replset_members`
 An array of member hosts for the replica set.
 Mutually exclusive with `replset_config` param.
 
-#####`replset_config`
+##### `replset_config`
 A hash that is used to configure the replica set.
 Mutually exclusive with `replset_members` param.
 
@@ -430,10 +434,10 @@ class mongodb::server {
 }
 ```
 
-#####`rest`
+##### `rest`
 Set to true to enable a simple REST interface. Default: false
 
-#####`quiet`
+##### `quiet`
 Runs the mongod or mongos instance in a quiet mode that attempts to limit the
 amount of output. This option suppresses : "output from database commands, including drop, dropIndexes, diagLogging, validate, and clean", "replication activity", "connection accepted events" and "connection closed events".
 Default: false
@@ -441,147 +445,147 @@ Default: false
 > For production systems this option is **not** recommended as it may make tracking
 problems during particular connections much more difficult.
 
-#####`slowms`
+##### `slowms`
 Sets the threshold for mongod to consider a query “slow” for the database profiler.
 Default: 100 ms
 
-#####`keyfile`
+##### `keyfile`
 Specify the path to a key file to store authentication information. This option
 is only useful for the connection between replica set members. Default: None
 
-#####`key`
+##### `key`
 Specify the key contained within the keyfile. This option
 is only useful for the connection between replica set members. Default: None
 
-#####`master`
+##### `master`
 Set to true to configure the current instance to act as master instance in a
 replication configuration. Default: False  *Note*: deprecated – use replica sets
 
-#####`set_parameter`
+##### `set_parameter`
 Specify extra configuration file parameters (i.e.
 textSearchEnabled=true). Default: None
 
-#####`syslog`
+##### `syslog`
 Sends all logging output to the host’s syslog system rather than to standard
 output or a log file. Default: None
 *Important*: You cannot use syslog with logpath.
 
-#####`slave`
+##### `slave`
 Set to true to configure the current instance to act as slave instance in a
 replication configuration. Default: false
 *Note*: deprecated – use replica sets
 
-#####`only`
+##### `only`
 Used with the slave option, only specifies only a single database to
 replicate. Default: <>
 *Note*: deprecated – use replica sets
 
-#####`source`
+##### `source`
 Used with the slave setting to specify the master instance from which
 this slave instance will replicate. Default: <>
 *Note*: deprecated – use replica sets
 
-#####`ssl`
+##### `ssl`
 Set to true to enable ssl. Default: <>
 *Important*: You need to have ssl_key set as well, and the file needs to
 pre-exist on node. If you wish to use certificate validation, ssl_ca must also
 be set.
 
-#####`ssl_key`
+##### `ssl_key`
 Default: <>
 
-#####`ssl_ca`
+##### `ssl_ca`
 Default: <>
 
-#####`ssl_weak_cert`
+##### `ssl_weak_cert`
 Set to true to disable mandatory SSL client authentication
 Default: False
 
-#####`service_manage`
+##### `service_manage`
 Whether or not the MongoDB service resource should be part of the catalog.
 Default: true
 
-#####`storage_engine`
+##### `storage_engine`
 Only needed for MongoDB 3.x versions, where it's possible to select the
 'wiredTiger' engine in addition to the default 'mmapv1' engine. If not set, the
 config is left out and mongo will default to 'mmapv1'.
 You should not set this for MongoDB versions < 3.x
 
-#####`restart`
+##### `restart`
 Specifies whether the service should be restarted on config changes. Default: 'true'
 
-#####`create_admin`
+##### `create_admin`
 Allows to create admin user for admin database.
 Redefine these parameters if needed:
 
-#####`admin_username`
+##### `admin_username`
 Administrator user name
 
-#####`admin_password`
+##### `admin_password`
 Administrator user password
 
-#####`admin_roles`
+##### `admin_roles`
 Administrator user roles
 
-#####`store_creds`
+##### `store_creds`
 Store admin credentials in mongorc.js file. Uses with `create_admin` parameter
 
 
-####Class: mongodb::mongos
+#### Class: mongodb::mongos
 class. This class should only be used if you want to implement sharding within
 your mongodb deployment.
 
 This class allows you to configure the mongos daemon (responsible for routing)
 on your platform.
 
-#####`ensure`
+##### `ensure`
 Used to ensure that the package is installed and the service is running, or that the package is absent/purged and the service is stopped. Valid values are true/false/present/absent/purged.
 
-#####`config`
+##### `config`
 Path of the config file. If not specified, the module will use the default
 for your OS distro.
 
-#####`config_content`
+##### `config_content`
 Config content if the default doesn't match one needs.
 
-#####`config_template`
+##### `config_template`
 Path to the config template if the default doesn't match one needs.
 
-#####`configdb`
+##### `configdb`
 Array of the config servers IP addresses the mongos should connect to.
 
-#####`service_manage`
+##### `service_manage`
 Whether or not the MongoDB sharding service resource should be part of the catalog.
 Default: true
 
-#####`service_name`
+##### `service_name`
 This setting can be used to override the default Mongos service name. If not
 specified, the module will use whatever service name is the default for your OS distro.
 
-#####`service_provider`
+##### `service_provider`
 This setting can be used to override the default Mongos service provider. If
 not specified, the module will use whatever service provider is the default for
 your OS distro.
 
-#####`service_status`
+##### `service_status`
 This setting can be used to override the default status check command for
 your Mongos service. If not specified, the module will use whatever service
 name is the default for your OS distro.
 
-#####`service_enable`
+##### `service_enable`
 This setting can be used to specify if the service should be enable at boot
 
-#####`service_ensure`
+##### `service_ensure`
 This setting can be used to specify if the service should be running
 
-#####`package_ensure`
+##### `package_ensure`
 This setting can be used to specify if puppet should install the package or not
 
-#####`package_name`
+##### `package_name`
 This setting can be used to specify the name of the package that should be installed.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-#####`restart`
+##### `restart`
 Specifies whether the service should be restarted on config changes. Default: 'true'
 
 ### Definitions
@@ -590,17 +594,17 @@ Specifies whether the service should be restarted on config changes. Default: 't
 
 Creates database with user. Resource title used as database name.
 
-#####`user`
+##### `user`
 Name of the user for database
 
-#####`password_hash`
+##### `password_hash`
 Hex encoded md5 hash of "$username:mongo:$password".
 For more information please refer to [MongoDB Authentication Process](http://docs.mongodb.org/meta-driver/latest/legacy/implement-authentication-in-driver/#authentication-process).
 
-#####`password`
+##### `password`
 Plain-text user password (will be hashed)
 
-#####`roles`
+##### `roles`
 Array with user roles. Default: ['dbAdmin']
 
 ### Providers
@@ -615,7 +619,7 @@ mongodb_database { testdb:
   require  => Class['mongodb::server'],
 }
 ```
-#####`tries`
+##### `tries`
 The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 
@@ -636,19 +640,19 @@ mongodb_user { testuser:
   require       => Class['mongodb::server'],
 }
 ```
-#####`username`
+##### `username`
 Name of the mongodb user.
 
-#####`password_hash`
+##### `password_hash`
 Hex encoded md5 hash of "$username:mongo:$password".
 
-#####`database`
+##### `database`
 Name of database. It will be created, if not exists.
 
-#####`roles`
+##### `roles`
 Array with user roles. Default: ['dbAdmin']
 
-#####`tries`
+##### `tries`
 The maximum amount of two second tries to wait MongoDB startup. Default: 10
 
 #### Provider: mongodb_replset
@@ -667,7 +671,7 @@ processed once the secondary nodes are up. This will ensure all the nodes are
 in the first configuration of the replicaset, else it will require running
 puppet again to add them.
 
-#####`members`
+##### `members`
 Array of 'host:port' of the replicaset members.
 
 It currently only adds members without options.
@@ -682,7 +686,7 @@ mongodb_shard { 'rsmain':
   keys   => [{'rsmain.foo' => {'name' => 1}}],
 }
 ```
-#####`member`
+##### `member`
 Member of the shard in the form;
 
 * [hostname]
@@ -690,7 +694,7 @@ Member of the shard in the form;
 * [replica-set-name]/[hostname]
 * [replica-set-name]/[hostname]:port
 
-#####`keys`
+##### `keys`
 Sharding keys for a specific database. This variable should be an array
 of sharding keys.
 
