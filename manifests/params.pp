@@ -119,10 +119,15 @@ class mongodb::params inherits mongodb::globals {
       if $manage_package {
         $user  = pick($::mongodb::globals::user, 'mongodb')
         $group = pick($::mongodb::globals::group, 'mongodb')
+        if $mongodb::globals::use_enterprise_repo == true {
+            $edition = 'enterprise'
+        } else {
+            $edition = 'org'
+        }
         if ($version == undef) {
-          $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
-          $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
-          $mongos_package_name = pick($::mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
+          $server_package_name = pick($::mongodb::globals::server_package_name, "mongodb-${edition}-server")
+          $client_package_name = pick($::mongodb::globals::client_package_name, "mongodb-${edition}-shell")
+          $mongos_package_name = pick($::mongodb::globals::mongos_package_name, "mongodb-${edition}-mongos")
           $package_ensure = true
           $package_ensure_client = true
           $package_ensure_mongos = true
@@ -131,9 +136,9 @@ class mongodb::params inherits mongodb::globals {
         } else {
           # check if the version is greater than 2.6
           if $version and (versioncmp($version, '2.6.0') >= 0) {
-            $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
-            $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
-            $mongos_package_name = pick($::mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
+            $server_package_name = pick($::mongodb::globals::server_package_name, "mongodb-${edition}-server")
+            $client_package_name = pick($::mongodb::globals::client_package_name, "mongodb-${edition}-shell")
+            $mongos_package_name = pick($::mongodb::globals::mongos_package_name, "mongodb-${edition}-mongos")
             $package_ensure = $version
             $package_ensure_client = $version
             $package_ensure_mongos = $version
