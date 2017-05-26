@@ -148,6 +148,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     out.gsub!(/ISODate\((.+?)\)/, '\1 ')
     out.gsub!(/^Error\:.+/, '')
     out.gsub!(/^.*warning\:.+/, '') # remove warnings if sslAllowInvalidHostnames is true
+    out.gsub!(/^.*The server certificate does not match the host name\:.+/, '') # remove warnings if sslAllowInvalidHostnames is true mongo 3.x
     res = JSON.parse out
 
     return res['ismaster']
@@ -195,6 +196,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     end
     out.gsub!(/^Error\:.+/, '')
     out.gsub!(/^.*warning\:.+/, '') # remove warnings if sslAllowInvalidHostnames is true
+    out.gsub!(/^.*The server certificate does not match the host name\:.+/, '') # remove warnings if sslAllowInvalidHostnames is true mongo 3.x
     out
   end
 
