@@ -79,6 +79,7 @@ class mongodb::server (
   $create_admin     = $mongodb::params::create_admin,
   $admin_username   = $mongodb::params::admin_username,
   $admin_password   = undef,
+  $handle_creds     = $mongodb::params::handle_creds,
   $store_creds      = $mongodb::params::store_creds,
   $admin_roles      = ['userAdmin', 'readWrite', 'dbAdmin',
                       'dbAdminAnyDatabase', 'readAnyDatabase',

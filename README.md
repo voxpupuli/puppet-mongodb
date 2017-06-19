@@ -530,6 +530,10 @@ Administrator user roles
 ##### `store_creds`
 Store admin credentials in mongorc.js file. Uses with `create_admin` parameter
 
+##### `handle_creds`
+Set this to false to avoid having puppet handle .mongorc.js in case you wish to deliver it by other means.
+This is needed for facts to work if you have auth set to true.  Default is true.
+
 
 #### Class: mongodb::mongos
 class. This class should only be used if you want to implement sharding within
