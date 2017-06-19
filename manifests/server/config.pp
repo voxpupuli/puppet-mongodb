@@ -25,6 +25,7 @@ class mongodb::server::config {
   $create_admin     = $mongodb::server::create_admin
   $admin_username   = $mongodb::server::admin_username
   $admin_password   = $mongodb::server::admin_password
+  $handle_creds     = $mongodb::server::handle_creds
   $store_creds      = $mongodb::server::store_creds
   $rcfile           = $mongodb::server::rcfile
   $verbose          = $mongodb::server::verbose
@@ -257,17 +258,19 @@ class mongodb::server::config {
     }
   }
 
-  if $auth and $store_creds {
-    file { $rcfile:
-      ensure  => present,
-      content => template('mongodb/mongorc.js.erb'),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0600',
-    }
-  } else {
-    file { $rcfile:
-      ensure => absent,
+  if $handle_creds {
+    if $auth and $store_creds {
+      file { $rcfile:
+        ensure  => present,
+        content => template('mongodb/mongorc.js.erb'),
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0600',
+      }
+    } else {
+      file { $rcfile:
+        ensure => absent,
+      }
     }
   }
 }
