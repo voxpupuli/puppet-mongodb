@@ -135,7 +135,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       cmd_ismaster = mongorc_file + cmd_ismaster
     end
     db = 'admin'
-    res = mongo_eval(cmd_ismaster).to_s.gsub(/\n/, '').chomp()
+    res = mongo_eval(cmd_ismaster).to_s.strip
     res.eql?('true') ? true : false
   end
 
