@@ -34,12 +34,13 @@ define mongodb::db (
   }
 
   mongodb_user { "User ${user} on db ${db_name}":
-    ensure        => present,
-    password_hash => $hash,
-    username      => $user,
-    database      => $db_name,
-    roles         => $roles,
-    require       => Mongodb_database[$db_name],
+    ensure         => present,
+    password_hash  => $hash,
+    password_plain => $password,
+    username       => $user,
+    database       => $db_name,
+    roles          => $roles,
+    require        => Mongodb_database[$db_name],
   }
 
 }
