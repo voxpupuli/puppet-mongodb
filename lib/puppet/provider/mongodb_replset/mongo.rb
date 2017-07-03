@@ -184,10 +184,25 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
 
     if ! @property_flush[:members].empty?
       # Find the alive members so we don't try to add dead members to the replset
-      alive_hosts = alive_members(@property_flush[:members])
-      dead_hosts  = @property_flush[:members] - alive_hosts
-      Puppet.debug "Alive members: #{alive_hosts.inspect}"
-      Puppet.debug "Dead members: #{dead_hosts.inspect}" unless dead_hosts.empty?
+      retry_limit = 10
+      retry_sleep = 3
+      alive_hosts = []
+      dead_hosts = []
+      retry_limit.times do |n|
+        begin
+          alive_hosts = alive_members(@property_flush[:members])
+          dead_hosts  = @property_flush[:members] - alive_hosts
+          if dead_hosts.empty?
+            return
+          else
+            Puppet.warning "All members are not ready yet, waiting for #{dead_hosts.inspect}"
+            sleep retry_sleep
+            next
+          end
+        end
+      end
+      Puppet.info "Alive members: #{alive_hosts.inspect}"
+      Puppet.warning "Dead members: #{dead_hosts.inspect}" unless dead_hosts.empty?
       raise Puppet::Error, "Can't connect to any member of replicaset #{self.name}." if alive_hosts.empty?
     else
       alive_hosts = []
