@@ -186,6 +186,8 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, :parent => Puppet::Provider:
       # Find the alive members so we don't try to add dead members to the replset
       retry_limit = 10
       retry_sleep = 3
+      alive_hosts = []
+      dead_hosts = []
       retry_limit.times do |n|
         begin
           alive_hosts = alive_members(@property_flush[:members])
