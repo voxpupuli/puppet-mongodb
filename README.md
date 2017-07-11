@@ -647,10 +647,10 @@ mongodb_user { testuser:
 ##### `username`
 Name of the mongodb user.
 
-#####`password_hash`
+##### `password_hash`
 Hex encoded md5 hash of "$username:mongo:$password". Only available on MongoDB 3.0 and later.
 
-#####`password`
+##### `password`
 Plaintext password of the user.
 
 ##### `database`
