@@ -28,6 +28,8 @@ class mongodb::params inherits mongodb::globals {
 
   $version = $::mongodb::globals::version
 
+  $config_data           = undef
+
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
   case $::osfamily {
     'RedHat', 'Linux', 'Suse': {

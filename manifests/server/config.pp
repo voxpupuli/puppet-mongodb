@@ -6,6 +6,7 @@ class mongodb::server::config {
   $config           = $mongodb::server::config
   $config_content   = $mongodb::server::config_content
   $config_template  = $mongodb::server::config_template
+  $config_data      = $mongodb::server::config_data
   $dbpath           = $mongodb::server::dbpath
   $dbpath_fix       = $mongodb::server::dbpath_fix
   $pidfilepath      = $mongodb::server::pidfilepath
@@ -109,6 +110,8 @@ class mongodb::server::config {
     if $config_content {
       $cfg_content = $config_content
     } elsif $config_template {
+      # Template has available user-supplied data
+      # - $config_data
       $cfg_content = template($config_template)
     } elsif $version and (versioncmp($version, '2.6.0') >= 0) {
       # Template uses:
@@ -152,6 +155,9 @@ class mongodb::server::config {
       # - $system_logrotate
       # - $verbose
       # - $verbositylevel
+
+      # Template has available user-supplied data
+      # - $config_data
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
     } else {
       # Fall back to oldest most basic config
@@ -209,6 +215,8 @@ class mongodb::server::config {
       # - $syslog
       # - $verbose
       # - $verbositylevel
+      # Template has available user-supplied data
+      # - $config_data
       $cfg_content = template('mongodb/mongodb.conf.erb')
     }
 
