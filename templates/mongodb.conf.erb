@@ -200,3 +200,9 @@ sslWeakCertificateValidation = <%= @ssl_weak_cert %>
 net.ssl.allowInvalidHostnames = <%= @ssl_invalid_hostnames %>
 <% end -%>
 <% end -%>
+
+<% if @config_data -%>
+<% @config_data.each do |k,v| -%>
+<%= k %>: <%= v %>
+<% end -%>
+<% end -%>
