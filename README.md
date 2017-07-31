@@ -426,11 +426,6 @@ Mutually exclusive with `replset_config` param.
 A hash that is used to configure the replica set.
 Mutually exclusive with `replset_members` param.
 
-##### `config_data`
-A hash to allow for additional configuration options 
-to be set in user-provided template.
-
-
 ```puppet
 class mongodb::server {
   replset        => 'rsmain',
@@ -438,6 +433,11 @@ class mongodb::server {
 
 }
 ```
+
+##### `config_data`
+A hash to allow for additional configuration options 
+to be set in user-provided template.
+
 
 ##### `rest`
 Set to true to enable a simple REST interface. Default: false
