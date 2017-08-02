@@ -22,6 +22,6 @@ unixSocketPrefix = <%= @unixsocketprefix %>
 
 <% if @config_data -%>
 <% @config_data.each do |k,v| -%>
-<%= k %>: <%= v %>
+<%= k %> = <%= v %>
 <% end -%>
 <% end -%>

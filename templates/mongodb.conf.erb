@@ -203,6 +203,6 @@ net.ssl.allowInvalidHostnames = <%= @ssl_invalid_hostnames %>
 
 <% if @config_data -%>
 <% @config_data.each do |k,v| -%>
-<%= k %>: <%= v %>
+<%= k %> = <%= v %>
 <% end -%>
 <% end -%>
