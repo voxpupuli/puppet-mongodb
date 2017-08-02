@@ -435,7 +435,7 @@ class mongodb::server {
 ```
 
 ##### `config_data`
-A hash to allow for additional configuration options 
+A hash to allow for additional configuration options
 to be set in user-provided template.
 
 
