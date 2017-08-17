@@ -20,7 +20,7 @@ module Puppet
           @mongodb_server = IPAddr.new(uri.host).to_s
           @mongodb_port = uri.port
         rescue
-          @mongodb_server = IPAddr.new(mongodb_server).to_s
+          @mongodb_server = mongodb_server.to_s
           @mongodb_port   = mongodb_port
         end
       end

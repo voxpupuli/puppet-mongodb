@@ -1,8 +1,10 @@
 # This installs a MongoDB server. See README.md for more details.
 class mongodb::server (
   $ensure                = $mongodb::params::ensure,
+
   $user                  = $mongodb::params::user,
   $group                 = $mongodb::params::group,
+
   $config                = $mongodb::params::config,
   $dbpath                = $mongodb::params::dbpath,
   $dbpath_fix            = $mongodb::params::dbpath_fix,
@@ -10,14 +12,17 @@ class mongodb::server (
   $pidfilemode           = $mongodb::params::pidfilemode,
   $manage_pidfile        = $mongodb::params::manage_pidfile,
   $rcfile                = $mongodb::params::rcfile,
+
   $service_manage        = $mongodb::params::service_manage,
   $service_provider      = $mongodb::params::service_provider,
   $service_name          = $mongodb::params::service_name,
   $service_enable        = $mongodb::params::service_enable,
   $service_ensure        = $mongodb::params::service_ensure,
   $service_status        = $mongodb::params::service_status,
+
   $package_ensure        = $mongodb::params::package_ensure,
   $package_name          = $mongodb::params::server_package_name,
+
   $logpath               = $mongodb::params::logpath,
   $bind_ip               = $mongodb::params::bind_ip,
   $ipv6                  = undef,
@@ -45,7 +50,7 @@ class mongodb::server (
   $nohttpinterface       = undef,
   $noscripting           = undef,
   $notablescan           = undef,
-  $noprealloc            = undef,
+  $noprealloc            =  undef,
   $nssize                = undef,
   $mms_token             = undef,
   $mms_name              = undef,
@@ -71,15 +76,18 @@ class mongodb::server (
   $ssl_invalid_hostnames = false,
   $restart               = $mongodb::params::restart,
   $storage_engine        = undef,
+
   $create_admin          = $mongodb::params::create_admin,
   $admin_username        = $mongodb::params::admin_username,
   $admin_password        = undef,
+  $handle_creds          = $mongodb::params::handle_creds,
   $store_creds           = $mongodb::params::store_creds,
   $admin_roles           = ['userAdmin', 'readWrite', 'dbAdmin',
                             'dbAdminAnyDatabase', 'readAnyDatabase',
                             'readWriteAnyDatabase', 'userAdminAnyDatabase',
                             'clusterAdmin', 'clusterManager', 'clusterMonitor',
                             'hostManager', 'root', 'restore'],
+
   # Deprecated parameters
   $master                = undef,
   $slave                 = undef,

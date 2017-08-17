@@ -35,7 +35,8 @@ define mongodb::db (
 
   mongodb_user { "User ${user} on db ${db_name}":
     ensure        => present,
-    password_hash => $hash,
+    password_hash => $password_hash,
+    password      => $password,
     username      => $user,
     database      => $db_name,
     roles         => $roles,
