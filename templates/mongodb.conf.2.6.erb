@@ -117,6 +117,9 @@ net.ssl.CAFile: <%= @ssl_ca %>
 <% if @ssl_weak_cert -%>
 net.ssl.weakCertificateValidation: <%= @ssl_weak_cert %>
 <% end -%>
+<% if @ssl_invalid_hostnames -%>
+net.ssl.allowInvalidHostnames: <%= @ssl_invalid_hostnames %>
+<% end -%>
 <% end -%>
 
 #Replication

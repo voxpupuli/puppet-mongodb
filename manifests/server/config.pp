@@ -67,6 +67,7 @@ class mongodb::server::config {
   $ssl_key          = $mongodb::server::ssl_key
   $ssl_ca           = $mongodb::server::ssl_ca
   $ssl_weak_cert    = $mongodb::server::ssl_weak_cert
+  $ssl_invalid_hostnames = $mongodb::server::ssl_invalid_hostnames
   $storage_engine   = $mongodb::server::storage_engine
   $version          = $mongodb::server::version
 
@@ -146,6 +147,7 @@ class mongodb::server::config {
       # - $ssl_ca
       # - $ssl_key
       # - $ssl_weak_cert
+      # - $ssl_invalid_hostnames
       # - $syslog
       # - $system_logrotate
       # - $verbose
@@ -202,6 +204,7 @@ class mongodb::server::config {
       # - $ssl_ca
       # - $ssl_key
       # - $ssl_weak_cert
+      # - $ssl_invalid_hostnames
       # - storage_engine_internal
       # - $syslog
       # - $verbose

@@ -20,6 +20,18 @@ Facter.add('mongodb_is_master') do
         unless config['net.port'].nil?
           mongoPort = "--port #{config['net.port']}"
         end
+        if config['net.ssl.mode'] == "requireSSL"
+          ssl = "--ssl --host #{Facter.value(:fqdn)}"
+        end
+        unless config['net.ssl.PEMKeyFile'].nil?
+          sslkey = "--sslPEMKeyFile #{config['net.ssl.PEMKeyFile']}"
+        end
+        unless config['net.ssl.CAFile'].nil?
+          sslca = "--sslCAFile #{config['net.ssl.CAFile']}"
+        end
+        unless config['net.ipv6'].nil?
+          ipv6 = "--ipv6"
+        end
       else # It has to be a key-value config file
         config = {}
         File.readlines(file).collect do |line|
@@ -29,15 +41,26 @@ Facter.add('mongodb_is_master') do
         unless config['port'].nil?
           mongoPort = "--port #{config['port']}"
         end
+        if config['ssl'] == "requireSSL"
+          ssl = "--ssl --host #{Facter.value(:fqdn)}"
+        end
+        unless config['sslcert'].nil?
+          sslkey = "--sslPEMKeyFile #{config['sslcert']}"
+        end
+        unless config['sslca'].nil?
+          sslca = "--sslCAFile #{config['sslca']}"
+        end
+        unless config['ipv6'].nil?
+          ipv6 = "--ipv6"
+        end
       end
       e = File.exists?('/root/.mongorc.js') ? 'load(\'/root/.mongorc.js\'); ' : ''
 
       # Check if the mongodb server is responding:
-      Facter::Core::Execution.exec("mongo --quiet #{mongoPort} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
+      Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongoPort} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
 
       if $?.success?
-        mongo_output = Facter::Core::Execution.exec("mongo --quiet #{mongoPort} --eval \"#{e}printjson(db.isMaster())\"")
-        JSON.parse(mongo_output.gsub(/\w+\(.+?\)/, '"foo"'))['ismaster'] ||= false
+        Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongoPort} --eval \"#{e}db.isMaster().ismaster\"")
       else
         'not_responding'
       end
