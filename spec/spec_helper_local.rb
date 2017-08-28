@@ -18,11 +18,12 @@ end
 def with_centos_facts
   let :facts do
     {
-      :architecture           => 'x86_64',
-      :operatingsystem        => 'CentOS',
-      :operatingsystemrelease => '7.0',
-      :osfamily               => 'RedHat',
-      :root_home              => '/root',
+      :architecture              => 'x86_64',
+      :operatingsystem           => 'CentOS',
+      :operatingsystemrelease    => '7.0',
+      :operatingsystemmajrelease => '7',
+      :osfamily                  => 'RedHat',
+      :root_home                 => '/root',
     }
   end
 end
@@ -30,11 +31,12 @@ end
 def with_redhat_facts
   let :facts do
     {
-      :architecture           => 'x86_64',
-      :operatingsystem        => 'RedHat',
-      :operatingsystemrelease => '7.0',
-      :osfamily               => 'RedHat',
-      :root_home              => '/root',
+      :architecture              => 'x86_64',
+      :operatingsystem           => 'RedHat',
+      :operatingsystemrelease    => '7.0',
+      :operatingsystemmajrelease => '7',
+      :osfamily                  => 'RedHat',
+      :root_home                 => '/root',
     }
   end
 end

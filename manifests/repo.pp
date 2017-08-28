@@ -22,6 +22,7 @@ class mongodb::repo (
           'x86_64' => "http://repo.mongodb.org/yum/redhat/${::operatingsystemmajrelease}/mongodb-org/${mongover[0]}.${mongover[1]}/x86_64/",
           default  => undef
         }
+        $description = 'MongoDB Repository'
       }
       else {
         $location = $::architecture ? {
