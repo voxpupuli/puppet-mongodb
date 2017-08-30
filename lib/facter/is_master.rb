@@ -12,7 +12,7 @@ end
 
 Facter.add('mongodb_is_master') do
   setcode do
-    if Facter::Core::Execution.which('mongo')
+    if ['mongo', 'mongod'].all? {|m| Facter::Util::Resolution.which m}
       file = get_mongod_conf_file
       config = YAML.load_file(file)
       mongoPort = nil
