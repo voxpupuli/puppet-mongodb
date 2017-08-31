@@ -5,7 +5,6 @@ class mongodb::repo::yum inherits mongodb::repo {
 
   if($::mongodb::repo::ensure == 'present' or $::mongodb::repo::ensure == true) {
     yumrepo { 'mongodb':
-      descr          => $::mongodb::repo::description,
       baseurl        => $::mongodb::repo::location,
       gpgcheck       => '0',
       enabled        => '1',
