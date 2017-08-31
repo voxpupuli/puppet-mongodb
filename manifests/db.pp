@@ -14,8 +14,8 @@
 define mongodb::db (
   $user,
   $db_name       = $name,
-  $password_hash = false,
-  $password      = false,
+  $password_hash = undef,
+  $password      = undef,
   $roles         = ['dbAdmin'],
   $tries         = 10,
 ) {
@@ -35,8 +35,7 @@ define mongodb::db (
 
   mongodb_user { "User ${user} on db ${db_name}":
     ensure        => present,
-    password_hash => $password_hash,
-    password      => $password,
+    password_hash => $hash,
     username      => $user,
     database      => $db_name,
     roles         => $roles,
