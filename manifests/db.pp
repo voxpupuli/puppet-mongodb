@@ -39,7 +39,6 @@ define mongodb::db (
     username      => $user,
     database      => $db_name,
     roles         => $roles,
-    require       => Mongodb_database[$db_name],
   }
 
 }
