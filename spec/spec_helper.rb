@@ -29,4 +29,5 @@ RSpec.configure do |c|
   c.default_facts = default_facts
 end
 
+require 'spec_helper_local'
 # vim: syntax=ruby

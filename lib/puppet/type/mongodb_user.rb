@@ -22,7 +22,7 @@ Puppet::Type.newtype(:mongodb_user) do
   newproperty(:database) do
     desc "The user's target database."
     defaultto do
-      raise("Parameter 'database' must be set") if provider.database == :absent
+      raise Puppet::Error, "Parameter 'database' must be set" if provider.database == :absent
     end
     newvalues(%r{^[\w-]+$})
   end
@@ -55,7 +55,7 @@ Puppet::Type.newtype(:mongodb_user) do
     desc 'The password hash of the user. Use mongodb_password() for creating hash. Only available on MongoDB 3.0 and later.'
     defaultto do
       if @resource[:password].nil?
-        raise("Property 'password_hash' must be set. Use mongodb_password() for creating hash.") if provider.database == :absent
+        raise Puppet::Error, "Property 'password_hash' must be set. Use mongodb_password() for creating hash." if provider.database == :absent
       end
     end
     newvalue(%r{^\w+$})
