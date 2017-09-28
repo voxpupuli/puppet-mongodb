@@ -30,8 +30,9 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, :parent => Puppet::Provider::M
     @property_flush[:keys]   = resource.should(:keys)
   end
 
-  def sh_addshard member
-    return mongo_command("sh.addShard(\"#{member}\")", '127.0.0.1:27017')
+  def sh_addshard member,name
+    # This explictly names the shards according to resource name, rather than letting mongo name them
+    return mongo_command("connect(\"admin\").runCommand( { addshard : \"#{member}\", name : \"#{name}\" } )", '127.0.0.1:27017')
   end
 
   def sh_shardcollection shard_key
@@ -68,7 +69,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, :parent => Puppet::Provider::M
 
     if @property_flush[:ensure] == :present and @property_hash[:ensure] != :present
       Puppet.debug "Adding the shard #{self.name}"
-      output = sh_addshard(@property_flush[:member])
+      output = sh_addshard(@property_flush[:member],self.name)
       if output['ok'] == 0
         raise Puppet::Error, "sh.addShard() failed for shard #{self.name}: #{output['errmsg']}"
       end

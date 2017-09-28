@@ -53,7 +53,7 @@ describe Puppet::Type.type(:mongodb_shard).provider(:mongo) do
 
   describe '#create' do
     it 'makes a shard' do
-      provider.expects('sh_addshard').with("rs_test/mongo1:27018").returns(
+      provider.expects('sh_addshard').with("rs_test/mongo1:27018","rs_test").returns(
         { "shardAdded" => "rs_test",
           "ok" => 1 }
       )
