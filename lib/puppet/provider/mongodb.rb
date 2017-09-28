@@ -100,6 +100,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       unless ssl_ca.nil?
         args += ['--sslCAFile', ssl_ca]
       end
+
+      if config['bind_ip'] == '127.0.0.1'
+          args.push('--sslAllowInvalidCertificates')
+      end
     end
 
     args += ['--eval', cmd]
