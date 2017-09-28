@@ -3,90 +3,103 @@ require 'spec_helper'
 describe 'mongodb::server' do
   let :facts do
     {
-      :operatingsystem => 'Debian',
-      :operatingsystemmajrelease => 8,
-      :osfamily        => 'Debian',
-      :root_home       => '/root',
+      operatingsystem: 'Debian',
+      operatingsystemmajrelease: 8,
+      osfamily: 'Debian',
+      root_home: '/root'
     }
   end
 
   context 'with defaults' do
     it { is_expected.to compile.with_all_deps }
-    it { is_expected.to contain_class('mongodb::server::install').
-        that_comes_before('Class[mongodb::server::config]') }
-    it { is_expected.to contain_class('mongodb::server::config').
-        that_notifies('Class[mongodb::server::service]') }
+    it {
+      is_expected.to contain_class('mongodb::server::install').
+        that_comes_before('Class[mongodb::server::config]')
+    }
+    it {
+      is_expected.to contain_class('mongodb::server::config').
+        that_notifies('Class[mongodb::server::service]')
+    }
     it { is_expected.to contain_class('mongodb::server::service') }
   end
 
   context 'with create_admin => true' do
     let(:params) do
       {
-        :create_admin   => true,
-        :admin_username => 'admin',
-        :admin_password => 'password'
+        create_admin: true,
+        admin_username: 'admin',
+        admin_password: 'password'
       }
     end
+
     it { is_expected.to compile.with_all_deps }
-    it { is_expected.to contain_class('mongodb::server::install').
-        that_comes_before('Class[mongodb::server::config]') }
-    it { is_expected.to contain_class('mongodb::server::config').
-        that_notifies('Class[mongodb::server::service]') }
+    it {
+      is_expected.to contain_class('mongodb::server::install').
+        that_comes_before('Class[mongodb::server::config]')
+    }
+    it {
+      is_expected.to contain_class('mongodb::server::config').
+        that_notifies('Class[mongodb::server::service]')
+    }
     it { is_expected.to contain_class('mongodb::server::service') }
 
     it {
-        is_expected.to contain_mongodb__db('admin').with({
-          'user'     => 'admin',
-          'password' => 'password',
-          'roles'    => ["userAdmin", "readWrite", "dbAdmin", "dbAdminAnyDatabase",
-                         "readAnyDatabase", "readWriteAnyDatabase", "userAdminAnyDatabase",
-                         "clusterAdmin", "clusterManager", "clusterMonitor", "hostManager",
-                         "root", "restore"]
-        }).that_requires('Anchor[mongodb::server::end]')
-      }
+      is_expected.to contain_mongodb__db('admin').with('user' => 'admin',
+                                                       'password' => 'password',
+                                                       'roles'    => %w[userAdmin readWrite dbAdmin dbAdminAnyDatabase
+                                                                        readAnyDatabase readWriteAnyDatabase userAdminAnyDatabase
+                                                                        clusterAdmin clusterManager clusterMonitor hostManager
+                                                                        root restore]).that_requires('Anchor[mongodb::server::end]')
+    }
   end
 
   context 'when deploying on Solaris' do
     let :facts do
-      { :osfamily        => 'Solaris' }
+      { osfamily: 'Solaris' }
     end
+
     it { expect { is_expected.to raise_error(Puppet::Error) } }
   end
 
   context 'setting nohttpinterface' do
     it "isn't set when undef" do
-      is_expected.to_not contain_file('/etc/mongodb.conf').with_content(/nohttpinterface/)
+      is_expected.not_to contain_file('/etc/mongodb.conf').with_content(%r{nohttpinterface})
     end
-    context "sets nohttpinterface to true when true" do
+    context 'sets nohttpinterface to true when true' do
       let(:params) do
-        { :nohttpinterface => true, }
+        { nohttpinterface: true }
       end
-      it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/nohttpinterface = true/) }
+
+      it { is_expected.to contain_file('/etc/mongodb.conf').with_content(%r{nohttpinterface = true}) }
     end
-    context "sets nohttpinterface to false when false" do
+    context 'sets nohttpinterface to false when false' do
       let(:params) do
-        { :nohttpinterface => false, }
+        { nohttpinterface: false }
       end
-      it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/nohttpinterface = false/) }
+
+      it { is_expected.to contain_file('/etc/mongodb.conf').with_content(%r{nohttpinterface = false}) }
     end
-    context "on >= 2.6" do
+    context 'on >= 2.6' do
       let(:pre_condition) do
         "class { 'mongodb::globals': version => '2.6.6', }"
       end
+
       it "isn't set when undef" do
-        is_expected.to_not contain_file('/etc/mongodb.conf').with_content(/net\.http\.enabled/)
+        is_expected.not_to contain_file('/etc/mongodb.conf').with_content(%r{net\.http\.enabled})
       end
-      context "sets net.http.enabled false when true" do
+      context 'sets net.http.enabled false when true' do
         let(:params) do
-          { :nohttpinterface => true, }
+          { nohttpinterface: true }
         end
-        it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/net\.http\.enabled: false/) }
+
+        it { is_expected.to contain_file('/etc/mongodb.conf').with_content(%r{net\.http\.enabled: false}) }
       end
-      context "sets net.http.enabled true when false" do
+      context 'sets net.http.enabled true when false' do
         let(:params) do
-          { :nohttpinterface => false, }
+          { nohttpinterface: false }
         end
-        it { is_expected.to contain_file('/etc/mongodb.conf').with_content(/net\.http\.enabled: true/) }
+
+        it { is_expected.to contain_file('/etc/mongodb.conf').with_content(%r{net\.http\.enabled: true}) }
       end
     end
   end
@@ -95,17 +108,17 @@ describe 'mongodb::server' do
     context 'should fail if providing both replica_sets and replset_members' do
       let(:params) do
         {
-          :replset          => 'rsTest',
-          :replset_members  => [
+          replset: 'rsTest',
+          replset_members: [
             'mongo1:27017',
             'mongo2:27017',
             'mongo3:27017'
           ],
-          :replica_sets     => {}
+          replica_sets: {}
         }
       end
 
-      it { expect { is_expected.to raise_error(/Puppet::Error: You can provide either replset_members or replica_sets, not both/) } }
+      it { expect { is_expected.to raise_error(%r{Puppet::Error: You can provide either replset_members or replica_sets, not both}) } }
     end
 
     context 'should setup using replica_sets hash' do
@@ -115,7 +128,7 @@ describe 'mongodb::server' do
             'members' => [
               'mongo1:27017',
               'mongo2:27017',
-              'mongo3:27017',
+              'mongo3:27017'
             ],
             'arbiter' => 'mongo3:27017'
           }
@@ -124,8 +137,8 @@ describe 'mongodb::server' do
 
       let(:params) do
         {
-          :replset        => 'rsTest',
-          :replset_config => rsConf
+          replset: 'rsTest',
+          replset_config: rsConf
         }
       end
 
@@ -148,8 +161,8 @@ describe 'mongodb::server' do
 
       let(:params) do
         {
-          :replset         => 'rsTest',
-          :replset_members => [
+          replset: 'rsTest',
+          replset_members: [
             'mongo1:27017',
             'mongo2:27017',
             'mongo3:27017'

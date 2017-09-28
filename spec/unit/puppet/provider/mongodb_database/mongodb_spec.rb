@@ -2,37 +2,37 @@ require 'spec_helper'
 require 'tempfile'
 
 describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
-
-  let(:raw_dbs) {
+  let(:raw_dbs) do
     {
-      "databases" => [
+      'databases' => [
         {
-          "name"       => "admin",
-          "sizeOnDisk" => 83886080,
-          "empty"      => false
+          'name'       => 'admin',
+          'sizeOnDisk' => 83_886_080,
+          'empty'      => false
         }, {
-          "name"       => "local",
-          "sizeOnDisk" => 83886080,
-          "empty"      => false
+          'name'       => 'local',
+          'sizeOnDisk' => 83_886_080,
+          'empty'      => false
         }
       ],
-      "totalSize" => 251658240,
-      "ok" => 1
+      'totalSize' => 251_658_240,
+      'ok' => 1
     }.to_json
-  }
+  end
 
-  let(:parsed_dbs) { %w(admin local) }
+  let(:parsed_dbs) { %w[admin local] }
 
-  let(:resource) { Puppet::Type.type(:mongodb_database).new(
-    { :ensure   => :present,
-      :name     => 'new_database',
-      :provider => described_class.name
-    }
-  )}
+  let(:resource) do
+    Puppet::Type.type(:mongodb_database).new(
+      ensure: :present,
+      name: 'new_database',
+      provider: described_class.name
+    )
+  end
 
   let(:provider) { resource.provider }
 
-  before :each do
+  before do
     tmp = Tempfile.new('test')
     @mongodconffile = tmp.path
     allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
@@ -44,7 +44,7 @@ describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
 
   describe 'self.instances' do
     it 'returns an array of dbs' do
-      dbs = provider.class.instances.collect {|x| x.name }
+      dbs = provider.class.instances.map(&:name)
       expect(parsed_dbs).to match_array(dbs)
     end
   end
@@ -68,5 +68,4 @@ describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
       instance.exists?
     end
   end
-
 end

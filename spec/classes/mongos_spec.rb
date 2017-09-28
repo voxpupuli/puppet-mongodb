@@ -5,7 +5,7 @@ describe 'mongodb::mongos' do
 
   let :params do
     {
-      :configdb => ['127.0.0.1:27019']
+      configdb: ['127.0.0.1:27019']
     }
   end
 
@@ -17,9 +17,9 @@ describe 'mongodb::mongos' do
 
   context 'when deploying on Solaris' do
     let :facts do
-      { :osfamily        => 'Solaris' }
+      { osfamily: 'Solaris' }
     end
+
     it { expect { is_expected.to raise_error(Puppet::Error) } }
   end
-
 end

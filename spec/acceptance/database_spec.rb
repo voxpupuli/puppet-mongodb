@@ -23,9 +23,9 @@ describe 'mongodb_database' do
                  }
               -> class { 'mongodb::client': ensure => absent, }
             EOS
-            apply_manifest(pp, :catch_failures => true)
+            apply_manifest(pp, catch_failures: true)
           end
-          it 'should compile with no errors' do
+          it 'compiles with no errors' do
             pp = <<-EOS
               class { 'mongodb::globals': manage_package_repo => #{tengen}, version => #{version.nil? ? 'undef' : version} }
               -> class { 'mongodb::server': }
@@ -39,12 +39,12 @@ describe 'mongodb_database' do
                 password => 'testpass',
               }
             EOS
-            apply_manifest(pp, :catch_failures => true)
+            apply_manifest(pp, catch_failures: true)
           end
-          pending("setting password is broken, non idempotent") do
-            apply_manifest(pp, :catch_changes  => true)
+          pending('setting password is broken, non idempotent') do
+            apply_manifest(pp, catch_changes: true)
           end
-          it 'should create the databases' do
+          it 'creates the databases' do
             shell("mongo testdb1 --eval 'printjson(db.getMongo().getDBs())'")
             shell("mongo testdb2 --eval 'printjson(db.getMongo().getDBs())'")
           end
@@ -64,9 +64,9 @@ describe 'mongodb_database' do
                  }
               -> class { 'mongodb::client': ensure => absent, }
             EOS
-            apply_manifest(pp, :catch_failures => true)
+            apply_manifest(pp, catch_failures: true)
           end
-          it 'should work with no errors' do
+          it 'works with no errors' do
             pp = <<-EOS
               class { 'mongodb::globals': manage_package_repo => #{tengen}, }
               -> class { 'mongodb::server': port => 27018 }
@@ -81,12 +81,12 @@ describe 'mongodb_database' do
               }
             EOS
 
-            apply_manifest(pp, :catch_failures => true)
+            apply_manifest(pp, catch_failures: true)
           end
-          pending("setting password is broken, non idempotent") do
-            apply_manifest(pp, :catch_changes  => true)
+          pending('setting password is broken, non idempotent') do
+            apply_manifest(pp, catch_changes: true)
           end
-          it 'should create the database' do
+          it 'creates the database' do
             shell("mongo testdb1 --port 27018 --eval 'printjson(db.getMongo().getDBs())'")
             shell("mongo testdb2 --port 27018 --eval 'printjson(db.getMongo().getDBs())'")
           end

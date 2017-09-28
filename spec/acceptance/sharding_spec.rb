@@ -2,7 +2,6 @@ require 'spec_helper_acceptance'
 
 if hosts.length > 1
   describe 'mongodb_shard resource' do
-
     it 'configures the shard server' do
       pp = <<-EOS
         class { 'mongodb::globals': }
@@ -19,8 +18,8 @@ if hosts.length > 1
         }
       EOS
 
-      apply_manifest_on(hosts_as('shard'), pp, :catch_failures => true)
-      apply_manifest_on(hosts_as('shard'), pp, :catch_changes  => true)
+      apply_manifest_on(hosts_as('shard'), pp, catch_failures: true)
+      apply_manifest_on(hosts_as('shard'), pp, catch_changes: true)
     end
 
     it 'configures the router server' do
@@ -44,12 +43,11 @@ if hosts.length > 1
         }
       EOS
 
-      apply_manifest_on(hosts_as('router'), pp, :catch_failures => true)
+      apply_manifest_on(hosts_as('router'), pp, catch_failures: true)
       on(hosts_as('router'), 'mongo --quiet --eval "printjson(sh.status())"') do |r|
         expect(r.stdout).to match /foo\/shard:27018/
-        expect(r.stdout).to match /foo\.toto/
+        expect(r.stdout).to match %r{foo\.toto}
       end
     end
-
   end
 end
