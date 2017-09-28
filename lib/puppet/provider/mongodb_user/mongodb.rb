@@ -28,15 +28,31 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
         end
         return allusers
       else
-        users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
+        # This can fail in 3.x before the admin user is created.
+        begin
+          users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
+        rescue Puppet::ExecutionFailure
+          Puppet.warning 'Failed to load user info'
+          users = []
+        end
 
         users.collect do |user|
+          if user['credentials']['SCRAM-SHA-1']
+            cred = user['credentials']['SCRAM-SHA-1']
+            new(:name          => user['_id'],
+                :ensure        => :present,
+                :username      => user['user'],
+                :database      => user['db'],
+                :roles         => from_roles(user['roles'], user['db']),
+                :password_hash => user['credentials']['SCRAM-SHA-1'])
+          else
             new(:name          => user['_id'],
                 :ensure        => :present,
                 :username      => user['user'],
                 :database      => user['db'],
                 :roles         => from_roles(user['roles'], user['db']),
                 :password_hash => user['credentials']['MONGODB-CR'])
+          end
         end
       end
     else
@@ -85,7 +101,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, :parent => Puppet::Provider::
 	}
 	EOS
 
-        mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+        result = JSON.parse mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+
+        if result['ok'] == 0
+          raise Puppet::ExecutionFailure, "Failed to add mongo user #{@resource[:username]}: #{result['errmsg']}"
+        end
+        return false
       end
     else
       Puppet.warning 'User creation is available only from master host'
