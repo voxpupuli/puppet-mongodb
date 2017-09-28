@@ -195,7 +195,7 @@ This release has a number of new parameters, support for 2.6, improved providers
 
 #### Fixed
 - Use hkp for the apt keyserver
-- Fix mongodb database existance check
+- Fix mongodb database existence check
 - Fix `$server_package_name` problem (MODULES-690)
 - Make sure `pidfilepath` doesn't have any spaces
 - Providers need the client command before they can work (MODULES-1285)
