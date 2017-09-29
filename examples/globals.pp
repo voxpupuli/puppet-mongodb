@@ -1,3 +1,3 @@
 class { '::mongodb::globals':
-  manage_package_repo => true
+  manage_package_repo => true,
 }
