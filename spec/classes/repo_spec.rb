@@ -39,12 +39,12 @@ describe 'mongodb::repo', type: :class do
     end
   end
 
-  context "when deploying on CentOS with version >= 3.0" do
+  context 'when deploying on CentOS with version >= 3.0' do
     with_centos_facts
 
     let :params do
       {
-        :version => '3.4.7-1.el7',
+        version: '3.4.7-1.el7'
       }
     end
 

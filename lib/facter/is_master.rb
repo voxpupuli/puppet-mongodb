@@ -15,10 +15,10 @@ Facter.add('mongodb_is_master') do
     if %w[mongo mongod].all? { |m| Facter::Util::Resolution.which m }
       file = get_mongod_conf_file
       config = YAML.load_file(file)
-      mongoPort = nil
+      mongo_port = nil
       if config.is_a?(Hash) # Using a valid YAML file for mongo 2.6
         unless config['net.port'].nil?
-          mongoPort = "--port #{config['net.port']}"
+          mongo_port = "--port #{config['net.port']}"
         end
         if config['net.ssl.mode'] == 'requireSSL'
           ssl = "--ssl --host #{Facter.value(:fqdn)}"
@@ -36,7 +36,7 @@ Facter.add('mongodb_is_master') do
           k, v = line.split('=')
           config[k.rstrip] = v.lstrip.chomp if k && v
         end
-        mongoPort = "--port #{config['port']}" unless config['port'].nil?
+        mongo_port = "--port #{config['port']}" unless config['port'].nil?
         if config['ssl'] == 'requireSSL'
           ssl = "--ssl --host #{Facter.value(:fqdn)}"
         end
@@ -49,10 +49,10 @@ Facter.add('mongodb_is_master') do
       e = File.exist?('/root/.mongorc.js') ? 'load(\'/root/.mongorc.js\'); ' : ''
 
       # Check if the mongodb server is responding:
-      Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongoPort} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
+      Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongo_port} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
 
       if $CHILD_STATUS.success?
-        Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongoPort} --eval \"#{e}db.isMaster().ismaster\"")
+        Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongo_port} --eval \"#{e}db.isMaster().ismaster\"")
       else
         'not_responding'
       end

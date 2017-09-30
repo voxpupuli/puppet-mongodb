@@ -24,8 +24,8 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
   describe '#create' do
     before do
       tmp = Tempfile.new('test')
-      @mongodconffile = tmp.path
-      allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
+      mongodconffile = tmp.path
+      allow(provider.class).to receive(:get_mongod_conf_file).and_return(mongodconffile)
       allow(provider.class).to receive(:mongo).and_return(<<EOT)
 {
         "ismaster" : false,
@@ -63,8 +63,8 @@ EOT
   describe '#exists?' do
     before do
       tmp = Tempfile.new('test')
-      @mongodconffile = tmp.path
-      allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
+      mongodconffile = tmp.path
+      allow(provider.class).to receive(:get_mongod_conf_file).and_return(mongodconffile)
     end
 
     describe 'when the replicaset does not exist' do
@@ -100,8 +100,8 @@ EOT
   describe '#members' do
     before do
       tmp = Tempfile.new('test')
-      @mongodconffile = tmp.path
-      allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
+      mongodconffile = tmp.path
+      allow(provider.class).to receive(:get_mongod_conf_file).and_return(mongodconffile)
     end
     it 'returns the members of a configured replicaset' do
       allow(provider.class).to receive(:mongo_eval).and_return(<<EOT)
@@ -132,8 +132,8 @@ EOT
   describe 'members=' do
     before do
       tmp = Tempfile.new('test')
-      @mongodconffile = tmp.path
-      allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
+      mongodconffile = tmp.path
+      allow(provider.class).to receive(:get_mongod_conf_file).and_return(mongodconffile)
     end
     before do
       allow(provider.class).to receive(:mongo_eval).and_return(<<EOT)

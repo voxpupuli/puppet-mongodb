@@ -67,17 +67,17 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
     if @property_flush[:ensure] == :present && @property_hash[:ensure] != :present
       Puppet.debug "Adding the shard #{name}"
       output = sh_addshard(@property_flush[:member])
-      if output['ok'] == 0
+      if output['ok'].zero?
         raise Puppet::Error, "sh.addShard() failed for shard #{name}: #{output['errmsg']}"
       end
       output = sh_enablesharding(name)
-      if output['ok'] == 0
+      if output['ok'].zero?
         raise Puppet::Error, "sh.enableSharding() failed for shard #{name}: #{output['errmsg']}"
-       end
+      end
       if @property_flush[:keys]
         @property_flush[:keys].each do |key|
           output = sh_shardcollection(key)
-          if output['ok'] == 0
+          if output['ok'].zero?
             raise Puppet::Error, "sh.shardCollection() failed for shard #{name}: #{output['errmsg']}"
           end
         end
@@ -198,7 +198,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
           proper_line = ",{\"#{shard_name}\":"
           final_stream << proper_line
         end
-        if line =~ %r{shard key} && in_shard_list == 0
+        if line =~ %r{shard key} && in_shard_list.zero?
           in_shard_list = 1
           shard_name = final_stream.pop.strip
           id_line = "#{final_stream.pop[0..-2]}, \"shards\": "
@@ -210,7 +210,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
           in_chunk = 0
           line = "\"#{line.strip}\"}}"
         end
-        in_chunk = 1 if line =~ %r{chunks} && in_chunk == 0
+        in_chunk = 1 if line =~ %r{chunks} && in_chunk.zero?
         line.gsub!(%r{shard key}, '{"shard key"')
         line.gsub!(%r{chunks}, ',"chunks"')
         final_stream << line unless line.empty?

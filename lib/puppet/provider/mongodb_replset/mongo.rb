@@ -1,5 +1,5 @@
 #
-# Author: François Charlier <francois.charlier@enovance.com>
+# Author: Francois Charlier <francois.charlier@enovance.com>
 #
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
@@ -202,7 +202,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
       # Set replset members with the first host as the master
       output = rs_initiate(conf, alive_hosts[0])
-      if output['ok'] == 0
+      if output['ok'].zero?
         raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: #{output['errmsg']}"
       end
 
@@ -241,7 +241,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
                    else
                      rs_add(host, master)
                    end
-          if output['ok'] == 0
+          if output['ok'].zero?
             raise Puppet::Error, "rs.add() failed to add host to replicaset #{name}: #{output['errmsg']}"
           end
         end

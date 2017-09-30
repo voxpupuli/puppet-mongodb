@@ -19,11 +19,11 @@ describe 'mongodb::server::config', type: :class do
                                                            owner: 'root',
                                                            group: 'root')
 
-      is_expected.to contain_file('/etc/mongod.conf').with_content(/^dbpath=\/var\/lib\/mongo/)
+      is_expected.to contain_file('/etc/mongod.conf').with_content(%r{^dbpath=\/var\/lib\/mongo})
       is_expected.to contain_file('/etc/mongod.conf').with_content(%r{bind_ip\s=\s0\.0\.0\.0})
       is_expected.to contain_file('/etc/mongod.conf').with_content(%r{^port = 29017$})
       is_expected.to contain_file('/etc/mongod.conf').with_content(%r{^logappend=true})
-      is_expected.to contain_file('/etc/mongod.conf').with_content(/^logpath=\/var\/log\/mongo\/mongod\.log/)
+      is_expected.to contain_file('/etc/mongod.conf').with_content(%r{^logpath=\/var\/log\/mongo\/mongod\.log})
       is_expected.to contain_file('/etc/mongod.conf').with_content(%r{^fork=true})
 
       is_expected.to contain_file('/root/.mongorc.js').with(ensure: 'absent')
@@ -75,7 +75,7 @@ describe 'mongodb::server::config', type: :class do
   describe 'with journal:' do
     context 'on true with i686 architecture' do
       let(:pre_condition) { "class { 'mongodb::server': config => '/etc/mongod.conf', dbpath => '/var/lib/mongo', rcfile => '/root/.mongorc.js', ensure => present, journal => true }" }
-      let (:facts) { super().merge(architecture: 'i686') }
+      let(:facts) { super().merge(architecture: 'i686') }
 
       it {
         is_expected.to contain_file('/etc/mongod.conf').with_content(%r{^journal = true})

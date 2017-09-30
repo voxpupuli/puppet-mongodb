@@ -4,18 +4,17 @@
 
 require 'puppet'
 require 'puppet/type/mongodb_replset'
+
 describe Puppet::Type.type(:mongodb_replset) do
-  before do
-    @replset = Puppet::Type.type(:mongodb_replset).new(name: 'test')
-  end
+  let(:replset) { Puppet::Type.type(:mongodb_replset).new(name: 'test') }
 
   it 'accepts a replica set name' do
-    expect(@replset[:name]).to eq('test')
+    expect(replset[:name]).to eq('test')
   end
 
   it 'accepts a members array' do
-    @replset[:members] = ['mongo1:27017', 'mongo2:27017']
-    expect(@replset[:members]).to eq(['mongo1:27017', 'mongo2:27017'])
+    replset[:members] = ['mongo1:27017', 'mongo2:27017']
+    expect(replset[:members]).to eq(['mongo1:27017', 'mongo2:27017'])
   end
 
   it 'requires a name' do

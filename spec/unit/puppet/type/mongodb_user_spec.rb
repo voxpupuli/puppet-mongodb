@@ -1,8 +1,9 @@
 require 'puppet'
 require 'puppet/type/mongodb_user'
+
 describe Puppet::Type.type(:mongodb_user) do
-  before do
-    @user = Puppet::Type.type(:mongodb_user).new(
+  let(:user) do
+    Puppet::Type.type(:mongodb_user).new(
       name: 'test',
       database: 'testdb',
       password_hash: 'pass'
@@ -10,35 +11,35 @@ describe Puppet::Type.type(:mongodb_user) do
   end
 
   it 'accepts a user name' do
-    expect(@user[:name]).to eq('test')
+    expect(user[:name]).to eq('test')
   end
 
   it 'accepts a database name' do
-    expect(@user[:database]).to eq('testdb')
+    expect(user[:database]).to eq('testdb')
   end
 
   it 'accepts a tries parameter' do
-    @user[:tries] = 5
-    expect(@user[:tries]).to eq(5)
+    user[:tries] = 5
+    expect(user[:tries]).to eq(5)
   end
 
   it 'accepts a password hash' do
-    @user[:password_hash] = 'foo'
-    expect(@user[:password_hash]).to eq('foo')
+    user[:password_hash] = 'foo'
+    expect(user[:password_hash]).to eq('foo')
   end
 
   it 'accepts a plaintext password' do
-    @user[:password] = 'foo'
-    expect(@user[:password]).to eq('foo')
+    user[:password] = 'foo'
+    expect(user[:password]).to eq('foo')
   end
 
   it 'uses default role' do
-    expect(@user[:roles]).to eq(['dbAdmin'])
+    expect(user[:roles]).to eq(['dbAdmin'])
   end
 
   it 'accepts a roles array' do
-    @user[:roles] = %w[role1 role2]
-    expect(@user[:roles]).to eq(%w[role1 role2])
+    user[:roles] = %w[role1 role2]
+    expect(user[:roles]).to eq(%w[role1 role2])
   end
 
   it 'requires a name' do
@@ -61,12 +62,13 @@ describe Puppet::Type.type(:mongodb_user) do
 
   it 'sorts roles' do
     # Reinitialize type with explicit unsorted roles.
-    @user = Puppet::Type.type(:mongodb_user).new(
+    user = Puppet::Type.type(:mongodb_user).new(
       name: 'test',
       database: 'testdb',
       password_hash: 'pass',
       roles: %w[b a]
     )
-    expect(@user[:roles]).to eq(%w[a b])
+
+    expect(user[:roles]).to eq(%w[a b])
   end
 end

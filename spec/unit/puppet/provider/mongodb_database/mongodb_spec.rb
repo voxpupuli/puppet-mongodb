@@ -32,15 +32,15 @@ describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
 
   let(:provider) { resource.provider }
 
+  let(:instance) { provider.class.instances.first }
+
   before do
     tmp = Tempfile.new('test')
-    @mongodconffile = tmp.path
-    allow(provider.class).to receive(:get_mongod_conf_file).and_return(@mongodconffile)
+    mongodconffile = tmp.path
+    allow(provider.class).to receive(:get_mongod_conf_file).and_return(mongodconffile)
     provider.class.stubs(:mongo_eval).with('printjson(db.getMongo().getDBs())').returns(raw_dbs)
     allow(provider.class).to receive(:db_ismaster).and_return(true)
   end
-
-  let(:instance) { provider.class.instances.first }
 
   describe 'self.instances' do
     it 'returns an array of dbs' do

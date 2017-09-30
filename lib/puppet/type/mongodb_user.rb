@@ -46,7 +46,7 @@ Puppet::Type.newtype(:mongodb_user) do
       value.inspect
     end
 
-    def is_to_s(value)
+    def to_s?(value)
       value.inspect
     end
   end
@@ -71,12 +71,12 @@ Puppet::Type.newtype(:mongodb_user) do
       Puppet::Util::MongodbMd5er.md5(@resource[:username], value)
     end
 
-    def is_to_s(_value = @is)
+    def to_s?(_value = @is)
       @resource.provider.password_hash
     end
 
     def insync?(_is)
-      should_to_s == is_to_s
+      should_to_s == to_s?
     end
   end
 

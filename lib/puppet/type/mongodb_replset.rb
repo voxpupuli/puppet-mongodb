@@ -1,5 +1,5 @@
 #
-# Author: François Charlier <francois.charlier@enovance.com>
+# Author: Francois Charlier <francois.charlier@enovance.com>
 #
 
 Puppet::Type.newtype(:mongodb_replset) do
