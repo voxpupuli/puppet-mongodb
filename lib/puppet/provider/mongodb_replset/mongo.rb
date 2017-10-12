@@ -25,7 +25,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
   end
 
   def self.instances
-    instance = get_replset_properties
+    instance = replset_properties
     if instance
       # There can only be one replset per node
       [new(instance)]
@@ -57,7 +57,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
   def flush
     set_members
-    @property_hash = self.class.get_replset_properties
+    @property_hash = self.class.replset_properties
   end
 
   private
@@ -110,8 +110,8 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     false
   end
 
-  def self.get_replset_properties
-    conn_string = get_conn_string
+  def self.replset_properties
+    conn_string = conn_string
     begin
       output = mongo_command('rs.conf()', conn_string)
     rescue Puppet::ExecutionFailure => e

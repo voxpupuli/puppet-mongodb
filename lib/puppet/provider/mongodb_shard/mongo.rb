@@ -55,7 +55,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
 
   def flush
     set_member
-    @property_hash = self.class.get_shard_properties(resource[:name])
+    @property_hash = self.class.shard_properties(resource[:name])
   end
 
   def set_member
@@ -86,12 +86,12 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
   end
 
   def self.instances
-    instances = get_shards_properties.map do |shard|
+    instances = shards_properties.map do |shard|
       new shard
     end
   end
 
-  def self.get_shard_collection_details(obj, shard_name)
+  def self.shard_collection_details(obj, shard_name)
     collection_array = []
     obj.each do |database|
       next unless database['_id'].eql?(shard_name) && !database['shards'].nil?
@@ -102,7 +102,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
     collection_array
   end
 
-  def self.get_shard_properties(shard)
+  def self.shard_properties(shard)
     properties = {}
     output = mongo_command('sh.status()')
     output['shards'].each do |s|
@@ -111,14 +111,14 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
         name: s['_id'],
         ensure: :present,
         member: s['host'],
-        keys: get_shard_collection_details(output['databases'], s['_id']),
+        keys: shard_collection_details(output['databases'], s['_id']),
         provider: :mongo
       }
     end
     properties
   end
 
-  def self.get_shards_properties
+  def self.shards_properties
     output = mongo_command('sh.status()')
     properties = if !output['shards'].empty?
                    output['shards'].map do |shard|
@@ -126,7 +126,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
                        name: shard['_id'],
                        ensure: :present,
                        member: shard['host'],
-                       keys: get_shard_collection_details(output['databases'], shard['_id']),
+                       keys: shard_collection_details(output['databases'], shard['_id']),
                        provider: :mongo
                      }
                    end

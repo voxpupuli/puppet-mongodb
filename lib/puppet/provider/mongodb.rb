@@ -16,7 +16,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     self.class.mongorc_file
   end
 
-  def self.get_mongod_conf_file
+  def self.mongod_conf_file
     file = if File.exist? '/etc/mongod.conf'
              '/etc/mongod.conf'
            else
@@ -25,8 +25,8 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     file
   end
 
-  def self.get_mongo_conf
-    file = get_mongod_conf_file
+  def self.mongo_conf
+    file = mongod_conf_file
     # The mongo conf is probably a key-value store, even though 2.6 is
     # supposed to use YAML, because the config template is applied
     # based on $::mongodb::globals::version which is the user will not
@@ -67,23 +67,23 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def self.ipv6_is_enabled(config = nil)
-    config ||= get_mongo_conf
+    config ||= mongo_conf
     config['ipv6']
   end
 
   def self.ssl_is_enabled(config = nil)
-    config ||= get_mongo_conf
+    config ||= mongo_conf
     ssl_mode = config.fetch('ssl')
     ssl_mode.nil? ? false : ssl_mode != 'disabled'
   end
 
   def self.ssl_invalid_hostnames(config = nil)
-    config ||= get_mongo_conf
+    config ||= mongo_conf
     config['allowInvalidHostnames']
   end
 
   def self.mongo_cmd(db, host, cmd)
-    config = get_mongo_conf
+    config = mongo_conf
 
     args = [db, '--quiet', '--host', host]
     args.push('--ipv6') if ipv6_is_enabled(config)
@@ -101,8 +101,8 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     mongo(args)
   end
 
-  def self.get_conn_string
-    config = get_mongo_conf
+  def self.conn_string
+    config = mongo_conf
     bindip = config.fetch('bindip')
     if bindip
       first_ip_in_list = bindip.split(',').first
@@ -136,7 +136,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     cmd_ismaster = 'db.isMaster().ismaster'
     cmd_ismaster = mongorc_file + cmd_ismaster if mongorc_file
     db = 'admin'
-    res = mongo_cmd(db, get_conn_string, cmd_ismaster).to_s.chomp
+    res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
     res.eql?('true') ? true : false
   end
 
@@ -145,7 +145,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def self.auth_enabled(config = nil)
-    config ||= get_mongo_conf
+    config ||= mongo_conf
     config['auth'] && config['auth'] != 'disabled'
   end
 
@@ -161,7 +161,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
         out = if host
                 mongo_cmd(db, host, cmd)
               else
-                mongo_cmd(db, get_conn_string, cmd)
+                mongo_cmd(db, conn_string, cmd)
               end
       rescue => e
         Puppet.debug "Request failed: '#{e.message}' Retry: '#{n}'"

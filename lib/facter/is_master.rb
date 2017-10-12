@@ -1,7 +1,7 @@
 require 'json'
 require 'yaml'
 
-def get_mongod_conf_file
+def mongod_conf_file
   file = if File.exist? '/etc/mongod.conf'
            '/etc/mongod.conf'
          else
@@ -13,7 +13,7 @@ end
 Facter.add('mongodb_is_master') do
   setcode do
     if %w[mongo mongod].all? { |m| Facter::Util::Resolution.which m }
-      file = get_mongod_conf_file
+      file = mongod_conf_file
       config = YAML.load_file(file)
       mongo_port = nil
       if config.is_a?(Hash) # Using a valid YAML file for mongo 2.6

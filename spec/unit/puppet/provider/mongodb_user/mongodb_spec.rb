@@ -29,7 +29,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
   before do
     tmp = Tempfile.new('test')
     mongodconffile = tmp.path
-    allow(provider.class).to receive(:get_mongod_conf_file).and_return(mongodconffile)
+    allow(provider.class).to receive(:mongod_conf_file).and_return(mongodconffile)
     provider.class.stubs(:mongo_eval).with('printjson(db.system.users.find().toArray())').returns(raw_users)
     provider.class.stubs(:mongo_version).returns('2.6.x')
     allow(provider.class).to receive(:db_ismaster).and_return(true)
