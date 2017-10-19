@@ -39,6 +39,7 @@ if hosts.length > 1
       apply_manifest_on(hosts.reverse, pp, catch_changes: true)
     end
 
+    # rubocop:disable RSpec/MultipleExpectations
     it 'sets up the replset with puppet' do
       pp = <<-EOS
         mongodb_replset { 'test':
@@ -51,6 +52,7 @@ if hosts.length > 1
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
     end
+    # rubocop:enable RSpec/MultipleExpectations
 
     it 'inserts data on the master' do
       sleep(30)
@@ -133,6 +135,7 @@ YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
       apply_manifest_on(hosts.reverse, pp, catch_changes: true)
     end
 
+    # rubocop:disable RSpec/MultipleExpectations
     it 'sets up the replset with puppet' do
       pp = <<-EOS
         class { 'mongodb::globals':
@@ -180,6 +183,7 @@ YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
     end
+    # rubocop:enable RSpec/MultipleExpectations
 
     it 'inserts data on the master' do
       sleep(30)

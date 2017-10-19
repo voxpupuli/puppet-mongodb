@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'the mongodb_password function' do
-  before :all do
+  before do
     Puppet::Parser::Functions.autoloader.loadall
   end
 

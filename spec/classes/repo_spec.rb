@@ -52,5 +52,4 @@ describe 'mongodb::repo', type: :class do
       is_expected.to contain_class('mongodb::repo::yum')
     }
   end
-
 end

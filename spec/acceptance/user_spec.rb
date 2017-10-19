@@ -7,8 +7,8 @@ describe 'mongodb_database' do
   when 'Debian'
     version = "'2.6.6'"
   end
-  shared_examples 'normal tests' do |version|
-    context "when version is #{version.nil? ? 'nil' : version}" do
+  shared_examples 'normal tests' do |ver|
+    context "when version is #{ver.nil? ? 'nil' : ver}" do
       describe 'creating a database' do
         context 'with default port' do
           after :all do
@@ -27,7 +27,7 @@ describe 'mongodb_database' do
           end
           it 'compiles with no errors' do
             pp = <<-EOS
-              class { 'mongodb::globals': manage_package_repo => true, version => #{version.nil? ? 'undef' : version} }
+              class { 'mongodb::globals': manage_package_repo => true, version => #{ver.nil? ? 'undef' : ver} }
               -> class { 'mongodb::server': }
               -> class { 'mongodb::client': }
               -> mongodb_database { 'testdb': ensure => present }

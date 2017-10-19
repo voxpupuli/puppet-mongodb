@@ -134,8 +134,6 @@ EOT
       tmp = Tempfile.new('test')
       mongodconffile = tmp.path
       allow(provider.class).to receive(:mongod_conf_file).and_return(mongodconffile)
-    end
-    before do
       allow(provider.class).to receive(:mongo_eval).and_return(<<EOT)
 {
 	"setName" : "rs_test",
