@@ -213,7 +213,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         begin
           if db_ismaster(alive_hosts[0])['ismaster']
             Puppet.debug 'Replica set initialization has successfully ended'
-            return
+            return true
           else
             Puppet.debug "Wainting for replica initialization. Retry: #{n}"
             sleep retry_sleep
