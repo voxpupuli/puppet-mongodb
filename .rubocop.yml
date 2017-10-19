@@ -12,6 +12,7 @@ AllCops:
     - Gemfile
     - Rakefile
     - Guardfile
+    - Vagrantfile
 Lint/ConditionPosition:
   Enabled: True
 
