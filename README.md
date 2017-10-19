@@ -1,6 +1,12 @@
 # mongodb puppet module
 
-[![Build Status](https://travis-ci.org/puppetlabs/puppetlabs-mongodb.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-mongodb)
+[![License](https://img.shields.io/github/license/voxpupuli/puppet-mongodb.svg)](https://github.com/voxpupuli/puppet-mongodb/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/voxpupuli/puppet-mongodb.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-mongodb)
+[![Code Coverage](https://coveralls.io/repos/github/voxpupuli/puppet-mongodb/badge.svg?branch=master)](https://coveralls.io/github/voxpupuli/puppet-mongodb)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
+[![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
+[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
 
 #### Table of Contents
 
@@ -728,7 +734,7 @@ This module has been tested on:
 * RHEL 5/6/7
 * CentOS 5/6/7
 
-For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml) definition.
+For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/voxpupuli/puppet-mongodb/blob/master/.nodeset.yml) definition.
 
 This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
 
@@ -738,47 +744,18 @@ While this module supports both 1.x and 2.x versions of the puppetlabs-apt modul
 
 ## Development
 
-Puppet Labs modules on the Puppet Forge are open projects, and community
-contributions are essential for keeping them great. We can’t access the
-huge number of platforms and myriad of hardware, software, and deployment
-configurations that Puppet is intended to serve.
+This module is maintained by [Vox Pupuli](https://voxpupuli.org/). Voxpupuli
+welcomes new contributions to this module, especially those that include
+documentation and rspec tests. We are happy to provide guidance if necessary.
 
-We want to keep it as easy as possible to contribute changes so that our
-modules work in your environment. There are a few guidelines that we need
-contributors to follow so that we can have a chance of keeping on top of things.
-
-You can read the complete module contribution guide [on the Puppet Labs wiki.](http://projects.puppetlabs.com/projects/module-site/wiki/Module_contributing)
-
-### Testing
-
-There are two types of tests distributed with this module. Unit tests with
-rspec-puppet and system tests using rspec-system.
-
-
-unit tests should be run under Bundler with the gem versions as specified
-in the Gemfile. To install the necessary gems:
-
-    bundle install --path=vendor
-
-Test setup and teardown is handled with rake tasks, so the
-supported way of running tests is with
-
-    bundle exec rake spec
-
-
-For system test you will also need to install vagrant > 1.3.x and virtualbox > 4.2.10.
-To run the system tests
-
-    bundle exec rake spec:system
-
-To run the tests on different operating systems, see the sets available in [.nodeset.xml](https://github.com/puppetlabs/puppetlabs-mongodb/blob/master/.nodeset.yml)
-and run the specific set with the following syntax:
-
-    RSPEC_SET=ubuntu-server-12042-x64 bundle exec rake spec:system
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more details.
 
 ### Authors
 
+* Puppetlabs Module Team
+* Voxpupuli Team
+
 We would like to thank everyone who has contributed issues and pull requests to this module.
 A complete list of contributors can be found on the
-[GitHub Contributor Graph](https://github.com/puppetlabs/puppetlabs-mongodb/graphs/contributors)
-for the [puppetlabs-mongodb module](https://github.com/puppetlabs/puppetlabs-mongodb).
+[GitHub Contributor Graph](https://github.com/voxpupuli/puppet-mongodb/graphs/contributors)
+for the [puppet-mongodb module](https://github.com/voxpupuli/puppet-mongodb).
