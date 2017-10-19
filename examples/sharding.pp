@@ -15,7 +15,7 @@ node 'mongos' {
     member => 'rs1/mongod1:27018',
     keys   => [{
       'rs1.foo' => {
-        'name' => 1
+        'name' => 1,
       }
     }],
   }

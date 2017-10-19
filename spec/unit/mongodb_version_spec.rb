@@ -1,13 +1,13 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Facter::Util::Fact do
-  before {
+  before do
     Facter.clear
-  }
+  end
 
-  describe "mongodb_version" do
+  describe 'mongodb_version' do
     context 'with value' do
-      before :each do
+      before do
         Facter::Core::Execution.stubs(:which).with('mongo').returns(true)
         Facter::Core::Execution.stubs(:execute).with('mongo --version 2>&1').returns('MongoDB shell version: 3.2.1')
       end

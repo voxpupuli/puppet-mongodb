@@ -236,7 +236,7 @@ class mongodb::server::config {
         command   => "chown -R ${user}:${group} ${dbpath}",
         path      => ['/usr/bin', '/bin'],
         onlyif    => "find ${dbpath} -not -user ${user} -o -not -group ${group} -print -quit | grep -q '.*'",
-        subscribe => File[$dbpath]
+        subscribe => File[$dbpath],
       }
     }
 

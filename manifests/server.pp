@@ -132,7 +132,7 @@ class mongodb::server (
     mongodb::db { 'admin':
       user     => $admin_username,
       password => $admin_password,
-      roles    => $admin_roles
+      roles    => $admin_roles,
     }
 
     # Make sure it runs at the correct point
@@ -164,17 +164,17 @@ class mongodb::server (
         $_replset_config = {
           "${replset}" => {
             'ensure'   => 'present',
-            'members'  => $replset_members
-          }
+            'members'  => $replset_members,
+          },
         }
       }
 
       # Wrap the replset class
       class { 'mongodb::replset':
-        sets => $_replset_config
+        sets => $_replset_config,
       }
 
-      $replset_config_REAL = $_replset_config  # lint:ignore:variable_is_lowercase required for compatibility
+      $replset_config_real = $_replset_config  # lint:ignore:variable_is_lowercase required for compatibility
 
       Anchor['mongodb::server::end'] -> Class['mongodb::replset']
 

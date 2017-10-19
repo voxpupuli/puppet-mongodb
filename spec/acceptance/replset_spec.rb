@@ -20,7 +20,7 @@ if hosts.length > 1
         }
       EOS
 
-      apply_manifest_on(hosts.reverse, pp, :catch_failures => true)
+      apply_manifest_on(hosts.reverse, pp, catch_failures: true)
     end
 
     it 'configures mongo on both nodes' do
@@ -35,22 +35,24 @@ if hosts.length > 1
         }
       EOS
 
-      apply_manifest_on(hosts.reverse, pp, :catch_failures => true)
-      apply_manifest_on(hosts.reverse, pp, :catch_changes  => true)
+      apply_manifest_on(hosts.reverse, pp, catch_failures: true)
+      apply_manifest_on(hosts.reverse, pp, catch_changes: true)
     end
 
+    # rubocop:disable RSpec/MultipleExpectations
     it 'sets up the replset with puppet' do
       pp = <<-EOS
         mongodb_replset { 'test':
-          members => [#{hosts.collect{|x|"'#{x}:27017'"}.join(',')}],
+          members => [#{hosts.map { |x| "'#{x}:27017'" }.join(',')}],
         }
       EOS
-      apply_manifest_on(hosts_as('master'), pp, :catch_failures => true)
+      apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
       on(hosts_as('master'), 'mongo --quiet --eval "printjson(rs.conf())"') do |r|
-        expect(r.stdout).to match /#{hosts[0]}:27017/
-        expect(r.stdout).to match /#{hosts[1]}:27017/
+        expect(r.stdout).to match %r{#{hosts[0]}:27017}
+        expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
     end
+    # rubocop:enable RSpec/MultipleExpectations
 
     it 'inserts data on the master' do
       sleep(30)
@@ -59,14 +61,14 @@ if hosts.length > 1
 
     it 'checks the data on the master' do
       on hosts_as('master'), %{mongo --verbose --eval 'printjson(db.test.findOne({name:"test1"}))'} do |r|
-        expect(r.stdout).to match /some value/
+        expect(r.stdout).to match %r{some value}
       end
     end
 
     it 'checks the data on the slave' do
       sleep(10)
       on hosts_as('slave'), %{mongo --verbose --eval 'rs.slaveOk(); printjson(db.test.findOne({name:"test1"}))'} do |r|
-        expect(r.stdout).to match /some value/
+        expect(r.stdout).to match %r{some value}
       end
     end
   end
@@ -90,7 +92,7 @@ if hosts.length > 1
         }
       EOS
 
-      apply_manifest_on(hosts.reverse, pp, :catch_failures => true)
+      apply_manifest_on(hosts.reverse, pp, catch_failures: true)
     end
 
     it 'configures mongo on both nodes' do
@@ -122,17 +124,18 @@ g+Bybk5qHv1b7M8Tv9/I/BRXcpLHeIkMICMY8sVPGmP8xzL1L3i0cws8p5h0zPBa
 YG/QX0BmltAni8owgymFuyJgvr/gaRX4WHbKFD+9nKpqJ3ocuVNuCDsxDqLsJEME
 nc1ohyB0lNt8lHf1U00mtgDSV3fwo5LkwhRi6d+bDBTL/C6MZETMLdyCqDlTdUWG
 YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
- 
+
         }
         if $::osfamily == 'RedHat' {
           include mongodb::client
         }
       EOS
 
-      apply_manifest_on(hosts.reverse, pp, :catch_failures => true)
-      apply_manifest_on(hosts.reverse, pp, :catch_changes  => true)
+      apply_manifest_on(hosts.reverse, pp, catch_failures: true)
+      apply_manifest_on(hosts.reverse, pp, catch_changes: true)
     end
 
+    # rubocop:disable RSpec/MultipleExpectations
     it 'sets up the replset with puppet' do
       pp = <<-EOS
         class { 'mongodb::globals':
@@ -169,17 +172,18 @@ YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
         }
         mongodb_replset { 'test':
           auth_enabled => true,
-          members      => [#{hosts.collect{|x|"'#{x}:27017'"}.join(',')}],
+          members      => [#{hosts.map { |x| "'#{x}:27017'" }.join(',')}],
           before       => Mongodb_user['admin']
         }
       EOS
-      apply_manifest_on(hosts_as('master'), pp, :catch_failures => true)
-      apply_manifest_on(hosts_as('master'), pp, :catch_changes => true)
+      apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
+      apply_manifest_on(hosts_as('master'), pp, catch_changes: true)
       on(hosts_as('master'), 'mongo --quiet --eval "load(\'/root/.mongorc.js\');printjson(rs.conf())"') do |r|
-        expect(r.stdout).to match /#{hosts[0]}:27017/
-        expect(r.stdout).to match /#{hosts[1]}:27017/
+        expect(r.stdout).to match %r{#{hosts[0]}:27017}
+        expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
     end
+    # rubocop:enable RSpec/MultipleExpectations
 
     it 'inserts data on the master' do
       sleep(30)
@@ -188,14 +192,14 @@ YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
 
     it 'checks the data on the master' do
       on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");printjson(db.dummyData.findOne())'} do |r|
-        expect(r.stdout).to match /created_by_puppet/
+        expect(r.stdout).to match %r{created_by_puppet}
       end
     end
 
     it 'checks the data on the slave' do
       sleep(10)
       on hosts_as('slave'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");rs.slaveOk();printjson(db.dummyData.findOne())'} do |r|
-        expect(r.stdout).to match /created_by_puppet/
+        expect(r.stdout).to match %r{created_by_puppet}
       end
     end
   end

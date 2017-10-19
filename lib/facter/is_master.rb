@@ -1,26 +1,26 @@
 require 'json'
 require 'yaml'
 
-def get_mongod_conf_file
-  if File.exists? '/etc/mongod.conf'
-    file = '/etc/mongod.conf'
-  else
-    file = '/etc/mongodb.conf'
-  end
+def mongod_conf_file
+  file = if File.exist? '/etc/mongod.conf'
+           '/etc/mongod.conf'
+         else
+           '/etc/mongodb.conf'
+         end
   file
 end
 
 Facter.add('mongodb_is_master') do
   setcode do
-    if ['mongo', 'mongod'].all? {|m| Facter::Util::Resolution.which m}
-      file = get_mongod_conf_file
+    if %w[mongo mongod].all? { |m| Facter::Util::Resolution.which m }
+      file = mongod_conf_file
       config = YAML.load_file(file)
-      mongoPort = nil
-      if config.kind_of?(Hash) # Using a valid YAML file for mongo 2.6
+      mongo_port = nil
+      if config.is_a?(Hash) # Using a valid YAML file for mongo 2.6
         unless config['net.port'].nil?
-          mongoPort = "--port #{config['net.port']}"
+          mongo_port = "--port #{config['net.port']}"
         end
-        if config['net.ssl.mode'] == "requireSSL"
+        if config['net.ssl.mode'] == 'requireSSL'
           ssl = "--ssl --host #{Facter.value(:fqdn)}"
         end
         unless config['net.ssl.PEMKeyFile'].nil?
@@ -29,38 +29,30 @@ Facter.add('mongodb_is_master') do
         unless config['net.ssl.CAFile'].nil?
           sslca = "--sslCAFile #{config['net.ssl.CAFile']}"
         end
-        unless config['net.ipv6'].nil?
-          ipv6 = "--ipv6"
-        end
+        ipv6 = '--ipv6' unless config['net.ipv6'].nil?
       else # It has to be a key-value config file
         config = {}
-        File.readlines(file).collect do |line|
-          k,v = line.split('=')
-          config[k.rstrip] = v.lstrip.chomp if k and v
+        File.readlines(file).map do |line|
+          k, v = line.split('=')
+          config[k.rstrip] = v.lstrip.chomp if k && v
         end
-        unless config['port'].nil?
-          mongoPort = "--port #{config['port']}"
-        end
-        if config['ssl'] == "requireSSL"
+        mongo_port = "--port #{config['port']}" unless config['port'].nil?
+        if config['ssl'] == 'requireSSL'
           ssl = "--ssl --host #{Facter.value(:fqdn)}"
         end
         unless config['sslcert'].nil?
           sslkey = "--sslPEMKeyFile #{config['sslcert']}"
         end
-        unless config['sslca'].nil?
-          sslca = "--sslCAFile #{config['sslca']}"
-        end
-        unless config['ipv6'].nil?
-          ipv6 = "--ipv6"
-        end
+        sslca = "--sslCAFile #{config['sslca']}" unless config['sslca'].nil?
+        ipv6 = '--ipv6' unless config['ipv6'].nil?
       end
-      e = File.exists?('/root/.mongorc.js') ? 'load(\'/root/.mongorc.js\'); ' : ''
+      e = File.exist?('/root/.mongorc.js') ? 'load(\'/root/.mongorc.js\'); ' : ''
 
       # Check if the mongodb server is responding:
-      Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongoPort} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
+      Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongo_port} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
 
-      if $?.success?
-        Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongoPort} --eval \"#{e}db.isMaster().ismaster\"")
+      if $CHILD_STATUS.success?
+        Facter::Core::Execution.exec("mongo --quiet #{ssl} #{sslkey} #{sslca} #{ipv6} #{mongo_port} --eval \"#{e}db.isMaster().ismaster\"")
       else
         'not_responding'
       end
