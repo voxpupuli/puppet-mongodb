@@ -47,9 +47,8 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
 
   def self.prefetch(resources)
     instances.each do |prov|
-      if resource = resources[prov.name]
-        resource.provider = prov
-      end
+      resource = resources[prov.name]
+      resource.provider = prov if resource
     end
   end
 
@@ -64,29 +63,24 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
       return
     end
 
-    if @property_flush[:ensure] == :present && @property_hash[:ensure] != :present
-      Puppet.debug "Adding the shard #{name}"
-      output = sh_addshard(@property_flush[:member])
-      if output['ok'].zero?
-        raise Puppet::Error, "sh.addShard() failed for shard #{name}: #{output['errmsg']}"
-      end
-      output = sh_enablesharding(name)
-      if output['ok'].zero?
-        raise Puppet::Error, "sh.enableSharding() failed for shard #{name}: #{output['errmsg']}"
-      end
-      if @property_flush[:keys]
-        @property_flush[:keys].each do |key|
-          output = sh_shardcollection(key)
-          if output['ok'].zero?
-            raise Puppet::Error, "sh.shardCollection() failed for shard #{name}: #{output['errmsg']}"
-          end
-        end
-      end
+    return unless @property_flush[:ensure] == :present && @property_hash[:ensure] != :present
+
+    Puppet.debug "Adding the shard #{name}"
+    output = sh_addshard(@property_flush[:member])
+    raise Puppet::Error, "sh.addShard() failed for shard #{name}: #{output['errmsg']}" if output['ok'].zero?
+    output = sh_enablesharding(name)
+    raise Puppet::Error, "sh.enableSharding() failed for shard #{name}: #{output['errmsg']}" if output['ok'].zero?
+
+    return unless @property_flush[:keys]
+
+    @property_flush[:keys].each do |key|
+      output = sh_shardcollection(key)
+      raise Puppet::Error, "sh.shardCollection() failed for shard #{name}: #{output['errmsg']}" if output['ok'].zero?
     end
   end
 
   def self.instances
-    instances = shards_properties.map do |shard|
+    shards_properties.map do |shard|
       new shard
     end
   end
@@ -156,14 +150,12 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
       args << ['--eval', "printjson(#{command})"]
       output = mongo(args.flatten)
     rescue Puppet::ExecutionFailure => e
-      if e =~ %r{Error: couldn't connect to server} && wait <= (2**max_wait)
-        info("Waiting #{wait} seconds for mongod to become available")
-        sleep wait
-        wait *= 2
-        retry
-      else
-        raise
-      end
+      raise unless e =~ %r{Error: couldn't connect to server} && wait <= (2**max_wait)
+
+      info("Waiting #{wait} seconds for mongod to become available")
+      sleep wait
+      wait *= 2
+      retry
     end
 
     # NOTE (spredzy) : sh.status()

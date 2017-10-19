@@ -36,9 +36,8 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
   def self.prefetch(resources)
     instances.each do |prov|
-      if resource = resources[prov.name]
-        resource.provider = prov
-      end
+      resource = resources[prov.name]
+      resource.provider = prov if resource
     end
   end
 
@@ -114,7 +113,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     conn_string = conn_string
     begin
       output = mongo_command('rs.conf()', conn_string)
-    rescue Puppet::ExecutionFailure => e
+    rescue Puppet::ExecutionFailure
       output = {}
     end
     if output['members']
@@ -227,26 +226,21 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     else
       # Add members to an existing replset
       Puppet.debug "Adding member to existing replset #{name}"
-      if master = master_host(alive_hosts)
-        master_data = db_ismaster(master)
-        current_hosts = master_data['hosts']
-        current_hosts += master_data['arbiters'] if master_data.key?('arbiters')
-        Puppet.debug "Current Hosts are: #{current_hosts.inspect}"
-        newhosts = alive_hosts - current_hosts
-        Puppet.debug "New Hosts are: #{newhosts.inspect}"
-        newhosts.each do |host|
-          output = {}
-          output = if rs_arbiter == host
-                     rs_add_arbiter(host, master)
-                   else
-                     rs_add(host, master)
-                   end
-          if output['ok'].zero?
-            raise Puppet::Error, "rs.add() failed to add host to replicaset #{name}: #{output['errmsg']}"
-          end
-        end
-      else
-        raise Puppet::Error, "Can't find master host for replicaset #{name}."
+
+      master = master_host(alive_hosts)
+      raise Puppet::Error, "Can't find master host for replicaset #{name}." unless master
+
+      master_data = db_ismaster(master)
+      current_hosts = master_data['hosts']
+      current_hosts += master_data['arbiters'] if master_data.key?('arbiters')
+      Puppet.debug "Current Hosts are: #{current_hosts.inspect}"
+      newhosts = alive_hosts - current_hosts
+      Puppet.debug "New Hosts are: #{newhosts.inspect}"
+
+      newhosts.each do |host|
+        output = {}
+        output = rs_arbiter == host ? rs_add_arbiter(host, master) : rs_add(host, master)
+        raise Puppet::Error, "rs.add() failed to add host to replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
       end
     end
   end

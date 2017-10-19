@@ -7,9 +7,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   # Optional defaults file
   def self.mongorc_file
-    if File.file?("#{Facter.value(:root_home)}/.mongorc.js")
-      "load('#{Facter.value(:root_home)}/.mongorc.js'); "
-    end
+    "load('#{Facter.value(:root_home)}/.mongorc.js'); " if File.file?("#{Facter.value(:root_home)}/.mongorc.js")
   end
 
   def mongorc_file
@@ -190,7 +188,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   # Mongo Version checker
   def self.mongo_version
-    @@mongo_version ||= mongo_eval('db.version()')
+    @mongo_version ||= mongo_eval('db.version()')
   end
 
   def mongo_version

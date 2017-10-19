@@ -48,9 +48,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def self.prefetch(resources)
     users = instances
     resources.each do |name, resource|
-      if provider = users.find { |user| user.username == (resource[:username]) && user.database == (resource[:database]) }
-        resources[name].provider = provider
-      end
+      provider = users.find { |user| user.username == (resource[:username]) && user.database == (resource[:database]) }
+      resources[name].provider = provider if provider
     end
   end
 
@@ -70,7 +69,9 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
 
         mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
       else
-        if password_hash = @resource[:password_hash]
+        password_hash = @resource[:password_hash]
+
+        if password_hash
         elsif @resource[:password]
           password_hash = Puppet::Util::MongodbMd5er.md5(@resource[:username], @resource[:password])
         end
