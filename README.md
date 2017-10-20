@@ -23,25 +23,11 @@
 Installs MongoDB on RHEL/Ubuntu/Debian from OS repo, or alternatively from
 10gen repository [installation documentation](http://www.mongodb.org/display/DOCS/Ubuntu+and+Debian+packages).
 
-### Deprecation Warning ###
-
-This module is still in beta which means the API is subject to change in
-backwards incompatible ways. If your project depends on an old API, please pin
-your dependencies to the necessary version to ensure your environments don't break.
-
-The current module design is undergoing review for potential 1.0 release. We welcome
-any feedback with regard to the APIs and patterns used in this release.
-
 ## Module Description
 
 The MongoDB module manages mongod server installation and configuration of the
 mongod daemon. For the time being it supports only a single MongoDB server
 instance, without sharding functionality.
-
-For the 0.5 release, the MongoDB module now supports database and user types.
-
-For the 0.6 release, the MongoDB module now supports basic replicaset features
-(initiating a replicaset and adding members, but without specific options).
 
 ## Setup
 
