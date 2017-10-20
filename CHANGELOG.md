@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v1.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v1.1.0) (2017-10-19)
+## [v1.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v1.1.0) (2017-10-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/1.0.0...v1.1.0)
 
@@ -25,8 +25,10 @@ These should not affect the functionality of the module.
 
 **Merged pull requests:**
 
+- Release 1.1.0 [\#403](https://github.com/voxpupuli/puppet-mongodb/pull/403) ([wyardley](https://github.com/wyardley))
 - update metadata and README in prep for release [\#402](https://github.com/voxpupuli/puppet-mongodb/pull/402) ([wyardley](https://github.com/wyardley))
 - correct spelling mistake [\#395](https://github.com/voxpupuli/puppet-mongodb/pull/395) ([EdwardBetts](https://github.com/EdwardBetts))
+- Autorequire mongodb\_database for mongodb\_user [\#394](https://github.com/voxpupuli/puppet-mongodb/pull/394) ([ekohl](https://github.com/ekohl))
 - \(maint\) modulesync 915cde70e20 [\#388](https://github.com/voxpupuli/puppet-mongodb/pull/388) ([glennsarti](https://github.com/glennsarti))
 - \(MODULES-5187\) mysnc puppet 5 and ruby 2.4 [\#387](https://github.com/voxpupuli/puppet-mongodb/pull/387) ([eputnam](https://github.com/eputnam))
 - Update README.md [\#386](https://github.com/voxpupuli/puppet-mongodb/pull/386) ([LasseRafn](https://github.com/LasseRafn))
