@@ -255,6 +255,12 @@ for your OS distro.
 Set this value to designate a directory for the mongod instance to store
 it's data. If not specified, the module will use the default for your OS distro.
 
+##### `dbpath_fix`
+Set this value to true if you want puppet to recursively manage the permissions
+of the files in the dbpath directory.  If you are using the default dbpath, this
+should probably be false. Set this to true if you are using a custom dbpath. The
+default is false.
+
 ##### `pidfilepath`
 Specify a file location to hold the PID or process ID of the mongod process.
 If not specified, the module will use the default for your OS distro.
