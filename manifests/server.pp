@@ -1,107 +1,84 @@
 # This installs a MongoDB server. See README.md for more details.
 class mongodb::server (
-  $ensure                = $mongodb::params::ensure,
-
-  $user                  = $mongodb::params::user,
-  $group                 = $mongodb::params::group,
-
-  $config                = $mongodb::params::config,
-  $dbpath                = $mongodb::params::dbpath,
-  $dbpath_fix            = $mongodb::params::dbpath_fix,
-  $pidfilepath           = $mongodb::params::pidfilepath,
-  $pidfilemode           = $mongodb::params::pidfilemode,
-  $manage_pidfile        = $mongodb::params::manage_pidfile,
-  $rcfile                = $mongodb::params::rcfile,
-
-  $service_manage        = $mongodb::params::service_manage,
-  $service_provider      = $mongodb::params::service_provider,
-  $service_name          = $mongodb::params::service_name,
-  $service_enable        = $mongodb::params::service_enable,
-  $service_ensure        = $mongodb::params::service_ensure,
-  $service_status        = $mongodb::params::service_status,
-
-  $package_ensure        = $mongodb::params::package_ensure,
-  $package_name          = $mongodb::params::server_package_name,
-
-  $logpath               = $mongodb::params::logpath,
-  $bind_ip               = $mongodb::params::bind_ip,
-  $ipv6                  = undef,
-  $logappend             = true,
-  $system_logrotate      = undef,
-  $fork                  = $mongodb::params::fork,
-  $port                  = undef,
-  $journal               = $mongodb::params::journal,
-  $nojournal             = undef,
-  $smallfiles            = undef,
-  $cpu                   = undef,
-  $auth                  = false,
-  $noauth                = undef,
-  $verbose               = undef,
-  $verbositylevel        = undef,
-  $objcheck              = undef,
-  $quota                 = undef,
-  $quotafiles            = undef,
-  $diaglog               = undef,
-  $directoryperdb        = undef,
-  $profile               = undef,
-  $maxconns              = undef,
-  $oplog_size            = undef,
-  $nohints               = undef,
-  $nohttpinterface       = undef,
-  $noscripting           = undef,
-  $notablescan           = undef,
-  $noprealloc            =  undef,
-  $nssize                = undef,
-  $mms_token             = undef,
-  $mms_name              = undef,
-  $mms_interval          = undef,
-  $replset               = undef,
-  $replset_config        = undef,
-  $replset_members       = undef,
-  $configsvr             = undef,
-  $shardsvr              = undef,
-  $rest                  = undef,
-  $quiet                 = undef,
-  $slowms                = undef,
-  $keyfile               = undef,
-  $key                   = undef,
-  $set_parameter         = undef,
-  $syslog                = undef,
-  $config_content        = undef,
-  $config_template       = undef,
-  $config_data           = undef,
-  $ssl                   = undef,
-  $ssl_key               = undef,
-  $ssl_ca                = undef,
-  $ssl_weak_cert         = false,
-  $ssl_invalid_hostnames = false,
-  $restart               = $mongodb::params::restart,
-  $storage_engine        = undef,
-
-  $create_admin          = $mongodb::params::create_admin,
-  $admin_username        = $mongodb::params::admin_username,
-  $admin_password        = undef,
-  $handle_creds          = $mongodb::params::handle_creds,
-  $store_creds           = $mongodb::params::store_creds,
-  $admin_roles           = ['userAdmin', 'readWrite', 'dbAdmin',
-                            'dbAdminAnyDatabase', 'readAnyDatabase',
-                            'readWriteAnyDatabase', 'userAdminAnyDatabase',
-                            'clusterAdmin', 'clusterManager', 'clusterMonitor',
-                            'hostManager', 'root', 'restore'],
-
-  # Deprecated parameters
-  $master                = undef,
-  $slave                 = undef,
-  $only                  = undef,
-  $source                = undef,
+  Variant[Boolean, String] $ensure                    = $mongodb::params::ensure,
+  String $user                                        = $mongodb::params::user,
+  String $group                                       = $mongodb::params::group,
+  Stdlib::Absolutepath $config                        = $mongodb::params::config,
+  Stdlib::Absolutepath $dbpath                        = $mongodb::params::dbpath,
+  Boolean $dbpath_fix                                 = $mongodb::params::dbpath_fix,
+  Optional[Stdlib::Absolutepath] $pidfilepath         = $mongodb::params::pidfilepath,
+  String $pidfilemode                                 = $mongodb::params::pidfilemode,
+  Boolean $manage_pidfile                             = $mongodb::params::manage_pidfile,
+  String $rcfile                                      = $mongodb::params::rcfile,
+  Boolean $service_manage                             = $mongodb::params::service_manage,
+  Optional[String] $service_provider                  = $mongodb::params::service_provider,
+  Optional[String] $service_name                      = $mongodb::params::service_name,
+  Boolean $service_enable                             = $mongodb::params::service_enable,
+  Enum['stopped','running'] $service_ensure           = $mongodb::params::service_ensure,
+  Optional[Enum['stopped','running']] $service_status = $mongodb::params::service_status,
+  Variant[Boolean, String] $package_ensure            = $mongodb::params::package_ensure,
+  String $package_name                                = $mongodb::params::server_package_name,
+  Variant[Boolean, Stdlib::Absolutepath] $logpath     = $mongodb::params::logpath,
+  Array[Stdlib::Compat::Ip_address] $bind_ip          = $mongodb::params::bind_ip,
+  Optional[Boolean] $ipv6                             = undef,
+  Boolean $logappend                                  = true,
+  Optional[String] $system_logrotate                  = undef,
+  Optional[Boolean] $fork                             = $mongodb::params::fork,
+  Optional[Integer[1, 65535]] $port                   = undef,
+  Optional[Boolean] $journal                          = $mongodb::params::journal,
+  $nojournal                                          = undef,
+  $smallfiles                                         = undef,
+  $cpu                                                = undef,
+  Boolean $auth                                       = false,
+  $noauth                                             = undef,
+  $verbose                                            = undef,
+  $verbositylevel                                     = undef,
+  $objcheck                                           = undef,
+  $quota                                              = undef,
+  $quotafiles                                         = undef,
+  $diaglog                                            = undef,
+  $directoryperdb                                     = undef,
+  $profile                                            = undef,
+  $maxconns                                           = undef,
+  $oplog_size                                         = undef,
+  $nohints                                            = undef,
+  $nohttpinterface                                    = undef,
+  $noscripting                                        = undef,
+  $notablescan                                        = undef,
+  $noprealloc                                         = undef,
+  $nssize                                             = undef,
+  $mms_token                                          = undef,
+  $mms_name                                           = undef,
+  $mms_interval                                       = undef,
+  $replset                                            = undef,
+  Optional[Hash] $replset_config                      = undef,
+  Optional[Array] $replset_members                    = undef,
+  $configsvr                                          = undef,
+  $shardsvr                                           = undef,
+  $rest                                               = undef,
+  $quiet                                              = undef,
+  $slowms                                             = undef,
+  Optional[Stdlib::Absolutepath] $keyfile             = undef,
+  Optional[String[6]] $key                            = undef,
+  $set_parameter                                      = undef,
+  Optional[Boolean] $syslog                           = undef,
+  $config_content                                     = undef,
+  $config_template                                    = undef,
+  $config_data                                        = undef,
+  Optional[Boolean] $ssl                              = undef,
+  Optional[Stdlib::Absolutepath] $ssl_key             = undef,
+  Optional[Stdlib::Absolutepath] $ssl_ca              = undef,
+  Boolean $ssl_weak_cert                              = false,
+  Boolean $ssl_invalid_hostnames                      = false,
+  Boolean $restart                                    = $mongodb::params::restart,
+  Optional[String] $storage_engine                    = undef,
+  Boolean $create_admin                               = $mongodb::params::create_admin,
+  String $admin_username                              = $mongodb::params::admin_username,
+  Optional[String] $admin_password                    = undef,
+  Boolean $handle_creds                               = $mongodb::params::handle_creds,
+  Boolean $store_creds                                = $mongodb::params::store_creds,
+  Array $admin_roles                                  = $mongodb::params::admin_roles,
 ) inherits mongodb::params {
-
-
-  if $ssl {
-    validate_string($ssl_key, $ssl_ca)
-    validate_bool($ssl_weak_cert)
-    validate_bool($ssl_invalid_hostnames)
-  }
 
   if ($ensure == 'present' or $ensure == true) {
     if $restart {
@@ -128,8 +105,6 @@ class mongodb::server (
   }
 
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
-    validate_string($admin_password)
-
     mongodb::db { 'admin':
       user     => $admin_username,
       password => $admin_password,
@@ -153,14 +128,10 @@ class mongodb::server (
       warning('Replset specified, but no replset_members or replset_config provided.')
     } else {
       if $replset_config {
-        validate_hash($replset_config)
-
         # Copy it to REAL value
         $_replset_config = $replset_config
 
       } else {
-        validate_array($replset_members)
-
         # Build up a config hash
         $_replset_config = {
           "${replset}" => {

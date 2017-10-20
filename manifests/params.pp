@@ -10,6 +10,9 @@ class mongodb::params inherits mongodb::globals {
   $restart               = true
   $create_admin          = false
   $admin_username        = 'admin'
+  $admin_roles           = ['userAdmin', 'readWrite', 'dbAdmin', 'dbAdminAnyDatabase', 'readAnyDatabase',
+    'readWriteAnyDatabase', 'userAdminAnyDatabase', 'clusterAdmin', 'clusterManager', 'clusterMonitor',
+    'hostManager', 'root', 'restore']
   $handle_creds          = true
   $store_creds           = false
   $rcfile                = "${::root_home}/.mongorc.js"
