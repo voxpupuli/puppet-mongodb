@@ -59,7 +59,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
     if db_ismaster
       if mongo_24?
         if @resource[:password_hash]
-          Puppet.fail("password_hash can't be set on MongoDB older than 3.0; use password instead")
+          raise Puppet::Error, "password_hash can't be set on MongoDB older than 3.0; use password instead"
         end
         user = {
           user: @resource[:username],
