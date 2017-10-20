@@ -127,7 +127,7 @@ class mongodb::server (
     -> anchor { 'mongodb::server::end': }
   }
 
-  if $create_admin {
+  if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
     validate_string($admin_password)
 
     mongodb::db { 'admin':
