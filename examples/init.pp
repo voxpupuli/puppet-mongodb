@@ -1,1 +1,1 @@
-class { '::mongodb': }
+class { 'mongodb': }

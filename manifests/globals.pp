@@ -44,7 +44,7 @@ class mongodb::globals (
       fail('You must set mongodb::globals::version when mongodb::globals::use_enterprise_repo is true')
     }
 
-    class { '::mongodb::repo':
+    class { 'mongodb::repo':
       ensure        => present,
       repo_location => $repo_location,
       proxy         => $repo_proxy,

@@ -27,7 +27,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     file = mongod_conf_file
     # The mongo conf is probably a key-value store, even though 2.6 is
     # supposed to use YAML, because the config template is applied
-    # based on $::mongodb::globals::version which is the user will not
+    # based on $mongodb::globals::version which is the user will not
     # necessarily set. This attempts to get the port from both types of
     # config files.
     config = YAML.load_file(file)

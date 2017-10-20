@@ -41,9 +41,9 @@ class mongodb::mongos (
     }
   } else {
     anchor { 'mongodb::mongos::start': }
-    -> class { '::mongodb::mongos::service': }
-    -> class { '::mongodb::mongos::config': }
-    -> class { '::mongodb::mongos::install': }
+    -> class { 'mongodb::mongos::service': }
+    -> class { 'mongodb::mongos::config': }
+    -> class { 'mongodb::mongos::install': }
     -> anchor { 'mongodb::mongos::end': }
   }
 
