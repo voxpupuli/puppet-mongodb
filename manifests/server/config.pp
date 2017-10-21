@@ -45,10 +45,6 @@ class mongodb::server::config {
   $mms_token        = $mongodb::server::mms_token
   $mms_name         = $mongodb::server::mms_name
   $mms_interval     = $mongodb::server::mms_interval
-  $master           = $mongodb::server::master
-  $slave            = $mongodb::server::slave
-  $only             = $mongodb::server::only
-  $source           = $mongodb::server::source
   $configsvr        = $mongodb::server::configsvr
   $shardsvr         = $mongodb::server::shardsvr
   $replset          = $mongodb::server::replset
@@ -89,8 +85,6 @@ class mongodb::server::config {
       $noauth = true
     }
     if $keyfile and $key {
-      validate_string($key)
-      validate_re($key,'.{6}')
       file { $keyfile:
         content => $key,
         owner   => $user,
@@ -106,7 +100,7 @@ class mongodb::server::config {
     }
 
 
-    #Pick which config content to use
+    # Pick which config content to use
     if $config_content {
       $cfg_content = $config_content
     } elsif $config_template {
@@ -114,107 +108,12 @@ class mongodb::server::config {
       # - $config_data
       $cfg_content = template($config_template)
     } elsif $version and (versioncmp($version, '2.6.0') >= 0) {
-      # Template uses:
-      # - $auth
-      # - $bind_ip
-      # - $configsvr
-      # - $dbpath
-      # - $directoryperdb
-      # - $fork
-      # - $ipv6
-      # - $jounal
-      # - $keyfile
-      # - $logappend
-      # - $logpath
-      # - $maxconns
-      # - $nohttpinteface
-      # - $nojournal
-      # - $noprealloc
-      # - $noscripting
-      # - $nssize
-      # - $objcheck
-      # - $oplog_size
-      # - $pidfilepath
-      # - $pidfilemode
-      # - $port
-      # - $profile
-      # - $quota
-      # - $quotafiles
-      # - $replset
-      # - $rest
-      # - $set_parameter
-      # - $shardsvr
-      # - $slowms
-      # - $smallfiles
-      # - $ssl
-      # - $ssl_ca
-      # - $ssl_key
-      # - $ssl_weak_cert
-      # - $ssl_invalid_hostnames
-      # - $syslog
-      # - $system_logrotate
-      # - $verbose
-      # - $verbositylevel
-
       # Template has available user-supplied data
       # - $config_data
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
     } else {
       # Fall back to oldest most basic config
-      # Template uses:
-      # - $auth
-      # - $bind_ip
-      # - $configsvr
-      # - $cpu
-      # - $dbpath
-      # - $diaglog
-      # - $directoryperdb
-      # - $fork
-      # - $ipv6
-      # - $jounal
-      # - $keyfile
-      # - $logappend
-      # - $logpath
-      # - $master
-      # - $maxconns
-      # - $mms_interval
-      # - $mms_name
-      # - $mms_token
-      # - $noauth
-      # - $nohints
-      # - $nohttpinteface
-      # - $nojournal
-      # - $noprealloc
-      # - $noscripting
-      # - $notablescan
-      # - $nssize
-      # - $objcheck
-      # - $only
-      # - $oplog_size
-      # - $pidfilepath
-      # - $pidfilemode
-      # - $port
-      # - $profile
-      # - $quiet
-      # - $quota
-      # - $quotafiles
-      # - $replset
-      # - $rest
-      # - $set_parameter
-      # - $shardsvr
-      # - $slave
-      # - $slowms
-      # - $smallfiles
-      # - $source
-      # - $ssl
-      # - $ssl_ca
-      # - $ssl_key
-      # - $ssl_weak_cert
-      # - $ssl_invalid_hostnames
-      # - storage_engine_internal
-      # - $syslog
-      # - $verbose
-      # - $verbositylevel
+      #
       # Template has available user-supplied data
       # - $config_data
       $cfg_content = template('mongodb/mongodb.conf.erb')
