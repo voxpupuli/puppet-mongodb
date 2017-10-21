@@ -14,8 +14,8 @@
 define mongodb::db (
   $user,
   $db_name       = $name,
-  $password_hash = false,
-  $password      = false,
+  $password_hash = undef,
+  $password      = undef,
   $roles         = ['dbAdmin'],
   $tries         = 10,
 ) {
