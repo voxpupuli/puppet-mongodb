@@ -22,29 +22,22 @@ class mongodb::mongos (
   Optional[Integer[1, 65535]] $port                         = undef,
   Boolean $restart                                          = $mongodb::params::mongos_restart,
 ) inherits mongodb::params {
+  contain mongodb::mongos::install
+  contain mongodb::mongos::config
+  contain mongodb::mongos::service
 
   if ($ensure == 'present' or $ensure == true) {
+    Class['mongodb::mongos::install'] -> Class['mongodb::mongos::config']
+
     if $restart {
-      anchor { 'mongodb::mongos::start': }
-      -> class { 'mongodb::mongos::install': }
       # If $restart is true, notify the service on config changes (~>)
-      -> class { 'mongodb::mongos::config': }
-      ~> class { 'mongodb::mongos::service': }
-      -> anchor { 'mongodb::mongos::end': }
+      Class['mongodb::mongos::config'] ~> Class['mongodb::mongos::service']
     } else {
-      anchor { 'mongodb::mongos::start': }
-      -> class { 'mongodb::mongos::install': }
       # If $restart is false, config changes won't restart the service (->)
-      -> class { 'mongodb::mongos::config': }
-      -> class { 'mongodb::mongos::service': }
-      -> anchor { 'mongodb::mongos::end': }
+      Class['mongodb::mongos::config'] -> Class['mongodb::mongos::service']
     }
   } else {
-    anchor { 'mongodb::mongos::start': }
-    -> class { 'mongodb::mongos::service': }
-    -> class { 'mongodb::mongos::config': }
-    -> class { 'mongodb::mongos::install': }
-    -> anchor { 'mongodb::mongos::end': }
+    Class['mongodb::mongos::service'] -> Class['mongodb::mongos::config'] -> Class['mongodb::mongos::install']
   }
 
 }

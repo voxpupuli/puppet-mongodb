@@ -80,28 +80,22 @@ class mongodb::server (
   Array $admin_roles                                   = $mongodb::params::admin_roles,
 ) inherits mongodb::params {
 
+  contain mongodb::server::install
+  contain mongodb::server::config
+  contain mongodb::server::service
+
   if ($ensure == 'present' or $ensure == true) {
+    Class['mongodb::server::install'] -> Class['mongodb::server::config']
+
     if $restart {
-      anchor { 'mongodb::server::start': }
-      -> class { 'mongodb::server::install': }
       # If $restart is true, notify the service on config changes (~>)
-      -> class { 'mongodb::server::config': }
-      ~> class { 'mongodb::server::service': }
-      -> anchor { 'mongodb::server::end': }
+      Class['mongodb::server::config'] ~> Class['mongodb::server::service']
     } else {
-      anchor { 'mongodb::server::start': }
-      -> class { 'mongodb::server::install': }
       # If $restart is false, config changes won't restart the service (->)
-      -> class { 'mongodb::server::config': }
-      -> class { 'mongodb::server::service': }
-      -> anchor { 'mongodb::server::end': }
+      Class['mongodb::server::config'] -> Class['mongodb::server::service']
     }
   } else {
-    anchor { 'mongodb::server::start': }
-    -> class { 'mongodb::server::service': }
-    -> class { 'mongodb::server::config': }
-    -> class { 'mongodb::server::install': }
-    -> anchor { 'mongodb::server::end': }
+    Class['mongodb::server::service'] -> Class['mongodb::server::config'] -> Class['mongodb::server::install']
   }
 
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
@@ -110,9 +104,6 @@ class mongodb::server (
       password => $admin_password,
       roles    => $admin_roles,
     }
-
-    # Make sure it runs at the correct point
-    Anchor['mongodb::server::end'] -> Mongodb::Db['admin']
 
     # Make sure it runs before other DB creation
     Mongodb::Db['admin'] -> Mongodb::Db <| title != 'admin' |>
@@ -147,8 +138,6 @@ class mongodb::server (
       }
 
       $replset_config_real = $_replset_config  # lint:ignore:variable_is_lowercase required for compatibility
-
-      Anchor['mongodb::server::end'] -> Class['mongodb::replset']
 
       # Make sure that the ordering is correct
       if $create_admin {
