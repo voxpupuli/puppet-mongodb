@@ -100,14 +100,16 @@ class mongodb::server (
   }
 
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
-    mongodb::db { 'admin':
-      user     => $admin_username,
-      password => $admin_password,
-      roles    => $admin_roles,
+    mongodb_user { $admin_username:
+      ensure        => present,
+      password_hash => mongodb_password($admin_username, $admin_password),
+      roles         => $admin_roles,
+      database      => 'admin',
     }
 
     # Make sure it runs before other DB creation
-    Mongodb::Db['admin'] -> Mongodb::Db <| title != 'admin' |>
+    Mongodb_user[$admin_username] -> Mongodb::Db <| title != $admin_username |>
+    Mongodb_user[$admin_username] -> Mongodb_user <| title != $admin_username |>
   }
 
   # Set-up replicasets
@@ -142,7 +144,7 @@ class mongodb::server (
 
       # Make sure that the ordering is correct
       if $create_admin {
-        Class['mongodb::replset'] -> Mongodb::Db['admin']
+        Class['mongodb::replset'] -> Mongodb_user['admin']
       }
 
     }
