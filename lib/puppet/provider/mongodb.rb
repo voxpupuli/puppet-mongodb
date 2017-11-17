@@ -135,7 +135,8 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     cmd_ismaster = mongorc_file + cmd_ismaster if mongorc_file
     db = 'admin'
     res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
-    res.eql?('true') ? true : false
+    res.gsub!(%r{^.*The server certificate does not match the host name.+}, '') # remove warnings if sslAllowInvalidHostnames is true mongo 3.x
+    res.strip.eql?('true') ? true : false
   end
 
   def db_ismaster
