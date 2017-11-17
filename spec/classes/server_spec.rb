@@ -16,6 +16,14 @@ describe 'mongodb::server' do
             that_notifies('Class[mongodb::server::service]')
         }
         it { is_expected.to contain_class('mongodb::server::service') }
+        it {
+          is_expected.to contain_mongodb_user('admin').with('user' => 'admin',
+                                                           'password_hash' => '90f500568434c37b61c8c1ce05fdf3ae',
+                                                           'roles'    => %w[userAdmin readWrite dbAdmin dbAdminAnyDatabase
+                                                                            readAnyDatabase readWriteAnyDatabase userAdminAnyDatabase
+                                                                            clusterAdmin clusterManager clusterMonitor hostManager
+                                                                            root restore])
+        }
       end
 
       describe 'with manage_package => true' do
