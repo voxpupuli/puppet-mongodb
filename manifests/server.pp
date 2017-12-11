@@ -78,6 +78,16 @@ class mongodb::server (
   Boolean $handle_creds                                = $mongodb::params::handle_creds,
   Boolean $store_creds                                 = $mongodb::params::store_creds,
   Array $admin_roles                                   = $mongodb::params::admin_roles,
+  Optional[String] $ldap_servers                       = undef,
+  Optional[String] $ldap_authz_querytemplate           = undef,
+  Optional[String] $ldap_bind_queryUser                = undef,
+  Optional[String] $ldap_bind_queryPassword            = undef,
+  Optional[String] $ldap_bind_method                   = undef,
+  Optional[String] $ldap_bind_saslmechanisms           = undef,
+  Optional[String] $ldap_bind_useosdefaults            = undef,
+  Optional[String] $ldap_transportSecurity             = undef,
+  Optional[String] $ldap_usertodnmapping               = undef,
+
 ) inherits mongodb::params {
 
   contain mongodb::server::install
