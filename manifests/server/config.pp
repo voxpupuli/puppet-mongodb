@@ -45,6 +45,10 @@ class mongodb::server::config {
   $mms_token                 = $mongodb::server::mms_token
   $mms_name                  = $mongodb::server::mms_name
   $mms_interval              = $mongodb::server::mms_interval
+  $master                    = $mongodb::server::master
+  $slave                     = $mongodb::server::slave
+  $only                      = $mongodb::server::only
+  $source                    = $mongodb::server::source
   $configsvr                 = $mongodb::server::configsvr
   $shardsvr                  = $mongodb::server::shardsvr
   $replset                   = $mongodb::server::replset
@@ -76,6 +80,7 @@ class mongodb::server::config {
   $ldap_bind_useosdefaults   = $mongodb::server::ldap_bind_useosdefaults
   $ldap_transportSecurity    = $mongodb::server::ldap_transportSecurity
   $ldap_usertodnmapping      = $mongodb::server::ldap_usertodnmapping
+
   File {
     owner => $user,
     group => $group,
