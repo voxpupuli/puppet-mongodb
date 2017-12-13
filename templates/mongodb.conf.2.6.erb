@@ -151,6 +151,36 @@ operationProfiling.slowOpThresholdMs: <%= @slowms %>
 <% end -%>
 
 
+#LDAP Configurations
+<% if @ldap_servers -%>
+security.ldap.servers: <%= @ldap_servers %>
+<% end -%>
+<% if @ldap_authz_querytemplate -%>
+security.ldap.authz.queryTemplate: "<%= @ldap_authz_querytemplate %>"
+<% end -%>
+<% if @ldap_bind_queryUser -%>
+security.ldap.bind.queryUser: <%= @ldap_bind_queryUser %>
+<% end -%>
+<% if @ldap_bind_queryPassword -%>
+security.ldap.bind.queryPassword: <%= @ldap_bind_queryPassword %>
+<% end -%>
+<% if @ldap_bind_method -%>
+security.ldap.bind.method: <%= @ldap_bind_method %>
+<% end -%>
+<% if @ldap_bind_saslmechanisms -%>
+security.ldap.bind.saslMechanisms: <%= @ldap_bind_saslmechanisms %>
+<% end -%>
+<% if @ldap_bind_useosdefaults -%>
+security.ldap.bind.useOSDefaults: <%= @ldap_bind_useosdefaults %>
+<% end -%>
+<% if @ldap_transportSecurity -%>
+security.ldap.transportSecurity: <%= @ldap_transportSecurity %>
+<% end -%>
+<% if @ldap_usertodnmapping -%>
+security.ldap.userToDNMapping: '<%= @ldap_usertodnmapping %>'
+<% end -%>
+
+
 <% if @set_parameter -%>
 setParameter: <%= @set_parameter %>
 <% end -%>
