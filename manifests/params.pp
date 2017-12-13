@@ -10,10 +10,13 @@ class mongodb::params inherits mongodb::globals {
   $restart               = true
   $create_admin          = false
   $admin_username        = 'admin'
+  $admin_roles           = ['userAdmin', 'readWrite', 'dbAdmin', 'dbAdminAnyDatabase', 'readAnyDatabase',
+    'readWriteAnyDatabase', 'userAdminAnyDatabase', 'clusterAdmin', 'clusterManager', 'clusterMonitor',
+    'hostManager', 'root', 'restore']
   $handle_creds          = true
   $store_creds           = false
   $rcfile                = "${::root_home}/.mongorc.js"
-  $dbpath_fix            = true
+  $dbpath_fix            = false
 
   $mongos_service_manage = pick($mongodb::globals::mongos_service_manage, true)
   $mongos_service_enable = pick($mongodb::globals::mongos_service_enable, true)
@@ -26,7 +29,7 @@ class mongodb::params inherits mongodb::globals {
   $pidfilemode           = pick($mongodb::globals::pidfilemode, '0644')
   $manage_pidfile        = pick($mongodb::globals::manage_pidfile, true)
 
-  $version = $::mongodb::globals::version
+  $version = $mongodb::globals::version
 
   $config_data           = undef
 
@@ -35,41 +38,41 @@ class mongodb::params inherits mongodb::globals {
     'RedHat', 'Linux', 'Suse': {
 
       if $manage_package {
-        $user        = pick($::mongodb::globals::user, 'mongod')
-        $group       = pick($::mongodb::globals::group, 'mongod')
+        $user        = pick($mongodb::globals::user, 'mongod')
+        $group       = pick($mongodb::globals::group, 'mongod')
         if ($version == undef) {
-          $server_package_name   = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
-          $client_package_name   = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
-          $mongos_package_name   = pick($::mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
+          $server_package_name   = pick($mongodb::globals::server_package_name, 'mongodb-org-server')
+          $client_package_name   = pick($mongodb::globals::client_package_name, 'mongodb-org-shell')
+          $mongos_package_name   = pick($mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
           $package_ensure        = true
           $package_ensure_client = true
           $package_ensure_mongos = true
         } else {
           # check if the version is greater than 2.6
           if $version and (versioncmp($version, '2.6.0') >= 0) {
-            $server_package_name   = pick($::mongodb::globals::server_package_name, 'mongodb-org-server')
-            $client_package_name   = pick($::mongodb::globals::client_package_name, 'mongodb-org-shell')
-            $mongos_package_name   = pick($::mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
+            $server_package_name   = pick($mongodb::globals::server_package_name, 'mongodb-org-server')
+            $client_package_name   = pick($mongodb::globals::client_package_name, 'mongodb-org-shell')
+            $mongos_package_name   = pick($mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
             $package_ensure        = $version
             $package_ensure_client = $version
             $package_ensure_mongos = $version
           } else {
-            $server_package_name   = pick($::mongodb::globals::server_package_name, 'mongodb-10gen')
-            $client_package_name   = pick($::mongodb::globals::client_package_name, 'mongodb-10gen')
-            $mongos_package_name   = pick($::mongodb::globals::mongos_package_name, 'mongodb-10gen')
+            $server_package_name   = pick($mongodb::globals::server_package_name, 'mongodb-10gen')
+            $client_package_name   = pick($mongodb::globals::client_package_name, 'mongodb-10gen')
+            $mongos_package_name   = pick($mongodb::globals::mongos_package_name, 'mongodb-10gen')
             $package_ensure        = $version
             $package_ensure_client = $version #this is still needed in case they are only installing the client
             $package_ensure_mongos = $version
           }
         }
-        $service_name            = pick($::mongodb::globals::service_name, 'mongod')
-        $mongos_service_name     = pick($::mongodb::globals::mongos_service_name, 'mongos')
+        $service_name            = pick($mongodb::globals::service_name, 'mongod')
+        $mongos_service_name     = pick($mongodb::globals::mongos_service_name, 'mongos')
         $config                  = '/etc/mongod.conf'
         $mongos_config           = '/etc/mongodb-shard.conf'
         $dbpath                  = '/var/lib/mongodb'
         $logpath                 = '/var/log/mongodb/mongod.log'
         $pidfilepath             = '/var/run/mongodb/mongod.pid'
-        $bind_ip                 = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
+        $bind_ip                 = pick($mongodb::globals::bind_ip, ['127.0.0.1'])
         $fork                    = true
         $mongos_pidfilepath      = undef
         $mongos_unixsocketprefix = undef
@@ -87,15 +90,15 @@ class mongodb::params inherits mongodb::globals {
           $package_ensure_client = $version
           $package_ensure_mongos = $version
         }
-        $user                = pick($::mongodb::globals::user, 'mongodb')
-        $group               = pick($::mongodb::globals::group, 'mongodb')
-        $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-server')
-        $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb')
-        $mongos_package_name = pick($::mongodb::globals::mongos_package_name, 'mongodb-server')
-        $service_name        = pick($::mongodb::globals::service_name, 'mongod')
+        $user                = pick($mongodb::globals::user, 'mongodb')
+        $group               = pick($mongodb::globals::group, 'mongodb')
+        $server_package_name = pick($mongodb::globals::server_package_name, 'mongodb-server')
+        $client_package_name = pick($mongodb::globals::client_package_name, 'mongodb')
+        $mongos_package_name = pick($mongodb::globals::mongos_package_name, 'mongodb-server')
+        $service_name        = pick($mongodb::globals::service_name, 'mongod')
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongodb.log'
-        $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
+        $bind_ip             = pick($mongodb::globals::bind_ip, ['127.0.0.1'])
         if ($::operatingsystem == 'fedora' and versioncmp($::operatingsystemrelease, '22') >= 0 or
             $::operatingsystem != 'fedora' and versioncmp($::operatingsystemrelease, '7.0') >= 0) {
           $config                  = '/etc/mongod.conf'
@@ -120,49 +123,49 @@ class mongodb::params inherits mongodb::globals {
     }
     'Debian': {
       if $manage_package {
-        $user  = pick($::mongodb::globals::user, 'mongodb')
-        $group = pick($::mongodb::globals::group, 'mongodb')
+        $user  = pick($mongodb::globals::user, 'mongodb')
+        $group = pick($mongodb::globals::group, 'mongodb')
         if $mongodb::globals::use_enterprise_repo == true {
             $edition = 'enterprise'
         } else {
             $edition = 'org'
         }
         if ($version == undef) {
-          $server_package_name = pick($::mongodb::globals::server_package_name, "mongodb-${edition}-server")
-          $client_package_name = pick($::mongodb::globals::client_package_name, "mongodb-${edition}-shell")
-          $mongos_package_name = pick($::mongodb::globals::mongos_package_name, "mongodb-${edition}-mongos")
+          $server_package_name = pick($mongodb::globals::server_package_name, "mongodb-${edition}-server")
+          $client_package_name = pick($mongodb::globals::client_package_name, "mongodb-${edition}-shell")
+          $mongos_package_name = pick($mongodb::globals::mongos_package_name, "mongodb-${edition}-mongos")
           $package_ensure = true
           $package_ensure_client = true
           $package_ensure_mongos = true
-          $service_name = pick($::mongodb::globals::service_name, 'mongod')
+          $service_name = pick($mongodb::globals::service_name, 'mongod')
           $config = '/etc/mongod.conf'
         } else {
           # check if the version is greater than 2.6
           if $version and (versioncmp($version, '2.6.0') >= 0) {
-            $server_package_name = pick($::mongodb::globals::server_package_name, "mongodb-${edition}-server")
-            $client_package_name = pick($::mongodb::globals::client_package_name, "mongodb-${edition}-shell")
-            $mongos_package_name = pick($::mongodb::globals::mongos_package_name, "mongodb-${edition}-mongos")
+            $server_package_name = pick($mongodb::globals::server_package_name, "mongodb-${edition}-server")
+            $client_package_name = pick($mongodb::globals::client_package_name, "mongodb-${edition}-shell")
+            $mongos_package_name = pick($mongodb::globals::mongos_package_name, "mongodb-${edition}-mongos")
             $package_ensure = $version
             $package_ensure_client = $version
             $package_ensure_mongos = $version
-            $service_name = pick($::mongodb::globals::service_name, 'mongod')
+            $service_name = pick($mongodb::globals::service_name, 'mongod')
             $config = '/etc/mongod.conf'
           } else {
-            $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-10gen')
-            $client_package_name = pick($::mongodb::globals::client_package_name, 'mongodb-10gen')
-            $mongos_package_name = pick($::mongodb::globals::mongos_package_name, 'mongodb-10gen')
+            $server_package_name = pick($mongodb::globals::server_package_name, 'mongodb-10gen')
+            $client_package_name = pick($mongodb::globals::client_package_name, 'mongodb-10gen')
+            $mongos_package_name = pick($mongodb::globals::mongos_package_name, 'mongodb-10gen')
             $package_ensure = $version
             $package_ensure_client = $version #this is still needed in case they are only installing the client
-            $service_name = pick($::mongodb::globals::service_name, 'mongodb')
+            $service_name = pick($mongodb::globals::service_name, 'mongodb')
             $config = '/etc/mongodb.conf'
           }
         }
-        $mongos_service_name     = pick($::mongodb::globals::mongos_service_name, 'mongos')
+        $mongos_service_name     = pick($mongodb::globals::mongos_service_name, 'mongos')
         $mongos_config           = '/etc/mongodb-shard.conf'
         $dbpath                  = '/var/lib/mongodb'
         $logpath                 = '/var/log/mongodb/mongodb.log'
-        $pidfilepath             = pick($::mongodb::globals::pidfilepath, '/var/run/mongod.pid')
-        $bind_ip                 = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
+        $pidfilepath             = pick($mongodb::globals::pidfilepath, '/var/run/mongod.pid')
+        $bind_ip                 = pick($mongodb::globals::bind_ip, ['127.0.0.1'])
       } else {
         # although we are living in a free world,
         # I would not recommend to use the prepacked
@@ -177,19 +180,19 @@ class mongodb::params inherits mongodb::globals {
           $package_ensure_client = $version
           $package_ensure_mongos = $version
         }
-        $user                = pick($::mongodb::globals::user, 'mongodb')
-        $group               = pick($::mongodb::globals::group, 'mongodb')
-        $server_package_name = pick($::mongodb::globals::server_package_name, 'mongodb-server')
-        $client_package_name = $::mongodb::globals::client_package_name
-        $mongos_package_name = pick($::mongodb::globals::mongos_package_name, 'mongodb-server')
-        $service_name        = pick($::mongodb::globals::service_name, 'mongodb')
-        $mongos_service_name = pick($::mongodb::globals::mongos_service_name, 'mongos')
+        $user                = pick($mongodb::globals::user, 'mongodb')
+        $group               = pick($mongodb::globals::group, 'mongodb')
+        $server_package_name = pick($mongodb::globals::server_package_name, 'mongodb-server')
+        $client_package_name = $mongodb::globals::client_package_name
+        $mongos_package_name = pick($mongodb::globals::mongos_package_name, 'mongodb-server')
+        $service_name        = pick($mongodb::globals::service_name, 'mongodb')
+        $mongos_service_name = pick($mongodb::globals::mongos_service_name, 'mongos')
         $config              = '/etc/mongodb.conf'
         $mongos_config       = '/etc/mongodb-shard.conf'
         $dbpath              = '/var/lib/mongodb'
         $logpath             = '/var/log/mongodb/mongodb.log'
-        $bind_ip             = pick($::mongodb::globals::bind_ip, ['127.0.0.1'])
-        $pidfilepath         = $::mongodb::globals::pidfilepath
+        $bind_ip             = pick($mongodb::globals::bind_ip, ['127.0.0.1'])
+        $pidfilepath         = $mongodb::globals::pidfilepath
       }
       # avoid using fork because of the init scripts design
       $fork                    = undef

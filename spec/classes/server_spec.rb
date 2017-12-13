@@ -49,8 +49,9 @@ describe 'mongodb::server' do
                                                        'roles'    => %w[userAdmin readWrite dbAdmin dbAdminAnyDatabase
                                                                         readAnyDatabase readWriteAnyDatabase userAdminAnyDatabase
                                                                         clusterAdmin clusterManager clusterMonitor hostManager
-                                                                        root restore]).that_requires('Anchor[mongodb::server::end]')
+                                                                        root restore])
     }
+    it { is_expected.to contain_mongodb_database('admin').that_requires('Service[mongodb]') }
   end
 
   context 'when deploying on Solaris' do

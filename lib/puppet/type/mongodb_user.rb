@@ -88,6 +88,10 @@ Puppet::Type.newtype(:mongodb_user) do
     'mongodb'
   end
 
+  autorequire(:mongodb_database) do
+    self[:database]
+  end
+
   validate do
     if self[:password_hash].nil? && self[:password].nil? && provider.password.nil? && provider.password_hash.nil?
       err("Either 'password_hash' or 'password' should be provided")

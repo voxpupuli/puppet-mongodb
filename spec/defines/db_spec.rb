@@ -14,9 +14,10 @@ describe 'mongodb::db', type: :define do
     end
 
     it 'contains mongodb_user with mongodb_database requirement' do
-      is_expected.to contain_mongodb_user('User testuser on db testdb').with('username' => 'testuser',
-                                                                             'database' => 'testdb',
-                                                                             'require'  => 'Mongodb_database[testdb]')
+      is_expected.to contain_mongodb_user('User testuser on db testdb'). \
+        with_username('testuser'). \
+        with_database('testdb'). \
+        that_requires('Mongodb_database[testdb]')
     end
 
     it 'contains mongodb_user with proper roles' do
@@ -53,9 +54,10 @@ describe 'mongodb::db', type: :define do
     end
 
     it 'contains mongodb_user with mongodb_database requirement' do
-      is_expected.to contain_mongodb_user('User testuser on db testdb').with('username' => 'testuser',
-                                                                             'database' => 'testdb',
-                                                                             'require'  => 'Mongodb_database[testdb]')
+      is_expected.to contain_mongodb_user('User testuser on db testdb'). \
+        with_username('testuser'). \
+        with_database('testdb'). \
+        that_requires('Mongodb_database[testdb]')
     end
 
     it 'contains mongodb_user with proper roles' do

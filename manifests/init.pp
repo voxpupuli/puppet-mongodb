@@ -7,7 +7,6 @@
 #
 # === Parameters
 #
-# enable_10gen (default: false) - Whether or not to set up 10gen software repositories
 # init (auto discovered) - override init (sysv or upstart) for Debian derivatives
 # location - override apt location configuration for Debian derivatives
 # packagename (auto discovered) - override the package name
@@ -92,23 +91,13 @@ class mongodb (
   Optional[String] $ldap_bind_useosdefaults  = undef,
   Optional[String] $ldap_transportSecurity   = undef,
   Optional[String] $ldap_usertodnmapping     = undef,
+
 ) inherits mongodb::params {
-
-  if $enable_10gen {
-    fail("Parameter enable_10gen is no longer supported. Please use class { 'mongodb::globals': manage_package_repo => true }")
-  }
-
-  if $version {
-    fail("Parameter version is no longer supported. Please use class { 'mongodb::globals': version => VERSION }")
-  }
-
-  if $oplog {
-    fail('Parameter is no longer supported. On replica set Oplog is enabled by default.')
-  }
 
   notify { 'An attempt has been made below to automatically apply your custom
     settings to mongodb::server. Please verify this works in a safe test
     environment.': }
+
 
   class { '::mongodb::server':
     package_name                => $packagename,

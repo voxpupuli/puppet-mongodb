@@ -36,7 +36,7 @@ class mongodb::repo (
         $description = 'MongoDB/10gen Repository'
       }
 
-      class { '::mongodb::repo::yum': }
+      class { 'mongodb::repo::yum': }
     }
 
     'Debian': {
@@ -81,7 +81,7 @@ class mongodb::repo (
         $key         = '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
         $key_server  = 'hkp://keyserver.ubuntu.com:80'
       }
-      class { '::mongodb::repo::apt': }
+      class { 'mongodb::repo::apt': }
     }
 
     default: {

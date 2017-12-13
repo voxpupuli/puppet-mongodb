@@ -43,11 +43,11 @@ instance, without sharding functionality.
 ### Beginning with MongoDB
 
 If you just want a server installation with the default options you can run
-`include '::mongodb::server'`. If you need to customize configuration
+`include mongodb::server`. If you need to customize configuration
 options you need to do the following:
 
 ```puppet
-class {'::mongodb::server':
+class {'mongodb::server':
   port    => 27018,
   verbose => true,
 }
@@ -56,7 +56,7 @@ class {'::mongodb::server':
 For Red Hat family systems, the client can be installed in a similar fashion:
 
 ```puppet
-class {'::mongodb::client':}
+class {'mongodb::client':}
 ```
 
 Note that for Debian/Ubuntu family systems the client is installed with the
@@ -66,7 +66,7 @@ If one plans to configure sharding for a Mongo deployment, the module offer
 the `mongos` installation. `mongos` can be installed the following way :
 
 ```puppet
-class {'::mongodb::mongos' :
+class {'mongodb::mongos' :
   configdb => ['configsvr1.example.com:27018'],
 }
 ```
@@ -77,11 +77,11 @@ packages are outdated and not appropriate for a production environment.
 To install MongoDB from 10gen repository:
 
 ```puppet
-class {'::mongodb::globals':
+class {'mongodb::globals':
   manage_package_repo => true,
-}->
-class {'::mongodb::client': } ->
-class {'::mongodb::server': }
+}
+-> class {'mongodb::client': }
+-> class {'mongodb::server': }
 ```
 
 If you don't want to use the 10gen/MongoDB software repository or the OS packages,
@@ -89,12 +89,12 @@ you can point the module to a custom one.
 To install MongoDB from a custom repository:
 
 ```puppet
-class {'::mongodb::globals':
+class {'mongodb::globals':
   manage_package_repo => true,
   repo_location => 'http://example.com/repo'
-}->
-class {'::mongodb::server': }->
-class {'::mongodb::client': }
+}
+-> class {'mongodb::server': }
+-> class {'mongodb::client': }
 ```
 
 Having a local copy of MongoDB repository (that is managed by your private modules)
@@ -102,12 +102,12 @@ you can still enjoy the charms of `mongodb::params` that manage packages.
 To disable managing of repository, but still enable managing packages:
 
 ```puppet
-class {'::mongodb::globals':
+class {'mongodb::globals':
   manage_package_repo => false,
   manage_package      => true,
-}->
-class {'::mongodb::server': }->
-class {'::mongodb::client': }
+}
+-> class {'mongodb::server': }
+-> class {'mongodb::client': }
 ```
 
 ## Usage
@@ -124,7 +124,7 @@ On its own it does nothing.
 To install MongoDB server, create database "testdb" and user "user1" with password "pass1".
 
 ```puppet
-class {'::mongodb::server':
+class {'mongodb::server':
   auth => true,
 }
 
@@ -254,6 +254,12 @@ for your OS distro.
 ##### `dbpath`
 Set this value to designate a directory for the mongod instance to store
 it's data. If not specified, the module will use the default for your OS distro.
+
+##### `dbpath_fix`
+Set this value to true if you want puppet to recursively manage the permissions
+of the files in the dbpath directory.  If you are using the default dbpath, this
+should probably be false. Set this to true if you are using a custom dbpath. The
+default is false.
 
 ##### `pidfilepath`
 Specify a file location to hold the PID or process ID of the mongod process.

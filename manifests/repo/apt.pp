@@ -5,14 +5,14 @@ class mongodb::repo::apt inherits mongodb::repo {
 
   include ::apt
 
-  if($::mongodb::repo::ensure == 'present' or $::mongodb::repo::ensure == true) {
+  if($mongodb::repo::ensure == 'present' or $mongodb::repo::ensure == true) {
     apt::source { 'mongodb':
-      location => $::mongodb::repo::location,
-      release  => $::mongodb::repo::release,
-      repos    => $::mongodb::repo::repos,
+      location => $mongodb::repo::location,
+      release  => $mongodb::repo::release,
+      repos    => $mongodb::repo::repos,
       key      => {
-        'id'     => $::mongodb::repo::key,
-        'server' => $::mongodb::repo::key_server,
+        'id'     => $mongodb::repo::key,
+        'server' => $mongodb::repo::key_server,
       },
     }
 

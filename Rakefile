@@ -1,7 +1,13 @@
 require 'puppetlabs_spec_helper/rake_tasks'
-require 'puppet_blacksmith/rake_tasks'
-require 'voxpupuli/release/rake_tasks'
-require 'puppet-strings/tasks'
+
+# load optional tasks for releases
+# only available if gem group releases is installed
+begin
+  require 'puppet_blacksmith/rake_tasks'
+  require 'voxpupuli/release/rake_tasks'
+  require 'puppet-strings/tasks'
+rescue LoadError
+end
 
 PuppetLint.configuration.log_format = '%{path}:%{line}:%{check}:%{KIND}:%{message}'
 PuppetLint.configuration.fail_on_warnings = true
