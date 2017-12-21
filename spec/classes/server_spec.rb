@@ -60,8 +60,20 @@ describe 'mongodb::server' do
       end
 
       context 'setting nohttpinterface' do
+        case facts[:os]['family']
+        when 'RedHat'
+          case facts[:os]['release']['major']
+          when '7'
+            let(:config_file) { '/etc/mongod.conf' }
+          else
+            let(:config_file) { '/etc/mongodb.conf' }
+          end
+        when 'Debian'
+          let(:config_file) { '/etc/mongodb.conf' }
+        end
+
         it "isn't set when undef" do
-          is_expected.not_to contain_file('/etc/mongodb.conf').with_content(%r{nohttpinterface})
+          is_expected.not_to contain_file(config_file).with_content(%r{nohttpinterface})
         end
 
         describe 'sets nohttpinterface to true when true' do
@@ -69,14 +81,14 @@ describe 'mongodb::server' do
             { nohttpinterface: true }
           end
 
-          it { is_expected.to contain_file('/etc/mongodb.conf').with_content(%r{nohttpinterface = true}) }
+          it { is_expected.to contain_file(config_file).with_content(%r{nohttpinterface = true}) }
         end
         describe 'sets nohttpinterface to false when false' do
           let(:params) do
             { nohttpinterface: false }
           end
 
-          it { is_expected.to contain_file('/etc/mongodb.conf').with_content(%r{nohttpinterface = false}) }
+          it { is_expected.to contain_file(config_file).with_content(%r{nohttpinterface = false}) }
         end
 
         context 'on >= 2.6' do
@@ -85,7 +97,7 @@ describe 'mongodb::server' do
           end
 
           it "isn't set when undef" do
-            is_expected.not_to contain_file('/etc/mongodb.conf').with_content(%r{net\.http\.enabled})
+            is_expected.not_to contain_file(config_file).with_content(%r{net\.http\.enabled})
           end
 
           describe 'sets net.http.enabled false when true' do
@@ -93,7 +105,7 @@ describe 'mongodb::server' do
               { nohttpinterface: true }
             end
 
-            it { is_expected.to contain_file('/etc/mongodb.conf').with_content(%r{net\.http\.enabled: false}) }
+            it { is_expected.to contain_file(config_file).with_content(%r{net\.http\.enabled: false}) }
           end
 
           describe 'sets net.http.enabled true when false' do
@@ -101,7 +113,7 @@ describe 'mongodb::server' do
               { nohttpinterface: false }
             end
 
-            it { is_expected.to contain_file('/etc/mongodb.conf').with_content(%r{net\.http\.enabled: true}) }
+            it { is_expected.to contain_file(config_file).with_content(%r{net\.http\.enabled: true}) }
           end
         end
       end
