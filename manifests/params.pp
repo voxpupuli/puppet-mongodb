@@ -73,7 +73,6 @@ class mongodb::params inherits mongodb::globals {
         $logpath                 = '/var/log/mongodb/mongod.log'
         $pidfilepath             = '/var/run/mongodb/mongod.pid'
         $bind_ip                 = pick($mongodb::globals::bind_ip, ['127.0.0.1'])
-        $fork                    = true
         $mongos_pidfilepath      = undef
         $mongos_unixsocketprefix = undef
         $mongos_logpath          = undef
@@ -117,9 +116,9 @@ class mongodb::params inherits mongodb::globals {
           $mongos_logpath          = undef
           $mongos_fork             = undef
         }
-        $fork                = true
-        $journal             = true
       }
+      $fork    = true
+      $journal = true
     }
     'Debian': {
       if $manage_package {
