@@ -187,7 +187,6 @@ describe 'mongodb::server' do
           it { is_expected.to contain_class('mongodb::replset').with_sets(rsConf) }
         end
       end
-
     end
   end
 
@@ -198,5 +197,4 @@ describe 'mongodb::server' do
 
     it { expect { is_expected.to raise_error(Puppet::Error) } }
   end
-
 end
