@@ -1,18 +1,9 @@
 require 'spec_helper'
 
 describe 'mongodb::server' do
-  # Default facts
-  let(:default_facts) do
-    {
-      :root_home => '/root'
-    }
-  end
-
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      let(:facts) { 
-        facts.merge(default_facts)
-      }
+      let(:facts) { facts }
 
       describe 'with defaults' do
         it { is_expected.to compile.with_all_deps }
