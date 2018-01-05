@@ -243,17 +243,14 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
         output = {}
         retry_limit.times do |n|
-          begin
-            output = rs_arbiter == host ? rs_add_arbiter(host, master) : rs_add(host, master)
-            if !output['ok'].zero?
-              Puppet.debug 'Host successfully added to replicaset'
-              break
-            else
-              Puppet.debug "Retry adding host to replicaset. Retry: #{n}"
-              sleep retry_sleep
-              master = master_host(alive_hosts)
-              next
-            end
+          output = rs_arbiter == host ? rs_add_arbiter(host, master) : rs_add(host, master)
+          if !output['ok'].zero?
+            Puppet.debug 'Host successfully added to replicaset'
+            break
+          else
+            Puppet.debug "Retry adding host to replicaset. Retry: #{n}"
+            sleep retry_sleep
+            master = master_host(alive_hosts)
           end
         end
         raise Puppet::Error, "rs.add() failed to add host to replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
