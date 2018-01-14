@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 
 describe 'mongodb::server class' do
-
   shared_examples 'normal tests' do |tengen|
     if tengen
       case fact('osfamily')
@@ -27,7 +26,7 @@ describe 'mongodb::server class' do
       end
     end
 
-    client_name  = 'mongo --version'
+    client_name = 'mongo --version'
 
     context "default parameters with 10gen => #{tengen}" do
       after :all do
@@ -43,19 +42,19 @@ describe 'mongodb::server class' do
                }
             -> class { 'mongodb::client': ensure => absent, }
           EOS
-          apply_manifest(pp, :catch_failures => true)
+          apply_manifest(pp, catch_failures: true)
         end
       end
 
-      it 'should work with no errors' do
+      it 'works with no errors' do
         pp = <<-EOS
           class { 'mongodb::globals': manage_package_repo => #{tengen}, }
           -> class { 'mongodb::server': }
           -> class { 'mongodb::client': }
         EOS
 
-        apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes  => true)
+        apply_manifest(pp, catch_failures: true)
+        apply_manifest(pp, catch_changes: true)
       end
 
       describe package(package_name) do
@@ -67,17 +66,18 @@ describe 'mongodb::server class' do
       end
 
       describe service(service_name) do
-         it { is_expected.to be_enabled }
-         it { is_expected.to be_running }
+        it { is_expected.to be_enabled }
+        it { is_expected.to be_running }
       end
 
-      describe port(27017) do
+      describe port(27_017) do
         it { is_expected.to be_listening }
       end
 
       describe command(client_name) do
         describe '#exit_status' do
           subject { super().exit_status }
+
           it { is_expected.to eq 0 }
         end
       end
@@ -91,11 +91,11 @@ describe 'mongodb::server class' do
           -> class { 'mongodb::client': }
         EOS
 
-        apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes  => true)
+        apply_manifest(pp, catch_failures: true)
+        apply_manifest(pp, catch_changes: true)
       end
 
-      describe port(27018) do
+      describe port(27_018) do
         it { is_expected.to be_listening }
       end
     end
@@ -112,7 +112,7 @@ describe 'mongodb::server class' do
              }
           -> class { 'mongodb::client': ensure => absent, }
         EOS
-        apply_manifest(pp, :catch_failures => true)
+        apply_manifest(pp, catch_failures: true)
       end
     end
   end
@@ -148,7 +148,7 @@ describe 'mongodb::server class' do
     admin_login = "mongo admin --quiet --eval \"load('/root/.mongorc.js');printjson(db.getUser('admin')['customData'])\""
 
     context "default parameters with 10gen => #{tengen} and auth => true" do
-      it 'should work with no errors with authentication enabled' do
+      it 'works with no errors with authentication enabled' do
         pp = <<-EOS
           class { 'mongodb::globals': manage_package_repo => #{tengen}, }
           -> class { 'mongodb::server':
@@ -161,8 +161,8 @@ describe 'mongodb::server class' do
           class { 'mongodb::client': }
         EOS
 
-        apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes  => true)
+        apply_manifest(pp, catch_failures: true)
+        apply_manifest(pp, catch_changes: true)
       end
 
       describe package(package_name) do
@@ -174,18 +174,19 @@ describe 'mongodb::server class' do
       end
 
       describe service(service_name) do
-         it { is_expected.to be_enabled }
-         it { is_expected.to be_running }
+        it { is_expected.to be_enabled }
+        it { is_expected.to be_running }
       end
 
-      describe port(27017) do
+      describe port(27_017) do
         it { is_expected.to be_listening }
       end
 
       describe command(auth_enabled) do
         describe '#stdout' do
           subject { super().stdout.strip }
-          it { is_expected.to eq "13" }
+
+          it { is_expected.to eq '13' }
         end
       end
 
@@ -193,20 +194,22 @@ describe 'mongodb::server class' do
         it { is_expected.to be_file }
         it { is_expected.to be_owned_by 'root' }
         it { is_expected.to be_grouped_into 'root' }
-        it { is_expected.to be_mode 644 }
+        it { is_expected.to be_mode 600 }
         it { is_expected.to contain 'db.auth(\'admin\', \'password\')' }
       end
 
       describe command(admin_login) do
         describe '#stdout' do
           subject { super().stdout.strip }
-          it { is_expected.to match "{ \"createdBy\" : \"Puppet Mongodb_user['User admin on db admin']\" }"}
+
+          it { is_expected.to match "{ \"createdBy\" : \"Puppet Mongodb_user['User admin on db admin']\" }" }
         end
       end
 
       describe command(client_name) do
         describe '#exit_status' do
           subject { super().exit_status }
+
           it { is_expected.to eq 0 }
         end
       end
@@ -224,7 +227,7 @@ describe 'mongodb::server class' do
              }
           -> class { 'mongodb::client': ensure => absent, }
         EOS
-        apply_manifest(pp, :catch_failures => true)
+        apply_manifest(pp, catch_failures: true)
       end
     end
   end

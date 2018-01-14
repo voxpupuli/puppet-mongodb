@@ -154,3 +154,9 @@ operationProfiling.slowOpThresholdMs: <%= @slowms %>
 <% if @set_parameter -%>
 setParameter: <%= @set_parameter %>
 <% end -%>
+
+<% if @config_data -%>
+<% @config_data.each do |k,v| -%>
+<%= k %>: <%= v %>
+<% end -%>
+<% end -%>

@@ -1,9 +1,77 @@
-# Change log
+# Changelog
 
-All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org).
+All notable changes to this project will be documented in this file.
+Each new release typically also includes the latest modulesync defaults.
+These should not affect the functionality of the module.
 
-## Unsupported Release [1.0.0]
+## [v2.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.0.0) (2018-01-04)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v1.1.0...v2.0.0)
+
+**Breaking changes:**
+
+- Add Data Types and remove deprecated parameters [\#406](https://github.com/voxpupuli/puppet-mongodb/pull/406) ([wyardley](https://github.com/wyardley))
+
+**Implemented enhancements:**
+
+- Replace anchors with contain [\#420](https://github.com/voxpupuli/puppet-mongodb/pull/420) ([ekohl](https://github.com/ekohl))
+- Simplify the client class [\#419](https://github.com/voxpupuli/puppet-mongodb/pull/419) ([ekohl](https://github.com/ekohl))
+
+**Fixed bugs:**
+
+- apt-transport-https required on Ubuntu when installing version \>= 3.0.0. [\#417](https://github.com/voxpupuli/puppet-mongodb/issues/417)
+- Fix compilation failures on RHEL when `manage\_package =\> true` [\#431](https://github.com/voxpupuli/puppet-mongodb/pull/431) ([fatmcgav](https://github.com/fatmcgav))
+
+**Closed issues:**
+
+- "Unknown variable 'mongodb::params::journal'" error when 'manage\_package =\> true' [\#430](https://github.com/voxpupuli/puppet-mongodb/issues/430)
+- package version override broken with yum [\#415](https://github.com/voxpupuli/puppet-mongodb/issues/415)
+- create admin and repl set fail with password [\#414](https://github.com/voxpupuli/puppet-mongodb/issues/414)
+- 10gen repo handling doesn't work [\#101](https://github.com/voxpupuli/puppet-mongodb/issues/101)
+
+**Merged pull requests:**
+
+- Set types for mongodb::db [\#421](https://github.com/voxpupuli/puppet-mongodb/pull/421) ([ekohl](https://github.com/ekohl))
+- Allow bind\_ip to be an IP or array of IPs. Add data types for a coupl… [\#411](https://github.com/voxpupuli/puppet-mongodb/pull/411) ([wyardley](https://github.com/wyardley))
+- Some minor initial fixes for acceptance tests [\#409](https://github.com/voxpupuli/puppet-mongodb/pull/409) ([wyardley](https://github.com/wyardley))
+- Use raise Puppet::Error instead of Puppet.fail\(\) [\#408](https://github.com/voxpupuli/puppet-mongodb/pull/408) ([wyardley](https://github.com/wyardley))
+- fix for rubocop issues introduced in 9e2c [\#407](https://github.com/voxpupuli/puppet-mongodb/pull/407) ([wyardley](https://github.com/wyardley))
+- Release 1.1.0 [\#403](https://github.com/voxpupuli/puppet-mongodb/pull/403) ([wyardley](https://github.com/wyardley))
+- Autorequire mongodb\_database for mongodb\_user [\#394](https://github.com/voxpupuli/puppet-mongodb/pull/394) ([ekohl](https://github.com/ekohl))
+- Set dbpath\_fix to false by default [\#347](https://github.com/voxpupuli/puppet-mongodb/pull/347) ([mwhahaha](https://github.com/mwhahaha))
+- Fixed: create database admin only if service\_ensure is true. [\#240](https://github.com/voxpupuli/puppet-mongodb/pull/240) ([pcheliniy](https://github.com/pcheliniy))
+
+## [v1.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v1.1.0) (2017-10-20)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/1.0.0...v1.1.0)
+
+**Implemented enhancements:**
+
+- Allow user-supplied configuration data [\#389](https://github.com/voxpupuli/puppet-mongodb/pull/389) ([blackophelia](https://github.com/blackophelia))
+- MODULES-5483: Auth and FQDN certs =\> Fail [\#369](https://github.com/voxpupuli/puppet-mongodb/pull/369) ([disappear89](https://github.com/disappear89))
+
+**Fixed bugs:**
+
+- Fix password on admin db [\#393](https://github.com/voxpupuli/puppet-mongodb/pull/393) ([benohara](https://github.com/benohara))
+- fix issue MODULES-5545 [\#390](https://github.com/voxpupuli/puppet-mongodb/pull/390) ([bovy89](https://github.com/bovy89))
+- mongodb no longer provides the stable link [\#361](https://github.com/voxpupuli/puppet-mongodb/pull/361) ([attachmentgenie](https://github.com/attachmentgenie))
+
+**Closed issues:**
+
+- Can't change dbpath on Debian Stretch / Puppet5 with Hiera [\#398](https://github.com/voxpupuli/puppet-mongodb/issues/398)
+
+**Merged pull requests:**
+
+- update metadata and README in prep for release [\#402](https://github.com/voxpupuli/puppet-mongodb/pull/402) ([wyardley](https://github.com/wyardley))
+- correct spelling mistake [\#395](https://github.com/voxpupuli/puppet-mongodb/pull/395) ([EdwardBetts](https://github.com/EdwardBetts))
+- \(maint\) modulesync 915cde70e20 [\#388](https://github.com/voxpupuli/puppet-mongodb/pull/388) ([glennsarti](https://github.com/glennsarti))
+- \(MODULES-5187\) mysnc puppet 5 and ruby 2.4 [\#387](https://github.com/voxpupuli/puppet-mongodb/pull/387) ([eputnam](https://github.com/eputnam))
+- Update README.md [\#386](https://github.com/voxpupuli/puppet-mongodb/pull/386) ([LasseRafn](https://github.com/LasseRafn))
+- Release 1.0.0 mergeback [\#384](https://github.com/voxpupuli/puppet-mongodb/pull/384) ([eputnam](https://github.com/eputnam))
+- \(MODULES-4855\) version 1.0.0 release prep [\#383](https://github.com/voxpupuli/puppet-mongodb/pull/383) ([eputnam](https://github.com/eputnam))
+- Only check if master if mongod installed [\#314](https://github.com/voxpupuli/puppet-mongodb/pull/314) ([benohara](https://github.com/benohara))
+
+## 1.0.0 (2017-06-30)
 ### Summary
 Major release removing Puppet 3 support.
 
@@ -288,3 +356,6 @@ This release fixes a duplicate parameter.
 [0.1.0]: https://github.com/puppetlabs/puppetlabs-mongodb/compare/0.0.2...0.1.0
 [0.0.2]: https://github.com/puppetlabs/puppetlabs-mongodb/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/puppetlabs/puppetlabs-mongodb/tree/0.0.1
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*

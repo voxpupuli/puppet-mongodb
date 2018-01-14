@@ -1,41 +1,39 @@
 require 'spec_helper'
 
-describe 'mongodb::db', :type => :define do
+describe 'mongodb::db', type: :define do
   context 'default' do
     let(:title) { 'testdb' }
 
-    let(:params) {
+    let(:params) do
       { 'user'     => 'testuser',
-        'password' => 'testpass',
-      }
-    }
+        'password' => 'testpass' }
+    end
 
-    it 'should contain mongodb_database with mongodb::server requirement' do
+    it 'contains mongodb_database with mongodb::server requirement' do
       is_expected.to contain_mongodb_database('testdb')
     end
 
-    it 'should contain mongodb_user with mongodb_database requirement' do
-      is_expected.to contain_mongodb_user('User testuser on db testdb').with({
-        'username' => 'testuser',
-        'database' => 'testdb',
-        'require'  => 'Mongodb_database[testdb]',
-      })
+    it 'contains mongodb_user with mongodb_database requirement' do
+      is_expected.to contain_mongodb_user('User testuser on db testdb'). \
+        with_username('testuser'). \
+        with_database('testdb'). \
+        that_requires('Mongodb_database[testdb]')
     end
 
-    it 'should contain mongodb_user with proper roles' do
-      params.merge!({'roles' => ['testrole1', 'testrole2']})
-      is_expected.to contain_mongodb_user('User testuser on db testdb')\
-        .with_roles(["testrole1", "testrole2"])
+    it 'contains mongodb_user with proper roles' do
+      params['roles'] = %w[testrole1 testrole2]
+      is_expected.to contain_mongodb_user('User testuser on db testdb').\
+        with_roles(%w[testrole1 testrole2])
     end
 
-    it 'should prefer password_hash instead of password' do
-      params.merge!({'password_hash' => 'securehash'})
-      is_expected.to contain_mongodb_user('User testuser on db testdb')\
-        .with_password_hash('securehash')
+    it 'prefers password_hash instead of password' do
+      params['password_hash'] = 'securehash'
+      is_expected.to contain_mongodb_user('User testuser on db testdb').\
+        with_password_hash('securehash')
     end
 
-    it 'should contain mongodb_database with proper tries param' do
-      params.merge!({'tries' => 5})
+    it 'contains mongodb_database with proper tries param' do
+      params['tries'] = 5
       is_expected.to contain_mongodb_database('testdb').with_tries(5)
     end
   end
@@ -43,40 +41,39 @@ describe 'mongodb::db', :type => :define do
   context 'with a db_name value' do
     let(:title) { 'testdb-title' }
 
-    let(:params) {
-      { 
+    let(:params) do
+      {
         'db_name'  => 'testdb',
         'user'     => 'testuser',
-        'password' => 'testpass',
+        'password' => 'testpass'
       }
-    }
+    end
 
-    it 'should contain mongodb_database with mongodb::server requirement' do
+    it 'contains mongodb_database with mongodb::server requirement' do
       is_expected.to contain_mongodb_database('testdb')
     end
 
-    it 'should contain mongodb_user with mongodb_database requirement' do
-      is_expected.to contain_mongodb_user('User testuser on db testdb').with({
-        'username' => 'testuser',
-        'database' => 'testdb',
-        'require'  => 'Mongodb_database[testdb]',
-      })
+    it 'contains mongodb_user with mongodb_database requirement' do
+      is_expected.to contain_mongodb_user('User testuser on db testdb'). \
+        with_username('testuser'). \
+        with_database('testdb'). \
+        that_requires('Mongodb_database[testdb]')
     end
 
-    it 'should contain mongodb_user with proper roles' do
-      params.merge!({'roles' => ['testrole1', 'testrole2']})
-      is_expected.to contain_mongodb_user('User testuser on db testdb')\
-        .with_roles(["testrole1", "testrole2"])
+    it 'contains mongodb_user with proper roles' do
+      params['roles'] = %w[testrole1 testrole2]
+      is_expected.to contain_mongodb_user('User testuser on db testdb').\
+        with_roles(%w[testrole1 testrole2])
     end
 
-    it 'should prefer password_hash instead of password' do
-      params.merge!({'password_hash' => 'securehash'})
-      is_expected.to contain_mongodb_user('User testuser on db testdb')\
-        .with_password_hash('securehash')
+    it 'prefers password_hash instead of password' do
+      params['password_hash'] = 'securehash'
+      is_expected.to contain_mongodb_user('User testuser on db testdb').\
+        with_password_hash('securehash')
     end
 
-    it 'should contain mongodb_database with proper tries param' do
-      params.merge!({'tries' => 5})
+    it 'contains mongodb_database with proper tries param' do
+      params['tries'] = 5
       is_expected.to contain_mongodb_database('testdb').with_tries(5)
     end
   end
