@@ -163,4 +163,22 @@ describe 'mongodb::server::config', type: :class do
       is_expected.to contain_exec('fix dbpath permissions').that_subscribes_to('File[/var/lib/mongo]')
     }
   end
+
+  describe 'with ssl' do
+    context 'enabled' do
+      let(:pre_condition) { "class { 'mongodb::server': config => '/etc/mongod.conf', dbpath => '/var/lib/mongo', create_admin => false, rcfile => '/root/.mongorc.js', store_creds => true, ensure => present, user => 'mongod', group => 'mongod', port => 29017, bind_ip => ['0.0.0.0'], fork => true, logpath => '/var/log/mongo/mongod.log', logappend => true, ssl => true, ssl_mode => 'requireSSL' }" }
+
+      it {
+        is_expected.to contain_file('/etc/mongod.conf').with_content(%r{sslMode = requireSSL})
+      }
+    end
+
+    context 'disabled' do
+      let(:pre_condition) { "class { 'mongodb::server': config => '/etc/mongod.conf', dbpath => '/var/lib/mongo', create_admin => false, rcfile => '/root/.mongorc.js', store_creds => true, ensure => present, user => 'mongod', group => 'mongod', port => 29017, bind_ip => ['0.0.0.0'], fork => true, logpath => '/var/log/mongo/mongod.log', logappend => true }" }
+
+      it {
+        is_expected.not_to contain_file('/etc/mongod.conf').with_content(%r{sslMode})
+      }
+    end
+  end
 end
