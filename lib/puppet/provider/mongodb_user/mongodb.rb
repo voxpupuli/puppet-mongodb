@@ -137,7 +137,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
     else
       cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
       {
-          "updateuser": "#{@resource[:username]}",
+          "updateUser": "#{@resource[:username]}",
           "pwd": "#{@resource[:password]}",
           "digestpassword": true
       }
