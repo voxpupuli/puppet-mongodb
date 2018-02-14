@@ -134,6 +134,15 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def password=(value)
     if mongo_24?
       mongo_eval("db.changeUserPassword('#{@resource[:username]}','#{value}')", @resource[:database])
+    elsif mongo_26?
+      cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
+      {
+          "updateUser": "#{@resource[:username]}",
+          "pwd": "#{@resource[:password]}"
+      }
+      EOS
+
+      mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
     else
       cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
       {
