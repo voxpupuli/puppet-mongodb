@@ -2,6 +2,7 @@
 
 #System Log
 
+systemLog.logRotate: reopen
 <% if @logpath -%>
 systemLog.path: <%= @logpath %>
 systemLog.destination: file
