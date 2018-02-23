@@ -132,7 +132,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   end
 
   def password=(value)
-    if mongo_24?
+    if mongo_24? || mongo_26?
       mongo_eval("db.changeUserPassword('#{@resource[:username]}','#{value}')", @resource[:database])
     else
       cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
