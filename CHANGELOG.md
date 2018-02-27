@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.0) (2018-02-27)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.0.0...v2.1.0)
+
+**Implemented enhancements:**
+
+- Allow setting of net.ssl.mode [\#300](https://github.com/voxpupuli/puppet-mongodb/pull/300) ([bond-os](https://github.com/bond-os))
+
+**Fixed bugs:**
+
+- Fixed changing user password with MongoDB 2.6 [\#442](https://github.com/voxpupuli/puppet-mongodb/pull/442) ([webcompas](https://github.com/webcompas))
+- Fix password changing issue voxpupuli/puppet-mongodb\#438  [\#440](https://github.com/voxpupuli/puppet-mongodb/pull/440) ([webcompas](https://github.com/webcompas))
+- Add a retry block when hosts are added to replset [\#436](https://github.com/voxpupuli/puppet-mongodb/pull/436) ([pkilambi](https://github.com/pkilambi))
+
+**Closed issues:**
+
+- Changing a user's password doesn't work [\#438](https://github.com/voxpupuli/puppet-mongodb/issues/438)
+
+**Merged pull requests:**
+
+- release 2.0.0 [\#435](https://github.com/voxpupuli/puppet-mongodb/pull/435) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.0.0) (2018-01-04)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v1.1.0...v2.0.0)
