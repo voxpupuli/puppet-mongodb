@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.1.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.1) (2018-03-27)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.1.0...v2.1.1)
+
+**Fixed bugs:**
+
+- Bump stdlib 4.4.0-\>4.13.0 [\#450](https://github.com/voxpupuli/puppet-mongodb/pull/450) ([dupgit](https://github.com/dupgit))
+
+**Closed issues:**
+
+- Fact "mongodb\_is\_master" fails on mongodb clients [\#441](https://github.com/voxpupuli/puppet-mongodb/issues/441)
+
+**Merged pull requests:**
+
+- bump puppet to latest supported version 4.10.0 [\#452](https://github.com/voxpupuli/puppet-mongodb/pull/452) ([bastelfreak](https://github.com/bastelfreak))
+- release 2.1.0 [\#444](https://github.com/voxpupuli/puppet-mongodb/pull/444) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.0) (2018-02-27)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.0.0...v2.1.0)
