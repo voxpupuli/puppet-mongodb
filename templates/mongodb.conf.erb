@@ -170,6 +170,10 @@ profile = <%= @profile %>
 # Sets the threshold in milliseconds for mongod to consider a query slow for the profiler.
 slowms = <%= @slowms %>
 <% end -%>
+<% if @storage_engine_internal -%>
+storage:
+   engine: <% @storage_engine_internal %>
+<% end -%>
 <% if @keyfile -%>
 # Specify the path to a key file to store authentication information.
 keyFile = <%= @keyfile %>
