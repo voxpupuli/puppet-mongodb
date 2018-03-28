@@ -5,7 +5,7 @@ require 'tempfile'
 describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
   let(:raw_users) do
     [
-      { '_id' => 'admin.root', 'user' => 'root', 'db' => 'admin', 'credentials' => { 'MONGODB-CR' => 'pass' }, 'roles' => [{ 'role' => 'role2', 'db' => 'admin' }, { 'role' => 'role1', 'db' => 'admin' }] }
+      { '_id' => 'admin.root', 'user' => 'root', 'db' => 'admin', 'credentials' => { 'MONGODB-CR' => 'pass', 'SCRAM-SHA-1' => { 'iterationCount' => 10_000, 'salt' => 'salt', 'storedKey' => 'storedKey', 'serverKey' => 'serverKey' } }, 'roles' => [{ 'role' => 'role2', 'db' => 'admin' }, { 'role' => 'role1', 'db' => 'admin' }] }
     ].to_json
   end
 
@@ -97,6 +97,18 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
       provider.expects(:mongo_eval).
         with("db.runCommand(#{cmd_json})", 'new_database')
       provider.password_hash = 'newpass'
+    end
+  end
+
+  describe 'scram_credentials' do
+    it 'returns scram_credentials' do
+      credentials = {
+        'iterationCount' => 10_000,
+        'salt' => 'salt',
+        'storedKey' => 'storedKey',
+        'serverKey' => 'serverKey'
+      }
+      expect(instance.scram_credentials).to match(credentials)
     end
   end
 
