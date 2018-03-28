@@ -35,7 +35,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
               username: user['user'],
               database: user['db'],
               roles: from_roles(user['roles'], user['db']),
-              password_hash: user['credentials']['MONGODB-CR'])
+              password_hash: user['credentials']['MONGODB-CR'],
+              scram_credentials: user['credentials']['SCRAM-SHA-1'])
         end
       end
     else
