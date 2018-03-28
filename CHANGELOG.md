@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.1.2](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.2) (2018-03-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.1.1...v2.1.2)
+
+**Fixed bugs:**
+
+- Notice on every run for password\_hash [\#425](https://github.com/voxpupuli/puppet-mongodb/issues/425)
+- Add check if scram credentials are insync with hash [\#455](https://github.com/voxpupuli/puppet-mongodb/pull/455) ([CTrox](https://github.com/CTrox))
+
+**Merged pull requests:**
+
+- release 2.1.1 [\#453](https://github.com/voxpupuli/puppet-mongodb/pull/453) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.1.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.1) (2018-03-27)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.1.0...v2.1.1)
