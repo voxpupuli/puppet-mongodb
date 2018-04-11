@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 #
 # Author: Francois Charlier <francois.charlier@enovance.com>
 #
