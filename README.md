@@ -37,6 +37,7 @@ instance, without sharding functionality.
 * MongoDB configuration files.
 * MongoDB service.
 * MongoDB client.
+* MongoDB tools.
 * MongoDB sharding support (mongos)
 * 10gen/mongodb apt/yum repository.
 
@@ -59,8 +60,15 @@ For Red Hat family systems, the client can be installed in a similar fashion:
 class {'mongodb::client':}
 ```
 
+and tools:
+
+```puppet
+class {'::mongodb::tools':}
+```
+
 Note that for Debian/Ubuntu family systems the client is installed with the
 server. Using the client class will by default install the server.
+
 
 If one plans to configure sharding for a Mongo deployment, the module offer
 the `mongos` installation. `mongos` can be installed the following way :
@@ -143,6 +151,7 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 #### Public classes
 * `mongodb::server`: Installs and configure MongoDB
 * `mongodb::client`: Installs the MongoDB client shell (for Red Hat family systems)
+* `mongodb::tools`: Installs the MongoDB tools (for Red Hat family systems)
 * `mongodb::globals`: Configure main settings in a global way
 * `mongodb::mongos`: Installs and configure Mongos server (for sharding support)
 
