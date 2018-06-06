@@ -173,9 +173,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}"
     end
 
-    %w[ObjectId NumberLong].each do |data_type|
-      out.gsub!(%r{#{data_type}\(([^)]*)\)}, '\1')
-    end
+    # Dirty hack to remove JavaScript objects
+    out.gsub!(%r{\w+\((\d+).+?\)}, '\1') # Remove extra parameters from 'Timestamp(1462971623, 1)' Objects
+    out.gsub!(%r{\w+\((.+?)\)}, '\1')
+
     out.gsub!(%r{^Error\:.+}, '')
     out.gsub!(%r{^.*warning\:.+}, '') # remove warnings if sslAllowInvalidHostnames is true
     out.gsub!(%r{^.*The server certificate does not match the host name.+}, '') # remove warnings if sslAllowInvalidHostnames is true mongo 3.x

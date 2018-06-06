@@ -388,8 +388,6 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       raise
     end
 
-    # Dirty hack to remove JavaScript objects
-    output.gsub!(%r{\w+\((\d+).+?\)}, '\1') # Remove extra parameters from 'Timestamp(1462971623, 1)' Objects
     output.gsub!(%r{\w+\((.+?)\)}, '\1')
 
     # Hack to avoid non-json empty sets
