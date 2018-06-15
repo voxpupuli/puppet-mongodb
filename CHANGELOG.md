@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.2.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.2.0) (2018-06-16)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.1.2...v2.2.0)
+
+**Implemented enhancements:**
+
+- Repo for version 3.6 is using wrong key. [\#465](https://github.com/voxpupuli/puppet-mongodb/issues/465)
+- This will add the correct apt key for version 3.6. [\#466](https://github.com/voxpupuli/puppet-mongodb/pull/466) ([noni73](https://github.com/noni73))
+
+**Fixed bugs:**
+
+- Handle non-existing config file [\#469](https://github.com/voxpupuli/puppet-mongodb/pull/469) ([ekohl](https://github.com/ekohl))
+
+**Merged pull requests:**
+
+- Remove docker nodesets [\#463](https://github.com/voxpupuli/puppet-mongodb/pull/463) ([bastelfreak](https://github.com/bastelfreak))
+- drop EOL OSs; fix puppet version range [\#462](https://github.com/voxpupuli/puppet-mongodb/pull/462) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.1.2](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.2) (2018-03-28)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.1.1...v2.1.2)
@@ -12,10 +30,6 @@ These should not affect the functionality of the module.
 
 - Notice on every run for password\_hash [\#425](https://github.com/voxpupuli/puppet-mongodb/issues/425)
 - Add check if scram credentials are insync with hash [\#455](https://github.com/voxpupuli/puppet-mongodb/pull/455) ([CTrox](https://github.com/CTrox))
-
-**Merged pull requests:**
-
-- release 2.1.1 [\#453](https://github.com/voxpupuli/puppet-mongodb/pull/453) ([bastelfreak](https://github.com/bastelfreak))
 
 ## [v2.1.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.1) (2018-03-27)
 
@@ -32,7 +46,6 @@ These should not affect the functionality of the module.
 **Merged pull requests:**
 
 - bump puppet to latest supported version 4.10.0 [\#452](https://github.com/voxpupuli/puppet-mongodb/pull/452) ([bastelfreak](https://github.com/bastelfreak))
-- release 2.1.0 [\#444](https://github.com/voxpupuli/puppet-mongodb/pull/444) ([bastelfreak](https://github.com/bastelfreak))
 
 ## [v2.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.0) (2018-02-27)
 
@@ -51,10 +64,6 @@ These should not affect the functionality of the module.
 **Closed issues:**
 
 - Changing a user's password doesn't work [\#438](https://github.com/voxpupuli/puppet-mongodb/issues/438)
-
-**Merged pull requests:**
-
-- release 2.0.0 [\#435](https://github.com/voxpupuli/puppet-mongodb/pull/435) ([bastelfreak](https://github.com/bastelfreak))
 
 ## [v2.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.0.0) (2018-01-04)
 
@@ -88,7 +97,6 @@ These should not affect the functionality of the module.
 - Some minor initial fixes for acceptance tests [\#409](https://github.com/voxpupuli/puppet-mongodb/pull/409) ([wyardley](https://github.com/wyardley))
 - Use raise Puppet::Error instead of Puppet.fail\(\) [\#408](https://github.com/voxpupuli/puppet-mongodb/pull/408) ([wyardley](https://github.com/wyardley))
 - fix for rubocop issues introduced in 9e2c [\#407](https://github.com/voxpupuli/puppet-mongodb/pull/407) ([wyardley](https://github.com/wyardley))
-- Release 1.1.0 [\#403](https://github.com/voxpupuli/puppet-mongodb/pull/403) ([wyardley](https://github.com/wyardley))
 - Autorequire mongodb\_database for mongodb\_user [\#394](https://github.com/voxpupuli/puppet-mongodb/pull/394) ([ekohl](https://github.com/ekohl))
 - Set dbpath\_fix to false by default [\#347](https://github.com/voxpupuli/puppet-mongodb/pull/347) ([mwhahaha](https://github.com/mwhahaha))
 - Fixed: create database admin only if service\_ensure is true. [\#240](https://github.com/voxpupuli/puppet-mongodb/pull/240) ([pcheliniy](https://github.com/pcheliniy))
@@ -114,13 +122,12 @@ These should not affect the functionality of the module.
 
 **Merged pull requests:**
 
-- update metadata and README in prep for release [\#402](https://github.com/voxpupuli/puppet-mongodb/pull/402) ([wyardley](https://github.com/wyardley))
+- Release 1.1.0 [\#403](https://github.com/voxpupuli/puppet-mongodb/pull/403) ([wyardley](https://github.com/wyardley))
 - correct spelling mistake [\#395](https://github.com/voxpupuli/puppet-mongodb/pull/395) ([EdwardBetts](https://github.com/EdwardBetts))
 - \(maint\) modulesync 915cde70e20 [\#388](https://github.com/voxpupuli/puppet-mongodb/pull/388) ([glennsarti](https://github.com/glennsarti))
 - \(MODULES-5187\) mysnc puppet 5 and ruby 2.4 [\#387](https://github.com/voxpupuli/puppet-mongodb/pull/387) ([eputnam](https://github.com/eputnam))
 - Update README.md [\#386](https://github.com/voxpupuli/puppet-mongodb/pull/386) ([LasseRafn](https://github.com/LasseRafn))
 - Release 1.0.0 mergeback [\#384](https://github.com/voxpupuli/puppet-mongodb/pull/384) ([eputnam](https://github.com/eputnam))
-- \(MODULES-4855\) version 1.0.0 release prep [\#383](https://github.com/voxpupuli/puppet-mongodb/pull/383) ([eputnam](https://github.com/eputnam))
 - Only check if master if mongod installed [\#314](https://github.com/voxpupuli/puppet-mongodb/pull/314) ([benohara](https://github.com/benohara))
 
 ## 1.0.0 (2017-06-30)
