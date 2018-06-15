@@ -2,12 +2,8 @@ require 'json'
 require 'yaml'
 
 def mongod_conf_file
-  file = if File.exist? '/etc/mongod.conf'
-           '/etc/mongod.conf'
-         else
-           '/etc/mongodb.conf'
-         end
-  file
+  locations = ['/etc/mongod.conf', '/etc/mongodb.conf']
+  locations.find { |location| File.exist? location }
 end
 
 def get_options_from_hash_config(config)
@@ -53,16 +49,20 @@ Facter.add('mongodb_is_master') do
   setcode do
     if %w[mongo mongod].all? { |m| Facter::Util::Resolution.which m }
       file = mongod_conf_file
-      options = get_config_options(file)
-      e = File.exist?('/root/.mongorc.js') ? 'load(\'/root/.mongorc.js\'); ' : ''
+      if file
+        options = get_config_options(file)
+        e = File.exist?('/root/.mongorc.js') ? 'load(\'/root/.mongorc.js\'); ' : ''
 
-      # Check if the mongodb server is responding:
-      Facter::Core::Execution.exec("mongo --quiet #{options} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
+        # Check if the mongodb server is responding:
+        Facter::Core::Execution.exec("mongo --quiet #{options} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
 
-      if $CHILD_STATUS.success?
-        Facter::Core::Execution.exec("mongo --quiet #{options} --eval \"#{e}db.isMaster().ismaster\"")
+        if $CHILD_STATUS.success?
+          Facter::Core::Execution.exec("mongo --quiet #{options} --eval \"#{e}db.isMaster().ismaster\"")
+        else
+          'not_responding'
+        end
       else
-        'not_responding'
+        'not_configured'
       end
     else
       'not_installed'
