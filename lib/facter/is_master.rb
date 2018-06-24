@@ -50,7 +50,7 @@ Facter.add('mongodb_is_master') do
     if %w[mongo mongod].all? { |m| Facter::Util::Resolution.which m }
       file = mongod_conf_file
       if file
-        options = get_config_options(file)
+        options = get_options_from_config(file)
         e = File.exist?('/root/.mongorc.js') ? 'load(\'/root/.mongorc.js\'); ' : ''
 
         # Check if the mongodb server is responding:
