@@ -1,13 +1,13 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
-  $ensure = $mongodb::params::ensure,
-  $version = $mongodb::params::version,
-  $use_enterprise_repo = $mongodb::params::use_enterprise_repo,
+  Variant[Enum['present', 'absent'], Boolean] $ensure = 'present',
+  Optional[String] $version = undef,
+  Boolean $use_enterprise_repo = false,
   $repo_location = undef,
   $proxy = undef,
   $proxy_username = undef,
   $proxy_password = undef,
-) inherits mongodb::params {
+) {
   case $::osfamily {
     'RedHat', 'Linux': {
       if $version != undef {
