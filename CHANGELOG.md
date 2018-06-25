@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.2.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.2.1) (2018-06-24)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.2.0...v2.2.1)
+
+**Fixed bugs:**
+
+- Undefined method 'get\_config\_options' in is\_master.rb [\#471](https://github.com/voxpupuli/puppet-mongodb/issues/471)
+- Use the correct function in is\_master fact [\#472](https://github.com/voxpupuli/puppet-mongodb/pull/472) ([ekohl](https://github.com/ekohl))
+
 ## [v2.2.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.2.0) (2018-06-16)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.1.2...v2.2.0)
