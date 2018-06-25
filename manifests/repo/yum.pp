@@ -17,7 +17,7 @@ class mongodb::repo::yum inherits mongodb::repo {
   }
   else {
     yumrepo { 'mongodb':
-      enabled => absent,
+      ensure => absent,
     }
   }
 }
