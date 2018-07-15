@@ -1,12 +1,13 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
-  $ensure         = $mongodb::params::ensure,
-  $version        = $mongodb::params::version,
-  $repo_location  = undef,
-  $proxy          = undef,
+  Variant[Enum['present', 'absent'], Boolean] $ensure = 'present',
+  Optional[String] $version = undef,
+  Boolean $use_enterprise_repo = false,
+  $repo_location = undef,
+  $proxy = undef,
   $proxy_username = undef,
   $proxy_password = undef,
-) inherits mongodb::params {
+) {
   case $::osfamily {
     'RedHat', 'Linux': {
       if $version != undef {
@@ -15,7 +16,7 @@ class mongodb::repo (
       if ($repo_location != undef){
         $location = $repo_location
         $description = 'MongoDB Custom Repository'
-      } elsif $mongodb::globals::use_enterprise_repo == true {
+      } elsif $use_enterprise_repo == true {
         $location = "https://repo.mongodb.com/yum/redhat/\$releasever/mongodb-enterprise/${mongover[0]}.${mongover[1]}/\$basearch/"
         $description = 'MongoDB Enterprise Repository'
       }
@@ -44,7 +45,7 @@ class mongodb::repo (
         $location = $repo_location
       }
       elsif $version and (versioncmp($version, '3.0.0') >= 0) {
-        if $mongodb::globals::use_enterprise_repo == true {
+        if $use_enterprise_repo == true {
             $repo_domain = 'repo.mongodb.com'
             $repo_path   = 'mongodb-enterprise'
         } else {

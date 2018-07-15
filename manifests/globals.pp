@@ -39,15 +39,17 @@ class mongodb::globals (
 ) {
 
   # Setup of the repo only makes sense globally, so we are doing it here.
-  if($manage_package_repo) {
+  if $manage_package_repo {
     if $use_enterprise_repo == true and $version == undef {
       fail('You must set mongodb::globals::version when mongodb::globals::use_enterprise_repo is true')
     }
 
     class { 'mongodb::repo':
-      ensure        => present,
-      repo_location => $repo_location,
-      proxy         => $repo_proxy,
+      ensure              => present,
+      version             => $version,
+      use_enterprise_repo => $use_enterprise_repo,
+      repo_location       => $repo_location,
+      proxy               => $repo_proxy,
     }
   }
 }
