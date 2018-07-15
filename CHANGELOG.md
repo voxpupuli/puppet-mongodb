@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v2.2.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.2.1) (2018-06-24)
+## [v2.2.2](https://github.com/voxpupuli/puppet-mongodb/tree/v2.2.2) (2018-07-15)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.2.1...v2.2.2)
+
+**Fixed bugs:**
+
+- Could not find scope for mongodb::params [\#428](https://github.com/voxpupuli/puppet-mongodb/issues/428)
+- Fix a circular loading issue with mongodb::repo [\#474](https://github.com/voxpupuli/puppet-mongodb/pull/474) ([ekohl](https://github.com/ekohl))
+
+## [v2.2.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.2.1) (2018-06-25)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.2.0...v2.2.1)
 
