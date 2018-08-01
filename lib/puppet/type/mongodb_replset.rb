@@ -26,6 +26,21 @@ Puppet::Type.newtype(:mongodb_replset) do
     defaultto '127.0.0.1'
   end
 
+  newproperty(:settings) do
+    desc 'The replicaSet settings config'
+
+    def insync?(is)
+      should.each do |k,v|
+        if v != is[k]
+          Puppet.debug "The replicaset settings config is not insync"
+          return false
+        end
+      end
+      Puppet.debug "The replicaset settings config is insync"
+      return true
+    end
+  end
+
   newproperty(:members, array_matching: :all) do
     desc 'The replicaSet members'
 
