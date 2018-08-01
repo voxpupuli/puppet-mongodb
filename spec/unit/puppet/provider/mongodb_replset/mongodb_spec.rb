@@ -7,7 +7,7 @@ require 'spec_helper'
 require 'tempfile'
 
 describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
-  valid_members = ['mongo1:27017', 'mongo2:27017', 'mongo3:27017']
+  valid_members = [{'host'=>'mongo1:27017'}, {'host'=>'mongo2:27017'}, {'host'=>'mongo3:27017'}]
 
   let(:resource) do
     Puppet::Type.type(:mongodb_replset).new(
