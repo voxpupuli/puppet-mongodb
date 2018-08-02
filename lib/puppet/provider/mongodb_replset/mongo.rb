@@ -40,9 +40,8 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
   def self.prefetch(resources)
     instances.each do |prov|
-      if resource = resources[prov.name]
-        resource.provider = prov
-      end
+      resource = resources[prov.name]
+      resource.provider = prov if resource
     end
   end
 
@@ -92,7 +91,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
   end
 
   def rs_remove(host_conf, master)
-    host = host_conf["host"]
+    host = host_conf['host']
     mongo_command("rs.remove('#{host}')", master)
   end
 
@@ -122,7 +121,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
   def master_host(members)
     members.each do |member|
-      status = db_ismaster(member["host"])
+      status = db_ismaster(member['host'])
       return status['primary'] if status.key?('primary')
     end
     false
@@ -136,25 +135,22 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       output = {}
     end
     if output['members']
-      cfg = {
+      return {
         name: output['_id'], # replica set name
         ensure: :present,
-        members: output["members"],
-        settings: output["settings"],
+        members: output['members'],
+        settings: output['settings'],
         provider: :mongo
       }
-    else
-      cfg = nil
     end
-    Puppet.debug("MongoDB replset properties: #{cfg.inspect}")
-    cfg
+    nil
   end
 
   def get_hosts_status(members)
     alive = []
     members.select do |member|
       begin
-        host = member["host"]
+        host = member['host']
         Puppet.debug "Checking replicaset member #{host} ..."
         status = rs_status(host)
         if status.key?('errmsg') && status['errmsg'] == 'not running with --replSet'
@@ -183,45 +179,39 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       end
     end
     dead = members - alive
-    
-    return alive, dead
+    [alive, dead]
   end
 
   def get_members_changes(current_members_conf, new_members_conf)
     # no changes in members config
-    if new_members_conf.nil?
-      return [], [], []
-    end
+    return [], [], [] if new_members_conf.nil?
 
     add_members = []
     remove_members = current_members_conf
     update_members = []
 
     new_members_conf.each do |nm|
-      next unless remove_members.each_with_index do |om,index|
-        if nm["host"] == om["host"]
-                nm.each do |k,v|
-                  if v != om[k]
-                    # new config for existing node
-                    update_members.push(nm)
-                    break
-                  end
-                end
-          # node is found, no need to remove it from cluster
-          remove_members.delete_at(index)
+      next unless remove_members.each_with_index do |om, index|
+        next unless nm['host'] == om['host']
+        nm.each do |k, v|
+          next unless v != om[k]
+          # new config for existing node
+          update_members.push(nm)
           break
         end
-
+        # node is found, no need to remove it from cluster
+        remove_members.delete_at(index)
+        break
       end
       # new node for cluster
       add_members.push(nm)
     end
 
-    return add_members, remove_members, update_members
+    [add_members, remove_members, update_members]
   end
 
-  def get_replset_settings_changes(current_settings,new_settings)
-    new_settings.each do |k,v|
+  def get_replset_settings_changes(current_settings, new_settings)
+    new_settings.each do |k, v|
       current_settings[k] = v
     end
     current_settings
@@ -237,14 +227,14 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       return
     end
 
-    Puppet.debug "Checking for dead and alive members"
-    if !@property_flush[:members].nil? and !@property_flush[:members].empty?
+    Puppet.debug 'Checking for dead and alive members'
+    if !@property_flush[:members].nil? && !@property_flush[:members].empty?
       # Find the alive members so we don't try to add dead members to the replset using new config
       alive_hosts, dead_hosts = get_hosts_status(@property_flush[:members])
       Puppet.debug "Alive members: #{alive_hosts.inspect}"
       Puppet.debug "Dead members: #{dead_hosts.inspect}" unless dead_hosts.empty?
       raise Puppet::Error, "Can't connect to any member of replicaset #{name}." if alive_hosts.empty?
-    elsif !resource[:members].nil? and !resource[:members].empty?
+    elsif !resource[:members].nil? && !resource[:members].empty?
       # Find the alive members using current 'is' config
       alive_hosts, dead_hosts = get_hosts_status(@resource[:members])
       Puppet.debug "Alive members: #{alive_hosts.inspect}"
@@ -254,14 +244,14 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       alive_hosts = []
     end
 
-    Puppet.debug "Checking for new replset"
+    Puppet.debug 'Checking for new replset'
     if @property_flush[:ensure] == :present && @property_hash[:ensure] != :present && !master_host(alive_hosts)
       Puppet.debug "Initializing the replset #{name}"
 
       # Create a replset configuration
       members_conf = alive_hosts.each_with_index.map do |host, id|
         member = host
-        member["_id"] = id
+        member['_id'] = id
         member
       end
 
@@ -270,10 +260,10 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         members: members_conf,
         settings: (!@property_flush[:settings].nil? ? @property_flush[:settings] : {})
       }.to_json
-      
+
       Puppet.debug "Starting replset config is #{replset_conf.to_json}"
       # Set replset members with the first host as the master
-      output = rs_initiate(replset_conf, alive_hosts[0]["host"])
+      output = rs_initiate(replset_conf, alive_hosts[0]['host'])
       if output['ok'].zero?
         raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: #{output['errmsg']}"
       end
@@ -284,7 +274,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
       retry_limit.times do |n|
         begin
-          if db_ismaster(alive_hosts[0]["host"])['ismaster']
+          if db_ismaster(alive_hosts[0]['host'])['ismaster']
             Puppet.debug 'Replica set initialization has successfully ended'
             return true
           else
@@ -294,7 +284,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
           end
         end
       end
-      raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: host #{alive_hosts[0]["host"]} didn't become master"
+      raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: host #{alive_hosts[0]['host']} didn't become master"
 
     else
       Puppet.debug "Checking for replset #{name} changes"
@@ -302,9 +292,9 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       raise Puppet::Error, "Can't find master host for replicaset #{name}." unless master
 
       master_rs_config = rs_config(master)
-      add_members, remove_members, update_members = get_members_changes(master_rs_config["members"],@property_flush[:members])
-      
-      Puppet.debug "Members to be Added: #{add_members.inspect}" unless add_members.length == 0
+      add_members, remove_members, update_members = get_members_changes(master_rs_config['members'], @property_flush[:members])
+
+      Puppet.debug "Members to be Added: #{add_members.inspect}" unless add_members.empty?
       add_members.each do |member|
         retry_limit = 10
         retry_sleep = 3
@@ -324,7 +314,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         raise Puppet::Error, "rs.add() failed to add host to replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
       end
 
-      Puppet.debug "Members to be Removed: #{remove_members.inspect}" unless remove_members.length == 0
+      Puppet.debug "Members to be Removed: #{remove_members.inspect}" unless remove_members.empty?
       remove_members.each do |member|
         retry_limit = 10
         retry_sleep = 3
@@ -344,7 +334,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         raise Puppet::Error, "rs.remove() failed to remove host from replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
       end
 
-      Puppet.debug "Members to be Updated: #{update_members.inspect}" unless update_members.length == 0
+      Puppet.debug "Members to be Updated: #{update_members.inspect}" unless update_members.empty?
       update_members.each do |member|
         retry_limit = 10
         retry_sleep = 3
@@ -364,12 +354,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         raise Puppet::Error, "rs.reconfig() failed to update host in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
       end
 
-      if !@property_flush[:settings].nil? and !@property_flush[:settings].empty?
-        settings = get_replset_settings_changes(master_rs_config,@property_flush[:settings])
+      if !@property_flush[:settings].nil? && !@property_flush[:settings].empty?
+        settings = get_replset_settings_changes(master_rs_config, @property_flush[:settings])
         Puppet.warning "Updating settings for replset #{name}"
         retry_limit = 10
         retry_sleep = 3
-        
         output = {}
         retry_limit.times do |n|
           output = rs_reconfig_settings(settings, master)
@@ -384,7 +373,6 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         end
         raise Puppet::Error, "rs.reconfig() failed to update settings in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
       end
-      
     end
   end
 
