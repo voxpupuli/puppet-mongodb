@@ -184,10 +184,10 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
   def get_members_changes(current_members_conf, new_members_conf)
     # no changes in members config
-    return [], [], [] if new_members_conf.nil?
+    return [[], [], []] if new_members_conf.nil?
 
     add_members = []
-    remove_members = current_members_conf
+    remove_members = current_members_conf || []
     update_members = []
 
     new_members_conf.each do |nm|
