@@ -27,16 +27,20 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         end
         return allusers
       else
-        users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
+        begin
+          users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
 
-        users.map do |user|
-          new(name: user['_id'],
-              ensure: :present,
-              username: user['user'],
-              database: user['db'],
-              roles: from_roles(user['roles'], user['db']),
-              password_hash: user['credentials']['MONGODB-CR'],
-              scram_credentials: user['credentials']['SCRAM-SHA-1'])
+          users.map do |user|
+            new(name: user['_id'],
+                ensure: :present,
+                username: user['user'],
+                database: user['db'],
+                roles: from_roles(user['roles'], user['db']),
+                password_hash: user['credentials']['MONGODB-CR'],
+                scram_credentials: user['credentials']['SCRAM-SHA-1'])
+          end
+        rescue
+          {}
         end
       end
     else
@@ -49,7 +53,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def self.prefetch(resources)
     users = instances
     resources.each do |name, resource|
-      provider = users.find { |user| user.username == (resource[:username]) && user.database == (resource[:database]) }
+      provider = users.find {|user| user.username == (resource[:username]) && user.database == (resource[:database])}
       resources[name].provider = provider if provider
     end
   end
@@ -63,9 +67,9 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
           raise Puppet::Error, "password_hash can't be set on MongoDB older than 3.0; use password instead"
         end
         user = {
-          user: @resource[:username],
-          pwd: @resource[:password],
-          roles: @resource[:roles]
+            user: @resource[:username],
+            pwd: @resource[:password],
+            roles: @resource[:roles]
         }
 
         mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
@@ -84,7 +88,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
 	  "roles": #{@resource[:roles].to_json},
 	  "digestPassword": false
 	}
-	EOS
+        EOS
 
         mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
       end
@@ -155,7 +159,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       else
         grant = roles - @property_hash[:roles]
         unless grant.empty?
-          mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{grant. to_json})")
+          mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{grant.to_json})")
         end
 
         revoke = @property_hash[:roles] - roles

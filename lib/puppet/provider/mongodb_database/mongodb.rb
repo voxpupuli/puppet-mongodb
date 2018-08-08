@@ -6,11 +6,15 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
 
   def self.instances
     require 'json'
-    dbs = JSON.parse mongo_eval('printjson(db.getMongo().getDBs())')
+    begin
+      dbs = JSON.parse mongo_eval('printjson(db.getMongo().getDBs())')
 
-    dbs['databases'].map do |db|
-      new(name: db['name'],
-          ensure: :present)
+      dbs['databases'].map do |db|
+        new(name: db['name'],
+            ensure: :present)
+      end
+    rescue
+      {}
     end
   end
 
@@ -18,7 +22,7 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
   def self.prefetch(resources)
     dbs = instances
     resources.keys.each do |name|
-      provider = dbs.find { |db| db.name == name }
+      provider = dbs.find {|db| db.name == name}
       resources[name].provider = provider if provider
     end
   end
