@@ -137,7 +137,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     if mongorc_file
       res = mongo_cmd(db, conn_string, mongorc_file + cmd_ismaster).to_s.chomp
     end
-    if res.match('Authentication failed') || ! mongorc_file
+    if res.match('Authentication failed') || !mongorc_file
       res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
     end
     res.eql?('true') ? true : false
