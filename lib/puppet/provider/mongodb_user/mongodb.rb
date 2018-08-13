@@ -39,8 +39,9 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
                 password_hash: user['credentials']['MONGODB-CR'],
                 scram_credentials: user['credentials']['SCRAM-SHA-1'])
           end
-        rescue
-          {}
+        rescue e
+      	  Puppet.warning 'Could not get instances for mongodb_database: #{e}'
+          []
         end
       end
     else
@@ -53,7 +54,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def self.prefetch(resources)
     users = instances
     resources.each do |name, resource|
-      provider = users.find {|user| user.username == (resource[:username]) && user.database == (resource[:database])}
+      provider = users.find { |user| user.username == (resource[:username]) && user.database == (resource[:database]) }
       resources[name].provider = provider if provider
     end
   end
