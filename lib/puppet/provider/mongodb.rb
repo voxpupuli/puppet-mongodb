@@ -138,10 +138,8 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       res = mongo_cmd(db, conn_string, mongorc_file + cmd_ismaster).to_s.chomp
     end
     if res.match(/Authentication failed/) or not mongorc_file
-      Puppet.warning('db_ismaster authentication failed')
       res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
     end
-    Puppet.warning("db_ismaster res: #{res}")
     res.eql?('true') ? true : false
   end
 
@@ -159,8 +157,6 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     retry_count = retries
     retry_sleep = 3
     cmd = mongorc_file + cmd if mongorc_file
-
-    Puppet.warning("mongoeval cmd: #{cmd}")
 
     out = nil
     retry_count.times do |n|
