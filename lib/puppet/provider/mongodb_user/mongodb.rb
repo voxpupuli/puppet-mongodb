@@ -39,7 +39,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
                 password_hash: user['credentials']['MONGODB-CR'],
                 scram_credentials: user['credentials']['SCRAM-SHA-1'])
           end
-        rescue e
+        rescue StandardError => e
           Puppet.warning 'Could not get instances for mongodb_database: #{e}'
           []
         end
