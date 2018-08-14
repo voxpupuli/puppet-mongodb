@@ -13,8 +13,8 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
         new(name: db['name'],
             ensure: :present)
       end
-    rescue StandardError => e
-      Puppet.warning('Getting instances of mongodb_database failed: #{e}')
+    rescue => e
+      Puppet.warning("Getting instances of mongodb_database failed: #{e}")
       []
     end
   end
