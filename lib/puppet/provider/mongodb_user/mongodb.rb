@@ -40,7 +40,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
                 scram_credentials: user['credentials']['SCRAM-SHA-1'])
           end
         rescue e
-      	  Puppet.warning 'Could not get instances for mongodb_database: #{e}'
+          Puppet.warning 'Could not get instances for mongodb_database: #{e}'
           []
         end
       end
@@ -68,9 +68,9 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
           raise Puppet::Error, "password_hash can't be set on MongoDB older than 3.0; use password instead"
         end
         user = {
-            user: @resource[:username],
-            pwd: @resource[:password],
-            roles: @resource[:roles]
+          user: @resource[:username],
+          pwd: @resource[:password],
+          roles: @resource[:roles]
         }
 
         mongo_eval("db.addUser(#{user.to_json})", @resource[:database])
