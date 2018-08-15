@@ -10,7 +10,13 @@ def with_debian_facts
       operatingsystem: 'Debian',
       operatingsystemmajrelease: 8,
       osfamily: 'Debian',
-      root_home: '/root'
+      root_home: '/root',
+      os: {
+        name: 'Debian',
+        release: {
+          major: '8'
+        }
+      }
     }
   end
 end
@@ -23,7 +29,13 @@ def with_centos_facts
       operatingsystemrelease: '7.0',
       operatingsystemmajrelease: '7',
       osfamily: 'RedHat',
-      root_home: '/root'
+      root_home: '/root',
+      os: {
+        name: 'CentOS',
+        release: {
+          major: '7'
+        }
+      }
     }
   end
 end
@@ -36,7 +48,13 @@ def with_redhat_facts
       operatingsystemrelease: '7.0',
       operatingsystemmajrelease: '7',
       osfamily: 'RedHat',
-      root_home: '/root'
+      root_home: '/root',
+      os: {
+        name: 'RedHat',
+        release: {
+          major: '7'
+        }
+      }
     }
   end
 end
