@@ -427,7 +427,7 @@ Mutually exclusive with `replset_members` param.
 ```puppet
 class mongodb::server {
   replset        => 'rsmain',
-  replset_config => { 'rsmain' => { ensure  => present, members => ['host1:27017', 'host2:27017', 'host3:27017']  }  }
+  replset_config => { 'rsmain' => { ensure  => present, settings => { heartbeatTimeoutSecs => 15, getLastErrorModes => { ttmode => { dc => 1 } } }, members => [{'host'=>'host1:27017', 'tags':{ 'dc' : 'east'}}, { 'host' => 'host2:27017'}, 'host3:27017']  }  }
 
 }
 ```
