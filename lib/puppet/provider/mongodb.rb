@@ -142,7 +142,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     res = mongo_cmd(db, conn_string, full_command).to_s.chomp
 
     # Retry command without authentication when mongorc_file is set and authentication failed
-    if mongorc_file  && res =~ %r{Authentication failed}
+    if mongorc_file && res =~ %r{Authentication failed}
       res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
     end
     res.eql?('true') ? true : false
