@@ -69,7 +69,7 @@ class mongodb::server::config {
   $storage_engine   = $mongodb::server::storage_engine
 
   if $mongodb::server::version == undef or $mongodb::server::version == '' {
-    $version = $::mongodb_version
+    $version = $facts['mongodb_version']
   } else {
     $version = $mongodb::server::version
   }
