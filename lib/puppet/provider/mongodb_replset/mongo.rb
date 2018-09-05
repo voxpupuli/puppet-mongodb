@@ -388,8 +388,6 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       raise
     end
 
-    output.gsub!(%r{\w+\((.+?)\)}, '\1')
-
     # Hack to avoid non-json empty sets
     output = '{}' if output == "null\n"
     output = '{}' if output == "\nnull\n"
