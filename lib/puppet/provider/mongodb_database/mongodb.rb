@@ -6,24 +6,22 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
 
   def self.instances
     require 'json'
-    begin
-      dbs = JSON.parse mongo_eval('printjson(db.getMongo().getDBs())')
+    dbs = JSON.parse mongo_eval('printjson(db.getMongo().getDBs())')
 
-      dbs['databases'].map do |db|
-        new(name: db['name'],
-            ensure: :present)
-      end
-    rescue => e
-      Puppet.warning("Getting instances of mongodb_database failed: #{e}")
-      []
+    dbs['databases'].map do |db|
+      new(name: db['name'],
+          ensure: :present)
     end
+  rescue => e
+    Puppet.warning("Getting instances of mongodb_database failed: #{e}")
+    []
   end
 
   # Assign prefetched dbs based on name.
   def self.prefetch(resources)
     dbs = instances
     resources.keys.each do |name|
-      provider = dbs.find { |db| db.name == name }
+      provider = dbs.find {|db| db.name == name}
       resources[name].provider = provider if provider
     end
   end
