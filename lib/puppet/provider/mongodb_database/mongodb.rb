@@ -21,7 +21,7 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
   def self.prefetch(resources)
     dbs = instances
     resources.keys.each do |name|
-      provider = dbs.find {|db| db.name == name}
+      provider = dbs.find { |db| db.name == name }
       resources[name].provider = provider if provider
     end
   end
