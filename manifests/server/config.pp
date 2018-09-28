@@ -163,6 +163,12 @@ class mongodb::server::config {
         }
       }
     }
+
+    file { $pidfilepath:
+      ensure  => present,
+      owner   => $user,
+      group   => $group,
+    }
   } else {
     file { $dbpath:
       ensure => absent,
@@ -171,6 +177,9 @@ class mongodb::server::config {
     }
     file { $config:
       ensure => absent,
+    }
+    file { $pidfilepath:
+      ensure  => absent,
     }
   }
 
