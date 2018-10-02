@@ -1,6 +1,6 @@
 module Puppet
   module Util
-    class MongodbOutput
+    module MongodbOutput
       def self.sanitize(data)
         # Dirty hack to remove JavaScript objects
         data.gsub!(%r{\w+\((\d+).+?\)}, '\1') # Remove extra parameters from 'Timestamp(1462971623, 1)' Objects
