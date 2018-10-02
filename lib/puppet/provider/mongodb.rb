@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'util', 'mongodb_output'))
 require 'yaml'
 require 'json'
 class Puppet::Provider::Mongodb < Puppet::Provider
@@ -173,14 +174,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}"
     end
 
-    # Dirty hack to remove JavaScript objects
-    out.gsub!(%r{\w+\((\d+).+?\)}, '\1') # Remove extra parameters from 'Timestamp(1462971623, 1)' Objects
-    out.gsub!(%r{\w+\((.+?)\)}, '\1')
-
-    out.gsub!(%r{^Error\:.+}, '')
-    out.gsub!(%r{^.*warning\:.+}, '') # remove warnings if sslAllowInvalidHostnames is true
-    out.gsub!(%r{^.*The server certificate does not match the host name.+}, '') # remove warnings if sslAllowInvalidHostnames is true mongo 3.x
-    out
+    Puppet::Util::MongodbOutput.sanitize(out)
   end
 
   def mongo_eval(cmd, db = 'admin', retries = 10, host = nil)
