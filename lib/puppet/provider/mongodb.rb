@@ -1,3 +1,6 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
+require 'puppet/util/mongodb_output'
+
 require 'yaml'
 require 'json'
 class Puppet::Provider::Mongodb < Puppet::Provider
@@ -173,13 +176,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}"
     end
 
-    %w[ObjectId NumberLong].each do |data_type|
-      out.gsub!(%r{#{data_type}\(([^)]*)\)}, '\1')
-    end
-    out.gsub!(%r{^Error\:.+}, '')
-    out.gsub!(%r{^.*warning\:.+}, '') # remove warnings if sslAllowInvalidHostnames is true
-    out.gsub!(%r{^.*The server certificate does not match the host name.+}, '') # remove warnings if sslAllowInvalidHostnames is true mongo 3.x
-    out
+    Puppet::Util::MongodbOutput.sanitize(out)
   end
 
   def mongo_eval(cmd, db = 'admin', retries = 10, host = nil)

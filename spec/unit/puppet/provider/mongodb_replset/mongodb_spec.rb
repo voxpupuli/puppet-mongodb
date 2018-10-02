@@ -135,7 +135,7 @@ EOT
 	"me" : "mongo1:27017",
 	"maxBsonObjectSize" : 16777216,
 	"maxMessageSizeBytes" : 48000000,
-	"localTime" : ISODate("2014-01-10T19:31:51.281Z"),
+	"localTime" : "2014-01-10T19:31:51.281Z",
 	"ok" : 1
 }
 EOT
