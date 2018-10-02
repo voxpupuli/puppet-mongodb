@@ -1,4 +1,6 @@
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'util', 'mongodb_output'))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
+require 'puppet/util/mongodb_output'
+
 require 'yaml'
 require 'json'
 class Puppet::Provider::Mongodb < Puppet::Provider
