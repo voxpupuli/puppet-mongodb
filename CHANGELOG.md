@@ -4,7 +4,22 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v2.3.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.3.0) (2018-08-19)
+## [v2.4.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.4.0) (2018-10-05)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.3.0...v2.4.0)
+
+**Fixed bugs:**
+
+- Fallback to monogb version from fact if no explicit version got provided [\#485](https://github.com/voxpupuli/puppet-mongodb/pull/485) ([fbrehm](https://github.com/fbrehm))
+
+**Merged pull requests:**
+
+- modulesync 2.1.0, allow puppet 6.x and puppetlabs/apt 6.x [\#490](https://github.com/voxpupuli/puppet-mongodb/pull/490) ([bastelfreak](https://github.com/bastelfreak))
+- allow puppetlabs/stdlib 5.x [\#484](https://github.com/voxpupuli/puppet-mongodb/pull/484) ([bastelfreak](https://github.com/bastelfreak))
+- add gsub to replace invalid json values with a 1 [\#468](https://github.com/voxpupuli/puppet-mongodb/pull/468) ([TomRitserveldt](https://github.com/TomRitserveldt))
+- add rs.slaveOk to run before the getDBs call [\#446](https://github.com/voxpupuli/puppet-mongodb/pull/446) ([TomRitserveldt](https://github.com/TomRitserveldt))
+
+## [v2.3.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.3.0) (2018-08-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.2.2...v2.3.0)
 
