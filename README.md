@@ -219,9 +219,9 @@ When `manage_package_repo` is set to true, this setting indicates if it will
 use the Community Edition (false, the default) or the Enterprise one (true).
 
 ##### `version`
-The version of MonogDB to install/manage. This is a simple way of providing
-a specific version such as '2.2' or '2.4' for example. If not specified,
-the module will use the default for your OS distro.
+The version of MonogDB to install/manage. This is needed when managing
+repositories. If not specified, the module will use the default for your OS
+distro.
 
 ##### `repo_location`
 This setting can be used to override the default MongoDB repository location.
@@ -340,7 +340,6 @@ Default: None
 ##### `objcheck`
 Forces the mongod to validate all requests from clients upon receipt to ensure
 that clients never insert invalid documents into the database.
-Default: on v2.4 default to true and on earlier version to false
 
 ##### `quota`
 Set to true to enable a maximum limit for the number of data files each database

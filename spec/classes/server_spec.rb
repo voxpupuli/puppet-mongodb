@@ -37,16 +37,16 @@ describe 'mongodb::server' do
             with_mode('0644').
             with_owner('root').
             with_group('root').
-            with_content(%r{^dbpath=/var/lib/mongodb$}).
-            with_content(%r{^bind_ip\s=\s127\.0\.0\.1$}).
-            with_content(%r{^logappend=true$}).
-            with_content(%r{^logpath=/var/log/mongodb/mongodb.log$})
+            with_content(%r{^storage\.dbPath: /var/lib/mongodb$}).
+            with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
+            with_content(%r{^systemLog\.logAppend: true$}).
+            with_content(%r{^systemLog\.path: /var/log/mongodb/mongodb.log$})
         end
 
         if facts[:os]['family'] == 'Debian'
-          it { is_expected.not_to contain_file(config_file).with_content(%r{^fork=true$}) }
+          it { is_expected.not_to contain_file(config_file).with_content(%r{fork}) }
         else
-          it { is_expected.to contain_file(config_file).with_content(%r{^fork=true$}) }
+          it { is_expected.to contain_file(config_file).with_content(%r{^  fork: true$}) }
         end
 
         it { is_expected.to contain_file('/root/.mongorc.js').with_ensure('absent') }
@@ -60,7 +60,7 @@ describe 'mongodb::server' do
           }'
         end
 
-        it { is_expected.to compile.with_all_deps }
+        it_behaves_like 'server classes'
       end
 
       describe 'with create_admin => true' do
@@ -92,9 +92,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it {
-          is_expected.to contain_file('/etc/custom-mongod.conf')
-        }
+        it { is_expected.to contain_file('/etc/custom-mongod.conf') }
       end
 
       describe 'with absent ensure' do
@@ -104,9 +102,11 @@ describe 'mongodb::server' do
           }
         end
 
-        it {
-          is_expected.to contain_file(config_file).with_ensure('absent')
-        }
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('mongodb::server::install') }
+        it { is_expected.to contain_class('mongodb::server::config') }
+        it { is_expected.to contain_class('mongodb::server::service') }
+        it { is_expected.to contain_file(config_file).with_ensure('absent') }
       end
 
       describe 'with specific bind_ip values and ipv6' do
@@ -117,10 +117,11 @@ describe 'mongodb::server' do
           }
         end
 
-        it {
-          is_expected.to contain_file(config_file).with_content(%r{bind_ip\s=\s127\.0\.0\.1\,fd00:beef:dead:55::143})
-          is_expected.to contain_file(config_file).with_content(%r{ipv6=true})
-        }
+        it do
+          is_expected.to contain_file(config_file).
+            with_content(%r{^net\.bindIp:  127\.0\.0\.1\,fd00:beef:dead:55::143$}).
+            with_content(%r{^net\.ipv6: true$})
+        end
       end
 
       describe 'with specific bind_ip values' do
@@ -130,9 +131,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it {
-          is_expected.to contain_file(config_file).with_content(%r{bind_ip\s=\s127\.0\.0\.1\,10\.1\.1\.13})
-        }
+        it { is_expected.to contain_file(config_file).with_content(%r{^net\.bindIp:  127\.0\.0\.1\,10\.1\.1\.13$}) }
       end
 
       describe 'when specifying auth to true' do
@@ -142,7 +141,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^auth=true}) }
+        it { is_expected.to contain_file(config_file).with_content(%r{^security\.authorization: enabled$}) }
         it { is_expected.to contain_file('/root/.mongorc.js') }
       end
 
@@ -153,7 +152,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^setParameter = textSearchEnable=true}) }
+        it { is_expected.to contain_file(config_file).with_content(%r{^setParameter: textSearchEnable=true}) }
       end
 
       describe 'with journal:' do
@@ -163,9 +162,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it {
-          is_expected.to contain_file(config_file).with_content(%r{^journal = true})
-        }
+        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
       end
 
       # check nested quota and quotafiles
@@ -177,9 +174,7 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).with_content(%r{^quota = true})
-          }
+          it { is_expected.to contain_file(config_file).with_content(%r{^storage\.quota\.enforced: true$}) }
         end
 
         context 'true and with quotafiles' do
@@ -192,8 +187,8 @@ describe 'mongodb::server' do
 
           it {
             is_expected.to contain_file(config_file).
-              with_content(%r{quota = true}).
-              with_content(%r{quotaFiles = 1})
+              with_content(%r{^storage\.quota\.enforced: true$}).
+              with_content(%r{^storage\.quota\.maxFilesPerDB: 1$})
           }
         end
       end
@@ -207,7 +202,7 @@ describe 'mongodb::server' do
             }
           end
 
-          it { is_expected.to contain_file(config_file).with_content(%r{^syslog = true}) }
+          it { is_expected.to contain_file(config_file).with_content(%r{^systemLog\.destination: syslog$}) }
         end
 
         context 'if logpath is also set an error should be raised' do
@@ -239,7 +234,7 @@ describe 'mongodb::server' do
               with_owner('root').
               with_group('root').
               with_mode('0600').
-              with_content(%r{db.auth\('admin', 'password'\)})
+              with_content(%r{db\.auth\('admin', 'password'\)})
           }
         end
 
@@ -257,7 +252,8 @@ describe 'mongodb::server' do
       describe 'with custom pidfilemode' do
         let :params do
           {
-            pidfilepath: '/var/run/mongodb/mongod.pid', pidfilemode: '0640'
+            pidfilepath: '/var/run/mongodb/mongod.pid',
+            pidfilemode: '0640'
           }
         end
 
@@ -286,85 +282,43 @@ describe 'mongodb::server' do
         context 'enabled' do
           let :params do
             {
-              create_admin: false,
-              store_creds: true,
-              user: 'mongod',
-              group: 'mongod',
-              bind_ip: ['0.0.0.0'],
-              fork: true,
-              logpath: '/var/log/mongo/mongod.log',
-              logappend: true,
               ssl: true,
               ssl_mode: 'requireSSL'
             }
           end
 
-          it { is_expected.to contain_file(config_file).with_content(%r{sslMode = requireSSL}) }
+          it { is_expected.to contain_file(config_file).with_content(%r{^net\.ssl\.mode: requireSSL$}) }
         end
 
         context 'disabled' do
           let :params do
             {
-              create_admin: false,
-              store_creds: true,
-              ensure: 'present',
-              user: 'mongod',
-              group: 'mongod',
-              bind_ip: ['0.0.0.0'],
-              fork: true,
-              logpath: '/var/log/mongo/mongod.log',
-              logappend: true
+              ssl: false
             }
           end
 
-          it { is_expected.not_to contain_file(config_file).with_content(%r{sslMode}) }
+          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.ssl\.mode}) }
         end
       end
 
       context 'setting nohttpinterface' do
         it "isn't set when undef" do
-          is_expected.not_to contain_file(config_file).with_content(%r{nohttpinterface})
+          is_expected.not_to contain_file(config_file).with_content(%r{net\.http\.enabled})
         end
 
-        describe 'sets nohttpinterface to true when true' do
+        describe 'sets net.http.enabled to false when true' do
           let(:params) do
             { nohttpinterface: true }
           end
 
-          it { is_expected.to contain_file(config_file).with_content(%r{nohttpinterface = true}) }
+          it { is_expected.to contain_file(config_file).with_content(%r{^net\.http\.enabled: false$}) }
         end
-        describe 'sets nohttpinterface to false when false' do
+        describe 'sets net.http.enabled to true when false' do
           let(:params) do
             { nohttpinterface: false }
           end
 
-          it { is_expected.to contain_file(config_file).with_content(%r{nohttpinterface = false}) }
-        end
-
-        context 'on >= 2.6' do
-          let(:pre_condition) do
-            "class { 'mongodb::globals': version => '2.6.6', }"
-          end
-
-          it "isn't set when undef" do
-            is_expected.not_to contain_file(config_file).with_content(%r{net\.http\.enabled})
-          end
-
-          describe 'sets net.http.enabled false when true' do
-            let(:params) do
-              { nohttpinterface: true }
-            end
-
-            it { is_expected.to contain_file(config_file).with_content(%r{net\.http\.enabled: false}) }
-          end
-
-          describe 'sets net.http.enabled true when false' do
-            let(:params) do
-              { nohttpinterface: false }
-            end
-
-            it { is_expected.to contain_file(config_file).with_content(%r{net\.http\.enabled: true}) }
-          end
+          it { is_expected.to contain_file(config_file).with_content(%r{^net\.http\.enabled: true$}) }
         end
       end
 
@@ -429,6 +383,6 @@ describe 'mongodb::server' do
       { osfamily: 'Solaris' }
     end
 
-    it { expect { is_expected.to raise_error(Puppet::Error) } }
+    it { is_expected.to raise_error(Puppet::Error) }
   end
 end

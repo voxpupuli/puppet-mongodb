@@ -67,7 +67,6 @@ class mongodb::server::config {
   $ssl_invalid_hostnames = $mongodb::server::ssl_invalid_hostnames
   $ssl_mode         = $mongodb::server::ssl_mode
   $storage_engine   = $mongodb::server::storage_engine
-  $version          = $mongodb::server::version
 
   File {
     owner => $user,
@@ -108,16 +107,10 @@ class mongodb::server::config {
       # Template has available user-supplied data
       # - $config_data
       $cfg_content = template($config_template)
-    } elsif $version and (versioncmp($version, '2.6.0') >= 0) {
+    } else {
       # Template has available user-supplied data
       # - $config_data
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
-    } else {
-      # Fall back to oldest most basic config
-      #
-      # Template has available user-supplied data
-      # - $config_data
-      $cfg_content = template('mongodb/mongodb.conf.erb')
     }
 
     file { $config:

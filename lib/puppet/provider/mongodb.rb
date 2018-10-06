@@ -27,44 +27,19 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def self.mongo_conf
-    file = mongod_conf_file
-    # The mongo conf is probably a key-value store, even though 2.6 is
-    # supposed to use YAML, because the config template is applied
-    # based on $mongodb::globals::version which is the user will not
-    # necessarily set. This attempts to get the port from both types of
-    # config files.
-    config = YAML.load_file(file)
-    config_hash = {}
-    if config.is_a?(Hash) # Using a valid YAML file for mongo 2.6
-      config_hash['bindip'] = config['net.bindIp']
-      config_hash['port'] = config['net.port']
-      config_hash['ipv6'] = config['net.ipv6']
-      config_hash['allowInvalidHostnames'] = config['net.ssl.allowInvalidHostnames']
-      config_hash['ssl'] = config['net.ssl.mode']
-      config_hash['sslcert'] = config['net.ssl.PEMKeyFile']
-      config_hash['sslca'] = config['net.ssl.CAFile']
-      config_hash['auth'] = config['security.authorization']
-      config_hash['shardsvr'] = config['sharding.clusterRole']
-      config_hash['confsvr'] = config['sharding.clusterRole']
-    else # It has to be a key-value config file
-      config = {}
-      File.readlines(file).map do |line|
-        k, v = line.split('=')
-        config[k.rstrip] = v.lstrip.chomp if k && v
-      end
-      config_hash['bindip'] = config['bind_ip']
-      config_hash['port'] = config['port']
-      config_hash['ipv6'] = config['ipv6']
-      config_hash['ssl'] = config['sslOnNormalPorts']
-      config_hash['allowInvalidHostnames'] = config['allowInvalidHostnames']
-      config_hash['sslcert'] = config['sslPEMKeyFile']
-      config_hash['sslca'] = config['sslCAFile']
-      config_hash['auth'] = config['auth']
-      config_hash['shardsvr'] = config['shardsvr']
-      config_hash['confsvr'] = config['confsvr']
-    end
-
-    config_hash
+    config = YAML.load_file(mongod_conf_file) || {}
+    {
+      'bindip' => config['net.bindIp'],
+      'port' => config['net.port'],
+      'ipv6' => config['net.ipv6'],
+      'allowInvalidHostnames' => config['net.ssl.allowInvalidHostnames'],
+      'ssl' => config['net.ssl.mode'],
+      'sslcert' => config['net.ssl.PEMKeyFile'],
+      'sslca' => config['net.ssl.CAFile'],
+      'auth' => config['security.authorization'],
+      'shardsvr' => config['sharding.clusterRole'],
+      'confsvr' => config['sharding.clusterRole']
+    }
   end
 
   def self.ipv6_is_enabled(config = nil)
@@ -190,15 +165,6 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def mongo_version
     self.class.mongo_version
-  end
-
-  def self.mongo_24?
-    v = mongo_version
-    !v[%r{^2\.4\.}].nil?
-  end
-
-  def mongo_24?
-    self.class.mongo_24?
   end
 
   def self.mongo_26?
