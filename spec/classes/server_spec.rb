@@ -19,11 +19,18 @@ describe 'mongodb::server' do
       let(:facts) { facts }
 
       let(:config_file) do
-        case facts[:os]['family']
-        when 'Debian'
+        if facts[:os]['family'] == 'Debian'
           '/etc/mongodb.conf'
         else
           '/etc/mongod.conf'
+        end
+      end
+
+      let(:log_path) do
+        if facts[:os]['family'] == 'Debian'
+          '/var/log/mongodb/mongodb.log'
+        else
+          '/var/log/mongodb/mongod.log'
         end
       end
 
@@ -40,7 +47,7 @@ describe 'mongodb::server' do
             with_content(%r{^storage\.dbPath: /var/lib/mongodb$}).
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
             with_content(%r{^systemLog\.logAppend: true$}).
-            with_content(%r{^systemLog\.path: /var/log/mongodb/mongodb.log$})
+            with_content(%r{^systemLog\.path: #{log_path}$})
         end
 
         if facts[:os]['family'] == 'Debian'
