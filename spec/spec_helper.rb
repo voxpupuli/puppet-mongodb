@@ -36,5 +36,3 @@ RSpec.configure do |c|
     RSpec::Puppet::Coverage.report!
   end
 end
-
-require 'spec_helper_local'
