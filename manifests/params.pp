@@ -171,27 +171,4 @@ class mongodb::params inherits mongodb::globals {
       fail("Osfamily ${::osfamily} and ${::operatingsystem} is not supported")
     }
   }
-
-  case $::operatingsystem {
-    'Debian': {
-      case $::operatingsystemmajrelease {
-        '8': {
-          $service_provider = pick($service_provider, 'systemd')
-        }
-        default: {
-          $service_provider = pick($service_provider, 'debian')
-        }
-      }
-    }
-    'Ubuntu': {
-      if versioncmp($::operatingsystemmajrelease, '16') >= 0 {
-        $service_provider = pick($service_provider, 'systemd')
-      } else {
-        $service_provider = pick($service_provider, 'upstart')
-      }
-    }
-    default: {
-      $service_provider = undef
-    }
-  }
 }
