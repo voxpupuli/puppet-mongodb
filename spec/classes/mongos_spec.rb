@@ -37,7 +37,7 @@ describe 'mongodb::mongos' do
           it { is_expected.not_to contain_file('/etc/sysconfig/mongos') }
         end
 
-        if %w[RedHat Debian].include?(facts[:osfamily])
+        if facts[:osfamily] == 'Debian'
           it { is_expected.to contain_file('/etc/init.d/mongos') }
         else
           it { is_expected.not_to contain_file('/etc/init.d/mongos') }
