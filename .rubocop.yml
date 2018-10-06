@@ -543,3 +543,6 @@ Style/FormatStringToken:
 # are located.
 RSpec/FilePath:
   Enabled: false
+
+RSpec/MessageSpies:
+  EnforcedStyle: receive

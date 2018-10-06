@@ -1,7 +1,3 @@
-RSpec.configure do |config|
-  config.mock_with :rspec
-end
-
 def with_debian_facts
   let :facts do
     {

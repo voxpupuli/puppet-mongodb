@@ -37,16 +37,17 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
 EOT
     end
 
-    # rubocop:disable RSpec/MessageSpies
+    # rubocop:disable RSpec/MultipleExpectations
     it 'creates a replicaset' do
-      allow(provider.class).to receive(:replset_properties)
-      allow(provider).to receive(:alive_members).and_return(valid_members)
-      allow(provider).to receive(:master_host).and_return(false)
+      expect(provider.class).to receive(:replset_properties)
+      expect(provider).to receive(:get_hosts_status).and_return([valid_members, []])
+      expect(provider).to receive(:master_host).and_return(false)
       expect(provider).to receive(:rs_initiate).with('{"_id":"rs_test","members":[{"host":"mongo1:27017","_id":0},{"host":"mongo2:27017","_id":1},{"host":"mongo3:27017","_id":2}],"settings":{}}', 'mongo1:27017').and_return('info' => 'Config now saved locally.  Should come online in about a minute.', 'ok' => 1)
-      allow(provider).to receive(:db_ismaster).and_return('{"ismaster" : true}')
+      expect(provider).to receive(:db_ismaster).and_return('{"ismaster" : true}')
       provider.create
       provider.flush
     end
+    # rubocop:enable RSpec/MultipleExpectations
   end
 
   describe '#exists?' do
