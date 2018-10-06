@@ -10,9 +10,11 @@ class mongodb::params inherits mongodb::globals {
   $restart               = true
   $create_admin          = false
   $admin_username        = 'admin'
-  $admin_roles           = ['userAdmin', 'readWrite', 'dbAdmin', 'dbAdminAnyDatabase', 'readAnyDatabase',
-    'readWriteAnyDatabase', 'userAdminAnyDatabase', 'clusterAdmin', 'clusterManager', 'clusterMonitor',
-    'hostManager', 'root', 'restore']
+  $admin_roles           = [
+    'userAdmin', 'readWrite', 'dbAdmin', 'dbAdminAnyDatabase', 'readAnyDatabase',
+    'readWriteAnyDatabase', 'userAdminAnyDatabase', 'clusterAdmin',
+    'clusterManager', 'clusterMonitor', 'hostManager', 'root', 'restore',
+  ]
   $handle_creds          = true
   $store_creds           = false
   $rcfile                = "${::root_home}/.mongorc.js"
@@ -40,7 +42,7 @@ class mongodb::params inherits mongodb::globals {
       if $manage_package {
         $user        = pick($mongodb::globals::user, 'mongod')
         $group       = pick($mongodb::globals::group, 'mongod')
-        if ($version == undef) {
+        if $version == undef {
           $server_package_name   = pick($mongodb::globals::server_package_name, 'mongodb-org-server')
           $client_package_name   = pick($mongodb::globals::client_package_name, 'mongodb-org-shell')
           $mongos_package_name   = pick($mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
@@ -48,22 +50,12 @@ class mongodb::params inherits mongodb::globals {
           $package_ensure_client = true
           $package_ensure_mongos = true
         } else {
-          # check if the version is greater than 2.6
-          if $version and (versioncmp($version, '2.6.0') >= 0) {
-            $server_package_name   = pick($mongodb::globals::server_package_name, 'mongodb-org-server')
-            $client_package_name   = pick($mongodb::globals::client_package_name, 'mongodb-org-shell')
-            $mongos_package_name   = pick($mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
-            $package_ensure        = $version
-            $package_ensure_client = $version
-            $package_ensure_mongos = $version
-          } else {
-            $server_package_name   = pick($mongodb::globals::server_package_name, 'mongodb-10gen')
-            $client_package_name   = pick($mongodb::globals::client_package_name, 'mongodb-10gen')
-            $mongos_package_name   = pick($mongodb::globals::mongos_package_name, 'mongodb-10gen')
-            $package_ensure        = $version
-            $package_ensure_client = $version #this is still needed in case they are only installing the client
-            $package_ensure_mongos = $version
-          }
+          $server_package_name   = pick($mongodb::globals::server_package_name, 'mongodb-org-server')
+          $client_package_name   = pick($mongodb::globals::client_package_name, 'mongodb-org-shell')
+          $mongos_package_name   = pick($mongodb::globals::mongos_package_name, 'mongodb-org-mongos')
+          $package_ensure        = $version
+          $package_ensure_client = $version
+          $package_ensure_mongos = $version
         }
         $service_name            = pick($mongodb::globals::service_name, 'mongod')
         $mongos_service_name     = pick($mongodb::globals::mongos_service_name, 'mongos')
@@ -80,7 +72,7 @@ class mongodb::params inherits mongodb::globals {
       } else {
         # RedHat/CentOS doesn't come with a prepacked mongodb
         # so we assume that you are using EPEL repository.
-        if ($version == undef) {
+        if $version == undef {
           $package_ensure = true
           $package_ensure_client = true
           $package_ensure_mongos = true
@@ -113,10 +105,10 @@ class mongodb::params inherits mongodb::globals {
       if $manage_package {
         $user  = pick($mongodb::globals::user, 'mongodb')
         $group = pick($mongodb::globals::group, 'mongodb')
-        if $mongodb::globals::use_enterprise_repo == true {
-            $edition = 'enterprise'
+        if $mongodb::globals::use_enterprise_repo {
+          $edition = 'enterprise'
         } else {
-            $edition = 'org'
+          $edition = 'org'
         }
         if ($version == undef) {
           $server_package_name = pick($mongodb::globals::server_package_name, "mongodb-${edition}-server")
@@ -128,25 +120,14 @@ class mongodb::params inherits mongodb::globals {
           $service_name = pick($mongodb::globals::service_name, 'mongod')
           $config = '/etc/mongod.conf'
         } else {
-          # check if the version is greater than 2.6
-          if $version and (versioncmp($version, '2.6.0') >= 0) {
-            $server_package_name = pick($mongodb::globals::server_package_name, "mongodb-${edition}-server")
-            $client_package_name = pick($mongodb::globals::client_package_name, "mongodb-${edition}-shell")
-            $mongos_package_name = pick($mongodb::globals::mongos_package_name, "mongodb-${edition}-mongos")
-            $package_ensure = $version
-            $package_ensure_client = $version
-            $package_ensure_mongos = $version
-            $service_name = pick($mongodb::globals::service_name, 'mongod')
-            $config = '/etc/mongod.conf'
-          } else {
-            $server_package_name = pick($mongodb::globals::server_package_name, 'mongodb-10gen')
-            $client_package_name = pick($mongodb::globals::client_package_name, 'mongodb-10gen')
-            $mongos_package_name = pick($mongodb::globals::mongos_package_name, 'mongodb-10gen')
-            $package_ensure = $version
-            $package_ensure_client = $version #this is still needed in case they are only installing the client
-            $service_name = pick($mongodb::globals::service_name, 'mongodb')
-            $config = '/etc/mongodb.conf'
-          }
+          $server_package_name = pick($mongodb::globals::server_package_name, "mongodb-${edition}-server")
+          $client_package_name = pick($mongodb::globals::client_package_name, "mongodb-${edition}-shell")
+          $mongos_package_name = pick($mongodb::globals::mongos_package_name, "mongodb-${edition}-mongos")
+          $package_ensure = $version
+          $package_ensure_client = $version
+          $package_ensure_mongos = $version
+          $service_name = pick($mongodb::globals::service_name, 'mongod')
+          $config = '/etc/mongod.conf'
         }
         $mongos_service_name     = pick($mongodb::globals::mongos_service_name, 'mongos')
         $mongos_config           = '/etc/mongodb-shard.conf'
@@ -155,11 +136,7 @@ class mongodb::params inherits mongodb::globals {
         $pidfilepath             = pick($mongodb::globals::pidfilepath, '/var/run/mongod.pid')
         $bind_ip                 = pick($mongodb::globals::bind_ip, ['127.0.0.1'])
       } else {
-        # although we are living in a free world,
-        # I would not recommend to use the prepacked
-        # mongodb server on Ubuntu 12.04 or Debian 6/7,
-        # because its really outdated
-        if ($version == undef) {
+        if $version == undef {
           $package_ensure = true
           $package_ensure_client = true
           $package_ensure_mongos = true
