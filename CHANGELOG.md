@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.4.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.4.1) (2018-10-08)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.4.0...v2.4.1)
+
+**Fixed bugs:**
+
+- Revert "Fallback to monogb version from fact if no explicit version got provided" [\#498](https://github.com/voxpupuli/puppet-mongodb/pull/498) ([ekohl](https://github.com/ekohl))
+- Also autorequire mongod service in types [\#492](https://github.com/voxpupuli/puppet-mongodb/pull/492) ([ekohl](https://github.com/ekohl))
+
+**Closed issues:**
+
+- invalid byte sequence in US-ASCII [\#426](https://github.com/voxpupuli/puppet-mongodb/issues/426)
+
 ## [v2.4.0](https://github.com/voxpupuli/puppet-mongodb/tree/v2.4.0) (2018-10-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.3.0...v2.4.0)
