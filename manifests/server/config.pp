@@ -67,12 +67,7 @@ class mongodb::server::config {
   $ssl_invalid_hostnames = $mongodb::server::ssl_invalid_hostnames
   $ssl_mode         = $mongodb::server::ssl_mode
   $storage_engine   = $mongodb::server::storage_engine
-
-  if $mongodb::server::version == undef or $mongodb::server::version == '' {
-    $version = $facts['mongodb_version']
-  } else {
-    $version = $mongodb::server::version
-  }
+  $version          = $mongodb::server::version
 
   File {
     owner => $user,
