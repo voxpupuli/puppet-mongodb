@@ -84,6 +84,6 @@ Puppet::Type.newtype(:mongodb_replset) do
   end
 
   autorequire(:service) do
-    'mongodb'
+    %w[mongodb mongod]
   end
 end
