@@ -103,7 +103,7 @@ Puppet::Type.newtype(:mongodb_user) do
   end
 
   autorequire(:service) do
-    'mongodb'
+    %w[mongodb mongod]
   end
 
   autorequire(:mongodb_database) do
