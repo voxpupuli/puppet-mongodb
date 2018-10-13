@@ -12,7 +12,7 @@ end
 
 group :test do
   gem 'puppetlabs_spec_helper', '>= 2.11.0',                        :require => false
-  gem 'rspec-puppet-facts',                                         :require => false
+  gem 'rspec-puppet-facts', '>= 1.8.0',                             :require => false
   gem 'rspec-puppet-utils',                                         :require => false
   gem 'puppet-lint-leading_zero-check',                             :require => false
   gem 'puppet-lint-trailing_comma-check',                           :require => false
