@@ -34,7 +34,7 @@ class mongodb::mongos::service (
       status   => $service_status,
     }
 
-    if $service_ensure == 'running' {
+    if $real_service_ensure == 'running' {
       mongodb_conn_validator { 'mongos':
         server  => $connect_ip,
         port    => pick($port, 27017),
