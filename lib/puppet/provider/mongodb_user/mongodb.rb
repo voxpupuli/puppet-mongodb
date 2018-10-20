@@ -29,7 +29,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def self.prefetch(resources)
     users = instances
     resources.each do |name, resource|
-      provider = users.find { |user| user.username == (resource[:username]) && user.database == (resource[:database]) }
+      provider = users.find { |user| user.username == resource[:username] && user.database == resource[:database] }
       resources[name].provider = provider if provider
     end
   end
@@ -39,22 +39,21 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def create
     if db_ismaster
       password_hash = @resource[:password_hash]
-
-      if password_hash
-      elsif @resource[:password]
+      if !password_hash && @resource[:password]
         password_hash = Puppet::Util::MongodbMd5er.md5(@resource[:username], @resource[:password])
       end
-      cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
-  {
-    "createUser": "#{@resource[:username]}",
-      "pwd": "#{password_hash}",
-    "customData": {"createdBy": "Puppet Mongodb_user['#{@resource[:name]}']"},
-    "roles": #{@resource[:roles].to_json},
-    "digestPassword": false
-  }
-      EOS
 
-      mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+      command = {
+        createUser: @resource[:username],
+        pwd: password_hash,
+        customData: {
+          createdBy: "Puppet Mongodb_user['#{@resource[:name]}']"
+        },
+        roles: @resource[:roles],
+        digestPassword: false
+      }
+
+      mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
     else
       Puppet.warning 'User creation is available only from master host'
 
@@ -64,12 +63,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       @property_hash[:password_hash] = ''
       @property_hash[:roles] = @resource[:roles]
 
-      exists? ? (return true) : (return false)
+      exists?
     end
   end
 
   def destroy
-    mongo_eval("db.dropUser('#{@resource[:username]}')")
+    mongo_eval("db.dropUser(#{@resource[:username].to_json})")
   end
 
   def exists?
@@ -78,14 +77,13 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
 
   def password_hash=(_value)
     if db_ismaster
-      cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
-      {
-          "updateUser": "#{@resource[:username]}",
-          "pwd": "#{@resource[:password_hash]}",
-          "digestPassword": false
+      command = {
+        updateUser: @resource[:username],
+        pwd: @resource[:password_hash],
+        digestPassword: false
       }
-      EOS
-      mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+
+      mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
     else
       Puppet.warning 'User password operations are available only from master host'
     end
@@ -93,17 +91,15 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
 
   def password=(value)
     if mongo_26?
-      mongo_eval("db.changeUserPassword('#{@resource[:username]}','#{value}')", @resource[:database])
+      mongo_eval("db.changeUserPassword(#{@resource[:username].to_json}, #{value.to_json})", @resource[:database])
     else
-      cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
-      {
-          "updateUser": "#{@resource[:username]}",
-          "pwd": "#{@resource[:password]}",
-          "digestpassword": true
+      command = {
+        updateUser: @resource[:username],
+        pwd: @resource[:password],
+        digestpassword: true
       }
-      EOS
 
-      mongo_eval("db.runCommand(#{cmd_json})", @resource[:database])
+      mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
     end
   end
 
@@ -111,12 +107,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
     if db_ismaster
       grant = roles - @property_hash[:roles]
       unless grant.empty?
-        mongo_eval("db.getSiblingDB('#{@resource[:database]}').grantRolesToUser('#{@resource[:username]}', #{grant. to_json})")
+        mongo_eval("db.getSiblingDB(#{@resource[:database].to_json}).grantRolesToUser(#{@resource[:username].to_json}, #{grant.to_json})")
       end
 
       revoke = @property_hash[:roles] - roles
       unless revoke.empty?
-        mongo_eval("db.getSiblingDB('#{@resource[:database]}').revokeRolesFromUser('#{@resource[:username]}', #{revoke.to_json})")
+        mongo_eval("db.getSiblingDB(#{@resource[:database].to_json}).revokeRolesFromUser(#{@resource[:username].to_json}, #{revoke.to_json})")
       end
     else
       Puppet.warning 'User roles operations are available only from master host'

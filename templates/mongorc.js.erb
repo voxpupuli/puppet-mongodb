@@ -18,12 +18,8 @@ function rsReconfigSettings(settings){
 
 function authRequired() {
   try {
-    if (db.serverCmdLineOpts().code == 13) {
-      return true;
-    }
-    return false;
-  }
-  catch (err) {
+    return db.serverCmdLineOpts().code == 13;
+  } catch (err) {
     return false;
   }
 }

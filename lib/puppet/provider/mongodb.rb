@@ -18,12 +18,11 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def self.mongod_conf_file
-    file = if File.exist? '/etc/mongod.conf'
-             '/etc/mongod.conf'
-           else
-             '/etc/mongodb.conf'
-           end
-    file
+    if File.exist? '/etc/mongod.conf'
+      '/etc/mongod.conf'
+    else
+      '/etc/mongodb.conf'
+    end
   end
 
   def self.mongo_conf
@@ -50,7 +49,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   def self.ssl_is_enabled(config = nil)
     config ||= mongo_conf
     ssl_mode = config.fetch('ssl')
-    ssl_mode.nil? ? false : ssl_mode != 'disabled'
+    !ssl_mode.nil? && ssl_mode != 'disabled'
   end
 
   def self.ssl_invalid_hostnames(config = nil)
@@ -113,7 +112,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     cmd_ismaster = mongorc_file + cmd_ismaster if mongorc_file
     db = 'admin'
     res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
-    res.eql?('true') ? true : false
+    res.eql?('true')
   end
 
   def db_ismaster
@@ -132,19 +131,19 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     cmd = mongorc_file + cmd if mongorc_file
 
     out = nil
-    retry_count.times do |n|
-      begin
-        out = if host
-                mongo_cmd(db, host, cmd)
-              else
-                mongo_cmd(db, conn_string, cmd)
-              end
-      rescue => e
+    begin
+      out = if host
+              mongo_cmd(db, host, cmd)
+            else
+              mongo_cmd(db, conn_string, cmd)
+            end
+    rescue => e
+      retry_count -= 1
+      if retry_count > 0
         Puppet.debug "Request failed: '#{e.message}' Retry: '#{n}'"
         sleep retry_sleep
-        next
+        retry
       end
-      break
     end
 
     unless out
