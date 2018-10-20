@@ -6,12 +6,6 @@ describe 'mongodb::mongos' do
       let(:facts) { facts }
 
       context 'with defaults' do
-        let(:params) do
-          {
-            configdb: ['127.0.0.1:27019']
-          }
-        end
-
         it { is_expected.to compile.with_all_deps }
 
         # install
@@ -46,25 +40,25 @@ describe 'mongodb::mongos' do
         it { is_expected.to contain_service('mongos') }
       end
 
-      context 'service_manage => false' do
+      context 'package_name => mongo-foo' do
         let(:params) do
           {
-            configdb: ['127.0.0.1:27019'],
             package_name: 'mongo-foo'
           }
         end
 
+        it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo') }
       end
 
       context 'service_manage => false' do
         let(:params) do
           {
-            configdb: ['127.0.0.1:27019'],
             service_manage: false
           }
         end
 
+        it { is_expected.to compile.with_all_deps }
         it { is_expected.not_to contain_file('/etc/sysconfig/mongos') }
         it { is_expected.not_to contain_file('/etc/init.d/mongos') }
         it { is_expected.not_to contain_service('mongos') }
