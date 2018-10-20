@@ -5,6 +5,14 @@ describe 'mongodb::mongos' do
     context "on #{os}" do
       let(:facts) { facts }
 
+      let(:config_file) do
+        if facts[:osfamily] == 'RedHat'
+          '/etc/mongos.conf'
+        else
+          '/etc/mongodb-shard.conf'
+        end
+      end
+
       context 'with defaults' do
         it { is_expected.to compile.with_all_deps }
 
@@ -17,9 +25,21 @@ describe 'mongodb::mongos' do
 
         case facts[:osfamily]
         when 'RedHat'
-          it { is_expected.to contain_file('/etc/mongos.conf') }
+          expected_content = <<-CONFIG
+configdb = 127.0.0.1:27019
+fork = true
+pidfilepath = /var/run/mongodb/mongos.pid
+logpath = /var/log/mongodb/mongos.log
+unixSocketPrefix = /var/run/mongodb
+          CONFIG
+
+          it { is_expected.to contain_file('/etc/mongos.conf').with_content(expected_content) }
         when 'Debian'
-          it { is_expected.to contain_file('/etc/mongodb-shard.conf') }
+          expected_content = <<-CONFIG
+configdb = 127.0.0.1:27019
+          CONFIG
+
+          it { is_expected.to contain_file('/etc/mongodb-shard.conf').with_content(expected_content) }
         end
 
         # service

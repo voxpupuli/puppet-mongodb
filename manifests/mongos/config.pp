@@ -1,12 +1,19 @@
 # PRIVATE CLASS: do not call directly
 class mongodb::mongos::config (
-  $package_ensure  = $mongodb::mongos::package_ensure,
-  $config          = $mongodb::mongos::config,
-  $config_content  = $mongodb::mongos::config_content,
-  $config_template = $mongodb::mongos::config_template,
-  $configdb        = $mongodb::mongos::configdb,
-  $config_data     = $mongodb::mongos::config_data,
-  $service_manage  = $mongodb::mongos::service_manage,
+  $package_ensure   = $mongodb::mongos::package_ensure,
+  $config           = $mongodb::mongos::config,
+  $config_content   = $mongodb::mongos::config_content,
+  $config_template  = $mongodb::mongos::config_template,
+  $service_manage   = $mongodb::mongos::service_manage,
+  # Used in the template
+  $configdb         = $mongodb::mongos::configdb,
+  $bind_ip          = $mongodb::mongos::bind_ip,
+  $port             = $mongodb::mongos::port,
+  $fork             = $mongodb::mongos::fork,
+  $pidfilepath      = $mongodb::mongos::pidfilepath,
+  $logpath          = $mongodb::mongos::logpath,
+  $unixsocketprefix = $mongodb::mongos::unixsocketprefix,
+  $config_data      = $mongodb::mongos::config_data,
 ) {
   if $package_ensure == 'purged' {
     $ensure = 'absent'
