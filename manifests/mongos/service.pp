@@ -17,12 +17,6 @@ class mongodb::mongos::service (
     default   => true
   }
 
-  if $port {
-    $port_real = $port
-  } else {
-    $port_real = '27017'
-  }
-
   if $bind_ip == '0.0.0.0' {
     $bind_ip_real = '127.0.0.1'
   } else {
@@ -60,7 +54,7 @@ class mongodb::mongos::service (
     if $service_ensure_real {
       mongodb_conn_validator { 'mongos':
         server  => $bind_ip_real,
-        port    => $port_real,
+        port    => pick($port, 27017),
         timeout => '240',
         require => Service['mongos'],
       }
