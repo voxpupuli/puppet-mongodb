@@ -78,29 +78,21 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def password_hash=(_value)
     if db_ismaster
       command = {
-        updateUser: @resource[:username],
-        pwd: @resource[:password_hash],
-        digestPassword: false
+        username: @resource[:username],
+        update: {
+          pwd: @resource[:password_hash],
+          digestPassword: false
+        }
       }
 
-      mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
+      mongo_eval("db.updateUser(#{command.to_json})", @resource[:database])
     else
       Puppet.warning 'User password operations are available only from master host'
     end
   end
 
   def password=(value)
-    if mongo_26?
-      mongo_eval("db.changeUserPassword(#{@resource[:username].to_json}, #{value.to_json})", @resource[:database])
-    else
-      command = {
-        updateUser: @resource[:username],
-        pwd: @resource[:password],
-        digestpassword: true
-      }
-
-      mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
-    end
+    mongo_eval("db.changeUserPassword(#{@resource[:username].to_json}, #{value.to_json})", @resource[:database])
   end
 
   def roles=(roles)

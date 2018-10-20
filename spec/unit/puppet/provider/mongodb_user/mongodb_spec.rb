@@ -31,7 +31,6 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
     mongodconffile = tmp.path
     allow(provider.class).to receive(:mongod_conf_file).and_return(mongodconffile)
     allow(provider.class).to receive(:mongo_eval).with('printjson(db.system.users.find().toArray())').and_return(raw_users)
-    allow(provider.class).to receive(:mongo_version).and_return('2.6.x')
     allow(provider.class).to receive(:db_ismaster).and_return(true)
   end
 
@@ -89,13 +88,15 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
     it 'changes a password_hash' do
       cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
       {
-          "updateUser":"new_user",
-          "pwd":"pass",
-          "digestPassword":false
+          "username":"new_user",
+          "update":{
+            "pwd":"pass",
+            "digestPassword":false
+          }
       }
       EOS
       expect(provider).to receive(:mongo_eval).
-        with("db.runCommand(#{cmd_json})", 'new_database')
+        with("db.updateUser(#{cmd_json})", 'new_database')
       provider.password_hash = 'newpass'
     end
   end
