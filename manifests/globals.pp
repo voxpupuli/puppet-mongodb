@@ -3,17 +3,11 @@
 class mongodb::globals (
   $server_package_name   = undef,
   $client_package_name   = undef,
-  $mongos_package_name   = undef,
 
   $mongod_service_manage = undef,
   $service_enable        = undef,
   $service_ensure        = undef,
   $service_name          = undef,
-  $mongos_service_manage = undef,
-  $mongos_service_enable = undef,
-  $mongos_service_ensure = undef,
-  $mongos_service_status = undef,
-  $mongos_service_name   = undef,
   $service_provider      = undef,
   $service_status        = undef,
 
