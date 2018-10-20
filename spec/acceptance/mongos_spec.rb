@@ -94,11 +94,8 @@ describe 'mongodb::mongos class' do
              }
           -> class { 'mongodb::client': ensure => absent, }
           -> class { 'mongodb::mongos':
-               ensure         => absent,
-               package_ensure => absent,
-               service_ensure => stopped,
-               service_enable => false
-             }
+             package_ensure => 'purged',
+           }
         EOS
         apply_manifest(pp, catch_failures: true)
       end

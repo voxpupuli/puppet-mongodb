@@ -10,8 +10,6 @@ class mongodb::mongos::params inherits mongodb::globals {
 
   $version = $mongodb::globals::version
 
-  $ensure = true
-
   $package_ensure = pick($version, 'present')
   if $manage_package {
     $package_name = "mongodb-${edition}-mongos"

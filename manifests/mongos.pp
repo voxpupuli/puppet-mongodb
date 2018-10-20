@@ -1,6 +1,5 @@
 # This installs a Mongo Shard daemon. See README.md for more details.
 class mongodb::mongos (
-  String $ensure                                            = $mongodb::mongos::params::ensure,
   Stdlib::Absolutepath $config                              = $mongodb::mongos::params::config,
   Optional[String[1]] $config_content                       = $mongodb::mongos::params::config_content,
   Optional[String[1]] $config_template                      = $mongodb::mongos::params::config_template,
@@ -26,7 +25,7 @@ class mongodb::mongos (
   contain mongodb::mongos::config
   contain mongodb::mongos::service
 
-  if $ensure != 'absent' {
+  unless $package_ensure in ['absent', 'purged'] {
     Class['mongodb::mongos::install'] -> Class['mongodb::mongos::config']
 
     if $restart {

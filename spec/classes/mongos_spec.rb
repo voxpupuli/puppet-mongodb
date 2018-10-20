@@ -63,6 +63,47 @@ describe 'mongodb::mongos' do
         it { is_expected.not_to contain_file('/etc/init.d/mongos') }
         it { is_expected.not_to contain_service('mongos') }
       end
+
+      context 'package_ensure => purged' do
+        let(:params) do
+          {
+            package_ensure: 'purged'
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        # install
+        it { is_expected.to contain_class('mongodb::mongos::install') }
+        it { is_expected.to contain_package('mongodb_mongos').with_ensure('purged') }
+
+        # config
+        it { is_expected.to contain_class('mongodb::mongos::config') }
+
+        case facts[:osfamily]
+        when 'RedHat'
+          it { is_expected.to contain_file('/etc/mongos.conf').with_ensure('absent') }
+        when 'Debian'
+          it { is_expected.to contain_file('/etc/mongodb-shard.conf').with_ensure('absent') }
+        end
+
+        if facts[:osfamily] == 'RedHat'
+          it { is_expected.to contain_file('/etc/sysconfig/mongos').with_ensure('absent') }
+        else
+          it { is_expected.not_to contain_file('/etc/sysconfig/mongos') }
+        end
+
+        if facts[:osfamily] == 'Debian'
+          it { is_expected.to contain_file('/etc/init.d/mongos').with_ensure('absent') }
+        else
+          it { is_expected.not_to contain_file('/etc/init.d/mongos') }
+        end
+
+        # service
+        it { is_expected.to contain_class('mongodb::mongos::service') }
+
+        it { is_expected.to contain_service('mongos').with_ensure('stopped').with_enable(false) }
+      end
     end
   end
 
