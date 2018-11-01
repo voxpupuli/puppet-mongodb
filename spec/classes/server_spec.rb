@@ -364,7 +364,7 @@ describe 'mongodb::server' do
                   'mongo2:27017',
                   'mongo3:27017'
                 ],
-                'arbiter' => undef,
+                'arbiter' => :undef
               }
             }
           end
@@ -406,7 +406,7 @@ describe 'mongodb::server' do
                 'mongo2:27017',
                 'mongo3:27017'
               ],
-              'arbiter' => 'mongo3:27017'
+              'replset_arbiter' => 'mongo3:27017'
             }
           end
 
