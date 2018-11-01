@@ -376,7 +376,8 @@ describe 'mongodb::server' do
                 'mongo1:27017',
                 'mongo2:27017',
                 'mongo3:27017'
-              ]
+              ],
+              'replset_arbiter' => :undef
             }
           end
 
