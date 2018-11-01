@@ -114,8 +114,10 @@ class mongodb::server (
   # Set-up replicasets
   if $replset {
     # Check that we've got either a members array or a replset_config hash
-    if ( $replset_members or $replset_arbiter ) and $replset_config {
-￼     fail('You can provide either replset_members incl. replset_arbiter or replset_config, not both.')
+    if $replset_members and $replset_config {
+      fail('You can provide either replset_members or replset_config, not both.')
+    } elsif $replset_arbiter and $replset_config {
+      fail('You can use replset_arbiter only with replset_members not when using replset_config.')
     } elsif !$replset_members and !$replset_config {
       # No members or config provided. Warn about it.
       warning('Replset specified, but no replset_members or replset_config provided.')
