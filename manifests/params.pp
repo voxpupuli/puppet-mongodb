@@ -25,7 +25,7 @@ class mongodb::params inherits mongodb::globals {
   $pidfilemode           = pick($mongodb::globals::pidfilemode, '0644')
   $manage_pidfile        = pick($mongodb::globals::manage_pidfile, true)
 
-  $version = $mongodb::globals::version
+  $version               = $mongodb::globals::version
 
   $config_data           = undef
 
