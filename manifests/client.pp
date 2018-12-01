@@ -8,7 +8,7 @@
 #                 repository dependent.
 #
 class mongodb::client (
-  String $ensure = $mongodb::client::params::package_ensure,
+  String[1] $ensure = $mongodb::client::params::package_ensure,
   String $package_name = $mongodb::client::params::package_name,
 ) inherits mongodb::client::params {
   package { 'mongodb_client':
