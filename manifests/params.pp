@@ -31,18 +31,10 @@ class mongodb::params inherits mongodb::globals {
 
   if $version {
     $package_ensure        = $version
-    $package_ensure_client = $version
     $package_ensure_mongos = $version
   } else {
     $package_ensure        = true
-    $package_ensure_client = true
     $package_ensure_mongos = true
-  }
-
-  if $mongodb::globals::use_enterprise_repo {
-    $edition = 'enterprise'
-  } else {
-    $edition = 'org'
   }
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
@@ -51,15 +43,13 @@ class mongodb::params inherits mongodb::globals {
       if $manage_package {
         $user                    = pick($mongodb::globals::user, 'mongod')
         $group                   = pick($mongodb::globals::group, 'mongod')
-        $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${edition}-server")
-        $client_package_name     = pick($mongodb::globals::client_package_name, "mongodb-${edition}-shell")
+        $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${mongodb::globals::edition}-server")
       } else {
         # RedHat/CentOS doesn't come with a prepacked mongodb
         # so we assume that you are using EPEL repository.
         $user                    = pick($mongodb::globals::user, 'mongodb')
         $group                   = pick($mongodb::globals::group, 'mongodb')
         $server_package_name     = pick($mongodb::globals::server_package_name, 'mongodb-server')
-        $client_package_name     = pick($mongodb::globals::client_package_name, 'mongodb')
       }
 
       $service_name = pick($mongodb::globals::service_name, 'mongod')
@@ -72,13 +62,11 @@ class mongodb::params inherits mongodb::globals {
     'Debian': {
       if $manage_package {
         $service_name            = pick($mongodb::globals::service_name, 'mongod')
-        $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${edition}-server")
-        $client_package_name     = pick($mongodb::globals::client_package_name, "mongodb-${edition}-shell")
+        $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${mongodb::globals::edition}-server")
         $config                  = '/etc/mongod.conf'
         $pidfilepath             = pick($mongodb::globals::pidfilepath, '/var/run/mongod.pid')
       } else {
         $server_package_name = pick($mongodb::globals::server_package_name, 'mongodb-server')
-        $client_package_name = pick($mongodb::globals::client_package_name, 'mongodb-clients')
         $service_name        = pick($mongodb::globals::service_name, 'mongodb')
         $config              = '/etc/mongodb.conf'
         $pidfilepath         = $mongodb::globals::pidfilepath

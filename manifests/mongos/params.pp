@@ -1,18 +1,12 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::mongos::params inherits mongodb::globals {
-  if $mongodb::globals::use_enterprise_repo {
-    $edition = 'enterprise'
-  } else {
-    $edition = 'org'
-  }
-
   $manage_package = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
 
   $version = $mongodb::globals::version
 
   $package_ensure = pick($version, 'present')
   if $manage_package {
-    $package_name = "mongodb-${edition}-mongos"
+    $package_name = "mongodb-${mongodb::globals::edition}-mongos"
   } else {
     $package_name = 'mongodb-server'
   }
