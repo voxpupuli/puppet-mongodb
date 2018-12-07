@@ -32,6 +32,12 @@ class mongodb::globals (
   $manage_pidfile        = undef,
 ) {
 
+  if $use_enterprise_repo {
+    $edition = 'enterprise'
+  } else {
+    $edition = 'org'
+  }
+
   # Setup of the repo only makes sense globally, so we are doing it here.
   if $manage_package_repo {
     if $use_enterprise_repo == true and $version == undef {

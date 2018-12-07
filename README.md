@@ -29,6 +29,8 @@ The MongoDB module manages mongod server installation and configuration of the
 mongod daemon. For the time being it supports only a single MongoDB server
 instance, without sharding functionality.
 
+The MongoDB module also manages Ops Manager setup and the mongdb-mms daemon.
+
 ## Setup
 
 ### What MongoDB affects
@@ -39,6 +41,8 @@ instance, without sharding functionality.
 * MongoDB client.
 * MongoDB sharding support (mongos)
 * MongoDB apt/yum repository.
+* Ops Manager package.
+* Ops Manager configuration files.
 
 ### Beginning with MongoDB
 
@@ -135,6 +139,30 @@ mongodb::db { 'testdb':
 Parameter 'password_hash' is hex encoded md5 hash of "user1:mongo:pass1".
 Unsafe plain text password could be used with 'password' parameter instead of 'password_hash'.
 
+### Ops Manager
+
+To install Ops Manager and have it run with a local MongoDB application server do the following:
+
+```puppet
+class {'mongodb::opsmanager':
+  opsmanager_url        => 'http://opsmanager.yourdomain.com'
+  mongo_uri             => 'mongodb://yourmongocluster:27017,
+  from_email_addr       => 'opsmanager@yourdomain.com',
+  reply_to_email_addr   => 'replyto@yourdomain.com',
+  admin_email_addr      => 'admin@yourdomain.com',
+  $smtp_server_hostname => 'email-relay.yourdomain.com'
+}
+```
+
+The default settings will not set useful email addresses. You can also just run `include mongodb::opsmanager`
+and then set the emails later.
+
+## Ops Manager Usage
+
+Most of the interaction for the server is done via `mongodb::opsmanager`. For
+more options please have a look at [mongodb::opsmanager](#class-mongodbopsmanager).
+There are also some settings that can be configured in `mongodb::globals`.
+
 ## Reference
 
 ### Classes
@@ -144,6 +172,7 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 * `mongodb::client`: Installs the MongoDB client shell (for Red Hat family systems)
 * `mongodb::globals`: Configure main settings in a global way
 * `mongodb::mongos`: Installs and configure Mongos server (for sharding support)
+* `mongodb::opsmanager`: Installs and configure Ops Manager
 
 #### Private classes
 * `mongodb::repo`: Manage MongoDB software repository
@@ -156,6 +185,8 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 * `mongodb::mongos::config`: Configures Mongos configuration files
 * `mongodb::mongos::install`: Install Mongos software packages
 * `mongodb::mongos::service`: Manages Mongos service
+* `mongodb::opsmanager::install` : Install Ops Manager software package
+* `mongodb::opsmanager::service` : Manages Ops Manager (mongodb-mms) service
 
 #### Class: mongodb::globals
 *Note:* most server specific defaults should be overridden in the `mongodb::server`
@@ -627,6 +658,22 @@ Plain-text user password (will be hashed)
 
 ##### `roles`
 Array with user roles. Default: ['dbAdmin']
+
+##### `opsmanager_url`
+The fully qualified url where opsmanager runs. Must include the port. Ex:
+'http://opsmanager.yourdomain.com:8080'
+
+##### `opsmanager_mongo_uri`
+Full URI where the Ops Manager application mongodb server(s) can be found. Default: 'mongodb://127.0.0.1:27017'
+
+##### `ca_file`
+Ca file for secure connection to backup agents.
+
+##### `pem_key_file`
+Pem key file containing the cert and private key used for secure connections to backup agents.
+
+##### `pem_key_password`
+The password to the pem key file.
 
 ### Providers
 
