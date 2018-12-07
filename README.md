@@ -649,7 +649,10 @@ For more information please refer to [MongoDB Authentication Process](http://doc
 Plain-text user password (will be hashed)
 
 ##### `roles`
-Array with user roles. Default: ['dbAdmin']
+Array with user roles as string.
+Roles will be granted to user's database if no alternative database is explicitly defined.
+Example: ['dbAdmin', 'readWrite@other_database']
+Default: ['dbAdmin']
 
 ### Providers
 
@@ -697,7 +700,10 @@ Plaintext password of the user.
 Name of database. It will be created, if not exists.
 
 ##### `roles`
-Array with user roles. Default: ['dbAdmin']
+Array with user roles as string.
+Roles will be granted to user's database if no alternative database is explicitly defined.
+Example: ['dbAdmin', 'readWrite@other_database']
+Default: ['dbAdmin']
 
 ##### `tries`
 The maximum amount of two second tries to wait MongoDB startup. Default: 10
