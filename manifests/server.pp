@@ -53,7 +53,7 @@ class mongodb::server (
   Optional[String] $replset                             = undef,
   Optional[Hash] $replset_config                        = undef,
   Optional[Array] $replset_members                      = undef,
-  Optional[String] $replset_arbiter                     = undef,
+  Optional[String[1]] $replset_arbiter                  = undef,
   Optional[Boolean] $configsvr                          = undef,
   Optional[Boolean] $shardsvr                           = undef,
   Optional[Boolean] $rest                               = undef,
