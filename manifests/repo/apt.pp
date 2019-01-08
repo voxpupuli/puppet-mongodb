@@ -11,8 +11,9 @@ class mongodb::repo::apt inherits mongodb::repo {
       release  => $mongodb::repo::release,
       repos    => $mongodb::repo::repos,
       key      => {
-        'id'     => $mongodb::repo::key,
-        'server' => $mongodb::repo::key_server,
+        'id'      => $mongodb::repo::key,
+        'server'  => $mongodb::repo::key_server,
+        'options' => $mongodb::repo::aptkey_options,
       },
     }
 

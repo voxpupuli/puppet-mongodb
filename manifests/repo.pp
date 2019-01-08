@@ -7,6 +7,7 @@ class mongodb::repo (
   Optional[String] $proxy = undef,
   Optional[String] $proxy_username = undef,
   Optional[String] $proxy_password = undef,
+  Optional[String] $aptkey_options = undef,
 ) {
   case $::osfamily {
     'RedHat', 'Linux': {
