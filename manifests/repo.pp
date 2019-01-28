@@ -27,7 +27,7 @@ class mongodb::repo (
         }
       }
 
-      contain ::mongodb::repo::yum
+      contain mongodb::repo::yum
     }
 
     'Debian': {
@@ -65,7 +65,7 @@ class mongodb::repo (
         $key_server = 'hkp://keyserver.ubuntu.com:80'
       }
 
-      contain ::mongodb::repo::apt
+      contain mongodb::repo::apt
     }
 
     default: {
