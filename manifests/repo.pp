@@ -1,13 +1,13 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::repo (
   Variant[Enum['present', 'absent'], Boolean] $ensure = 'present',
-  Optional[String] $version = undef,
-  Boolean $use_enterprise_repo = false,
-  Optional[String] $repo_location = undef,
-  Optional[String] $proxy = undef,
-  Optional[String] $proxy_username = undef,
-  Optional[String] $proxy_password = undef,
-  Optional[String] $aptkey_options = undef,
+  Optional[String] $version                           = undef,
+  Boolean $use_enterprise_repo                        = false,
+  Optional[String] $repo_location                     = undef,
+  Optional[String] $proxy                             = undef,
+  Optional[String] $proxy_username                    = undef,
+  Optional[String] $proxy_password                    = undef,
+  Optional[String[1]] $aptkey_options                 = undef,
 ) {
   case $::osfamily {
     'RedHat', 'Linux': {
@@ -27,7 +27,7 @@ class mongodb::repo (
         }
       }
 
-      contain mongodb::repo::yum
+      contain ::mongodb::repo::yum
     }
 
     'Debian': {
@@ -65,7 +65,7 @@ class mongodb::repo (
         $key_server = 'hkp://keyserver.ubuntu.com:80'
       }
 
-      contain mongodb::repo::apt
+      contain ::mongodb::repo::apt
     }
 
     default: {
