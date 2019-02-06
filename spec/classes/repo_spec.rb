@@ -31,13 +31,13 @@ describe 'mongodb::repo' do
           when 'Debian'
             it do
               is_expected.to contain_apt__source('mongodb').
-                with_location('https://repo.mongodb.org/apt/debian').
+                with_location('http://repo.mongodb.org/apt/debian').
                 with_release("#{facts[:lsbdistcodename]}/mongodb-org/3.6")
             end
           when 'Ubuntu'
             it do
               is_expected.to contain_apt__source('mongodb').
-                with_location('https://repo.mongodb.org/apt/ubuntu').
+                with_location('http://repo.mongodb.org/apt/ubuntu').
                 with_release("#{facts[:lsbdistcodename]}/mongodb-org/3.6")
             end
           end
