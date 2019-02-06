@@ -14,6 +14,6 @@ class mongodb::client (
   package { 'mongodb_client':
     ensure => $ensure,
     name   => $package_name,
-    tag    => 'mongodb',
+    tag    => 'mongodb_package',
   }
 }

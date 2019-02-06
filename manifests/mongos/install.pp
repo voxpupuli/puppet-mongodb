@@ -8,6 +8,7 @@ class mongodb::mongos::install (
     package { 'mongodb_mongos':
       ensure => $package_ensure,
       name   => $package_name,
+      tag    => 'mongodb_package',
     }
   }
 
