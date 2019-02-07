@@ -16,7 +16,7 @@ describe 'mongodb::client' do
         end
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to create_package('mongodb_client').with_ensure('present').with_name('mongodb-org-shell') }
+        it { is_expected.to create_package('mongodb_client').with_ensure('present').with_name('mongodb-org-shell').with_tag('mongodb_package') }
       end
     end
   end
