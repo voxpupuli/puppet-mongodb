@@ -13,7 +13,7 @@ class mongodb::repo::yum inherits mongodb::repo {
       proxy_username => $mongodb::repo::proxy_username,
       proxy_password => $mongodb::repo::proxy_password,
     }
-    Yumrepo['mongodb'] -> Package<|tag == 'mongodb'|>
+    Yumrepo['mongodb'] -> Package<| tag == 'mongodb_package' |>
   }
   else {
     yumrepo { 'mongodb':
