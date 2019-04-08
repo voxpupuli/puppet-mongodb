@@ -161,6 +161,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
           Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
           alive.push(member)
         end
+        
+        if status.key?('errmsg') && (status['errmsg'].include?('no replset config has been received'))
+          Puppet.debug "Mongo v4 rs.status() RS not initialized output"
+          alive.push(member)
+        end
 
         if status.key?('set')
           if status['set'] != name
