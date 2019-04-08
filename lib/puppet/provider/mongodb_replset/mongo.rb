@@ -162,7 +162,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
           alive.push(member)
         end
 
-        if status.key?('errmsg') && (status['errmsg'].include?('no replset config has been received'))
+        if status.key?('errmsg') && status['errmsg'].include?('no replset config has been received')
           Puppet.info 'Mongo v4 rs.status() RS not initialized output'
           alive.push(member)
         end
