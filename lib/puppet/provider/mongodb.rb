@@ -140,7 +140,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     rescue => e
       retry_count -= 1
       if retry_count > 0
-        Puppet.debug "Request failed: '#{e.message}' Retry: '#{n}'"
+        Puppet.debug "Request failed: '#{e.message}' Retry: '#{retries - retry_count}'"
         sleep retry_sleep
         retry
       end
