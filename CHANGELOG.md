@@ -4,6 +4,49 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v3.0.0) (2019-05-21)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.4.1...v3.0.0)
+
+**Breaking changes:**
+
+- modulesync 2.7.0 and drop puppet 4 [\#533](https://github.com/voxpupuli/puppet-mongodb/pull/533) ([bastelfreak](https://github.com/bastelfreak))
+- Refactor client handling [\#520](https://github.com/voxpupuli/puppet-mongodb/pull/520) ([ekohl](https://github.com/ekohl))
+- Refactor mongos handling [\#509](https://github.com/voxpupuli/puppet-mongodb/pull/509) ([ekohl](https://github.com/ekohl))
+- Drop support for mongodb versions before 2.6 [\#504](https://github.com/voxpupuli/puppet-mongodb/pull/504) ([ekohl](https://github.com/ekohl))
+- Drop EL6 support [\#503](https://github.com/voxpupuli/puppet-mongodb/pull/503) ([ekohl](https://github.com/ekohl))
+- Remove 10gen repository support [\#497](https://github.com/voxpupuli/puppet-mongodb/pull/497) ([ekohl](https://github.com/ekohl))
+- Move to Debian 9 and Ubuntu 16.04/18.04 [\#494](https://github.com/voxpupuli/puppet-mongodb/pull/494) ([ekohl](https://github.com/ekohl))
+- Remove init.pp [\#493](https://github.com/voxpupuli/puppet-mongodb/pull/493) ([ekohl](https://github.com/ekohl))
+
+**Implemented enhancements:**
+
+- Deprecate \(and then remove\) 10gen requirement/pieces [\#416](https://github.com/voxpupuli/puppet-mongodb/issues/416)
+- support percona mongodb version output [\#530](https://github.com/voxpupuli/puppet-mongodb/pull/530) ([h0tw1r3](https://github.com/h0tw1r3))
+- Add aptkey\_options parameter to mongodb::repo class [\#524](https://github.com/voxpupuli/puppet-mongodb/pull/524) ([JvGinkel](https://github.com/JvGinkel))
+- Set database permissions to 0750 [\#511](https://github.com/voxpupuli/puppet-mongodb/pull/511) ([ekohl](https://github.com/ekohl))
+- Convert mongodb\_password into a Puppet 4 function [\#502](https://github.com/voxpupuli/puppet-mongodb/pull/502) ([ekohl](https://github.com/ekohl))
+- Add new classes for installing Ops Manager on a target machine. [\#500](https://github.com/voxpupuli/puppet-mongodb/pull/500) ([claycogg](https://github.com/claycogg))
+
+**Fixed bugs:**
+
+- Fix undefined local variable or method `n' [\#537](https://github.com/voxpupuli/puppet-mongodb/pull/537) ([FunFR](https://github.com/FunFR))
+- Fix for MongoDB v4 Replica Set initialization [\#535](https://github.com/voxpupuli/puppet-mongodb/pull/535) ([radupantiru](https://github.com/radupantiru))
+- Fix a dependency cycle caused by Apt::Source from puppetlabs-apt 6.3.0 [\#528](https://github.com/voxpupuli/puppet-mongodb/pull/528) ([thaiphv](https://github.com/thaiphv))
+
+**Merged pull requests:**
+
+- Allow `puppetlabs/stdlib` 6.x [\#538](https://github.com/voxpupuli/puppet-mongodb/pull/538) ([alexjfisher](https://github.com/alexjfisher))
+- Allow puppetlabs/apt 7.x [\#536](https://github.com/voxpupuli/puppet-mongodb/pull/536) ([dhoppe](https://github.com/dhoppe))
+- \#512: Current 'sharding.pp' example typo [\#513](https://github.com/voxpupuli/puppet-mongodb/pull/513) ([jeff1evesque](https://github.com/jeff1evesque))
+- Remove old nodesets [\#510](https://github.com/voxpupuli/puppet-mongodb/pull/510) ([ekohl](https://github.com/ekohl))
+- Refactor mongos handling [\#508](https://github.com/voxpupuli/puppet-mongodb/pull/508) ([ekohl](https://github.com/ekohl))
+- Deduplicate & update params.pp [\#506](https://github.com/voxpupuli/puppet-mongodb/pull/506) ([ekohl](https://github.com/ekohl))
+- Clean up coding styles [\#505](https://github.com/voxpupuli/puppet-mongodb/pull/505) ([ekohl](https://github.com/ekohl))
+- Rewrite mocking and stubbing to only rspec [\#496](https://github.com/voxpupuli/puppet-mongodb/pull/496) ([ekohl](https://github.com/ekohl))
+- Refactor spec testing to not test private classes [\#495](https://github.com/voxpupuli/puppet-mongodb/pull/495) ([ekohl](https://github.com/ekohl))
+- Major cleanup to get the acceptance tests working [\#491](https://github.com/voxpupuli/puppet-mongodb/pull/491) ([ekohl](https://github.com/ekohl))
+
 ## [v2.4.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.4.1) (2018-10-08)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.4.0...v2.4.1)
@@ -87,7 +130,7 @@ These should not affect the functionality of the module.
 **Fixed bugs:**
 
 - Notice on every run for password\_hash [\#425](https://github.com/voxpupuli/puppet-mongodb/issues/425)
-- Add check if scram credentials are insync with hash [\#455](https://github.com/voxpupuli/puppet-mongodb/pull/455) ([CTrox](https://github.com/CTrox))
+- Add check if scram credentials are insync with hash [\#455](https://github.com/voxpupuli/puppet-mongodb/pull/455) ([ctrox](https://github.com/ctrox))
 
 ## [v2.1.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.1) (2018-03-27)
 
