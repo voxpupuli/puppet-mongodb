@@ -129,6 +129,9 @@ replication.replSetName: <%= @replset %>
 <% if @oplog_size -%>
 replication.oplogSizeMB: <%= @oplog_size %>
 <% end -%>
+<% if @repl_enable_majority_read_concern -%>
+replication.enableMajorityReadConcern: <%= @repl_enable_majority_read_concern %>
+<% end -%>
 
 #Sharding
 <% if @configsvr -%>

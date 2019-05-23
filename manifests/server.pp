@@ -79,6 +79,7 @@ class mongodb::server (
   Boolean $handle_creds                                 = $mongodb::params::handle_creds,
   Boolean $store_creds                                  = $mongodb::params::store_creds,
   Array $admin_roles                                    = $mongodb::params::admin_roles,
+  Optional[Boolean] $repl_enable_majority_read_concern  = undef,
 ) inherits mongodb::params {
 
   contain mongodb::server::install
