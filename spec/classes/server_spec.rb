@@ -331,14 +331,20 @@ describe 'mongodb::server' do
       end
 
       describe 'repl_enable_majority_read_concern param' do
-        [true, false].each do |value|
-          context "set to #{value}" do
-            let (:params) {
-              repl_enable_majority_read_concern: #{value}
-            }
+        context "set to true" do
+          let (:params) {
+            repl_enable_majority_read_concern: true
+          }
 
-            it { is_expected.to contain_file(config_file).with_content(%r{^\s*replication\.enableMajorityReadConcern: #{value}$}) }
-          end
+          it { is_expected.to contain_file(config_file).with_content(%r{^\s*replication\.enableMajorityReadConcern: true$}) }
+        end
+
+        context "set to false" do
+          let (:params) {
+            repl_enable_majority_read_concern: false
+          }
+
+          it { is_expected.to contain_file(config_file).with_content(%r{^\s*replication\.enableMajorityReadConcern: false$}) }
         end
       end
 
