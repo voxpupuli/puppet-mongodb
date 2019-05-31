@@ -48,7 +48,7 @@ describe 'mongodb::server' do
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
             with_content(%r{^systemLog\.logAppend: true$}).
             with_content(%r{^systemLog\.path: #{log_path}$}).
-            without_content(%r{^replication\.enableMajorityReadConcern:.*$})
+            without_content(%r{^replication\.enableMajorityReadConcern:})
         end
 
         if facts[:os]['family'] == 'Debian'
