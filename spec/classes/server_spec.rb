@@ -335,7 +335,7 @@ describe 'mongodb::server' do
           context "set to #{value}" do
             let (:params) { { repl_enable_majority_read_concern: #{value} } }
             
-            it { should contain_file(config_file).with_content(%r{^\s*replication\.enableMajorityReadConcern: #{value}$} ) }
+            it { is_expected.to contain_file(config_file).with_content(%r{^\s*replication\.enableMajorityReadConcern: #{value}$}) }
           end
         end
       end
