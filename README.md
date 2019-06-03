@@ -464,7 +464,7 @@ class mongodb::server {
 ##### `repl_enable_majority_read_concern`
 Use this setting to configure replication.enableMajorityReadConcern setting.
 For more information please refer to [MongoDB Read Concern "majority"](https://dochub.mongodb.org/core/psa-disable-rc-majority-3.6).
-Default: true
+Default: undef (which implies the MongoDB default setting of true)
 
 ##### `config_data`
 A hash to allow for additional configuration options
