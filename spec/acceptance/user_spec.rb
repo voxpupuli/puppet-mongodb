@@ -87,7 +87,15 @@ describe 'mongodb_database' do
         mongodb_user {'testuser':
           ensure        => present,
           password_hash => mongodb_password('testuser', 'passw0rd'),
-          roles         => ['readWrite@testdb', 'dbAdmin@testdb'],
+          database      => 'testdb',
+          roles         => ['readWrite', 'dbAdmin'],
+        }
+        ->
+        mongodb_user {'testuser2':
+          ensure        => present,
+          password_hash => mongodb_password('testuser2', 'passw0rd'),
+          database      => 'testdb2',
+          roles         => ['readWrite@testdb', 'dbAdmin@testdb', 'dbAdmin'],
         }
       EOS
 
