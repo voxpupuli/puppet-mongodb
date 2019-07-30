@@ -104,7 +104,7 @@ describe 'mongodb_database' do
     end
 
     it 'creates the user' do
-      shell("mongo testuser2 --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+      shell("mongo testdb --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\")'") do |r|
         expect(r.stdout.chomp).to eq('1')
       end
     end
