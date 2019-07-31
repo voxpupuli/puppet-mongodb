@@ -51,7 +51,7 @@ describe 'mongodb_database' do
     end
   end
 
-  context 'with basic roles syntax' do
+  context 'with the basic roles syntax' do
     it 'compiles with no errors' do
       pp = <<-EOS
         class { 'mongodb::server': }
@@ -77,7 +77,7 @@ describe 'mongodb_database' do
     end
   end
 
-  context 'with the new roles syntax' do
+  context 'with the new multidb role syntax' do
     it 'compiles with no errors' do
       pp = <<-EOS
         class { 'mongodb::server': }
@@ -96,7 +96,7 @@ describe 'mongodb_database' do
           ensure        => present,
           password_hash => mongodb_password('testuser2', 'passw0rd'),
           database      => 'testdb2',
-          roles         => ['readWrite@testdb', 'dbAdmin@testdb', 'readWrite', 'dbAdmin'],
+          roles         => ['readWrite', 'dbAdmin', 'readWrite@testdb', 'dbAdmin@testdb'],
         }
       EOS
 
@@ -106,6 +106,12 @@ describe 'mongodb_database' do
 
     it 'allows the testuser' do
       shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('1')
+      end
+    end
+
+    it 'allows the second user to connect to its default database' do
+      shell("mongo testdb2 --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\")'") do |r|
         expect(r.stdout.chomp).to eq('1')
       end
     end
