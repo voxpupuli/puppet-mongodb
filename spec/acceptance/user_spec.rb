@@ -83,6 +83,7 @@ describe 'mongodb_database' do
         class { 'mongodb::server': }
         -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
+        -> mongodb_database { 'testdb2': ensure => present }
         ->
         mongodb_user {'testuser':
           ensure        => present,
@@ -95,7 +96,7 @@ describe 'mongodb_database' do
           ensure        => present,
           password_hash => mongodb_password('testuser2', 'passw0rd'),
           database      => 'testdb2',
-          roles         => ['readWrite@testdb', 'dbAdmin@testdb', 'dbAdmin'],
+          roles         => ['readWrite@testdb', 'dbAdmin@testdb', 'readWrite', 'dbAdmin'],
         }
       EOS
 
@@ -103,7 +104,13 @@ describe 'mongodb_database' do
       apply_manifest(pp, catch_changes: true)
     end
 
-    it 'creates the user' do
+    it 'allows the testuser' do
+      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('1')
+      end
+    end
+
+    it 'allows the second user' do
       shell("mongo testdb --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\")'") do |r|
         expect(r.stdout.chomp).to eq('1')
       end
