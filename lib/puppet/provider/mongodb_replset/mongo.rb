@@ -160,11 +160,13 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         if auth_enabled && status.key?('errmsg') && (status['errmsg'].include?('unauthorized') || status['errmsg'].include?('not authorized'))
           Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
           alive.push(member)
+          next
         end
 
         if status.key?('errmsg') && status['errmsg'].include?('no replset config has been received')
           Puppet.debug 'Mongo v4 rs.status() RS not initialized output'
           alive.push(member)
+          next
         end
 
         if status.key?('set')
@@ -175,9 +177,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
           # This node is alive and supposed to be a member of our set
           Puppet.debug "Host #{host} is available for replset #{status['set']}"
           alive.push(member)
+          next
         elsif status.key?('info')
           Puppet.debug "Host #{host} is alive but unconfigured: #{status['info']}"
           alive.push(member)
+          next
         end
       rescue Puppet::ExecutionFailure
         Puppet.warning "Can't connect to replicaset member #{host}."
