@@ -20,7 +20,7 @@ define mongodb::db (
   Integer[0]       $tries         = 10,
 ) {
 
-  if $facts['mongodb_is_master'] == 'true' { # lint:ignore:quoted_booleans
+  unless $facts['mongodb_is_master'] == 'false' { # lint:ignore:quoted_booleans
     mongodb_database { $db_name:
       ensure => present,
       tries  => $tries,
