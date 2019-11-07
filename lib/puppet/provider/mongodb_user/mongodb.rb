@@ -53,6 +53,11 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         digestPassword: false
       }
 
+      if mongo_4?
+        # SCRAM-SHA-256 requires digestPassword to be true.
+        command[:mechanisms] = ['SCRAM-SHA-1']
+      end
+
       mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
     else
       Puppet.warning 'User creation is available only from master host'
