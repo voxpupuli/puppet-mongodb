@@ -161,7 +161,6 @@ and then set the emails later.
 
 Most of the interaction for the server is done via `mongodb::opsmanager`. For
 more options please have a look at [mongodb::opsmanager](#class-mongodbopsmanager).
-There are also some settings that can be configured in `mongodb::globals`.
 
 ## Reference
 
@@ -185,8 +184,6 @@ There are also some settings that can be configured in `mongodb::globals`.
 * `mongodb::mongos::config`: Configures Mongos configuration files
 * `mongodb::mongos::install`: Install Mongos software packages
 * `mongodb::mongos::service`: Manages Mongos service
-* `mongodb::opsmanager::install` : Install Ops Manager software package
-* `mongodb::opsmanager::service` : Manages Ops Manager (mongodb-mms) service
 
 #### Class: mongodb::globals
 *Note:* most server specific defaults should be overridden in the `mongodb::server`
@@ -653,22 +650,6 @@ Plain-text user password (will be hashed)
 
 ##### `roles`
 Array with user roles. Default: ['dbAdmin']
-
-##### `opsmanager_url`
-The fully qualified url where opsmanager runs. Must include the port. Ex:
-'http://opsmanager.yourdomain.com:8080'
-
-##### `opsmanager_mongo_uri`
-Full URI where the Ops Manager application mongodb server(s) can be found. Default: 'mongodb://127.0.0.1:27017'
-
-##### `ca_file`
-Ca file for secure connection to backup agents.
-
-##### `pem_key_file`
-Pem key file containing the cert and private key used for secure connections to backup agents.
-
-##### `pem_key_password`
-The password to the pem key file.
 
 ### Providers
 
