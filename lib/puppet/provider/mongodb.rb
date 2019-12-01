@@ -103,7 +103,11 @@ class Puppet::Provider::Mongodb < Puppet::Provider
                 else
                   27_017
                 end
-
+    ip_real = if ip_real
+                ip_real 
+              else 
+                '127.0.0.1'
+              end
     "#{ip_real}:#{port_real}"
   end
 
