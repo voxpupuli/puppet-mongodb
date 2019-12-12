@@ -32,7 +32,7 @@ class mongodb::opsmanager (
   String[1] $service_name                        = 'mongodb-mms',
   Stdlib::Httpurl $download_url                  = 'https://downloads.mongodb.com/on-prem-mms/rpm/mongodb-mms-4.0.1.50101.20180801T1117Z-1.x86_64.rpm',
   String[1] $mongo_uri                           = 'mongodb://127.0.0.1:27017',
-  Stdlib::Httpurl $opsmanager_url                = "http://${facts['fqdn']}:8080",
+  Stdlib::Httpurl $opsmanager_url                = "http://${facts['networking']['fqdn']}:8080",
   String[1] $client_certificate_mode             = 'None',
   String[1] $from_email_addr                     = 'from@example.com',
   String[1] $reply_to_email_addr                 = 'reply-to@example.com',
