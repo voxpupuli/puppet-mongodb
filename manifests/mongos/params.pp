@@ -27,7 +27,7 @@ class mongodb::mongos::params inherits mongodb::globals {
   $service_status = undef
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat', 'Linux', 'Suse': {
       if $manage_package {
         $config           = '/etc/mongodb-shard.conf'
@@ -53,7 +53,7 @@ class mongodb::mongos::params inherits mongodb::globals {
       $fork             = undef
     }
     default: {
-      fail("Osfamily ${::osfamily} is not supported")
+      fail("Osfamily ${facts['os']['family']} is not supported")
     }
   }
 }

@@ -9,7 +9,7 @@ class mongodb::repo (
   Optional[String] $proxy_password                    = undef,
   Optional[String[1]] $aptkey_options                 = undef,
 ) {
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat', 'Linux': {
       if $repo_location != undef {
         $location = $repo_location
@@ -45,13 +45,13 @@ class mongodb::repo (
         }
 
         $mongover = split($version, '[.]')
-        $location = $::operatingsystem ? {
+        $location = $facts['os']['name'] ? {
           'Debian' => "https://${repo_domain}/apt/debian",
           'Ubuntu' => "https://${repo_domain}/apt/ubuntu",
           default  => undef
         }
-        $release     = "${::lsbdistcodename}/${repo_path}/${mongover[0]}.${mongover[1]}"
-        $repos       = $::operatingsystem ? {
+        $release     = "${facts['os']['distro']['codename']}/${repo_path}/${mongover[0]}.${mongover[1]}"
+        $repos       = $facts['os']['name'] ? {
           'Debian' => 'main',
           'Ubuntu' => 'multiverse',
           default => undef
@@ -70,7 +70,7 @@ class mongodb::repo (
 
     default: {
       if($ensure == 'present' or $ensure == true) {
-        fail("Unsupported managed repository for osfamily: ${::osfamily}, operatingsystem: ${::operatingsystem}, module ${module_name} currently only supports managing repos for osfamily RedHat, Debian and Ubuntu")
+        fail("Unsupported managed repository for osfamily: ${facts['os']['family']}, operatingsystem: ${facts['os']['name']}, module ${module_name} currently only supports managing repos for osfamily RedHat, Debian and Ubuntu")
       }
     }
   }

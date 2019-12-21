@@ -6,7 +6,7 @@ class mongodb::client::params inherits mongodb::globals {
   if $manage_package {
     $package_name = "mongodb-${mongodb::globals::edition}-shell"
   } else {
-    $package_name = $::osfamily ? {
+    $package_name = $facts['os']['family'] ? {
       'Debian' => 'mongodb-clients',
       default  => 'mongodb',
     }

@@ -38,7 +38,7 @@ class mongodb::params inherits mongodb::globals {
   }
 
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat', 'Linux', 'Suse': {
       if $manage_package {
         $user                    = pick($mongodb::globals::user, 'mongod')
@@ -79,7 +79,7 @@ class mongodb::params inherits mongodb::globals {
       $journal                 = undef
     }
     default: {
-      fail("Osfamily ${::osfamily} is not supported")
+      fail("Osfamily ${facts['os']['family']} is not supported")
     }
   }
 }
