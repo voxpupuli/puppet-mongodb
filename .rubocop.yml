@@ -1,6 +1,6 @@
 require: rubocop-rspec
 AllCops:
-  TargetRubyVersion: 1.9
+  TargetRubyVersion: 2.1
   Include:
     - ./**/*.rb
   Exclude:
@@ -543,6 +543,3 @@ Style/FormatStringToken:
 # are located.
 RSpec/FilePath:
   Enabled: false
-
-RSpec/MessageSpies:
-  EnforcedStyle: receive
