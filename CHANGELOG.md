@@ -11,21 +11,20 @@ These should not affect the functionality of the module.
 **Implemented enhancements:**
 
 - restrict opsmanager conf file permissions for better security [\#563](https://github.com/voxpupuli/puppet-mongodb/pull/563) ([FLiPp3r90](https://github.com/FLiPp3r90))
+- rebased PR\#308 to allow other databases in the format 'role@db' for mongodb\_user [\#432](https://github.com/voxpupuli/puppet-mongodb/pull/432) ([pecharmin](https://github.com/pecharmin))
 
 **Fixed bugs:**
 
 - Wrong APT-key [\#546](https://github.com/voxpupuli/puppet-mongodb/issues/546)
 - Mongo 4.0.x: unable to create user [\#525](https://github.com/voxpupuli/puppet-mongodb/issues/525)
 - user creation idempotency issues [\#412](https://github.com/voxpupuli/puppet-mongodb/issues/412)
+- fix\(is\_master-fact\): use --ssl if --sslPEMKeyFile or --sslCAFile is s… [\#573](https://github.com/voxpupuli/puppet-mongodb/pull/573) ([buchstabensalat](https://github.com/buchstabensalat))
 - Fixed the problem: the user was not created for Mongodb 4.x [\#561](https://github.com/voxpupuli/puppet-mongodb/pull/561) ([identw](https://github.com/identw))
 - Only create database and user when mongodb\_is\_master [\#558](https://github.com/voxpupuli/puppet-mongodb/pull/558) ([JvGinkel](https://github.com/JvGinkel))
-- Fix output of functions gathering replset info. [\#556](https://github.com/voxpupuli/puppet-mongodb/pull/556) ([czernitko](https://github.com/czernitko))
 
 **Closed issues:**
 
-- Puppet error "Unknown function: 'mongodb\_password'" [\#569](https://github.com/voxpupuli/puppet-mongodb/issues/569)
 - mongo 3.x replicaset init failed  [\#554](https://github.com/voxpupuli/puppet-mongodb/issues/554)
-- Mongo 4.2.0 [\#552](https://github.com/voxpupuli/puppet-mongodb/issues/552)
 
 **Merged pull requests:**
 
