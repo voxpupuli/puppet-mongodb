@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v3.1.0) (2020-02-10)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v3.0.0...v3.1.0)
+
+**Implemented enhancements:**
+
+- restrict opsmanager conf file permissions for better security [\#563](https://github.com/voxpupuli/puppet-mongodb/pull/563) ([FLiPp3r90](https://github.com/FLiPp3r90))
+- rebased PR\#308 to allow other databases in the format 'role@db' for mongodb\_user [\#432](https://github.com/voxpupuli/puppet-mongodb/pull/432) ([pecharmin](https://github.com/pecharmin))
+
+**Fixed bugs:**
+
+- Wrong APT-key [\#546](https://github.com/voxpupuli/puppet-mongodb/issues/546)
+- Mongo 4.0.x: unable to create user [\#525](https://github.com/voxpupuli/puppet-mongodb/issues/525)
+- user creation idempotency issues [\#412](https://github.com/voxpupuli/puppet-mongodb/issues/412)
+- fix\(is\_master-fact\): use --ssl if --sslPEMKeyFile or --sslCAFile is s… [\#573](https://github.com/voxpupuli/puppet-mongodb/pull/573) ([buchstabensalat](https://github.com/buchstabensalat))
+- Fixed the problem: the user was not created for Mongodb 4.x [\#561](https://github.com/voxpupuli/puppet-mongodb/pull/561) ([identw](https://github.com/identw))
+- Only create database and user when mongodb\_is\_master [\#558](https://github.com/voxpupuli/puppet-mongodb/pull/558) ([JvGinkel](https://github.com/JvGinkel))
+
+**Closed issues:**
+
+- mongo 3.x replicaset init failed  [\#554](https://github.com/voxpupuli/puppet-mongodb/issues/554)
+
+**Merged pull requests:**
+
+- Added keys for MongoDB 4.0 and 4.2. [\#557](https://github.com/voxpupuli/puppet-mongodb/pull/557) ([jgrancell](https://github.com/jgrancell))
+- Refactor opsmanager handling [\#521](https://github.com/voxpupuli/puppet-mongodb/pull/521) ([ekohl](https://github.com/ekohl))
+
 ## [v3.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v3.0.0) (2019-05-21)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.4.1...v3.0.0)
@@ -182,7 +209,7 @@ These should not affect the functionality of the module.
 **Fixed bugs:**
 
 - apt-transport-https required on Ubuntu when installing version \>= 3.0.0. [\#417](https://github.com/voxpupuli/puppet-mongodb/issues/417)
-- Fix compilation failures on RHEL when `manage\_package =\> true` [\#431](https://github.com/voxpupuli/puppet-mongodb/pull/431) ([fatmcgav](https://github.com/fatmcgav))
+- Fix compilation failures on RHEL when `manage_package => true` [\#431](https://github.com/voxpupuli/puppet-mongodb/pull/431) ([fatmcgav](https://github.com/fatmcgav))
 
 **Closed issues:**
 
@@ -209,7 +236,7 @@ These should not affect the functionality of the module.
 **Implemented enhancements:**
 
 - Allow user-supplied configuration data [\#389](https://github.com/voxpupuli/puppet-mongodb/pull/389) ([blackophelia](https://github.com/blackophelia))
-- MODULES-5483: Auth and FQDN certs =\> Fail [\#369](https://github.com/voxpupuli/puppet-mongodb/pull/369) ([disappear89](https://github.com/disappear89))
+- MODULES-5483: Auth and FQDN certs =\> Fail [\#369](https://github.com/voxpupuli/puppet-mongodb/pull/369) ([ThoTischner](https://github.com/ThoTischner))
 
 **Fixed bugs:**
 
