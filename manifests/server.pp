@@ -69,6 +69,7 @@ class mongodb::server (
   Optional[Stdlib::Absolutepath] $ssl_key               = undef,
   Optional[Stdlib::Absolutepath] $ssl_ca                = undef,
   Boolean $ssl_weak_cert                                = false,
+  Boolean $ssl_without_cert                             = false,
   Boolean $ssl_invalid_hostnames                        = false,
   Enum['requireSSL', 'preferSSL', 'allowSSL'] $ssl_mode = 'requireSSL',
   Boolean $restart                                      = $mongodb::params::restart,
