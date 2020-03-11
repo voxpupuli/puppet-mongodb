@@ -68,6 +68,7 @@ class mongodb::server (
   Optional[Boolean] $ssl                                = undef,
   Optional[Stdlib::Absolutepath] $ssl_key               = undef,
   Optional[Stdlib::Absolutepath] $ssl_ca                = undef,
+  Optional[Stdlib::Absolutepath] $ssl_cluster_file      = undef,
   Boolean $ssl_weak_cert                                = false,
   Boolean $ssl_without_cert                             = false,
   Boolean $ssl_invalid_hostnames                        = false,
