@@ -280,7 +280,7 @@ describe 'mongodb::server' do
           is_expected.to contain_exec('fix dbpath permissions').
             with_command('chown -R foo:bar /var/lib/mongodb').
             with_path(['/usr/bin', '/bin']).
-            with_onlyif("find /var/lib/mongodb -print -not -user foo -o -not -group bar -quit | grep -q '.*'").
+            with_onlyif("find /var/lib/mongodb -not -user foo -o -not -group bar -quit | grep -q '.*'").
             that_subscribes_to('File[/var/lib/mongodb]')
         end
       end

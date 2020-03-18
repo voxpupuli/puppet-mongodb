@@ -136,7 +136,7 @@ class mongodb::server::config {
       exec { 'fix dbpath permissions':
         command   => "chown -R ${user}:${group} ${dbpath}",
         path      => ['/usr/bin', '/bin'],
-        onlyif    => "find ${dbpath} -print -not -user ${user} -o -not -group ${group} -quit | grep -q '.*'",
+        onlyif    => "find ${dbpath} -not -user ${user} -o -not -group ${group} -quit | grep -q '.*'",
         subscribe => File[$dbpath],
       }
     }
