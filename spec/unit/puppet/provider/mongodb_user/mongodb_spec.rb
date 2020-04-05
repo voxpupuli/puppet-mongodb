@@ -61,15 +61,17 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
       }
       EOS
 
-      expect(provider).to receive(:mongo_eval).with("db.runCommand(#{cmd_json})", 'new_database')
+      allow(provider).to receive(:mongo_eval).with("db.runCommand(#{cmd_json})", 'new_database')
       provider.create
+      expect(provider).to have_received(:mongo_eval)
     end
   end
 
   describe 'destroy' do
     it 'removes a user' do
-      expect(provider).to receive(:mongo_eval).with('db.dropUser("new_user")')
+      allow(provider).to receive(:mongo_eval).with('db.dropUser("new_user")')
       provider.destroy
+      expect(provider).to have_received(:mongo_eval)
     end
   end
 
@@ -94,9 +96,10 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
           "digestPassword":false
       }
       EOS
-      expect(provider).to receive(:mongo_eval).
+      allow(provider).to receive(:mongo_eval).
         with("db.runCommand(#{cmd_json})", 'new_database')
       provider.password_hash = 'newpass'
+      expect(provider).to have_received(:mongo_eval)
     end
   end
 
@@ -121,34 +124,37 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
   describe 'roles=' do
     it 'changes nothing' do
       resource.provider.set(name: 'new_user', ensure: :present, roles: %w[role1 role2@other_database])
-      expect(provider).not_to receive(:mongo_eval)
+      allow(provider).to receive(:mongo_eval)
       provider.roles = %w[role1 role2@other_database]
+      expect(provider).not_to have_received(:mongo_eval)
     end
 
     it 'grant a role' do
       resource.provider.set(name: 'new_user', ensure: :present, roles: %w[role1 role2@other_database])
-      expect(provider).to receive(:mongo_eval).
+      allow(provider).to receive(:mongo_eval).
         with('db.getSiblingDB("new_database").grantRolesToUser("new_user", [{"role":"role3","db":"new_database"}])')
       provider.roles = %w[role1 role2@other_database role3]
+      expect(provider).to have_received(:mongo_eval)
     end
 
     it 'revokes a role' do
       resource.provider.set(name: 'new_user', ensure: :present, roles: %w[role1 role2@other_database])
-      expect(provider).to receive(:mongo_eval).
+      allow(provider).to receive(:mongo_eval).
         with('db.getSiblingDB("new_database").revokeRolesFromUser("new_user", [{"role":"role1","db":"new_database"}])')
       provider.roles = ['role2@other_database']
+      expect(provider).to have_received(:mongo_eval)
     end
 
-    # rubocop:disable RSpec/MultipleExpectations
     it 'exchanges a role' do
       resource.provider.set(name: 'new_user', ensure: :present, roles: %w[role1 role2@other_database])
-      expect(provider).to receive(:mongo_eval).
+      allow(provider).to receive(:mongo_eval).
         with('db.getSiblingDB("new_database").revokeRolesFromUser("new_user", [{"role":"role1","db":"new_database"}])')
-      expect(provider).to receive(:mongo_eval).
+      allow(provider).to receive(:mongo_eval).
         with('db.getSiblingDB("new_database").grantRolesToUser("new_user", [{"role":"role3","db":"new_database"}])')
 
       provider.roles = %w[role2@other_database role3]
+
+      expect(provider).to have_received(:mongo_eval).twice
     end
-    # rubocop:enable RSpec/MultipleExpectations
   end
 end
