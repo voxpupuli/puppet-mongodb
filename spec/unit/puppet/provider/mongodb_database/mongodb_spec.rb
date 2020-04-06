@@ -48,15 +48,17 @@ describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
 
   describe 'create' do
     it 'makes a database' do
-      expect(provider).to receive(:mongo_eval)
+      allow(provider).to receive(:mongo_eval)
       provider.create
+      expect(provider).to have_received(:mongo_eval)
     end
   end
 
   describe 'destroy' do
     it 'removes a database' do
-      expect(provider).to receive(:mongo_eval)
+      allow(provider).to receive(:mongo_eval)
       provider.destroy
+      expect(provider).to have_received(:mongo_eval)
     end
   end
 
