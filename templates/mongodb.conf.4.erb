@@ -109,22 +109,22 @@ net.maxIncomingConnections: <%= @maxconns %>
 net.http.enabled: <%= ! @nohttpinterface %>
 <% end -%>
 <% if @ssl -%>
-net.ssl.mode: <%= @ssl_mode %>
-net.ssl.PEMKeyFile: <%= @ssl_key %>
+net.tls.mode: <%= @ssl_mode %>
+net.tls.certificateKeyFile: <%= @ssl_key %>
 <% if @ssl_ca -%>
-net.ssl.CAFile: <%= @ssl_ca %>
+net.tls.CAFile: <%= @ssl_ca %>
 <% end -%>
 <% if @ssl_cluster_file -%>
-net.ssl.clusterFile: <%= @ssl_cluster_file %>
+net.tls.clusterFile: <%= @ssl_cluster_file %>
 <% end -%>
 <% if @ssl_weak_cert -%>
-net.ssl.weakCertificateValidation: <%= @ssl_weak_cert %>
+net.tls.weakCertificateValidation: <%= @ssl_weak_cert %>
 <% end -%>
 <% if @ssl_without_cert -%>
-net.ssl.allowConnectionsWithoutCertificates: <%= @ssl_without_cert %>
+net.tls.allowConnectionsWithoutCertificates: <%= @ssl_without_cert %>
 <% end -%>
 <% if @ssl_invalid_hostnames -%>
-net.ssl.allowInvalidHostnames: <%= @ssl_invalid_hostnames %>
+net.tls.allowInvalidHostnames: <%= @ssl_invalid_hostnames %>
 <% end -%>
 <% end -%>
 

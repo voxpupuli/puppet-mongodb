@@ -18,7 +18,7 @@ These should not affect the functionality of the module.
 - Wrong APT-key [\#546](https://github.com/voxpupuli/puppet-mongodb/issues/546)
 - Mongo 4.0.x: unable to create user [\#525](https://github.com/voxpupuli/puppet-mongodb/issues/525)
 - user creation idempotency issues [\#412](https://github.com/voxpupuli/puppet-mongodb/issues/412)
-- fix\(is\_master-fact\): use --ssl if --sslPEMKeyFile or --sslCAFile is s… [\#573](https://github.com/voxpupuli/puppet-mongodb/pull/573) ([buchstabensalat](https://github.com/buchstabensalat))
+- fix\(is\_master-fact\): use --tls if --tlsCertificateKeyFile or --tlsCAFile is s… [\#573](https://github.com/voxpupuli/puppet-mongodb/pull/573) ([buchstabensalat](https://github.com/buchstabensalat))
 - Fixed the problem: the user was not created for Mongodb 4.x [\#561](https://github.com/voxpupuli/puppet-mongodb/pull/561) ([identw](https://github.com/identw))
 - Only create database and user when mongodb\_is\_master [\#558](https://github.com/voxpupuli/puppet-mongodb/pull/558) ([JvGinkel](https://github.com/JvGinkel))
 
