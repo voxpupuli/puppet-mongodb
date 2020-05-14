@@ -109,10 +109,14 @@ class mongodb::server::config {
       # Template has available user-supplied data
       # - $config_data
       $cfg_content = template($config_template)
-    } else {
+    } elsif $facts['mongodb_version'] != undef and $facts['mongodb_version'] =~ /^3/ {
       # Template has available user-supplied data
       # - $config_data
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
+    } else {
+      # Template has available user-supplied data
+      # - $config_data
+      $cfg_content = template('mongodb/mongodb.conf.4.erb')
     }
 
     file { $config:

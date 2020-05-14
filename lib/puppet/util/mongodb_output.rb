@@ -7,8 +7,8 @@ module Puppet
         data.gsub!(%r{\w+\((.+?)\)}, '\1')
 
         data.gsub!(%r{^Error\:.+}, '')
-        data.gsub!(%r{^.*warning\:.+}, '') # remove warnings if sslAllowInvalidHostnames is true
-        data.gsub!(%r{^.*The server certificate does not match the host name.+}, '') # remove warnings if sslAllowInvalidHostnames is true mongo 3.x
+        data.gsub!(%r{^.*warning\:.+}, '') # remove warnings if tlsAllowInvalidHostnames is true
+        data.gsub!(%r{^.*The server certificate does not match the host name.+}, '') # remove warnings if tlsAllowInvalidHostnames is true mongo 3.x
         data
       end
     end
