@@ -10,13 +10,14 @@ def get_options_from_hash_config(config)
   result = []
 
   result << "--port #{config['net.port']}" unless config['net.port'].nil?
-  # use --ssl and --host if:
-  # - sslMode is "requireSSL"
-  # - Parameter --sslPEMKeyFile is set
-  # - Parameter --sslCAFile is set
-  result << "--ssl --host #{Facter.value(:fqdn)}" if config['net.ssl.mode'] == 'requireSSL' || !config['net.ssl.PEMKeyFile'].nil? || !config['net.ssl.CAFile'].nil?
-  result << "--sslPEMKeyFile #{config['net.ssl.PEMKeyFile']}" unless config['net.ssl.PEMKeyFile'].nil?
-  result << "--sslCAFile #{config['net.ssl.CAFile']}" unless config['net.ssl.CAFile'].nil?
+  # use --tls and --host if:
+  # - sslMode is "requireTLS"
+  # - Parameter --tlsCertificateKeyFile is set
+  # - Parameter --tlsCAFile is set
+  result << "--tls --host #{Facter.value(:fqdn)}" if config['net.tls.mode'] == 'requireTLS' || !config['net.tls.certificateKeyFile'].nil? || !config['net.tls.CAFile'].nil?
+  result << "--tlsCertificateKeyFile #{config['net.tls.certificateKeyFile']}" unless config['net.tls.certificateKeyFile'].nil?
+  result << "--tlsCAFile #{config['net.tls.CAFile']}" unless config['net.tls.CAFile'].nil?
+
   result << '--ipv6' unless config['net.ipv6'].nil?
 
   result.join(' ')
@@ -32,13 +33,13 @@ def get_options_from_keyvalue_config(file)
   result = []
 
   result << "--port #{config['port']}" unless config['port'].nil?
-  # use --ssl and --host if:
-  # - sslMode is "requireSSL"
-  # - Parameter --sslPEMKeyFile is set
-  # - Parameter --sslCAFile is set
-  result << "--ssl --host #{Facter.value(:fqdn)}" if config['ssl'] == 'requireSSL' || !config['sslcert'].nil? || !config['sslca'].nil?
-  result << "--sslPEMKeyFile #{config['sslcert']}" unless config['sslcert'].nil?
-  result << "--sslCAFile #{config['sslca']}" unless config['sslca'].nil?
+  # use --tls and --host if:
+  # - sslMode is "requireTLS"
+  # - Parameter --tlsCertificateKeyFile is set
+  # - Parameter --tlsCAFile is set
+  result << "--tls --host #{Facter.value(:fqdn)}" if config['ssl'] == 'requireTLS' || !config['sslcert'].nil? || !config['sslca'].nil?
+  result << "--tlsCertificateKeyFile #{config['sslcert']}" unless config['sslcert'].nil?
+  result << "--tlsCAFile #{config['sslca']}" unless config['sslca'].nil?
   result << '--ipv6' unless config['ipv6'].nil?
 
   result.join(' ')
