@@ -497,7 +497,7 @@ textSearchEnabled=true). Default: None
 ##### `syslog`
 Sends all logging output to the host’s syslog system rather than to standard
 output or a log file. Default: None
-*Important*: You cannot use syslog with logpath.
+*Important*: You cannot use syslog with logpath. Set logpath to false to disable it.
 
 ##### `slave`
 Set to true to configure the current instance to act as slave instance in a
