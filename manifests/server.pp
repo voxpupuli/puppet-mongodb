@@ -84,6 +84,7 @@ class mongodb::server (
   contain mongodb::server::install
   contain mongodb::server::config
   contain mongodb::server::service
+  contain mongodb::server::mongorc
 
   if ($ensure == 'present' or $ensure == true) {
     Class['mongodb::server::install'] -> Class['mongodb::server::config']
