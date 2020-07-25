@@ -10,7 +10,6 @@ class mongodb::mongos::service (
   $bind_ip          = $mongodb::mongos::bind_ip,
   $port             = $mongodb::mongos::port,
 ) {
-
   if $package_ensure in ['absent', 'purged'] {
     $real_service_ensure = 'stopped'
     $real_service_enable = false
@@ -43,5 +42,4 @@ class mongodb::mongos::service (
       }
     }
   }
-
 }

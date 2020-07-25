@@ -80,7 +80,6 @@ class mongodb::server (
   Boolean $store_creds                                  = $mongodb::params::store_creds,
   Array $admin_roles                                    = $mongodb::params::admin_roles,
 ) inherits mongodb::params {
-
   contain mongodb::server::install
   contain mongodb::server::config
   contain mongodb::server::service
@@ -122,7 +121,6 @@ class mongodb::server (
       if $replset_config {
         # Copy it to REAL value
         $_replset_config = $replset_config
-
       } else {
         # Build up a config hash
         $_replset_config = {
@@ -144,7 +142,6 @@ class mongodb::server (
       if $create_admin {
         Class['mongodb::replset'] -> Mongodb::Db['admin']
       }
-
     }
   }
 }
