@@ -28,16 +28,16 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   def self.mongo_conf
     config = YAML.load_file(mongod_conf_file) || {}
     {
-      'bindip' => config['net.bindIp'],
-      'port' => config['net.port'],
-      'ipv6' => config['net.ipv6'],
-      'allowInvalidHostnames' => config['net.ssl.allowInvalidHostnames'],
-      'ssl' => config['net.ssl.mode'],
-      'sslcert' => config['net.ssl.PEMKeyFile'],
-      'sslca' => config['net.ssl.CAFile'],
-      'auth' => config['security.authorization'],
-      'shardsvr' => config['sharding.clusterRole'],
-      'confsvr' => config['sharding.clusterRole']
+      'bindip' => config['net.bindIp'] || config.fetch('net', {}).fetch('bindIp', nil),
+      'port' => config['net.port'] || config.fetch('net', {}).fetch('port', nil),
+      'ipv6' => config['net.ipv6'] || config.fetch('net', {}).fetch('ipv6', nil),
+      'allowInvalidHostnames' => config['net.ssl.allowInvalidHostnames'] || config.fetch('net', {}).fetch('ssl', {}).fetch('allowInvalidHostnames', nil),
+      'ssl' => config['net.ssl.mode'] || config.fetch('net', {}).fetch('ssl', {}).fetch('mode', nil),
+      'sslcert' => config['net.ssl.PEMKeyFile'] || config.fetch('net', {}).fetch('ssl', {}).fetch('PEMKeyFile', nil),
+      'sslca' => config['net.ssl.CAFile'] || config.fetch('net', {}).fetch('ssl', {}).fetch('CAFile', nil),
+      'auth' => config['security.authorization'] || config.fetch('security', {}).fetch('authorization', nil),
+      'shardsvr' => config['sharding.clusterRole'] || config.fetch('sharding',{}).fetch('clusterRole', nil),
+      'confsvr' => config['sharding.clusterRole'] || config.fetch('sharding', {}).fetch('clusterRole', nil)
     }
   end
 
