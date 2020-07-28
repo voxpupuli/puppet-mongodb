@@ -36,7 +36,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       'sslcert' => config['net.ssl.PEMKeyFile'] || config.fetch('net', {}).fetch('ssl', {}).fetch('PEMKeyFile', nil),
       'sslca' => config['net.ssl.CAFile'] || config.fetch('net', {}).fetch('ssl', {}).fetch('CAFile', nil),
       'auth' => config['security.authorization'] || config.fetch('security', {}).fetch('authorization', nil),
-      'shardsvr' => config['sharding.clusterRole'] || config.fetch('sharding',{}).fetch('clusterRole', nil),
+      'shardsvr' => config['sharding.clusterRole'] || config.fetch('sharding', {}).fetch('clusterRole', nil),
       'confsvr' => config['sharding.clusterRole'] || config.fetch('sharding', {}).fetch('clusterRole', nil)
     }
   end
