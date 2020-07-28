@@ -26,15 +26,15 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   def self.mongo_conf
     config = YAML.load_file(mongod_conf_file) || {}
     {
-      'bindip' => config['net.bindIp'],
-      'port' => config['net.port'],
-      'ipv6' => config['net.ipv6'],
-      'tlsallowInvalidHostnames' => config['net.tls.allowInvalidHostnames'],
-      'tls' => config['net.tls.mode'],
-      'tlscert' => config['net.tls.certificateKeyFile'],
-      'tlsca' => config['net.tls.CAFile'],
-      'auth' => config['security.authorization'],
-      'clusterRole' => config['sharding.clusterRole'],
+      'bindip' => config['net.bindIp'] || config.fetch('net', {}).fetch('bindIp', nil),
+      'port' => config['net.port'] || config.fetch('net', {}).fetch('port', nil),
+      'ipv6' => config['net.ipv6'] || config.fetch('net', {}).fetch('ipv6', nil),
+      'tlsallowInvalidHostnames' => config['net.tls.allowInvalidHostnames'] || config.fetch('net', {}).fetch('tls', {}).fetch('allowInvalidHostnames', nil),
+      'tls' => config['net.tls.mode'] || config.fetch('net', {}).fetch('tls', {}).fetch('mode', nil),
+      'tlscert' => config['net.tls.certificateKeyFile'] || config.fetch('net', {}).fetch('tls', {}).fetch('certificateKeyFile', nil),
+      'tlsca' => config['net.tls.CAFile'] || config.fetch('net', {}).fetch('tls', {}).fetch('CAFile', nil),
+      'auth' => config['security.authorization'] || config.fetch('security', {}).fetch('authorization', nil),
+      'clusterRole' => config['sharding.clusterRole'] || config.fetch('sharding', {}).fetch('clusterRole', nil),
     }
   end
 
