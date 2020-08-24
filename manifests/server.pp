@@ -100,20 +100,11 @@ class mongodb::server (
   }
 
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
-    if $admin_password {
-      mongodb::db { 'admin':
-        user     => $admin_username,
-        password => $admin_password,
-        roles    => $admin_roles,
-      }
-    } elsif $admin_password_hash {
-      mongodb::db { 'admin':
-        user          => $admin_username,
-        password_hash => $admin_password_hash,
-        roles         => $admin_roles,
-      }
-    } else {
-      fail('You did not specify a password or password hash for admin username')
+    mongodb::db { 'admin':
+      user          => $admin_username,
+      password      => $admin_password,
+      password_hash => $password_hash,
+      roles         => $admin_roles,
     }
 
     # Make sure it runs before other DB creation
