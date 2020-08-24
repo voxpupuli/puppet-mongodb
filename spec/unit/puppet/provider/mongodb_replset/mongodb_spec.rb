@@ -37,7 +37,6 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
 EOT
     end
 
-    # rubocop:disable RSpec/MultipleExpectations
     it 'creates a replicaset' do
       allow(provider.class).to receive(:replset_properties)
       allow(provider).to receive(:get_hosts_status).and_return([valid_members, []])
@@ -53,7 +52,6 @@ EOT
       expect(provider).to have_received(:rs_initiate)
       expect(provider).to have_received(:db_ismaster)
     end
-    # rubocop:enable RSpec/MultipleExpectations
   end
 
   describe '#exists?' do
