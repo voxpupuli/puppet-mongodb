@@ -561,6 +561,9 @@ Administrator user name
 ##### `admin_password`
 Administrator user password
 
+##### `admin_password_hash`
+Administrator user password in MD5 format
+
 ##### `admin_roles`
 Administrator user roles
 
