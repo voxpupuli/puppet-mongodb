@@ -76,7 +76,7 @@ class mongodb::server (
   Boolean $create_admin                                 = $mongodb::params::create_admin,
   String $admin_username                                = $mongodb::params::admin_username,
   Optional[String] $admin_password                      = undef,
-  String $admin_password_hash                           = undef,
+  Optional[String] $admin_password_hash                 = undef,
   Boolean $handle_creds                                 = $mongodb::params::handle_creds,
   Boolean $store_creds                                  = $mongodb::params::store_creds,
   Array $admin_roles                                    = $mongodb::params::admin_roles,
