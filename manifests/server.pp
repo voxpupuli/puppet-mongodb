@@ -76,6 +76,7 @@ class mongodb::server (
   Boolean $create_admin                                 = $mongodb::params::create_admin,
   String $admin_username                                = $mongodb::params::admin_username,
   Optional[String] $admin_password                      = undef,
+  String $admin_password_hash                           = undef,
   Boolean $handle_creds                                 = $mongodb::params::handle_creds,
   Boolean $store_creds                                  = $mongodb::params::store_creds,
   Array $admin_roles                                    = $mongodb::params::admin_roles,
@@ -99,10 +100,20 @@ class mongodb::server (
   }
 
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
-    mongodb::db { 'admin':
-      user     => $admin_username,
-      password => $admin_password,
-      roles    => $admin_roles,
+    if $admin_password {
+      mongodb::db { 'admin':
+        user     => $admin_username,
+        password => $admin_password,
+        roles    => $admin_roles,
+      }
+    } elsif $admin_password_hash {
+      mongodb::db { 'admin':
+        user          => $admin_username,
+        password_hash => $admin_password_hash,
+        roles         => $admin_roles,
+      }
+    } else {
+      fail('You did not specify a password or password hash for admin username')
     }
 
     # Make sure it runs before other DB creation
