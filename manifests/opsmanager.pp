@@ -55,7 +55,6 @@ class mongodb::opsmanager (
   Optional[Integer] $snapshot_monthly_retention  = undef, # Default: 1
   Optional[Integer] $versions_directory          = undef, # Linux default: /opt/mongodb/mms/mongodb-releases/
 ) {
-
   case $package_ensure {
     'absent': {
       $my_package_ensure = 'absent'

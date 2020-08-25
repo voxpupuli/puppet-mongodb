@@ -48,7 +48,6 @@ describe Puppet::Type.type(:mongodb_shard).provider(:mongo) do
   end
 
   describe '#create' do
-    # rubocop:disable RSpec/MultipleExpectations
     it 'makes a shard' do
       allow(provider).to receive(:sh_addshard).with('rs_test/mongo1:27018').and_return(
         'shardAdded' => 'rs_test',
@@ -63,7 +62,6 @@ describe Puppet::Type.type(:mongodb_shard).provider(:mongo) do
       expect(provider).to have_received(:sh_addshard)
       expect(provider).to have_received(:sh_enablesharding)
     end
-    # rubocop:enable RSpec/MultipleExpectations
   end
 
   describe 'destroy' do

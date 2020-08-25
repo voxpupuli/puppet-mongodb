@@ -21,8 +21,6 @@ if hosts.length > 1
       apply_manifest_on(hosts_as('shard'), pp, catch_failures: true)
       apply_manifest_on(hosts_as('shard'), pp, catch_changes: true)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'configures the router server' do
       pp = <<-EOS
         class { 'mongodb::globals': }

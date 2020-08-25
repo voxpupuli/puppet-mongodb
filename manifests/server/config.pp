@@ -73,10 +73,9 @@ class mongodb::server::config {
     group => $group,
   }
 
-  if ($logpath and $syslog) { fail('You cannot use syslog with logpath')}
+  if ($logpath and $syslog) { fail('You cannot use syslog with logpath') }
 
   if ($ensure == 'present' or $ensure == true) {
-
     # Exists for future compatibility and clarity.
     if $auth {
       $noauth = false
@@ -98,7 +97,6 @@ class mongodb::server::config {
     } else {
       $storage_engine_internal = $storage_engine
     }
-
 
     # Pick which config content to use
     if $config_content {
@@ -165,7 +163,7 @@ class mongodb::server::config {
   if $handle_creds {
     if $auth and $store_creds {
       file { $rcfile:
-        ensure  => present,
+        ensure  => file,
         content => template('mongodb/mongorc.js.erb'),
         owner   => 'root',
         group   => 'root',

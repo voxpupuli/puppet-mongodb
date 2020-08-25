@@ -38,5 +38,4 @@ class mongodb::mongos (
   } else {
     Class['mongodb::mongos::service'] -> Class['mongodb::mongos::config'] -> Class['mongodb::mongos::install']
   }
-
 }

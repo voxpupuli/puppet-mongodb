@@ -31,7 +31,6 @@ class mongodb::globals (
   $pidfilemode           = undef,
   $manage_pidfile        = undef,
 ) {
-
   if $use_enterprise_repo {
     $edition = 'enterprise'
   } else {

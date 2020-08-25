@@ -237,7 +237,7 @@ describe 'mongodb::server' do
 
           it {
             is_expected.to contain_file('/root/.mongorc.js').
-              with_ensure('present').
+              with_ensure('file').
               with_owner('root').
               with_group('root').
               with_mode('0600').

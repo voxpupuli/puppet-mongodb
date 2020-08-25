@@ -132,6 +132,6 @@ configdb = 127.0.0.1:27019
       { osfamily: 'Solaris' }
     end
 
-    it { expect { is_expected.to raise_error(Puppet::Error) } }
+    it { is_expected.to compile.and_raise_error(%r{is not applicable to an Undef Value}) }
   end
 end

@@ -19,7 +19,6 @@ define mongodb::db (
   Array[String]    $roles         = ['dbAdmin'],
   Integer[0]       $tries         = 10,
 ) {
-
   unless $facts['mongodb_is_master'] == 'false' { # lint:ignore:quoted_booleans
     mongodb_database { $db_name:
       ensure => present,

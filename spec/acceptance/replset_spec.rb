@@ -38,8 +38,6 @@ if hosts.length > 1
       apply_manifest_on(hosts.reverse, pp, catch_failures: true)
       apply_manifest_on(hosts.reverse, pp, catch_changes: true)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'sets up the replset with puppet' do
       pp = <<-EOS
         mongodb_replset { 'test':
@@ -134,8 +132,6 @@ YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
       apply_manifest_on(hosts.reverse, pp, catch_failures: true)
       apply_manifest_on(hosts.reverse, pp, catch_changes: true)
     end
-
-    # rubocop:disable RSpec/MultipleExpectations
     it 'sets up the replset with puppet' do
       pp = <<-EOS
         class { 'mongodb::globals':
