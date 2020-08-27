@@ -101,7 +101,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       command = {
         updateUser: @resource[:username],
         pwd: @resource[:password],
-        digestpassword: true
+        digestPassword: true
       }
 
       mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
