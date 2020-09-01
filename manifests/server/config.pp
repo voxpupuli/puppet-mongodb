@@ -161,18 +161,12 @@ class mongodb::server::config {
   }
 
   if $handle_creds {
-    if $auth and $store_creds {
-      file { $rcfile:
-        ensure  => file,
-        content => template('mongodb/mongorc.js.erb'),
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0600',
-      }
-    } else {
-      file { $rcfile:
-        ensure => absent,
-      }
+    file { $rcfile:
+      ensure  => file,
+      content => template('mongodb/mongorc.js.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0600',
     }
   }
 }

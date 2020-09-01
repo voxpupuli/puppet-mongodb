@@ -16,6 +16,7 @@ function rsReconfigSettings(settings){
   return rs.reconfig(cfg)
 }
 
+<% if @auth and @store_creds -%>
 function authRequired() {
   try {
     return db.serverCmdLineOpts().code == 13;
@@ -39,3 +40,4 @@ if (authRequired()) {
     abort('Unknown error')
   }
 }
+<% end -%>
