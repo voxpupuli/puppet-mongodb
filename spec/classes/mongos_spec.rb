@@ -12,7 +12,7 @@ describe 'mongodb::mongos' do
           '/etc/mongodb-shard.conf'
         end
       end
-      
+
       context 'with defaults' do
         it { is_expected.to compile.with_all_deps }
 
