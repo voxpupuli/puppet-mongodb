@@ -13,16 +13,6 @@ describe 'mongodb::mongos' do
         end
       end
       
-      describe 'with specific bind_ip values' do
-        let :params do
-          {
-            bind_ip: ['127.0.0.1', '10.1.1.13']
-          }
-        end
-
-        it { is_expected.to contain_file(config_file).with_content(%r{^bind_ip = 127\.0\.0\.1\,10\.1\.1\.13$}) }
-      end
-
       context 'with defaults' do
         it { is_expected.to compile.with_all_deps }
 
@@ -68,6 +58,16 @@ configdb = 127.0.0.1:27019
         end
 
         it { is_expected.to contain_service('mongos') }
+      end
+
+      describe 'with specific bind_ip values' do
+        let :params do
+          {
+            bind_ip: ['127.0.0.1', '10.1.1.13']
+          }
+        end
+
+        it { is_expected.to contain_file(config_file).with_content(%r{^bind_ip = 127\.0\.0\.1\,10\.1\.1\.13$}) }
       end
 
       context 'package_name => mongo-foo' do
