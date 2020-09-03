@@ -12,6 +12,16 @@ describe 'mongodb::mongos' do
           '/etc/mongodb-shard.conf'
         end
       end
+      
+      describe 'with specific bind_ip values' do
+        let :params do
+          {
+            bind_ip: ['127.0.0.1', '10.1.1.13']
+          }
+        end
+
+        it { is_expected.to contain_file(config_file).with_content(%r{^bind_ip = 127\.0\.0\.1\,10\.1\.1\.13$}) }
+      end
 
       context 'with defaults' do
         it { is_expected.to compile.with_all_deps }
