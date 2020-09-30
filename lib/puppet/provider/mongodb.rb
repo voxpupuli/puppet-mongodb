@@ -31,10 +31,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       'bindip' => config['net.bindIp'],
       'port' => config['net.port'],
       'ipv6' => config['net.ipv6'],
-      'allowInvalidHostnames' => config['net.ssl.allowInvalidHostnames'],
-      'ssl' => config['net.ssl.mode'],
-      'sslcert' => config['net.ssl.PEMKeyFile'],
-      'sslca' => config['net.ssl.CAFile'],
+      'allowInvalidHostnames' => config['net.tls.allowInvalidHostnames'],
+      'ssl' => config['net.tls.mode'],
+      'sslcert' => config['net.tls.certificateKeyFile'],
+      'sslca' => config['net.tls.CAFile'],
       'auth' => config['security.authorization'],
       'shardsvr' => config['sharding.clusterRole'],
       'confsvr' => config['sharding.clusterRole']
@@ -62,14 +62,14 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
     args = [db, '--quiet', '--host', host]
     args.push('--ipv6') if ipv6_is_enabled(config)
-    args.push('--sslAllowInvalidHostnames') if ssl_invalid_hostnames(config)
+    args.push('--tlsAllowInvalidHostnames') if ssl_invalid_hostnames(config)
 
     if ssl_is_enabled(config)
-      args.push('--ssl')
-      args += ['--sslPEMKeyFile', config['sslcert']]
+      args.push('--tls')
+      args += ['--tlsCertificateKeyFile', config['sslcert']]
 
       ssl_ca = config['sslca']
-      args += ['--sslCAFile', ssl_ca] unless ssl_ca.nil?
+      args += ['--tlsCAFile', ssl_ca] unless ssl_ca.nil?
     end
 
     args += ['--eval', cmd]

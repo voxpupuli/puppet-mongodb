@@ -26,7 +26,7 @@ mongo.ssl=<%=$mongodb::opsmanager::ssl %>
 # `mongo.ssl` is set to true.
 # CAFile - the certificate of the CA that issued the MongoDB server certificate(s)
 # PEMKeyFile - a client certificate containing a certificate and private key
-#             (needed when MongoDB is running with --sslCAFile)
+#             (needed when MongoDB is running with --tlsCAFile)
 # PEMKeyFilePassword - required if the `PEMKeyFile` contains an encrypted private key
 # ####################################
 mongodb.ssl.CAFile=<%=$mongodb::opsmanager::ca_file %>
