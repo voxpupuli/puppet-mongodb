@@ -53,6 +53,7 @@ class mongodb::server (
   Optional[String] $replset                             = undef,
   Optional[Hash] $replset_config                        = undef,
   Optional[Array] $replset_members                      = undef,
+  Optional[String[1]] $replset_arbiter                  = undef,
   Optional[Boolean] $configsvr                          = undef,
   Optional[Boolean] $shardsvr                           = undef,
   Optional[Boolean] $rest                               = undef,
@@ -114,6 +115,8 @@ class mongodb::server (
     # Check that we've got either a members array or a replset_config hash
     if $replset_members and $replset_config {
       fail('You can provide either replset_members or replset_config, not both.')
+    } elsif $replset_arbiter and $replset_config {
+      fail('You can use replset_arbiter only with replset_members not when using replset_config.')
     } elsif !$replset_members and !$replset_config {
       # No members or config provided. Warn about it.
       warning('Replset specified, but no replset_members or replset_config provided.')
@@ -127,6 +130,7 @@ class mongodb::server (
           "${replset}" => {
             'ensure'   => 'present',
             'members'  => $replset_members,
+            'arbiter'  => $replset_arbiter,
           },
         }
       }

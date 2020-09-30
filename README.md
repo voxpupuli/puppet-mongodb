@@ -446,6 +446,11 @@ set name as an argument to this set. All hosts must have the same set name.
 An array of member hosts for the replica set.
 Mutually exclusive with `replset_config` param.
 
+##### `replset_arbiter`
+A string to identify an arbiter instance for the replica set.
+The arbiter node must also appear in `replset_members`.
+Mutually exclusive with `replset_config` param.
+
 ##### `replset_config`
 A hash that is used to configure the replica set.
 Mutually exclusive with `replset_members` param.
@@ -453,7 +458,7 @@ Mutually exclusive with `replset_members` param.
 ```puppet
 class mongodb::server {
   replset        => 'rsmain',
-  replset_config => { 'rsmain' => { ensure  => present, settings => { heartbeatTimeoutSecs => 15, getLastErrorModes => { ttmode => { dc => 1 } } }, members => [{'host'=>'host1:27017', 'tags':{ 'dc' : 'east'}}, { 'host' => 'host2:27017'}, 'host3:27017']  }  }
+  replset_config => { 'rsmain' => { ensure  => present, settings => { heartbeatTimeoutSecs => 15, getLastErrorModes => { ttmode => { dc => 1 } } }, members => [{'host'=>'host1:27017', 'tags':{ 'dc' : 'east'}}, { 'host' => 'host2:27017'}, 'host3:27017'] }, arbiter => ['host3:27017'] }
 
 }
 ```

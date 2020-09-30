@@ -363,7 +363,8 @@ describe 'mongodb::server' do
                   'mongo1:27017',
                   'mongo2:27017',
                   'mongo3:27017'
-                ]
+                ],
+                'arbiter' => :undef
               }
             }
           end
@@ -375,7 +376,38 @@ describe 'mongodb::server' do
                 'mongo1:27017',
                 'mongo2:27017',
                 'mongo3:27017'
-              ]
+              ],
+              'replset_arbiter' => :undef
+            }
+          end
+
+          it { is_expected.to contain_class('mongodb::replset').with_sets(rsConf) }
+        end
+
+        describe 'should setup using replset_members with replset_arbiter' do
+          let(:rsConf) do
+            {
+              'rsTest' => {
+                'ensure'  => 'present',
+                'members' => [
+                  'mongo1:27017',
+                  'mongo2:27017',
+                  'mongo3:27017'
+                ],
+                'arbiter' => 'mongo3:27017'
+              }
+            }
+          end
+
+          let(:params) do
+            {
+              replset: 'rsTest',
+              replset_members: [
+                'mongo1:27017',
+                'mongo2:27017',
+                'mongo3:27017'
+              ],
+              'replset_arbiter' => 'mongo3:27017'
             }
           end
 
