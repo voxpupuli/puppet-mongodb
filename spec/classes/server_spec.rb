@@ -47,7 +47,8 @@ describe 'mongodb::server' do
             with_content(%r{^storage\.dbPath: /var/lib/mongodb$}).
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
             with_content(%r{^systemLog\.logAppend: true$}).
-            with_content(%r{^systemLog\.path: #{log_path}$})
+            with_content(%r{^systemLog\.path: #{log_path}$}).
+            without_content(%r{^replication\.enableMajorityReadConcern:})
         end
 
         if facts[:os]['family'] == 'Debian'
@@ -326,6 +327,24 @@ describe 'mongodb::server' do
           end
 
           it { is_expected.to contain_file(config_file).with_content(%r{^net\.http\.enabled: true$}) }
+        end
+      end
+
+      describe 'repl_enable_majority_read_concern param' do
+        context 'set to true' do
+          let(:params) do
+            { repl_enable_majority_read_concern: true }
+          end
+
+          it { is_expected.to contain_file(config_file).with_content(%r{^\s*replication\.enableMajorityReadConcern: true$}) }
+        end
+
+        context 'set to false' do
+          let(:params) do
+            { repl_enable_majority_read_concern: false }
+          end
+
+          it { is_expected.to contain_file(config_file).with_content(%r{^\s*replication\.enableMajorityReadConcern: false$}) }
         end
       end
 

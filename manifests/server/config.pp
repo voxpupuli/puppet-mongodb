@@ -67,6 +67,7 @@ class mongodb::server::config {
   $ssl_invalid_hostnames = $mongodb::server::ssl_invalid_hostnames
   $ssl_mode         = $mongodb::server::ssl_mode
   $storage_engine   = $mongodb::server::storage_engine
+  $repl_enable_majority_read_concern = $mongodb::server::repl_enable_majority_read_concern
 
   File {
     owner => $user,
