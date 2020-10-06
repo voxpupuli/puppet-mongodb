@@ -152,14 +152,24 @@ describe 'mongodb::server' do
         it { is_expected.to contain_file('/root/.mongorc.js') }
       end
 
-      describe 'when specifying set_parameter value' do
+      describe 'when specifying set_parameter array value' do
+        let :params do
+          {
+            set_parameter: ['textSearchEnable=true']
+          }
+        end
+
+        it { is_expected.to contain_file(config_file).with_content(%r{^setParameter:\n  textSearchEnable=true}) }
+      end
+
+      describe 'when specifying set_parameter string value' do
         let :params do
           {
             set_parameter: 'textSearchEnable=true'
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^setParameter: textSearchEnable=true}) }
+        it { is_expected.to contain_file(config_file).with_content(%r{^setParameter:\n  textSearchEnable=true}) }
       end
 
       describe 'with journal:' do
