@@ -6,7 +6,9 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
 
   def self.instances
     require 'json'
-    dbs = JSON.parse mongo_eval('rs.slaveOk();printjson(db.getMongo().getDBs())')
+
+    pre_cmd = 'try { rs.secondaryOk() } catch (err) { rs.slaveOk() }'
+    dbs = JSON.parse mongo_eval(pre_cmd + ';printjson(db.getMongo().getDBs())')
 
     dbs['databases'].map do |db|
       new(name: db['name'],
