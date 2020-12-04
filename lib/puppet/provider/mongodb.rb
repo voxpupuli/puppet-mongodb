@@ -111,7 +111,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     cmd_ismaster = 'db.isMaster().ismaster'
     cmd_ismaster = mongorc_file + cmd_ismaster if mongorc_file
     db = 'admin'
-    res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
+    res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
     res.eql?('true')
   end
 
@@ -182,14 +182,5 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def mongo_4?
     self.class.mongo_4?
-  end
-
-  def self.mongo_5?
-    v = mongo_version
-    !v[%r{^5\.}].nil?
-  end
-
-  def mongo_5?
-    self.class.mongo_5?
   end
 end

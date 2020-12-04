@@ -36,7 +36,7 @@ describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
     tmp = Tempfile.new('test')
     mongodconffile = tmp.path
     allow(provider.class).to receive(:mongod_conf_file).and_return(mongodconffile)
-    allow(provider.class).to receive(:mongo_eval).with('try { rs.secondaryOk() } catch (err) { rs.slaveOk() };printjson(db.getMongo().getDBs())').and_return(raw_dbs)
+    allow(provider.class).to receive(:mongo_eval).with('rs.slaveOk();printjson(db.getMongo().getDBs())').and_return(raw_dbs)
     allow(provider.class).to receive(:db_ismaster).and_return(true)
   end
 
@@ -48,17 +48,15 @@ describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
 
   describe 'create' do
     it 'makes a database' do
-      allow(provider).to receive(:mongo_eval)
+      expect(provider).to receive(:mongo_eval)
       provider.create
-      expect(provider).to have_received(:mongo_eval)
     end
   end
 
   describe 'destroy' do
     it 'removes a database' do
-      allow(provider).to receive(:mongo_eval)
+      expect(provider).to receive(:mongo_eval)
       provider.destroy
-      expect(provider).to have_received(:mongo_eval)
     end
   end
 

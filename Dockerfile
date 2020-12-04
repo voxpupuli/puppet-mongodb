@@ -1,7 +1,4 @@
-# MANAGED BY MODULESYNC
-# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
-
-FROM ruby:2.7
+FROM ruby:2.5.3
 
 WORKDIR /opt/puppet
 

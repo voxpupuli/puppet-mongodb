@@ -18,7 +18,7 @@ class mongodb::params inherits mongodb::globals {
   ]
   $handle_creds          = true
   $store_creds           = false
-  $rcfile                = "${facts['root_home']}/.mongorc.js"
+  $rcfile                = "${::root_home}/.mongorc.js"
   $dbpath_fix            = false
 
   $manage_package        = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
@@ -40,9 +40,17 @@ class mongodb::params inherits mongodb::globals {
   # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
   case $facts['os']['family'] {
     'RedHat', 'Linux', 'Suse': {
-      $user                    = pick($mongodb::globals::user, 'mongod')
-      $group                   = pick($mongodb::globals::group, 'mongod')
-      $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${mongodb::globals::edition}-server")
+      if $manage_package {
+        $user                    = pick($mongodb::globals::user, 'mongod')
+        $group                   = pick($mongodb::globals::group, 'mongod')
+        $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${mongodb::globals::edition}-server")
+      } else {
+        # RedHat/CentOS doesn't come with a prepacked mongodb
+        # so we assume that you are using EPEL repository.
+        $user                    = pick($mongodb::globals::user, 'mongodb')
+        $group                   = pick($mongodb::globals::group, 'mongodb')
+        $server_package_name     = pick($mongodb::globals::server_package_name, 'mongodb-server')
+      }
 
       $service_name = pick($mongodb::globals::service_name, 'mongod')
       $logpath      = '/var/log/mongodb/mongod.log'

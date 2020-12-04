@@ -42,6 +42,12 @@ class mongodb::globals (
     $edition = 'org'
   }
 
+  if $use_enterprise_repo {
+    $edition = 'enterprise'
+  } else {
+    $edition = 'org'
+  }
+
   # Setup of the repo only makes sense globally, so we are doing it here.
   case $facts['os']['family'] {
     'RedHat', 'Linux', 'Suse': {
