@@ -62,7 +62,6 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
     args = [db, '--quiet', '--host', host]
     args.push('--ipv6') if ipv6_is_enabled(config)
-    args.push('--sslAllowInvalidHostnames') if ssl_invalid_hostnames(config)
 
     if ssl_is_enabled(config)
       args.push('--ssl')
@@ -70,6 +69,8 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
       ssl_ca = config['sslca']
       args += ['--sslCAFile', ssl_ca] unless ssl_ca.nil?
+
+      args.push('--sslAllowInvalidHostnames') if ssl_invalid_hostnames(config)
     end
 
     args += ['--eval', cmd]
@@ -108,10 +109,19 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def self.db_ismaster
+    config = mongo_conf
     cmd_ismaster = 'db.isMaster().ismaster'
     cmd_ismaster = mongorc_file + cmd_ismaster if mongorc_file
     db = 'admin'
-    res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
+
+    # Mongo command result includes a warning when the hostname does not match the certificate CN
+    #  - Updating the command to only consider the last line of the output :(
+    if ssl_invalid_hostnames(config)
+      res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.split.last.chomp
+    else
+      res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.chomp
+    end
+
     res.eql?('true')
   end
 
