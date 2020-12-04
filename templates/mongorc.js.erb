@@ -30,7 +30,8 @@ if (authRequired()) {
   if @replset
     if @mongodb_version =~ /^[23]\./ -%>
     rs.slaveOk()
-    else
+<%
+    else -%>
     rs.secondaryOk()
 <%
     end
