@@ -26,16 +26,16 @@ function authRequired() {
 
 if (authRequired()) {
   try {
-<%
-  if @replset
-    if @mongodb_version =~ /^[23]\./ -%>
-    rs.slaveOk()
-<%
-    else -%>
+<% if @replset -%>
+  // rs.slaveOk has been deprecated, use secondaryOk if available
+  try {
     rs.secondaryOk()
-<%
-    end
-  end -%>
+  }
+  catch(err) {
+    rs.slaveOk()
+  }
+<% end -%>
+  try {
     var prev_db = db
     db = db.getSiblingDB('admin')
     db.auth('<%= @admin_username %>', '<%= @admin_password %>')

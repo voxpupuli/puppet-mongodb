@@ -36,14 +36,8 @@ describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
     tmp = Tempfile.new('test')
     mongodconffile = tmp.path
 
-    if self.mongo_version =~ /^[23]\./
-      secondary_check_cmd = 'rs.slaveOk()'
-    else
-      secondary_check_cmd = 'rs.secondaryOk()'
-    end
-
     allow(provider.class).to receive(:mongod_conf_file).and_return(mongodconffile)
-    allow(provider.class).to receive(:mongo_eval).with("#{secondary_check_cmd};printjson(db.getMongo().getDBs())").and_return(raw_dbs)
+    allow(provider.class).to receive(:mongo_eval).with('try { rs.secondaryOk() } catch(err) { rs.slaveOk() };printjson(db.getMongo().getDBs())').and_return(raw_dbs)
     allow(provider.class).to receive(:db_ismaster).and_return(true)
   end
 
