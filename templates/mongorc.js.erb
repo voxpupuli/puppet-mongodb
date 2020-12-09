@@ -25,7 +25,6 @@ function authRequired() {
 }
 
 if (authRequired()) {
-  try {
 <% if @replset -%>
   // rs.slaveOk has been deprecated, use secondaryOk if available
   try {
