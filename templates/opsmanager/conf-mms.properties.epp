@@ -126,3 +126,11 @@ brs.snapshotSchedule.retention.monthly=<%=$mongodb::opsmanager::snapshot_monthly
 <% if $mongodb::opsmanager::versions_directory { -%>
 automation.versions.directory=<%=$mongodb::opsmanager::versions_directory -%>
 <% } -%>
+
+<% if $mongodb::opsmanager::slack_oauth2_clientId { -%>
+brs.slack.oauth2.clientId=<%=$mongodb::opsmanager::slack_oauth2_clientId -%>
+<% } -%>
+
+<% if $mongodb::opsmanager::slack_oauth2_clientSecret { -%>
+brs.slack_oauth2.clientSecret=<%=$mongodb::opsmanager::slack_oauth2_clientSecret -%>
+<% } -%>
