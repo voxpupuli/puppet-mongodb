@@ -46,6 +46,9 @@ class mongodb::params inherits mongodb::globals {
         $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${mongodb::globals::edition}-server")
       }
 
+      $user                    = pick($mongodb::globals::user, 'mongod')
+      $group                   = pick($mongodb::globals::group, 'mongod')
+      $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${mongodb::globals::edition}-server")
       $service_name = pick($mongodb::globals::service_name, 'mongod')
       $logpath      = '/var/log/mongodb/mongod.log'
       $pidfilepath  = '/var/run/mongodb/mongod.pid'
