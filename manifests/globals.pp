@@ -51,7 +51,7 @@ class mongodb::globals (
     default: {
       if $manage_package_repo {
         if $use_enterprise_repo == true and $version == undef {
-        fail('You must set mongodb::globals::version when mongodb::globals::use_enterprise_repo is true')
+          fail('You must set mongodb::globals::version when mongodb::globals::use_enterprise_repo is true')
         }
 
         class { 'mongodb::repo':
