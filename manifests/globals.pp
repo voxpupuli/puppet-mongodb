@@ -42,7 +42,7 @@ class mongodb::globals (
     'RedHat', 'Linux', 'Suse': {
       class { 'mongodb::repo':
         ensure              => present,
-        version             => $pick($version, '3.6'),
+        version             => pick($version, '3.6'),
         use_enterprise_repo => $use_enterprise_repo,
         repo_location       => $repo_location,
         proxy               => $repo_proxy,
