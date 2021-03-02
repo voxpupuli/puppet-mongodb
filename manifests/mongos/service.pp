@@ -29,7 +29,7 @@ class mongodb::mongos::service (
     systemd::dropin_file { 'mongos.conf':
       unit    => 'mongos.service',
       content => epp($service_template),
-    } ~> Class['systemd::systemctl::daemon_reload'] ~> Service['snmpd']
+    } ~> Class['systemd::systemctl::daemon_reload'] ~> Service['mongos']
   }
 
   if $service_manage {
