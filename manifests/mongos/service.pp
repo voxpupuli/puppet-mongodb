@@ -25,7 +25,7 @@ class mongodb::mongos::service (
     $connect_ip = $bind_ip
   }
 
-  if $facts['os']['name'] == 'RedHat' {
+  if $facts['os']['family'] == 'RedHat' {
     systemd::dropin_file { 'mongos':
       unit    => 'mongos.service',
       content => epp($template_mongos_service_dropin),
