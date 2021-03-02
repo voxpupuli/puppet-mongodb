@@ -37,7 +37,7 @@ describe 'mongodb::server' do
       describe 'with defaults' do
         it_behaves_like 'server classes'
 
-        if facts[:os]['name'] == 'Centos'
+        if facts[:os]['family'] == 'RedHat'
           it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
         else
           it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-server').with_tag('mongodb_package') }
