@@ -45,6 +45,7 @@ class mongodb::mongos::params inherits mongodb::globals {
         $unixsocketprefix = '/var/run/mongodb'
         $logpath          = '/var/log/mongodb/mongos.log'
         $fork             = true
+        $service_template = 'mongodb/mongos.service-dropin.epp'
       }
     }
     'Debian': {

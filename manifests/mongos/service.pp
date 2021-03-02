@@ -9,6 +9,7 @@ class mongodb::mongos::service (
   $service_provider = $mongodb::mongos::service_provider,
   $bind_ip          = $mongodb::mongos::bind_ip,
   $port             = $mongodb::mongos::port,
+  $service_template = $mongodb::mongos::service_template,
 ) {
   if $package_ensure in ['absent', 'purged'] {
     $real_service_ensure = 'stopped'
@@ -22,6 +23,13 @@ class mongodb::mongos::service (
     $connect_ip = '127.0.0.1'
   } else {
     $connect_ip = $bind_ip
+  }
+
+  if $facts['os']['name'] == 'RedHat' {
+    systemd::dropin_file { 'mongos':
+      unit    => 'mongos.service',
+      content => epp($template_mongos_service_dropin),
+    } ~> Class['systemd::systemctl::daemon_reload'] ~> Service['snmpd']
   }
 
   if $service_manage {
