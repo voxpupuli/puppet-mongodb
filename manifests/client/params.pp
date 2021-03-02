@@ -8,6 +8,7 @@ class mongodb::client::params inherits mongodb::globals {
   } else {
     $package_name = $facts['os']['family'] ? {
       'Debian' => 'mongodb-clients',
+      'Redhat' => "mongodb-${mongodb::globals::edition}-shell",
       default  => 'mongodb',
     }
   }
