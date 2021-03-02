@@ -28,7 +28,7 @@ class mongodb::mongos::service (
   if $facts['os']['family'] == 'RedHat' {
     systemd::dropin_file { 'mongos':
       unit    => 'mongos.service',
-      content => epp($template_mongos_service_dropin),
+      content => epp($service_template),
     } ~> Class['systemd::systemctl::daemon_reload'] ~> Service['snmpd']
   }
 
