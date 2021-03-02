@@ -7,8 +7,10 @@ class mongodb::mongos::params inherits mongodb::globals {
   $package_ensure = pick($version, 'present')
   if $manage_package {
     $package_name = "mongodb-${mongodb::globals::edition}-mongos"
+  } elsif $facts['os']['family'] == 'RedHat' {
+    $package_name = "mongodb-${mongodb::globals::edition}-mongos"
   } else {
-    $package_name = 'mongodb-server'
+      $package_name = 'mongodb-server'
   }
 
   $config_content = undef
