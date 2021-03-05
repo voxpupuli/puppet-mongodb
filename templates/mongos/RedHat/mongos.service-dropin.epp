@@ -7,7 +7,7 @@ After=network.target
 User=mongod
 Group=mongod
 Environment="OPTIONS=-f /etc/mongos.conf"
-TimeoutStartSec=100
+TimeoutStartSec=400
 ExecStart=/usr/bin/mongos $OPTIONS
 ExecStartPre=/usr/bin/mkdir -p /var/run/mongodb
 ExecStartPre=/usr/bin/chown mongod:mongod /var/run/mongodb
