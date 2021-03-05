@@ -12,6 +12,8 @@ describe 'mongodb::mongos class' do
       pp = <<-EOS
         class { 'mongodb::server':
           configsvr => true,
+          replset => 'test',
+
         }
         -> class { 'mongodb::client': }
         -> class { 'mongodb::mongos':
