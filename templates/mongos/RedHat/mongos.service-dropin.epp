@@ -4,10 +4,11 @@ Documentation=https://docs.mongodb.org/manual
 After=network.target
 
 [Service]
-User=mongos
-Group=mongos
+User=mongod
+Group=mongod
 Environment="OPTIONS=-f /etc/mongos.conf"
-ExecStart=/usr/bin/mongod $OPTIONS
+TimeoutStartSec=400
+ExecStart=/usr/bin/mongos $OPTIONS
 ExecStartPre=/usr/bin/mkdir -p /var/run/mongodb
 ExecStartPre=/usr/bin/chown mongod:mongod /var/run/mongodb
 ExecStartPre=/usr/bin/chmod 0755 /var/run/mongodb
