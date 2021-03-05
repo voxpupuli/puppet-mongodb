@@ -50,7 +50,7 @@ class mongodb::server (
   $mms_token                                                    = undef,
   $mms_name                                                     = undef,
   $mms_interval                                                 = undef,
-  Optional[String] $replset                                     = undef,
+  Optional[String] $replset                                     = "test",
   Optional[Hash] $replset_config                                = undef,
   Optional[Array] $replset_members                              = undef,
   Optional[Boolean] $configsvr                                  = undef,
