@@ -15,7 +15,7 @@ describe 'mongodb::mongos class' do
         }
         -> class { 'mongodb::client': }
         -> class { 'mongodb::mongos':
-          configdb => ['127.0.0.1:27019'],
+          configdb => ['test/127.0.0.1:27019'],
         }
       EOS
 
