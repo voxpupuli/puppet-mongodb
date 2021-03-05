@@ -17,7 +17,7 @@ class mongodb::mongos::params inherits mongodb::globals {
   $config_template = undef
 
   $config_data = undef
-  $configdb    = '127.0.0.1:27019'
+  $configdb    = "${mongodb::server::replset}/127.0.0.1:27019"
   $bind_ip     = undef
   $port        = undef
   $restart     = true
