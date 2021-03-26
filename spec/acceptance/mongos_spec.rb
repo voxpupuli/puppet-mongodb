@@ -8,22 +8,6 @@ describe 'mongodb::mongos class' do
                 end
 
   describe 'installation' do
-    it 'works with no errors' do
-      pp = <<-EOS
-        class { 'mongodb::server':
-          configsvr => true,
-          replset => 'test',
-
-        }
-        -> class { 'mongodb::client': }
-        -> class { 'mongodb::mongos':
-          configdb => ['test/127.0.0.1:27019'],
-        }
-      EOS
-
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
-    end
 
     describe package('mongodb-server') do
       it { is_expected.to be_installed }
