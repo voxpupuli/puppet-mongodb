@@ -5,9 +5,11 @@ describe 'mongodb::server class' do
   when 'Debian'
     config_file = '/etc/mongodb.conf'
     service_name = 'mongodb'
+    package_name = 'mongodb-server'
   else
     config_file = '/etc/mongod.conf'
     service_name = 'mongod'
+    package_name = 'mongodb-org-server'
   end
 
   describe 'installation' do
@@ -21,7 +23,7 @@ describe 'mongodb::server class' do
       apply_manifest(pp, catch_changes: true)
     end
 
-    describe package('mongodb-server') do
+    describe package(package_name) do
       it { is_expected.to be_installed }
     end
 
@@ -56,7 +58,7 @@ describe 'mongodb::server class' do
       apply_manifest(pp, catch_changes: true)
     end
 
-    describe package('mongodb-server') do
+    describe package(package_name) do
       it { is_expected.to be_installed }
     end
 
@@ -149,7 +151,7 @@ describe 'mongodb::server class' do
       apply_manifest(pp, catch_changes: true)
     end
 
-    describe package('mongodb-server') do
+    describe package(package_name) do
       it { is_expected.not_to be_installed }
     end
 
