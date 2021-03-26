@@ -97,7 +97,7 @@ describe 'mongodb::server class' do
       apply_manifest(pp, catch_changes: true)
     end
 
-    describe package('mongodb-server') do
+    describe package(package_name) do
       it { is_expected.to be_installed }
     end
 
