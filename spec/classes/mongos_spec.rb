@@ -5,7 +5,7 @@ describe 'mongodb::mongos' do
     context "on #{os}" do
       let(:facts) { facts }
 
-      case fact('osfamily')
+      case facts[:os]['family']
       when 'Debian'
         package_name = 'mongodb-server'
         config_file  = '/etc/mongodb-shard.conf'
