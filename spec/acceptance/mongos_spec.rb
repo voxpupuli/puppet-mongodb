@@ -8,7 +8,7 @@ describe 'mongodb::mongos class' do
     config_file  = '/etc/mongodb-shard.conf'
   else   
     package_name = 'mongodb-org-server'
-   config_file  = '/etc/mongos.conf'
+    config_file  = '/etc/mongos.conf'
   end
 
   describe 'installation' do
