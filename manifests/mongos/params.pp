@@ -37,6 +37,7 @@ class mongodb::mongos::params inherits mongodb::globals {
         $unixsocketprefix = undef
         $logpath          = undef
         $fork             = undef
+        $service_template = undef
       } else {
         # RedHat/CentOS doesn't come with a prepacked mongodb
         # so we assume that you are using EPEL repository.
@@ -54,6 +55,7 @@ class mongodb::mongos::params inherits mongodb::globals {
       $unixsocketprefix = undef
       $logpath          = undef
       $fork             = undef
+      $service_template = undef
     }
     default: {
       fail("Osfamily ${facts['os']['family']} is not supported")
