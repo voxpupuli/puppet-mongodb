@@ -28,7 +28,7 @@ class mongodb::mongos::service (
   if $facts['os']['family'] == 'RedHat' {
     systemd::unit_file { 'mongos.service':
       content => epp($service_template),
-    } ~> Service['mongos']
+    } ~> service['mongos']
   }
 
   if $service_manage {
