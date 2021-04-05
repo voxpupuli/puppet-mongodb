@@ -25,13 +25,13 @@ class mongodb::mongos::service (
     $connect_ip = $bind_ip
   }
 
-  if $facts['os']['family'] == 'RedHat' {
-    systemd::unit_file { 'mongos.service':
-      content => epp($service_template),
-    } ~> service['mongos']
-  }
-
   if $service_manage {
+    if $facts['os']['family'] == 'RedHat' {
+      systemd::unit_file { 'mongos.service':
+        content => epp($service_template),
+      } ~> Service['mongos']
+    }
+
     service { 'mongos':
       ensure   => $real_service_ensure,
       name     => $service_name,
