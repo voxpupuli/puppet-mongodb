@@ -147,7 +147,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
       args = []
       args << '--quiet'
       args << ['--host', host] if host
-      args << ['--eval', "printjson(#{command})"]
+      args << ['--eval', "JSON.stringify(#{command})"]
       output = mongo(args.flatten)
     rescue Puppet::ExecutionFailure => e
       raise unless e =~ %r{Error: couldn't connect to server} && wait <= (2**max_wait)

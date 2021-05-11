@@ -388,7 +388,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
   def self.mongo_command(command, host = nil, retries = 4)
     begin
-      output = mongo_eval("printjson(#{command})", 'admin', retries, host)
+      output = mongo_eval("JSON.stringify(#{command})", 'admin', retries, host)
     rescue Puppet::ExecutionFailure => e
       Puppet.debug "Got an exception: #{e}"
       raise

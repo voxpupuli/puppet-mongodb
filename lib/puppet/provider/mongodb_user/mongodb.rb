@@ -8,7 +8,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
     require 'json'
 
     if db_ismaster
-      users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
+      users = JSON.parse mongo_eval('JSON.stringify(db.system.users.find().toArray())')
 
       users.map do |user|
         new(name: user['_id'],
