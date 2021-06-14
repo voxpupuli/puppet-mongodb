@@ -12,12 +12,12 @@
 #  tries (default: 10) - The maximum amount of two second tries to wait MongoDB startup.
 #
 define mongodb::db (
-  String           $user,
-  String           $db_name       = $name,
-  Optional[String] $password_hash = undef,
-  Optional[String] $password      = undef,
-  Array[String]    $roles         = ['dbAdmin'],
-  Integer[0]       $tries         = 10,
+  String                                             $user,
+  String                                             $db_name       = $name,
+  Optional[Variant[String[1], Sensitive[String[1]]]] $password_hash = undef,
+  Optional[Variant[String[1], Sensitive[String[1]]]] $password      = undef,
+  Array[String]                                      $roles         = ['dbAdmin'],
+  Integer[0]                                         $tries         = 10,
 ) {
   unless $facts['mongodb_is_master'] == 'false' { # lint:ignore:quoted_booleans
     mongodb_database { $db_name:
@@ -25,7 +25,9 @@ define mongodb::db (
       tries  => $tries,
     }
 
-    if $password_hash {
+    if $password_hash =~ Sensitive[String] {
+      $hash = $password_hash.unwrap
+    } elsif $password_hash {
       $hash = $password_hash
     } elsif $password {
       $hash = mongodb_password($user, $password)

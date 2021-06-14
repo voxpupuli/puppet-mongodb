@@ -38,7 +38,7 @@ if (authRequired()) {
   try {
     var prev_db = db
     db = db.getSiblingDB('admin')
-    db.auth('<%= @admin_username %>', '<%= @admin_password %>')
+    db.auth('<%= @admin_username %>', '<%= @admin_password_unsensitive %>')
     db = db.getSiblingDB(prev_db)
   }
   catch (err) {
