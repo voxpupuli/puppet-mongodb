@@ -16,10 +16,13 @@ describe 'mongodb::mongos class' do
       pp = <<-EOS
         class { 'mongodb::server':
           configsvr => true,
+          replset   => 'test',
+          replset_members => ['127.0.0.1:27019'],
+          port      => 27019,
         }
         -> class { 'mongodb::client': }
         -> class { 'mongodb::mongos':
-          configdb => ['127.0.0.1:27019'],
+          configdb => ['test/127.0.0.1:27019'],
         }
       EOS
 
