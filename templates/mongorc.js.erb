@@ -27,7 +27,7 @@ function authRequired() {
 if (authRequired()) {
   try {
 <% if @replset -%>
-    rs.slaveOk()
+    rs.secondaryOk()
 <% end -%>
     var prev_db = db
     db = db.getSiblingDB('admin')

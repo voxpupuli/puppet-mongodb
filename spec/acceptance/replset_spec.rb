@@ -67,7 +67,7 @@ if hosts.length > 1
 
     it 'checks the data on the slave' do
       sleep(10)
-      on hosts_as('slave'), %{mongo --verbose --eval 'rs.slaveOk(); printjson(db.test.findOne({name:"test1"}))'} do |r|
+      on hosts_as('slave'), %{mongo --verbose --eval 'rs.secondaryOk(); printjson(db.test.findOne({name:"test1"}))'} do |r|
         expect(r.stdout).to match %r{some value}
       end
     end
@@ -198,7 +198,7 @@ YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
 
     it 'checks the data on the slave' do
       sleep(10)
-      on hosts_as('slave'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");rs.slaveOk();printjson(db.dummyData.findOne())'} do |r|
+      on hosts_as('slave'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");rs.secondaryOk();printjson(db.dummyData.findOne())'} do |r|
         expect(r.stdout).to match %r{created_by_puppet}
       end
     end
