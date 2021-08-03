@@ -1,12 +1,11 @@
 require 'spec_helper_acceptance'
 
 describe 'mongodb::mongos class' do
- 
   case fact('osfamily')
   when 'Debian'
     package_name = 'mongodb-server'
     config_file  = '/etc/mongodb-shard.conf'
-  else   
+  else
     package_name = 'mongodb-org-server'
     config_file  = '/etc/mongos.conf'
   end
