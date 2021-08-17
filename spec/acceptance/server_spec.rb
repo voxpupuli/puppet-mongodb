@@ -85,12 +85,23 @@ describe 'mongodb::server class' do
       pp = <<-EOS
         class { 'mongodb::server':
           auth           => true,
-          create_admin   => true,
+          create_admin   => false,
+          handle_creds   => true,
           store_creds    => true,
           admin_username => 'admin',
-          admin_password => 'password'
+          admin_password => 'password',
+          restart        => true,
+          set_parameter  => ['enableLocalhostAuthBypass: true']
         }
         class { 'mongodb::client': }
+
+        mongodb_user { "User admin on db admin":
+          ensure        => present,
+          password_hash => mongodb_password('admin', 'password'),
+          username      => 'admin',
+          database      => 'admin',
+          roles         => ['dbAdmin', 'userAdminAnyDatabase'],
+        }
       EOS
 
       apply_manifest(pp, catch_failures: true)

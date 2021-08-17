@@ -1,12 +1,11 @@
 require 'spec_helper_acceptance'
 
 describe 'mongodb::mongos class' do
- 
   case fact('osfamily')
   when 'Debian'
     package_name = 'mongodb-server'
     config_file  = '/etc/mongodb-shard.conf'
-  else   
+  else
     package_name = 'mongodb-org-server'
     config_file  = '/etc/mongos.conf'
   end
@@ -16,10 +15,13 @@ describe 'mongodb::mongos class' do
       pp = <<-EOS
         class { 'mongodb::server':
           configsvr => true,
+          replset   => 'test',
+          replset_members => ['127.0.0.1:27019'],
+          port      => 27019,
         }
         -> class { 'mongodb::client': }
         -> class { 'mongodb::mongos':
-          configdb => ['127.0.0.1:27019'],
+          configdb => ['test/127.0.0.1:27019'],
         }
       EOS
 
@@ -56,7 +58,10 @@ describe 'mongodb::mongos class' do
   describe 'uninstalling' do
     it 'uninstalls mongodb' do
       pp = <<-EOS
-        class { 'mongodb::server':
+        class { 'mongodb::mongos':
+          package_ensure => 'purged',
+        }
+        -> class { 'mongodb::server':
           ensure         => absent,
           package_ensure => absent,
           service_ensure => stopped,
@@ -64,9 +69,6 @@ describe 'mongodb::mongos class' do
         }
         -> class { 'mongodb::client':
           ensure => absent,
-        }
-        -> class { 'mongodb::mongos':
-          package_ensure => 'purged',
         }
       EOS
       apply_manifest(pp, catch_failures: true)

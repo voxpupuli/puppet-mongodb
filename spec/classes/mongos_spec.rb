@@ -9,10 +9,10 @@ describe 'mongodb::mongos' do
       when 'Debian'
         package_name = 'mongodb-server'
         config_file  = '/etc/mongodb-shard.conf'
-      else   
+      else
         package_name = 'mongodb-org-mongos'
         config_file  = '/etc/mongos.conf'
-      end      
+      end
 
       context 'with defaults' do
         it { is_expected.to compile.with_all_deps }
