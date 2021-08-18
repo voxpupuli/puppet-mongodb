@@ -23,7 +23,7 @@ jobs:
         run: bundle exec rake validate
       - name: Setup Test Matrix
         id: get-outputs
-        run: bundle exec metadata2gha --use-fqdn --pidfile-workaround CentOS
+        run: bundle exec metadata2gha --use-fqdn --pidfile-workaround CentOS,Ubuntu
 
   unit:
     needs: setup_matrix
