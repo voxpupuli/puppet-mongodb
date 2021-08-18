@@ -2,4 +2,4 @@
 appveyor.yml:
   delete: true
 .github/workflows/ci.yml:
-  pidfile_workaround: CentOS
+  pidfile_workaround: CentOS,Ubuntu
