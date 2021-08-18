@@ -1,3 +1,4 @@
+# THIS FILE IS MANAGED BY PUPPET
 [Unit]
 Description=MongoDB Database Server
 Documentation=https://docs.mongodb.org/manual
