@@ -5,12 +5,13 @@ describe 'mongodb::mongos' do
     context "on #{os}" do
       let(:facts) { facts }
 
-      let(:config_file) do
-        if facts[:osfamily] == 'RedHat'
-          '/etc/mongos.conf'
-        else
-          '/etc/mongodb-shard.conf'
-        end
+      case facts[:os]['family']
+      when 'Debian'
+        package_name = 'mongodb-server'
+        config_file  = '/etc/mongodb-shard.conf'
+      else
+        package_name = 'mongodb-org-mongos'
+        config_file  = '/etc/mongos.conf'
       end
 
       context 'with defaults' do
@@ -18,7 +19,7 @@ describe 'mongodb::mongos' do
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
-        it { is_expected.to contain_package('mongodb_mongos').with_ensure('present').with_name('mongodb-server').with_tag('mongodb_package') }
+        it { is_expected.to contain_package('mongodb_mongos').with_ensure('present').with_name(package_name).with_tag('mongodb_package') }
 
         # config
         it { is_expected.to contain_class('mongodb::mongos::config') }

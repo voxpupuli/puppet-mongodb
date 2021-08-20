@@ -7,6 +7,8 @@ class mongodb::mongos::params inherits mongodb::globals {
   $package_ensure = pick($version, 'present')
   if $manage_package {
     $package_name = "mongodb-${mongodb::globals::edition}-mongos"
+  } elsif $facts['os']['family'] == 'RedHat' {
+    $package_name = "mongodb-${mongodb::globals::edition}-mongos"
   } else {
     $package_name = 'mongodb-server'
   }
@@ -35,6 +37,7 @@ class mongodb::mongos::params inherits mongodb::globals {
         $unixsocketprefix = undef
         $logpath          = undef
         $fork             = undef
+        $service_template = undef
       } else {
         # RedHat/CentOS doesn't come with a prepacked mongodb
         # so we assume that you are using EPEL repository.
@@ -43,6 +46,7 @@ class mongodb::mongos::params inherits mongodb::globals {
         $unixsocketprefix = '/var/run/mongodb'
         $logpath          = '/var/log/mongodb/mongos.log'
         $fork             = true
+        $service_template = 'mongodb/mongos/RedHat/mongos.service-dropin.epp'
       }
     }
     'Debian': {
@@ -51,6 +55,7 @@ class mongodb::mongos::params inherits mongodb::globals {
       $unixsocketprefix = undef
       $logpath          = undef
       $fork             = undef
+      $service_template = undef
     }
     default: {
       fail("Osfamily ${facts['os']['family']} is not supported")

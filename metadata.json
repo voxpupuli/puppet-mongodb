@@ -48,6 +48,10 @@
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 4.25.0 < 7.0.0"
+    },
+    {
+      "name": "puppet/systemd",
+      "version_requirement": ">= 2.5.1 < 4.0.0"
     }
   ]
 }

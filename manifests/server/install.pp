@@ -26,9 +26,11 @@ class mongodb::server::install {
     }
   }
 
-  package { 'mongodb_server':
-    ensure => $my_package_ensure,
-    name   => $package_name,
-    tag    => 'mongodb_package',
+  unless defined(Package[$package_name]) {
+    package { 'mongodb_server':
+      ensure => $my_package_ensure,
+      name   => $package_name,
+      tag    => 'mongodb_package',
+    }
   }
 }

@@ -9,6 +9,7 @@ class mongodb::mongos::service (
   $service_provider = $mongodb::mongos::service_provider,
   $bind_ip          = $mongodb::mongos::bind_ip,
   $port             = $mongodb::mongos::port,
+  $service_template = $mongodb::mongos::service_template,
 ) {
   if $package_ensure in ['absent', 'purged'] {
     $real_service_ensure = 'stopped'
@@ -25,6 +26,13 @@ class mongodb::mongos::service (
   }
 
   if $service_manage {
+    if $facts['os']['family'] == 'RedHat' {
+      systemd::unit_file { 'mongos.service':
+        content => epp($service_template),
+        enable  => $real_service_enable,
+      } ~> Service['mongos']
+    }
+
     service { 'mongos':
       ensure   => $real_service_ensure,
       name     => $service_name,
