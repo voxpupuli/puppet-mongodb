@@ -7,7 +7,11 @@ describe 'mongodb::mongos' do
 
       case facts[:os]['family']
       when 'Debian'
-        package_name = 'mongodb-server'
+        package_name = if facts[:os]['release']['major'] =~ %r{(10)}
+                         'mongodb-org-mongos'
+                       else
+                         'mongodb-server'
+                       end
         config_file  = '/etc/mongodb-shard.conf'
       else
         package_name = 'mongodb-org-mongos'
@@ -19,7 +23,11 @@ describe 'mongodb::mongos' do
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
-        it { is_expected.to contain_package('mongodb_mongos').with_ensure('present').with_name(package_name).with_tag('mongodb_package') }
+        if facts[:os]['release']['major'] =~ %r{(10)}
+          it { is_expected.to contain_package('mongodb_mongos').with_ensure('4.4.8').with_name(package_name).with_tag('mongodb_package') }
+        else
+          it { is_expected.to contain_package('mongodb_mongos').with_ensure('present').with_name(package_name).with_tag('mongodb_package') }
+        end
 
         # config
         it { is_expected.to contain_class('mongodb::mongos::config') }
@@ -79,7 +87,12 @@ configdb = 127.0.0.1:27019
         end
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('present').with_tag('mongodb_package') }
+
+        if facts[:os]['release']['major'] =~ %r{(10)}
+          it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('4.4.8').with_tag('mongodb_package') }
+        else
+          it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('present').with_tag('mongodb_package') }
+        end
       end
 
       context 'service_manage => false' do

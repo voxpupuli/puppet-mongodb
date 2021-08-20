@@ -20,7 +20,11 @@ describe 'mongodb::server' do
 
       let(:config_file) do
         if facts[:os]['family'] == 'Debian'
-          '/etc/mongodb.conf'
+          if facts[:os]['release']['major'] =~ %r{(10)}
+            '/etc/mongod.conf'
+          else
+            '/etc/mongodb.conf'
+          end
         else
           '/etc/mongod.conf'
         end
@@ -39,6 +43,8 @@ describe 'mongodb::server' do
 
         if facts[:os]['family'] == 'RedHat'
           it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
+        elsif facts[:os]['release']['major'] =~ %r{(10)}
+          it { is_expected.to contain_package('mongodb_server').with_ensure('4.4.8').with_name('mongodb-org-server').with_tag('mongodb_package') }
         else
           it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-server').with_tag('mongodb_package') }
         end
@@ -372,7 +378,7 @@ describe 'mongodb::server' do
           let(:rsConf) do
             {
               'rsTest' => {
-                'ensure'  => 'present',
+                'ensure' => 'present',
                 'members' => [
                   'mongo1:27017',
                   'mongo2:27017',
