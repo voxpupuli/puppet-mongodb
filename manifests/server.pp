@@ -59,7 +59,7 @@ class mongodb::server (
   Optional[Boolean] $quiet                                      = undef,
   Optional[Integer] $slowms                                     = undef,
   Optional[Stdlib::Absolutepath] $keyfile                       = undef,
-  Optional[String[6]] $key                                      = undef,
+  Optional[Variant[String[6], Sensitive[String[6]]]] $key       = undef,
   Optional[Variant[String[1], Array[String[1]]]] $set_parameter = undef,
   Optional[Boolean] $syslog                                     = undef,
   $config_content                                               = undef,
@@ -75,7 +75,7 @@ class mongodb::server (
   Optional[String] $storage_engine                              = undef,
   Boolean $create_admin                                         = $mongodb::params::create_admin,
   String $admin_username                                        = $mongodb::params::admin_username,
-  Optional[String] $admin_password                              = undef,
+  Optional[Variant[String, Sensitive[String]]] $admin_password  = undef,
   Boolean $handle_creds                                         = $mongodb::params::handle_creds,
   Boolean $store_creds                                          = $mongodb::params::store_creds,
   Array $admin_roles                                            = $mongodb::params::admin_roles,
@@ -98,10 +98,15 @@ class mongodb::server (
     Class['mongodb::server::service'] -> Class['mongodb::server::config'] -> Class['mongodb::server::install']
   }
 
+  $admin_password_unsensitive = if $admin_password =~ Sensitive[String] {
+    $admin_password.unwrap
+  } else {
+    $admin_password
+  }
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
     mongodb::db { 'admin':
       user     => $admin_username,
-      password => $admin_password,
+      password => $admin_password_unsensitive,
       roles    => $admin_roles,
     }
 
