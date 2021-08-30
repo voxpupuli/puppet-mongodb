@@ -18,7 +18,7 @@ class mongodb::params inherits mongodb::globals {
   ]
   $handle_creds          = true
   $store_creds           = false
-  $rcfile                = "${::root_home}/.mongorc.js"
+  $rcfile                = "${facts['root_home']}/.mongorc.js"
   $dbpath_fix            = false
 
   $manage_package        = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
