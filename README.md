@@ -1,12 +1,12 @@
 # mongodb puppet module
 
-[![License](https://img.shields.io/github/license/voxpupuli/puppet-mongodb.svg)](https://github.com/voxpupuli/puppet-mongodb/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/voxpupuli/puppet-mongodb.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-mongodb)
-[![Code Coverage](https://coveralls.io/repos/github/voxpupuli/puppet-mongodb/badge.svg?branch=master)](https://coveralls.io/github/voxpupuli/puppet-mongodb)
+[![Build Status](https://github.com/voxpupuli/puppet-mongodb/workflows/CI/badge.svg)](https://github.com/voxpupuli/puppet-mongodb/actions?query=workflow%3ACI)
+[![Release](https://github.com/voxpupuli/puppet-mongodb/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/puppet-mongodb/actions/workflows/release.yml)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
 [![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
 [![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
 [![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
+[![License](https://img.shields.io/github/license/voxpupuli/puppet-mongodb.svg)](https://github.com/voxpupuli/puppet-mongodb/blob/master/LICENSE)
 
 #### Table of Contents
 

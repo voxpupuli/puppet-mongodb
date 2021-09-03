@@ -4,7 +4,46 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v3.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v3.1.0) (2020-02-10)
+## [v4.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v4.0.0) (2021-09-03)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v3.1.0...v4.0.0)
+
+**Breaking changes:**
+
+- Drop Puppet 5/Add puppet 7 support [\#617](https://github.com/voxpupuli/puppet-mongodb/pull/617) ([root-expert](https://github.com/root-expert))
+- Drop Ubuntu 16/Add Ubuntu 20 support [\#616](https://github.com/voxpupuli/puppet-mongodb/pull/616) ([root-expert](https://github.com/root-expert))
+
+**Implemented enhancements:**
+
+- Support managing selinux [\#413](https://github.com/voxpupuli/puppet-mongodb/issues/413)
+- Add Debian 10 support [\#619](https://github.com/voxpupuli/puppet-mongodb/pull/619) ([root-expert](https://github.com/root-expert))
+- Use Puppet-Datatype Sensitive for Passwords [\#611](https://github.com/voxpupuli/puppet-mongodb/pull/611) ([cocker-cc](https://github.com/cocker-cc))
+- Change set\_parameter to be an array of strings [\#595](https://github.com/voxpupuli/puppet-mongodb/pull/595) ([ZloeSabo](https://github.com/ZloeSabo))
+- Use rs.secondaryOk on versions that deprecated rs.slaveOk [\#594](https://github.com/voxpupuli/puppet-mongodb/pull/594) ([svenbs](https://github.com/svenbs))
+- Add MongoDB 4.4 repository signing key. [\#592](https://github.com/voxpupuli/puppet-mongodb/pull/592) ([dhs-rec](https://github.com/dhs-rec))
+
+**Fixed bugs:**
+
+- Existence of /root/.mongorc.js triggers mongod restart [\#449](https://github.com/voxpupuli/puppet-mongodb/issues/449)
+- Fix MongoDB installation on RedHat family [\#606](https://github.com/voxpupuli/puppet-mongodb/pull/606) ([hdep](https://github.com/hdep))
+- Update mongodb-shard.conf.erb [\#591](https://github.com/voxpupuli/puppet-mongodb/pull/591) ([andreish](https://github.com/andreish))
+- Fix mongorc.js file when authentication is not enabled. [\#590](https://github.com/voxpupuli/puppet-mongodb/pull/590) ([vladpetrus](https://github.com/vladpetrus))
+- Fix digestPassword typo mongodb.rb [\#589](https://github.com/voxpupuli/puppet-mongodb/pull/589) ([covidium](https://github.com/covidium))
+
+**Closed issues:**
+
+- MongoDB 4.2.10 starts to emit warnings about slaveOk\(\) being deprecated, which breaks the module [\#596](https://github.com/voxpupuli/puppet-mongodb/issues/596)
+- Can't use mongodb repository on debian 9 [\#529](https://github.com/voxpupuli/puppet-mongodb/issues/529)
+
+**Merged pull requests:**
+
+- puppet-lint: fix top\_scope\_facts warnings [\#621](https://github.com/voxpupuli/puppet-mongodb/pull/621) ([bastelfreak](https://github.com/bastelfreak))
+- Allow stdlib 8.x and apt 8.x [\#620](https://github.com/voxpupuli/puppet-mongodb/pull/620) ([smortex](https://github.com/smortex))
+- modulesync 3.0.0 & puppet-lint updates [\#586](https://github.com/voxpupuli/puppet-mongodb/pull/586) ([bastelfreak](https://github.com/bastelfreak))
+- Describe disabling logpath to make syslog work [\#585](https://github.com/voxpupuli/puppet-mongodb/pull/585) ([lennartkoopmann](https://github.com/lennartkoopmann))
+- Use voxpupuli-acceptance [\#580](https://github.com/voxpupuli/puppet-mongodb/pull/580) ([ekohl](https://github.com/ekohl))
+
+## [v3.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v3.1.0) (2020-02-11)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v3.0.0...v3.1.0)
 
