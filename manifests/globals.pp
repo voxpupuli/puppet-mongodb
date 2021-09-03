@@ -16,9 +16,14 @@ class mongodb::globals (
   $ipv6                  = undef,
   $bind_ip               = undef,
 
-  $version               = undef,
-
-  $manage_package_repo   = undef,
+  $version               = fact('os.distro.codename') ? { # Debian 10 doesn't provide mongodb 3.6.
+    'buster' => '4.4.8',
+    default  => undef
+  },
+  $manage_package_repo   = fact('os.distro.codename') ? { # Debian 10 doesn't provide mongodb packages. So manage it!
+    'buster' => true,
+    default  => undef
+  },
   $manage_package        = undef,
   $repo_proxy            = undef,
   $proxy_username        = undef,
