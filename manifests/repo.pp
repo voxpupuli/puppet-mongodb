@@ -57,6 +57,7 @@ class mongodb::repo (
           default => undef
         }
         $key = "${mongover[0]}.${mongover[1]}" ? {
+          '5.0'   => 'F5679A222C647C87527C2F8CB00A0BD1E2C63C11',
           '4.4'   => '20691EEC35216C63CAF66CE1656408E390CFB1F5',
           '4.2'   => 'E162F504A20CDF15827F718D4B7C549A058F8B6B',
           '4.0'   => '9DA31620334BD75D9DCB49F368818C72E52529D4',
