@@ -68,21 +68,14 @@ class mongodb::server::config {
   $ssl_mode         = $mongodb::server::ssl_mode
   $storage_engine   = $mongodb::server::storage_engine
 
-  if $mongodb::server::version == undef or $mongodb::server::version == '' {
-    $version = $facts['mongodb_version']
-  } else {
-    $version = $mongodb::server::version
-  }
-
   File {
     owner => $user,
     group => $group,
   }
 
-  if ($logpath and $syslog) { fail('You cannot use syslog with logpath')}
+  if ($logpath and $syslog) { fail('You cannot use syslog with logpath') }
 
   if ($ensure == 'present' or $ensure == true) {
-
     # Exists for future compatibility and clarity.
     if $auth {
       $noauth = false
@@ -105,7 +98,6 @@ class mongodb::server::config {
       $storage_engine_internal = $storage_engine
     }
 
-
     # Pick which config content to use
     if $config_content {
       $cfg_content = $config_content
@@ -113,16 +105,10 @@ class mongodb::server::config {
       # Template has available user-supplied data
       # - $config_data
       $cfg_content = template($config_template)
-    } elsif $version and (versioncmp($version, '2.6.0') >= 0) {
+    } else {
       # Template has available user-supplied data
       # - $config_data
       $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
-    } else {
-      # Fall back to oldest most basic config
-      #
-      # Template has available user-supplied data
-      # - $config_data
-      $cfg_content = template('mongodb/mongodb.conf.erb')
     }
 
     file { $config:
@@ -134,7 +120,7 @@ class mongodb::server::config {
 
     file { $dbpath:
       ensure   => directory,
-      mode     => '0755',
+      mode     => '0750',
       owner    => $user,
       group    => $group,
       selrange => 's0',
@@ -174,19 +160,18 @@ class mongodb::server::config {
     }
   }
 
+  $admin_password_unsensitive = if $admin_password =~ Sensitive[String] {
+    $admin_password.unwrap
+  } else {
+    $admin_password
+  }
   if $handle_creds {
-    if $auth and $store_creds {
-      file { $rcfile:
-        ensure  => present,
-        content => template('mongodb/mongorc.js.erb'),
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0600',
-      }
-    } else {
-      file { $rcfile:
-        ensure => absent,
-      }
+    file { $rcfile:
+      ensure  => file,
+      content => template('mongodb/mongorc.js.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0600',
     }
   }
 }

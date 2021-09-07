@@ -1,12 +1,12 @@
 # mongodb puppet module
 
-[![License](https://img.shields.io/github/license/voxpupuli/puppet-mongodb.svg)](https://github.com/voxpupuli/puppet-mongodb/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/voxpupuli/puppet-mongodb.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-mongodb)
-[![Code Coverage](https://coveralls.io/repos/github/voxpupuli/puppet-mongodb/badge.svg?branch=master)](https://coveralls.io/github/voxpupuli/puppet-mongodb)
+[![Build Status](https://github.com/voxpupuli/puppet-mongodb/workflows/CI/badge.svg)](https://github.com/voxpupuli/puppet-mongodb/actions?query=workflow%3ACI)
+[![Release](https://github.com/voxpupuli/puppet-mongodb/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/puppet-mongodb/actions/workflows/release.yml)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
 [![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
 [![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
 [![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/mongodb.svg)](https://forge.puppetlabs.com/puppet/mongodb)
+[![License](https://img.shields.io/github/license/voxpupuli/puppet-mongodb.svg)](https://github.com/voxpupuli/puppet-mongodb/blob/master/LICENSE)
 
 #### Table of Contents
 
@@ -21,13 +21,15 @@
 ## Overview
 
 Installs MongoDB on RHEL/Ubuntu/Debian from OS repo, or alternatively from
-10gen repository [installation documentation](http://www.mongodb.org/display/DOCS/Ubuntu+and+Debian+packages).
+MongoDB community/enterprise repositories.
 
 ## Module Description
 
 The MongoDB module manages mongod server installation and configuration of the
 mongod daemon. For the time being it supports only a single MongoDB server
 instance, without sharding functionality.
+
+The MongoDB module also manages Ops Manager setup and the mongdb-mms daemon.
 
 ## Setup
 
@@ -38,7 +40,9 @@ instance, without sharding functionality.
 * MongoDB service.
 * MongoDB client.
 * MongoDB sharding support (mongos)
-* 10gen/mongodb apt/yum repository.
+* MongoDB apt/yum repository.
+* Ops Manager package.
+* Ops Manager configuration files.
 
 ### Beginning with MongoDB
 
@@ -71,20 +75,19 @@ class {'mongodb::mongos' :
 }
 ```
 
-Although most distros come with a prepacked MongoDB server we recommend to
-use the 10gen/MongoDB software repository, because most of the current OS
-packages are outdated and not appropriate for a production environment.
-To install MongoDB from 10gen repository:
+Although most distros come with a prepacked MongoDB server, you may prefer to
+use a more recent version. To install MongoDB from the community repository:
 
 ```puppet
 class {'mongodb::globals':
   manage_package_repo => true,
+  version             => '3.6',
 }
 -> class {'mongodb::client': }
 -> class {'mongodb::server': }
 ```
 
-If you don't want to use the 10gen/MongoDB software repository or the OS packages,
+If you don't want to use the MongoDB software repository or the OS packages,
 you can point the module to a custom one.
 To install MongoDB from a custom repository:
 
@@ -136,6 +139,29 @@ mongodb::db { 'testdb':
 Parameter 'password_hash' is hex encoded md5 hash of "user1:mongo:pass1".
 Unsafe plain text password could be used with 'password' parameter instead of 'password_hash'.
 
+### Ops Manager
+
+To install Ops Manager and have it run with a local MongoDB application server do the following:
+
+```puppet
+class {'mongodb::opsmanager':
+  opsmanager_url        => 'http://opsmanager.yourdomain.com'
+  mongo_uri             => 'mongodb://yourmongocluster:27017,
+  from_email_addr       => 'opsmanager@yourdomain.com',
+  reply_to_email_addr   => 'replyto@yourdomain.com',
+  admin_email_addr      => 'admin@yourdomain.com',
+  $smtp_server_hostname => 'email-relay.yourdomain.com'
+}
+```
+
+The default settings will not set useful email addresses. You can also just run `include mongodb::opsmanager`
+and then set the emails later.
+
+## Ops Manager Usage
+
+Most of the interaction for the server is done via `mongodb::opsmanager`. For
+more options please have a look at [mongodb::opsmanager](#class-mongodbopsmanager).
+
 ## Reference
 
 ### Classes
@@ -145,11 +171,12 @@ Unsafe plain text password could be used with 'password' parameter instead of 'p
 * `mongodb::client`: Installs the MongoDB client shell (for Red Hat family systems)
 * `mongodb::globals`: Configure main settings in a global way
 * `mongodb::mongos`: Installs and configure Mongos server (for sharding support)
+* `mongodb::opsmanager`: Installs and configure Ops Manager
 
 #### Private classes
-* `mongodb::repo`: Manage 10gen/MongoDB software repository
-* `mongodb::repo::apt`: Manage Debian/Ubuntu apt 10gen/MongoDB repository
-* `mongodb::repo::yum`: Manage Redhat/CentOS apt 10gen/MongoDB repository
+* `mongodb::repo`: Manage MongoDB software repository
+* `mongodb::repo::apt`: Manage Debian/Ubuntu apt MongoDB repository
+* `mongodb::repo::yum`: Manage Redhat/CentOS yum MongoDB repository
 * `mongodb::server::config`: Configures MongoDB configuration files
 * `mongodb::server::install`: Install MongoDB software packages
 * `mongodb::server::service`: Manages service
@@ -220,9 +247,9 @@ When `manage_package_repo` is set to true, this setting indicates if it will
 use the Community Edition (false, the default) or the Enterprise one (true).
 
 ##### `version`
-The version of MonogDB to install/manage. This is a simple way of providing
-a specific version such as '2.2' or '2.4' for example. If not specified,
-the module will use the default for your OS distro.
+The version of MonogDB to install/manage. This is needed when managing
+repositories. If not specified, the module will use the default for your OS
+distro.
 
 ##### `repo_location`
 This setting can be used to override the default MongoDB repository location.
@@ -341,7 +368,6 @@ Default: None
 ##### `objcheck`
 Forces the mongod to validate all requests from clients upon receipt to ensure
 that clients never insert invalid documents into the database.
-Default: on v2.4 default to true and on earlier version to false
 
 ##### `quota`
 Set to true to enable a maximum limit for the number of data files each database
@@ -471,7 +497,7 @@ textSearchEnabled=true). Default: None
 ##### `syslog`
 Sends all logging output to the host’s syslog system rather than to standard
 output or a log file. Default: None
-*Important*: You cannot use syslog with logpath.
+*Important*: You cannot use syslog with logpath. Set logpath to false to disable it.
 
 ##### `slave`
 Set to true to configure the current instance to act as slave instance in a
@@ -623,7 +649,10 @@ For more information please refer to [MongoDB Authentication Process](http://doc
 Plain-text user password (will be hashed)
 
 ##### `roles`
-Array with user roles. Default: ['dbAdmin']
+Array with user roles as string.
+Roles will be granted to user's database if no alternative database is explicitly defined.
+Example: ['dbAdmin', 'readWrite@other_database']
+Default: ['dbAdmin']
 
 ### Providers
 
@@ -671,7 +700,10 @@ Plaintext password of the user.
 Name of database. It will be created, if not exists.
 
 ##### `roles`
-Array with user roles. Default: ['dbAdmin']
+Array with user roles as string.
+Roles will be granted to user's database if no alternative database is explicitly defined.
+Example: ['dbAdmin', 'readWrite@other_database']
+Default: ['dbAdmin']
 
 ##### `tries`
 The maximum amount of two second tries to wait MongoDB startup. Default: 10

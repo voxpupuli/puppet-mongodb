@@ -1,99 +1,131 @@
 require 'spec_helper_acceptance'
 
 describe 'mongodb_database' do
-  case fact('osfamily')
-  when 'RedHat'
-    version = "'2.6.6-1'"
-  when 'Debian'
-    version = "'2.6.6'"
-  end
-  shared_examples 'normal tests' do |ver|
-    context "when version is #{ver.nil? ? 'nil' : ver}" do
-      describe 'creating a database' do
-        context 'with default port' do
-          after :all do
-            puts "XXX uninstalls mongodb because changing the port with tengen doesn't work because they have a crappy init script"
-            pp = <<-EOS
-              class {'mongodb::globals': manage_package_repo => true, }
-              -> class { 'mongodb::server':
-                   ensure => absent,
-                   package_ensure => absent,
-                   service_ensure => stopped,
-                   service_enable => false
-                 }
-              -> class { 'mongodb::client': ensure => absent, }
-            EOS
-            apply_manifest(pp, catch_failures: true)
-          end
-          it 'compiles with no errors' do
-            pp = <<-EOS
-              class { 'mongodb::globals': manage_package_repo => true, version => #{ver.nil? ? 'undef' : ver} }
-              -> class { 'mongodb::server': }
-              -> class { 'mongodb::client': }
-              -> mongodb_database { 'testdb': ensure => present }
-              ->
-              mongodb_user {'testuser':
-                ensure        => present,
-                password_hash => mongodb_password('testuser', 'passw0rd'),
-                database      => 'testdb',
-              }
-            EOS
+  context 'with default port' do
+    it 'compiles with no errors' do
+      pp = <<-EOS
+        class { 'mongodb::server': }
+        -> class { 'mongodb::client': }
+        -> mongodb_database { 'testdb': ensure => present }
+        ->
+        mongodb_user {'testuser':
+          ensure        => present,
+          password_hash => mongodb_password('testuser', 'passw0rd'),
+          database      => 'testdb',
+        }
+      EOS
 
-            apply_manifest(pp, catch_failures: true)
-            apply_manifest(pp, catch_changes: true)
-          end
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
 
-          it 'creates the user' do
-            shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
-              expect(r.stdout.chomp).to eq('1')
-            end
-          end
-        end
-
-        # MODULES-878
-        context 'with custom port' do
-          after :all do
-            puts "XXX uninstalls mongodb because changing the port with tengen doesn't work because they have a crappy init script"
-            pp = <<-EOS
-              class {'mongodb::globals': manage_package_repo => true, }
-              -> class { 'mongodb::server':
-                   ensure => absent,
-                   package_ensure => absent,
-                   service_ensure => stopped,
-                   service_enable => false
-                 }
-              -> class { 'mongodb::client': ensure => absent, }
-            EOS
-            apply_manifest(pp, catch_failures: true)
-          end
-          it 'works with no errors' do
-            pp = <<-EOS
-              class { 'mongodb::globals': manage_package_repo => true, }
-              -> class { 'mongodb::server': port => 27018 }
-              -> class { 'mongodb::client': }
-              -> mongodb_database { 'testdb': ensure => present }
-              ->
-              mongodb_user {'testuser':
-                ensure        => present,
-                password_hash => mongodb_password('testuser', 'passw0rd'),
-                database      => 'testdb',
-              }
-            EOS
-
-            apply_manifest(pp, catch_failures: true)
-            apply_manifest(pp, catch_changes: true)
-          end
-
-          it 'creates the user' do
-            shell("mongo testdb --quiet --port 27018 --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
-              expect(r.stdout.chomp).to eq('1')
-            end
-          end
-        end
+    it 'creates the user' do
+      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('1')
       end
     end
   end
 
-  it_behaves_like 'normal tests', nil # This will give a key-value config file even though the version will be 2.6
-  it_behaves_like 'normal tests', version # This will give the YAML config file for 2.6
+  context 'with custom port' do
+    it 'works with no errors' do
+      pp = <<-EOS
+        class { 'mongodb::server': port => 27018 }
+        -> class { 'mongodb::client': }
+        -> mongodb_database { 'testdb': ensure => present }
+        ->
+        mongodb_user {'testuser':
+          ensure        => present,
+          password_hash => mongodb_password('testuser', 'passw0rd'),
+          database      => 'testdb',
+        }
+      EOS
+
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    it 'creates the user' do
+      shell("mongo testdb --quiet --port 27018 --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('1')
+      end
+    end
+  end
+
+  context 'with the basic roles syntax' do
+    it 'compiles with no errors' do
+      pp = <<-EOS
+        class { 'mongodb::server': }
+        -> class { 'mongodb::client': }
+        -> mongodb_database { 'testdb': ensure => present }
+        ->
+        mongodb_user {'testuser':
+          ensure        => present,
+          password_hash => mongodb_password('testuser', 'passw0rd'),
+          database      => 'testdb',
+          roles         => ['readWrite', 'dbAdmin'],
+        }
+      EOS
+
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    it 'creates the user' do
+      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('1')
+      end
+    end
+  end
+
+  context 'with the new multidb role syntax' do
+    it 'compiles with no errors' do
+      pp = <<-EOS
+        class { 'mongodb::server': }
+        -> class { 'mongodb::client': }
+        -> mongodb_database { 'testdb': ensure => present }
+        -> mongodb_database { 'testdb2': ensure => present }
+        ->
+        mongodb_user {'testuser':
+          ensure        => present,
+          password_hash => mongodb_password('testuser', 'passw0rd'),
+          database      => 'testdb',
+          roles         => ['readWrite', 'dbAdmin'],
+        }
+        ->
+        mongodb_user {'testuser2':
+          ensure        => present,
+          password_hash => mongodb_password('testuser2', 'passw0rd'),
+          database      => 'testdb2',
+          roles         => ['readWrite', 'dbAdmin', 'readWrite@testdb', 'dbAdmin@testdb'],
+        }
+      EOS
+
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    it 'allows the testuser' do
+      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('1')
+      end
+    end
+
+    it 'assigns roles to testuser' do
+      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\"); db.getUser(\"testuser\")[\"roles\"].forEach(function(role){print(role.role + \"@\" + role.db)})'") do |r|
+        expect(r.stdout.split(%r{\n})).to contain_exactly('readWrite@testdb', 'dbAdmin@testdb')
+      end
+    end
+
+    it 'allows the second user to connect to its default database' do
+      shell("mongo testdb2 --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('1')
+      end
+    end
+
+    it 'assigns roles to testuser2' do
+      shell("mongo testdb2 --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\"); db.getUser(\"testuser2\")[\"roles\"].forEach(function(role){print(role.role + \"@\" + role.db)})'") do |r|
+        expect(r.stdout.split(%r{\n})).to contain_exactly('readWrite@testdb2', 'dbAdmin@testdb2', 'readWrite@testdb', 'dbAdmin@testdb')
+      end
+    end
+  end
 end

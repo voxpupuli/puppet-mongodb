@@ -4,6 +4,115 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v4.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v4.0.0) (2021-09-03)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v3.1.0...v4.0.0)
+
+**Breaking changes:**
+
+- Drop Puppet 5/Add puppet 7 support [\#617](https://github.com/voxpupuli/puppet-mongodb/pull/617) ([root-expert](https://github.com/root-expert))
+- Drop Ubuntu 16/Add Ubuntu 20 support [\#616](https://github.com/voxpupuli/puppet-mongodb/pull/616) ([root-expert](https://github.com/root-expert))
+
+**Implemented enhancements:**
+
+- Support managing selinux [\#413](https://github.com/voxpupuli/puppet-mongodb/issues/413)
+- Add Debian 10 support [\#619](https://github.com/voxpupuli/puppet-mongodb/pull/619) ([root-expert](https://github.com/root-expert))
+- Use Puppet-Datatype Sensitive for Passwords [\#611](https://github.com/voxpupuli/puppet-mongodb/pull/611) ([cocker-cc](https://github.com/cocker-cc))
+- Change set\_parameter to be an array of strings [\#595](https://github.com/voxpupuli/puppet-mongodb/pull/595) ([ZloeSabo](https://github.com/ZloeSabo))
+- Use rs.secondaryOk on versions that deprecated rs.slaveOk [\#594](https://github.com/voxpupuli/puppet-mongodb/pull/594) ([svenbs](https://github.com/svenbs))
+- Add MongoDB 4.4 repository signing key. [\#592](https://github.com/voxpupuli/puppet-mongodb/pull/592) ([dhs-rec](https://github.com/dhs-rec))
+
+**Fixed bugs:**
+
+- Existence of /root/.mongorc.js triggers mongod restart [\#449](https://github.com/voxpupuli/puppet-mongodb/issues/449)
+- Fix MongoDB installation on RedHat family [\#606](https://github.com/voxpupuli/puppet-mongodb/pull/606) ([hdep](https://github.com/hdep))
+- Update mongodb-shard.conf.erb [\#591](https://github.com/voxpupuli/puppet-mongodb/pull/591) ([andreish](https://github.com/andreish))
+- Fix mongorc.js file when authentication is not enabled. [\#590](https://github.com/voxpupuli/puppet-mongodb/pull/590) ([vladpetrus](https://github.com/vladpetrus))
+- Fix digestPassword typo mongodb.rb [\#589](https://github.com/voxpupuli/puppet-mongodb/pull/589) ([covidium](https://github.com/covidium))
+
+**Closed issues:**
+
+- MongoDB 4.2.10 starts to emit warnings about slaveOk\(\) being deprecated, which breaks the module [\#596](https://github.com/voxpupuli/puppet-mongodb/issues/596)
+- Can't use mongodb repository on debian 9 [\#529](https://github.com/voxpupuli/puppet-mongodb/issues/529)
+
+**Merged pull requests:**
+
+- puppet-lint: fix top\_scope\_facts warnings [\#621](https://github.com/voxpupuli/puppet-mongodb/pull/621) ([bastelfreak](https://github.com/bastelfreak))
+- Allow stdlib 8.x and apt 8.x [\#620](https://github.com/voxpupuli/puppet-mongodb/pull/620) ([smortex](https://github.com/smortex))
+- modulesync 3.0.0 & puppet-lint updates [\#586](https://github.com/voxpupuli/puppet-mongodb/pull/586) ([bastelfreak](https://github.com/bastelfreak))
+- Describe disabling logpath to make syslog work [\#585](https://github.com/voxpupuli/puppet-mongodb/pull/585) ([lennartkoopmann](https://github.com/lennartkoopmann))
+- Use voxpupuli-acceptance [\#580](https://github.com/voxpupuli/puppet-mongodb/pull/580) ([ekohl](https://github.com/ekohl))
+
+## [v3.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v3.1.0) (2020-02-11)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v3.0.0...v3.1.0)
+
+**Implemented enhancements:**
+
+- restrict opsmanager conf file permissions for better security [\#563](https://github.com/voxpupuli/puppet-mongodb/pull/563) ([FLiPp3r90](https://github.com/FLiPp3r90))
+- rebased PR\#308 to allow other databases in the format 'role@db' for mongodb\_user [\#432](https://github.com/voxpupuli/puppet-mongodb/pull/432) ([pecharmin](https://github.com/pecharmin))
+
+**Fixed bugs:**
+
+- Wrong APT-key [\#546](https://github.com/voxpupuli/puppet-mongodb/issues/546)
+- Mongo 4.0.x: unable to create user [\#525](https://github.com/voxpupuli/puppet-mongodb/issues/525)
+- user creation idempotency issues [\#412](https://github.com/voxpupuli/puppet-mongodb/issues/412)
+- fix\(is\_master-fact\): use --ssl if --sslPEMKeyFile or --sslCAFile is s… [\#573](https://github.com/voxpupuli/puppet-mongodb/pull/573) ([buchstabensalat](https://github.com/buchstabensalat))
+- Fixed the problem: the user was not created for Mongodb 4.x [\#561](https://github.com/voxpupuli/puppet-mongodb/pull/561) ([identw](https://github.com/identw))
+- Only create database and user when mongodb\_is\_master [\#558](https://github.com/voxpupuli/puppet-mongodb/pull/558) ([JvGinkel](https://github.com/JvGinkel))
+
+**Closed issues:**
+
+- mongo 3.x replicaset init failed  [\#554](https://github.com/voxpupuli/puppet-mongodb/issues/554)
+
+**Merged pull requests:**
+
+- Added keys for MongoDB 4.0 and 4.2. [\#557](https://github.com/voxpupuli/puppet-mongodb/pull/557) ([jgrancell](https://github.com/jgrancell))
+- Refactor opsmanager handling [\#521](https://github.com/voxpupuli/puppet-mongodb/pull/521) ([ekohl](https://github.com/ekohl))
+
+## [v3.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v3.0.0) (2019-05-21)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.4.1...v3.0.0)
+
+**Breaking changes:**
+
+- modulesync 2.7.0 and drop puppet 4 [\#533](https://github.com/voxpupuli/puppet-mongodb/pull/533) ([bastelfreak](https://github.com/bastelfreak))
+- Refactor client handling [\#520](https://github.com/voxpupuli/puppet-mongodb/pull/520) ([ekohl](https://github.com/ekohl))
+- Refactor mongos handling [\#509](https://github.com/voxpupuli/puppet-mongodb/pull/509) ([ekohl](https://github.com/ekohl))
+- Drop support for mongodb versions before 2.6 [\#504](https://github.com/voxpupuli/puppet-mongodb/pull/504) ([ekohl](https://github.com/ekohl))
+- Drop EL6 support [\#503](https://github.com/voxpupuli/puppet-mongodb/pull/503) ([ekohl](https://github.com/ekohl))
+- Remove 10gen repository support [\#497](https://github.com/voxpupuli/puppet-mongodb/pull/497) ([ekohl](https://github.com/ekohl))
+- Move to Debian 9 and Ubuntu 16.04/18.04 [\#494](https://github.com/voxpupuli/puppet-mongodb/pull/494) ([ekohl](https://github.com/ekohl))
+- Remove init.pp [\#493](https://github.com/voxpupuli/puppet-mongodb/pull/493) ([ekohl](https://github.com/ekohl))
+
+**Implemented enhancements:**
+
+- Deprecate \(and then remove\) 10gen requirement/pieces [\#416](https://github.com/voxpupuli/puppet-mongodb/issues/416)
+- support percona mongodb version output [\#530](https://github.com/voxpupuli/puppet-mongodb/pull/530) ([h0tw1r3](https://github.com/h0tw1r3))
+- Add aptkey\_options parameter to mongodb::repo class [\#524](https://github.com/voxpupuli/puppet-mongodb/pull/524) ([JvGinkel](https://github.com/JvGinkel))
+- Set database permissions to 0750 [\#511](https://github.com/voxpupuli/puppet-mongodb/pull/511) ([ekohl](https://github.com/ekohl))
+- Convert mongodb\_password into a Puppet 4 function [\#502](https://github.com/voxpupuli/puppet-mongodb/pull/502) ([ekohl](https://github.com/ekohl))
+- Add new classes for installing Ops Manager on a target machine. [\#500](https://github.com/voxpupuli/puppet-mongodb/pull/500) ([claycogg](https://github.com/claycogg))
+
+**Fixed bugs:**
+
+- Fix undefined local variable or method `n' [\#537](https://github.com/voxpupuli/puppet-mongodb/pull/537) ([FunFR](https://github.com/FunFR))
+- Fix for MongoDB v4 Replica Set initialization [\#535](https://github.com/voxpupuli/puppet-mongodb/pull/535) ([radupantiru](https://github.com/radupantiru))
+- Fix a dependency cycle caused by Apt::Source from puppetlabs-apt 6.3.0 [\#528](https://github.com/voxpupuli/puppet-mongodb/pull/528) ([thaiphv](https://github.com/thaiphv))
+
+**Merged pull requests:**
+
+- Allow `puppetlabs/stdlib` 6.x [\#538](https://github.com/voxpupuli/puppet-mongodb/pull/538) ([alexjfisher](https://github.com/alexjfisher))
+- Allow puppetlabs/apt 7.x [\#536](https://github.com/voxpupuli/puppet-mongodb/pull/536) ([dhoppe](https://github.com/dhoppe))
+- \#512: Current 'sharding.pp' example typo [\#513](https://github.com/voxpupuli/puppet-mongodb/pull/513) ([jeff1evesque](https://github.com/jeff1evesque))
+- Remove old nodesets [\#510](https://github.com/voxpupuli/puppet-mongodb/pull/510) ([ekohl](https://github.com/ekohl))
+- Refactor mongos handling [\#508](https://github.com/voxpupuli/puppet-mongodb/pull/508) ([ekohl](https://github.com/ekohl))
+- Deduplicate & update params.pp [\#506](https://github.com/voxpupuli/puppet-mongodb/pull/506) ([ekohl](https://github.com/ekohl))
+- Clean up coding styles [\#505](https://github.com/voxpupuli/puppet-mongodb/pull/505) ([ekohl](https://github.com/ekohl))
+- Rewrite mocking and stubbing to only rspec [\#496](https://github.com/voxpupuli/puppet-mongodb/pull/496) ([ekohl](https://github.com/ekohl))
+- Refactor spec testing to not test private classes [\#495](https://github.com/voxpupuli/puppet-mongodb/pull/495) ([ekohl](https://github.com/ekohl))
+- Major cleanup to get the acceptance tests working [\#491](https://github.com/voxpupuli/puppet-mongodb/pull/491) ([ekohl](https://github.com/ekohl))
+
 ## [v2.4.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.4.1) (2018-10-08)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v2.4.0...v2.4.1)
@@ -87,7 +196,7 @@ These should not affect the functionality of the module.
 **Fixed bugs:**
 
 - Notice on every run for password\_hash [\#425](https://github.com/voxpupuli/puppet-mongodb/issues/425)
-- Add check if scram credentials are insync with hash [\#455](https://github.com/voxpupuli/puppet-mongodb/pull/455) ([CTrox](https://github.com/CTrox))
+- Add check if scram credentials are insync with hash [\#455](https://github.com/voxpupuli/puppet-mongodb/pull/455) ([ctrox](https://github.com/ctrox))
 
 ## [v2.1.1](https://github.com/voxpupuli/puppet-mongodb/tree/v2.1.1) (2018-03-27)
 
@@ -139,7 +248,7 @@ These should not affect the functionality of the module.
 **Fixed bugs:**
 
 - apt-transport-https required on Ubuntu when installing version \>= 3.0.0. [\#417](https://github.com/voxpupuli/puppet-mongodb/issues/417)
-- Fix compilation failures on RHEL when `manage\_package =\> true` [\#431](https://github.com/voxpupuli/puppet-mongodb/pull/431) ([fatmcgav](https://github.com/fatmcgav))
+- Fix compilation failures on RHEL when `manage_package => true` [\#431](https://github.com/voxpupuli/puppet-mongodb/pull/431) ([fatmcgav](https://github.com/fatmcgav))
 
 **Closed issues:**
 
@@ -166,7 +275,7 @@ These should not affect the functionality of the module.
 **Implemented enhancements:**
 
 - Allow user-supplied configuration data [\#389](https://github.com/voxpupuli/puppet-mongodb/pull/389) ([blackophelia](https://github.com/blackophelia))
-- MODULES-5483: Auth and FQDN certs =\> Fail [\#369](https://github.com/voxpupuli/puppet-mongodb/pull/369) ([disappear89](https://github.com/disappear89))
+- MODULES-5483: Auth and FQDN certs =\> Fail [\#369](https://github.com/voxpupuli/puppet-mongodb/pull/369) ([ThoTischner](https://github.com/ThoTischner))
 
 **Fixed bugs:**
 
@@ -413,7 +522,7 @@ Added Replica Set Type and Provider
 ## Unsupported Release [0.6.0]
 ### Summary
 
-Added support for installing MongoDB client on 
+Added support for installing MongoDB client on
 RHEL family systems.
 
 ## Unsupported Release [0.5.0]
@@ -423,8 +532,8 @@ Added types for providers for Mongo users and databases.
 
 ## Unsupported Release [0.4.0]
 
-Major refactoring of the MongoDB module. Includes a new 'mongodb::globals' 
-that consolidates many shared parameters into one location. This is an 
+Major refactoring of the MongoDB module. Includes a new 'mongodb::globals'
+that consolidates many shared parameters into one location. This is an
 API-breaking release in anticipation of a 1.0 release.
 
 ## Unsupported Release [0.3.0]
