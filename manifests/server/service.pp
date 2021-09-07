@@ -55,5 +55,4 @@ class mongodb::server::service {
       }
     }
   }
-
 }
