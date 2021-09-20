@@ -72,6 +72,8 @@ describe 'mongodb::repo' do
               with_proxy_username('proxyuser1').
               with_proxy_password('proxypassword1')
           end
+        when 'Suse'
+          it { is_expected.to contain_class('mongodb::repo::zypper') }
         when 'Debian'
           it { is_expected.to contain_class('mongodb::repo::apt') }
         else
