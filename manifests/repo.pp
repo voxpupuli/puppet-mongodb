@@ -14,8 +14,8 @@ class mongodb::repo (
       if $repo_location != undef {
         $location = $repo_location
         $description = 'MongoDB Custom Repository'
-      } elsif $version == undef or versioncmp($version, '3.4.0') < 0 {
-        fail('Package repositories for versions older than 3.4 are unsupported')
+      } elsif $version == undef or versioncmp($version, '3.0.0') < 0 {
+        fail('Package repositories for versions older than 3.0 are unsupported')
       } else {
         $mongover = split($version, '[.]')
         if $use_enterprise_repo {
