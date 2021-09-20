@@ -38,8 +38,7 @@ class mongodb::repo (
         fail('Package repositories for versions older than 3.2 are unsupported')
       } else {
         $mongover = split($version, '[.]')
-        $major_release = $facts['os']['release']['major']
-        $location = "https://repo.mongodb.org/zypper/suse/${major_release}/mongodb-org/${mongover[0]}.${mongover[1]}/\$basearch/"
+        $location = "https://repo.mongodb.org/zypper/suse/\$releasever_major/mongodb-org/${mongover[0]}.${mongover[1]}/\$basearch/"
         $description = 'MongoDB Repository'
       }
 
