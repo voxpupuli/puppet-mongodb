@@ -9,6 +9,8 @@ class mongodb::mongos::params inherits mongodb::globals {
     $package_name = "mongodb-${mongodb::globals::edition}-mongos"
   } elsif $facts['os']['family'] == 'RedHat' {
     $package_name = "mongodb-${mongodb::globals::edition}-mongos"
+  } elsif $facts['os']['family'] == 'Suse' {
+    $package_name = "mongodb-${mongodb::globals::edition}-mongos"
   } else {
     $package_name = 'mongodb-server'
   }
