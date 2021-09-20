@@ -119,7 +119,11 @@ configdb = 127.0.0.1:27019
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
-        it { is_expected.to contain_package('mongodb_mongos').with_ensure('purged') }
+        if facts[:osfamily] == 'Suse'
+          it { is_expected.to contain_package('mongodb_mongos').with_ensure('absent') }
+        else
+          it { is_expected.to contain_package('mongodb_mongos').with_ensure('purged') }
+        end
 
         # config
         it { is_expected.to contain_class('mongodb::mongos::config') }
