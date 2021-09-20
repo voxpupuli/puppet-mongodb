@@ -5,10 +5,10 @@ class mongodb::repo::zypper inherits mongodb::repo {
 
   if $mongodb::repo::ensure == 'present' or $mongodb::repo::ensure == true {
     zypprepo { 'mongodb':
-      descr          => $mongodb::repo::description,
-      baseurl        => $mongodb::repo::location,
-      gpgcheck       => '0',
-      enabled        => '1',
+      descr    => $mongodb::repo::description,
+      baseurl  => $mongodb::repo::location,
+      gpgcheck => '0',
+      enabled  => '1',
     }
     Zypprepo['mongodb'] -> Package<| tag == 'mongodb_package' |>
   }
