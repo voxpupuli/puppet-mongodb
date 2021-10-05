@@ -89,8 +89,15 @@ Puppet::Type.newtype(:mongodb_user) do
       @resource.provider.password_hash
     end
 
-    def insync?(_is)
-      should_to_s == to_s?
+    def insync?(is)
+      if is == :absent && @resource.provider.scram_credentials
+        scram = @resource.provider.scram_credentials
+        scram_util = Puppet::Util::MongodbScram.new(should_to_s, scram['salt'], scram['iterationCount'])
+        if scram['storedKey'] == scram_util.stored_key && scram['serverKey'] == scram_util.server_key
+          is = should_to_s
+        end
+      end
+      should_to_s == is
     end
   end
 
