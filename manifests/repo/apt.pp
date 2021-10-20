@@ -15,10 +15,9 @@ class mongodb::repo::apt inherits mongodb::repo {
         'server'  => $mongodb::repo::key_server,
         'options' => $mongodb::repo::aptkey_options,
       },
-      notify => Exec['apt_update'],
     }
 
-    Apt::Source['mongodb'] -> Package<| tag == 'mongodb_package' |>
+    Apt::Source['mongodb'] -> Exec['apt_update'] -> Package<| tag == 'mongodb_package' |>
   }
   else {
     apt::source { 'mongodb':
