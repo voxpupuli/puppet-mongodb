@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v4.1.0](https://github.com/voxpupuli/puppet-mongodb/tree/v4.1.0) (2021-10-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v4.0.0...v4.1.0)
+
+**Implemented enhancements:**
+
+- Add support for Suse Linux [\#624](https://github.com/voxpupuli/puppet-mongodb/pull/624) ([fbrehm](https://github.com/fbrehm))
+- Add mongo 5.0 debian / ubuntu apt key [\#615](https://github.com/voxpupuli/puppet-mongodb/pull/615) ([xepa](https://github.com/xepa))
+
+**Fixed bugs:**
+
+- Run apt update before installing package [\#628](https://github.com/voxpupuli/puppet-mongodb/pull/628) ([malcyon](https://github.com/malcyon))
+
+**Closed issues:**
+
+- Fails to install on Ubuntu 20.04 [\#627](https://github.com/voxpupuli/puppet-mongodb/issues/627)
+- Missing key for Apt for installing 5.0 mongo [\#614](https://github.com/voxpupuli/puppet-mongodb/issues/614)
+- Error: Could not prefetch mongodb\_replset provider 'mongo': 765: unexpected token at 'WARNING: \) is deprecated and may be removed in the next major release. Please use secondaryOk\(\) [\#612](https://github.com/voxpupuli/puppet-mongodb/issues/612)
+- 4.x version. Initialization of replset and user creation problem. [\#583](https://github.com/voxpupuli/puppet-mongodb/issues/583)
+
 ## [v4.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v4.0.0) (2021-09-03)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v3.1.0...v4.0.0)
