@@ -31,7 +31,7 @@ class mongodb::repo (
     }
 
     'Suse': {
-      if $repo_location != undef {
+      if $repo_location {
         $location = $repo_location
         $description = 'MongoDB Custom Repository'
       } elsif $version == undef or versioncmp($version, '3.2.0') < 0 {
