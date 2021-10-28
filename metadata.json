@@ -33,6 +33,13 @@
         "18.04",
         "20.04"
       ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "12",
+        "15"
+      ]
     }
   ],
   "requirements": [
@@ -53,6 +60,10 @@
     {
       "name": "puppet/systemd",
       "version_requirement": ">= 2.5.1 < 4.0.0"
+    },
+    {
+      "name": "puppet/zypprepo",
+      "version_requirement": ">= 4.0.1 < 6.0.0"
     }
   ]
 }

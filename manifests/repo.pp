@@ -30,6 +30,21 @@ class mongodb::repo (
       contain mongodb::repo::yum
     }
 
+    'Suse': {
+      if $repo_location {
+        $location = $repo_location
+        $description = 'MongoDB Custom Repository'
+      } elsif $version == undef or versioncmp($version, '3.2.0') < 0 {
+        fail('Package repositories for versions older than 3.2 are unsupported')
+      } else {
+        $mongover = split($version, '[.]')
+        $location = "https://repo.mongodb.org/zypper/suse/\$releasever_major/mongodb-org/${mongover[0]}.${mongover[1]}/\$basearch/"
+        $description = 'MongoDB Repository'
+      }
+
+      contain mongodb::repo::zypper
+    }
+
     'Debian': {
       if $repo_location != undef {
         $location = $repo_location
@@ -74,7 +89,7 @@ class mongodb::repo (
 
     default: {
       if($ensure == 'present' or $ensure == true) {
-        fail("Unsupported managed repository for osfamily: ${facts['os']['family']}, operatingsystem: ${facts['os']['name']}, module ${module_name} currently only supports managing repos for osfamily RedHat, Debian and Ubuntu")
+        fail("Unsupported managed repository for osfamily: ${facts['os']['family']}, operatingsystem: ${facts['os']['name']}, module ${module_name} currently only supports managing repos for osfamily RedHat, Suse, Debian and Ubuntu")
       }
     }
   }

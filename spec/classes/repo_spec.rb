@@ -25,6 +25,12 @@ describe 'mongodb::repo' do
             is_expected.to contain_yumrepo('mongodb').
               with_baseurl('https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.6/$basearch/')
           end
+        when 'Suse'
+          it { is_expected.to contain_class('mongodb::repo::zypper') }
+          it do
+            is_expected.to contain_zypprepo('mongodb').
+              with_baseurl('https://repo.mongodb.org/zypper/suse/$releasever_major/mongodb-org/3.6/$basearch/')
+          end
         when 'Debian'
           it { is_expected.to contain_class('mongodb::repo::apt') }
           case facts[:operatingsystem]
@@ -66,6 +72,8 @@ describe 'mongodb::repo' do
               with_proxy_username('proxyuser1').
               with_proxy_password('proxypassword1')
           end
+        when 'Suse'
+          it { is_expected.to contain_class('mongodb::repo::zypper') }
         when 'Debian'
           it { is_expected.to contain_class('mongodb::repo::apt') }
         else
