@@ -65,7 +65,7 @@ class mongodb::repo (
           'Ubuntu' => "https://${repo_domain}/apt/ubuntu",
           default  => undef
         }
-        $release     = "${facts['os']['distro']['codename']}/${repo_path}/${mongover[0]}.${mongover[1]}"
+        $release     = "buster/${repo_path}/${mongover[0]}.${mongover[1]}"
         $repos       = $facts['os']['name'] ? {
           'Debian' => 'main',
           'Ubuntu' => 'multiverse',
