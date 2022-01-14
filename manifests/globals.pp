@@ -45,15 +45,19 @@ class mongodb::globals (
   # Setup of the repo only makes sense globally, so we are doing it here.
   case $facts['os']['family'] {
     'RedHat', 'Linux', 'Suse': {
-      class { 'mongodb::repo':
-        ensure              => present,
-        version             => pick($version, '3.6'),
-        use_enterprise_repo => $use_enterprise_repo,
-        repo_location       => $repo_location,
-        proxy               => $repo_proxy,
+      # For RedHat, Linux and Suse family: if manage_package_repo is set at undef that include mongodb::repo
+      if $manage_package_repo != false {
+        class { 'mongodb::repo':
+          ensure              => present,
+          version             => pick($version, '3.6'),
+          use_enterprise_repo => $use_enterprise_repo,
+          repo_location       => $repo_location,
+          proxy               => $repo_proxy,
+        }
       }
     }
     default: {
+      # For other (Debian) family: if manage_package_repo is set at undef that not include mongodb::repo
       if $manage_package_repo {
         if $use_enterprise_repo == true and $version == undef {
           fail('You must set mongodb::globals::version when mongodb::globals::use_enterprise_repo is true')
