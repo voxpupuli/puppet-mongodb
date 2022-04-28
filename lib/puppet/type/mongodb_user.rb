@@ -90,7 +90,7 @@ Puppet::Type.newtype(:mongodb_user) do
     end
 
     def insync?(_is)
-      return true if @resource[:auth_mechanism] == :scram_sha_256
+      return !@resource[:update_password] if @resource[:auth_mechanism] == :scram_sha_256
 
       should_to_s == to_s?
     end
@@ -100,6 +100,11 @@ Puppet::Type.newtype(:mongodb_user) do
     desc 'Authentication mechanism. Password verification is not supported with SCRAM-SHA-256.'
     defaultto :scram_sha_1
     newvalues(:scram_sha_256, :scram_sha_1)
+  end
+
+  newparam(:update_password, boolean: true) do
+    desc 'Update password. Used with SCRAM-SHA-256 because password verification is not supported.'
+    defaultto false
   end
 
   newproperty(:scram_credentials) do

@@ -566,6 +566,11 @@ Administrator authentication mechanism.
 scram_sha_256 password synchronization verification is not supported.
 Default: 'scram_sha_1'
 
+##### `admin_update_password`
+Update password.
+Used with SCRAM-SHA-256 because password verification is not supported.
+Default: false
+
 ##### `admin_roles`
 Administrator user roles
 
@@ -658,6 +663,11 @@ Authentication mechanism.
 Can be either 'scram_sha_1' or 'scram_sha_256'.
 scram_sha_256 password synchronization verification is not supported.
 Default: 'scram_sha_1'
+
+##### `update_password`
+Update password.
+Used with SCRAM-SHA-256 because password verification is not supported.
+Default: false
 
 ##### `roles`
 Array with user roles as string.
