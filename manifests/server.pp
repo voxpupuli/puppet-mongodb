@@ -76,6 +76,7 @@ class mongodb::server (
   Boolean $create_admin                                         = $mongodb::params::create_admin,
   String $admin_username                                        = $mongodb::params::admin_username,
   Optional[Variant[String, Sensitive[String]]] $admin_password  = undef,
+  Enum['scram_sha_1', 'scram_sha_256'] $admin_auth_mechanism    = $mongodb::params::admin_auth_mechanism,
   Boolean $handle_creds                                         = $mongodb::params::handle_creds,
   Boolean $store_creds                                          = $mongodb::params::store_creds,
   Array $admin_roles                                            = $mongodb::params::admin_roles,
@@ -105,9 +106,10 @@ class mongodb::server (
   }
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
     mongodb::db { 'admin':
-      user     => $admin_username,
-      password => $admin_password_unsensitive,
-      roles    => $admin_roles,
+      user           => $admin_username,
+      auth_mechanism => $admin_auth_mechanism,
+      password       => $admin_password_unsensitive,
+      roles          => $admin_roles,
     }
 
     # Make sure it runs before other DB creation

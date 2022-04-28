@@ -561,6 +561,11 @@ Administrator user name
 ##### `admin_password`
 Administrator user password
 
+##### `admin_auth_mechanism`
+Administrator authentication mechanism.
+scram_sha_256 password synchronization verification is not supported.
+Default: 'scram_sha_1'
+
 ##### `admin_roles`
 Administrator user roles
 
@@ -647,6 +652,12 @@ For more information please refer to [MongoDB Authentication Process](http://doc
 
 ##### `password`
 Plain-text user password (will be hashed)
+
+##### `auth_mechanism`
+Authentication mechanism.
+Can be either 'scram_sha_1' or 'scram_sha_256'.
+scram_sha_256 password synchronization verification is not supported.
+Default: 'scram_sha_1'
 
 ##### `roles`
 Array with user roles as string.
