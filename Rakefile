@@ -1,23 +1,4 @@
-# Managed by modulesync - DO NOT EDIT
-# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
-
-# Attempt to load voxupuli-test (which pulls in puppetlabs_spec_helper),
-# otherwise attempt to load it directly.
-begin
-  require 'voxpupuli/test/rake'
-rescue LoadError
-  begin
-    require 'puppetlabs_spec_helper/rake_tasks'
-  rescue LoadError
-  end
-end
-
-# load optional tasks for acceptance
-# only available if gem group releases is installed
-begin
-  require 'voxpupuli/acceptance/rake'
-rescue LoadError
-end
+require 'puppetlabs_spec_helper/rake_tasks'
 
 # load optional tasks for releases
 # only available if gem group releases is installed
@@ -25,6 +6,37 @@ begin
   require 'voxpupuli/release/rake_tasks'
 rescue LoadError
 end
+
+PuppetLint.configuration.log_format = '%{path}:%{line}:%{check}:%{KIND}:%{message}'
+
+desc 'Auto-correct puppet-lint offenses'
+task 'lint:auto_correct' do
+  Rake::Task[:lint_fix].invoke
+end
+
+desc 'Run acceptance tests'
+RSpec::Core::RakeTask.new(:acceptance) do |t|
+  t.pattern = 'spec/acceptance'
+end
+
+desc 'Run tests'
+task test: [:release_checks]
+
+namespace :check do
+  desc 'Check for trailing whitespace'
+  task :trailing_whitespace do
+    Dir.glob('**/*.md', File::FNM_DOTMATCH).sort.each do |filename|
+      next if filename =~ %r{^((modules|acceptance|\.?vendor|spec/fixtures|pkg)/|REFERENCE.md)}
+      File.foreach(filename).each_with_index do |line, index|
+        if line =~ %r{\s\n$}
+          puts "#{filename} has trailing whitespace on line #{index + 1}"
+          exit 1
+        end
+      end
+    end
+  end
+end
+Rake::Task[:release_checks].enhance ['check:trailing_whitespace']
 
 desc "Run main 'test' task and report merged results to coveralls"
 task test_with_coveralls: [:test] do
@@ -45,14 +57,15 @@ end
 
 begin
   require 'github_changelog_generator/task'
-  require 'puppet_blacksmith'
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
-    metadata = Blacksmith::Modulefile.new
-    config.future_release = "v#{metadata.version}" if metadata.version =~ /^\d+\.\d+.\d+$/
+    version = (Blacksmith::Modulefile.new).version
+    config.future_release = "v#{version}" if version =~ /^\d+\.\d+.\d+$/
     config.header = "# Changelog\n\nAll notable changes to this project will be documented in this file.\nEach new release typically also includes the latest modulesync defaults.\nThese should not affect the functionality of the module."
     config.exclude_labels = %w{duplicate question invalid wontfix wont-fix modulesync skip-changelog}
     config.user = 'voxpupuli'
-    config.project = metadata.metadata['name']
+    metadata_json = File.join(File.dirname(__FILE__), 'metadata.json')
+    metadata = JSON.load(File.read(metadata_json))
+    config.project = metadata['name']
   end
 
   # Workaround for https://github.com/github-changelog-generator/github-changelog-generator/issues/715

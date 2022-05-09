@@ -38,7 +38,7 @@ class mongodb::mongos::config (
   }
 
   if $service_manage {
-    if $facts['os']['family'] == 'RedHat' or $facts['os']['family'] == 'Suse' {
+    if $facts['os']['family'] == 'RedHat' {
       file { '/etc/sysconfig/mongos' :
         ensure  => $ensure,
         owner   => 'root',

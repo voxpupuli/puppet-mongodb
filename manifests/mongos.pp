@@ -8,7 +8,6 @@ class mongodb::mongos (
   Boolean $service_manage                                   = $mongodb::mongos::params::service_manage,
   Optional[String] $service_provider                        = $mongodb::mongos::params::service_provider,
   Optional[String] $service_name                            = $mongodb::mongos::params::service_name,
-  Optional[String[1]] $service_template                     = $mongodb::mongos::params::service_template,
   Boolean $service_enable                                   = $mongodb::mongos::params::service_enable,
   Stdlib::Ensure::Service $service_ensure                   = $mongodb::mongos::params::service_ensure,
   Optional[String] $service_status                          = $mongodb::mongos::params::service_status,
@@ -39,4 +38,5 @@ class mongodb::mongos (
   } else {
     Class['mongodb::mongos::service'] -> Class['mongodb::mongos::config'] -> Class['mongodb::mongos::install']
   }
+
 }

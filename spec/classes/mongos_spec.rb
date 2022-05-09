@@ -5,17 +5,12 @@ describe 'mongodb::mongos' do
     context "on #{os}" do
       let(:facts) { facts }
 
-      case facts[:os]['family']
-      when 'Debian'
-        package_name = if facts[:os]['release']['major'] =~ %r{(10)}
-                         'mongodb-org-mongos'
-                       else
-                         'mongodb-server'
-                       end
-        config_file  = '/etc/mongodb-shard.conf'
-      else
-        package_name = 'mongodb-org-mongos'
-        config_file  = '/etc/mongos.conf'
+      let(:config_file) do
+        if facts[:osfamily] == 'RedHat'
+          '/etc/mongos.conf'
+        else
+          '/etc/mongodb-shard.conf'
+        end
       end
 
       context 'with defaults' do
@@ -23,17 +18,13 @@ describe 'mongodb::mongos' do
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
-        if facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to contain_package('mongodb_mongos').with_ensure('4.4.8').with_name(package_name).with_tag('mongodb_package') }
-        else
-          it { is_expected.to contain_package('mongodb_mongos').with_ensure('present').with_name(package_name).with_tag('mongodb_package') }
-        end
+        it { is_expected.to contain_package('mongodb_mongos').with_ensure('present').with_name('mongodb-server').with_tag('mongodb_package') }
 
         # config
         it { is_expected.to contain_class('mongodb::mongos::config') }
 
         case facts[:osfamily]
-        when 'RedHat', 'Suse'
+        when 'RedHat'
           expected_content = <<-CONFIG
 configdb = 127.0.0.1:27019
 fork = true
@@ -54,7 +45,7 @@ configdb = 127.0.0.1:27019
         # service
         it { is_expected.to contain_class('mongodb::mongos::service') }
 
-        if facts[:osfamily] == 'RedHat' || facts[:osfamily] == 'Suse'
+        if facts[:osfamily] == 'RedHat'
           it { is_expected.to contain_file('/etc/sysconfig/mongos') }
         else
           it { is_expected.not_to contain_file('/etc/sysconfig/mongos') }
@@ -69,16 +60,6 @@ configdb = 127.0.0.1:27019
         it { is_expected.to contain_service('mongos') }
       end
 
-      describe 'with specific bind_ip values' do
-        let :params do
-          {
-            bind_ip: ['127.0.0.1', '10.1.1.13']
-          }
-        end
-
-        it { is_expected.to contain_file(config_file).with_content(%r{^bind_ip = 127\.0\.0\.1\,10\.1\.1\.13$}) }
-      end
-
       context 'package_name => mongo-foo' do
         let(:params) do
           {
@@ -87,12 +68,7 @@ configdb = 127.0.0.1:27019
         end
 
         it { is_expected.to compile.with_all_deps }
-
-        if facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('4.4.8').with_tag('mongodb_package') }
-        else
-          it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('present').with_tag('mongodb_package') }
-        end
+        it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('present').with_tag('mongodb_package') }
       end
 
       context 'service_manage => false' do
@@ -119,23 +95,19 @@ configdb = 127.0.0.1:27019
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
-        if facts[:osfamily] == 'Suse'
-          it { is_expected.to contain_package('mongodb_mongos').with_ensure('absent') }
-        else
-          it { is_expected.to contain_package('mongodb_mongos').with_ensure('purged') }
-        end
+        it { is_expected.to contain_package('mongodb_mongos').with_ensure('purged') }
 
         # config
         it { is_expected.to contain_class('mongodb::mongos::config') }
 
         case facts[:osfamily]
-        when 'RedHat', 'Suse'
+        when 'RedHat'
           it { is_expected.to contain_file('/etc/mongos.conf').with_ensure('absent') }
         when 'Debian'
           it { is_expected.to contain_file('/etc/mongodb-shard.conf').with_ensure('absent') }
         end
 
-        if facts[:osfamily] == 'RedHat' || facts[:osfamily] == 'Suse'
+        if facts[:osfamily] == 'RedHat'
           it { is_expected.to contain_file('/etc/sysconfig/mongos').with_ensure('absent') }
         else
           it { is_expected.not_to contain_file('/etc/sysconfig/mongos') }
@@ -160,6 +132,6 @@ configdb = 127.0.0.1:27019
       { osfamily: 'Solaris' }
     end
 
-    it { is_expected.to compile.and_raise_error(%r{is not applicable to an Undef Value}) }
+    it { expect { is_expected.to raise_error(Puppet::Error) } }
   end
 end

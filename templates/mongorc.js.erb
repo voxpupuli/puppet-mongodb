@@ -16,7 +16,6 @@ function rsReconfigSettings(settings){
   return rs.reconfig(cfg)
 }
 
-<% if @auth and @store_creds -%>
 function authRequired() {
   try {
     return db.serverCmdLineOpts().code == 13;
@@ -26,19 +25,19 @@ function authRequired() {
 }
 
 if (authRequired()) {
-  <%- if @replset -%>
+<% if @replset -%>
   // rs.slaveOk has been deprecated, use secondaryOk if available
   try {
     rs.secondaryOk()
   }
-  catch (err) {
+  catch(err) {
     rs.slaveOk()
   }
-  <%- end -%>
+<% end -%>
   try {
     var prev_db = db
     db = db.getSiblingDB('admin')
-    db.auth('<%= @admin_username %>', '<%= @admin_password_unsensitive %>')
+    db.auth('<%= @admin_username %>', '<%= @admin_password %>')
     db = db.getSiblingDB(prev_db)
   }
   catch (err) {
@@ -46,4 +45,3 @@ if (authRequired()) {
     abort('Unknown error')
   }
 }
-<% end -%>

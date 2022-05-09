@@ -8,15 +8,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
     require 'json'
 
     if db_ismaster
-      script = 'printjson(db.system.users.find().toArray())'
-      # A hack to prevent prefetching failures until admin user is created
-      script = "try {#{script}} catch (e) { if (e.message.match(/not authorized on admin/)) { 'not authorized on admin' } else {throw e}}" if auth_enabled
-
-      out = mongo_eval(script)
-
-      return [] if auth_enabled && out.include?('not authorized on admin')
-
-      users = JSON.parse out
+      users = JSON.parse mongo_eval('printjson(db.system.users.find().toArray())')
 
       users.map do |user|
         new(name: user['_id'],
@@ -109,7 +101,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       command = {
         updateUser: @resource[:username],
         pwd: @resource[:password],
-        digestPassword: true
+        digestpassword: true
       }
 
       mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])

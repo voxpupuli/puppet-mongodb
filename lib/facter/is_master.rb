@@ -9,12 +9,13 @@ end
 def get_options_from_hash_config(config)
   result = []
 
-  result << "--port #{config['net.port']}" unless config['net.port'].nil?
   # use --ssl and --host if:
   # - sslMode is "requireSSL"
   # - Parameter --sslPEMKeyFile is set
   # - Parameter --sslCAFile is set
-  result << "--ssl --host #{Facter.value(:fqdn)}" if config['net.ssl.mode'] == 'requireSSL' || !config['net.ssl.PEMKeyFile'].nil? || !config['net.ssl.CAFile'].nil?
+  result << "--port #{config['net.port']}" unless config['net.port'].nil?
+  result << "--ssl --host #{Facter.value(:fqdn)}" if ['allowSSL', 'preferSSL', 'requireSSL'].include? config['net.ssl.mode']
+  result << "--sslAllowInvalidHostnames" if config['net.ssl.allowInvalidHostnames'] == true
   result << "--sslPEMKeyFile #{config['net.ssl.PEMKeyFile']}" unless config['net.ssl.PEMKeyFile'].nil?
   result << "--sslCAFile #{config['net.ssl.CAFile']}" unless config['net.ssl.CAFile'].nil?
   result << '--ipv6' unless config['net.ipv6'].nil?
@@ -31,12 +32,13 @@ def get_options_from_keyvalue_config(file)
 
   result = []
 
-  result << "--port #{config['port']}" unless config['port'].nil?
   # use --ssl and --host if:
   # - sslMode is "requireSSL"
   # - Parameter --sslPEMKeyFile is set
   # - Parameter --sslCAFile is set
-  result << "--ssl --host #{Facter.value(:fqdn)}" if config['ssl'] == 'requireSSL' || !config['sslcert'].nil? || !config['sslca'].nil?
+  result << "--port #{config['port']}" unless config['port'].nil?
+  result << "--ssl --host #{Facter.value(:fqdn)}" if ['allowSSL', 'preferSSL', 'requireSSL'].include? config['ssl']
+  result << "--sslAllowInvalidHostnames" if config['net.ssl.allowInvalidHostnames'] == true
   result << "--sslPEMKeyFile #{config['sslcert']}" unless config['sslcert'].nil?
   result << "--sslCAFile #{config['sslca']}" unless config['sslca'].nil?
   result << '--ipv6' unless config['ipv6'].nil?
