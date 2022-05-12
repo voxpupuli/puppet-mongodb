@@ -66,6 +66,12 @@ class mongodb::server::config {
   $ssl_weak_cert    = $mongodb::server::ssl_weak_cert
   $ssl_invalid_hostnames = $mongodb::server::ssl_invalid_hostnames
   $ssl_mode         = $mongodb::server::ssl_mode
+  $tls              = $mongodb::server::tls
+  $tls_key          = $mongodb::server::tls_key
+  $tls_ca           = $mongodb::server::tls_ca
+  $tls_conn_without_cert = $mongodb::server::tls_conn_without_cert
+  $tls_invalid_hostnames = $mongodb::server::tls_invalid_hostnames
+  $tls_mode         = $mongodb::server::tls_mode
   $storage_engine   = $mongodb::server::storage_engine
 
   File {
@@ -74,6 +80,8 @@ class mongodb::server::config {
   }
 
   if ($logpath and $syslog) { fail('You cannot use syslog with logpath') }
+
+  if ($ssl and $tls) { fail('You cannot use ssl and tls options together') }
 
   if ($ensure == 'present' or $ensure == true) {
     # Exists for future compatibility and clarity.

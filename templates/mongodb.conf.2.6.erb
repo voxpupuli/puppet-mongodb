@@ -121,6 +121,19 @@ net.ssl.weakCertificateValidation: <%= @ssl_weak_cert %>
 net.ssl.allowInvalidHostnames: <%= @ssl_invalid_hostnames %>
 <% end -%>
 <% end -%>
+<% if @tls -%>
+net.tls.mode: <%= @tls_mode %>
+net.tls.certificateKeyFile: <%= @tls_key %>
+<% if @tls_ca -%>
+net.tls.CAFile: <%= @tls_ca %>
+<% end -%>
+<% if @tls_conn_without_cert -%>
+net.tls.allowConnectionsWithoutCertificates: <%= @tls_conn_without_cert %>
+<% end -%>
+<% if @tls_invalid_hostnames -%>
+net.tls.allowInvalidHostnames: <%= @tls_invalid_hostnames %>
+<% end -%>
+<% end -%>
 
 #Replication
 <% if @replset -%>

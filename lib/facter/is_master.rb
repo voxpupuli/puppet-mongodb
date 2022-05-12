@@ -17,6 +17,14 @@ def get_options_from_hash_config(config)
   result << "--ssl --host #{Facter.value(:fqdn)}" if config['net.ssl.mode'] == 'requireSSL' || !config['net.ssl.PEMKeyFile'].nil? || !config['net.ssl.CAFile'].nil?
   result << "--sslPEMKeyFile #{config['net.ssl.PEMKeyFile']}" unless config['net.ssl.PEMKeyFile'].nil?
   result << "--sslCAFile #{config['net.ssl.CAFile']}" unless config['net.ssl.CAFile'].nil?
+  # use --tls and --host if:
+  # - tlsMode is "requireTLS"
+  # - Parameter --tlsCertificateKeyFile is set
+  # - Parameter --tlsCAFile is set
+  result << "--tls --host #{Facter.value(:fqdn)}" if config['net.tls.mode'] == 'requireTLS' || !config['net.tls.certificateKeyFile'].nil? || !config['net.tls.CAFile'].nil?
+  result << "--tlsCertificateKeyFile #{config['net.tls.certificateKeyFile']}" unless config['net.tls.certificateKeyFile'].nil?
+  result << "--tlsCAFile #{config['net.tls.CAFile']}" unless config['net.tls.CAFile'].nil?
+
   result << '--ipv6' unless config['net.ipv6'].nil?
 
   result.join(' ')
@@ -39,6 +47,14 @@ def get_options_from_keyvalue_config(file)
   result << "--ssl --host #{Facter.value(:fqdn)}" if config['ssl'] == 'requireSSL' || !config['sslcert'].nil? || !config['sslca'].nil?
   result << "--sslPEMKeyFile #{config['sslcert']}" unless config['sslcert'].nil?
   result << "--sslCAFile #{config['sslca']}" unless config['sslca'].nil?
+  # use --tls and --host if:
+  # - tlsMode is "requireTLS"
+  # - Parameter --tlsCertificateKeyFile is set
+  # - Parameter --tlsCAFile is set
+  result << "--tls --host #{Facter.value(:fqdn)}" if config['tls'] == 'requireTLS' || !config['tlscert'].nil? || !config['tlsca'].nil?
+  result << "--tlsCertificateKeyFile #{config['tlscert']}" unless config['tlscert'].nil?
+  result << "--tlsCAFile #{config['tlsca']}" unless config['tlsca'].nil?
+
   result << '--ipv6' unless config['ipv6'].nil?
 
   result.join(' ')
