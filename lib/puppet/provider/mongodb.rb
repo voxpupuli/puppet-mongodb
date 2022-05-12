@@ -31,7 +31,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       'bindip' => config['net.bindIp'],
       'port' => config['net.port'],
       'ipv6' => config['net.ipv6'],
-      'allowInvalidHostnames' => config['net.ssl.allowInvalidHostnames'],
+      'sslallowInvalidHostnames' => config['net.ssl.allowInvalidHostnames'],
       'ssl' => config['net.ssl.mode'],
       'sslcert' => config['net.ssl.PEMKeyFile'],
       'sslca' => config['net.ssl.CAFile'],
@@ -64,7 +64,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def self.ssl_invalid_hostnames(config = nil)
     config ||= mongo_conf
-    config['allowInvalidHostnames']
+    config['sslallowInvalidHostnames']
   end
 
   def self.tls_invalid_hostnames(config = nil)
