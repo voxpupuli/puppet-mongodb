@@ -77,7 +77,6 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
     args = [db, '--quiet', '--host', host]
     args.push('--ipv6') if ipv6_is_enabled(config)
-    args.push('--sslAllowInvalidHostnames') if ssl_invalid_hostnames(config)
 
     if ssl_is_enabled(config)
       args.push('--ssl')
@@ -85,6 +84,8 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
       ssl_ca = config['sslca']
       args += ['--sslCAFile', ssl_ca] unless ssl_ca.nil?
+
+      args.push('--sslAllowInvalidHostnames') if ssl_invalid_hostnames(config)
     end
 
     if tls_is_enabled(config)
