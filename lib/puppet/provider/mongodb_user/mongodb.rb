@@ -89,7 +89,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   end
 
   def destroy
-    mongo_eval("db.dropUser(#{@resource[:username].to_json})")
+    mongo_eval("db.dropUser(#{@resource[:username].to_json})", @resource[:database])
   end
 
   def exists?

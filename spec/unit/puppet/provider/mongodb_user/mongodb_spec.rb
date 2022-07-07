@@ -69,7 +69,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'destroy' do
     it 'removes a user' do
-      allow(provider).to receive(:mongo_eval).with('db.dropUser("new_user")')
+      allow(provider).to receive(:mongo_eval).with('db.dropUser("new_user")', 'new_database')
       provider.destroy
       expect(provider).to have_received(:mongo_eval)
     end
