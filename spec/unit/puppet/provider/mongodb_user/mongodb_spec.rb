@@ -54,9 +54,9 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
       cmd_json = <<-EOS.gsub(%r{^\s*}, '').gsub(%r{$\n}, '')
       {
         "createUser":"new_user",
-        "pwd":"pass",
         "customData":{"createdBy":"Puppet Mongodb_user['new_user']"},
         "roles":[{"role":"role1","db":"new_database"},{"role":"role2","db":"other_database"}],
+        "pwd":"pass",
         "digestPassword":false
       }
       EOS
