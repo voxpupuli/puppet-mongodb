@@ -24,6 +24,29 @@ describe 'mongodb_database' do
         expect(r.stdout.chomp).to eq('1')
       end
     end
+
+    it 'removes a user with no errors' do
+      pp = <<-EOS
+        class { 'mongodb::server': }
+        -> class { 'mongodb::client': }
+        -> mongodb_database { 'testdb': ensure => present }
+        ->
+        mongodb_user {'testuser':
+          ensure        => absent,
+          password_hash => mongodb_password('testuser', 'passw0rd'),
+          database      => 'testdb',
+        }
+      EOS
+
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    it 'auth should fail' do
+      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to contain('Error: Authentication failed')
+      end
+    end
   end
 
   context 'with custom port' do
