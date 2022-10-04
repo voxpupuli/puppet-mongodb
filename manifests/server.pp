@@ -85,7 +85,7 @@ class mongodb::server (
   Boolean $ssl_weak_cert                                        = false,
   Boolean $ssl_invalid_hostnames                                = false,
   Enum['requireSSL', 'preferSSL', 'allowSSL'] $ssl_mode         = 'requireSSL',
-  Optional[Boolean] $tls                                        = undef,
+  Boolean $tls                                                  = false,
   Optional[Stdlib::Absolutepath] $tls_key                       = undef,
   Optional[Stdlib::Absolutepath] $tls_ca                        = undef,
   Boolean $tls_conn_without_cert                                = false,
