@@ -103,6 +103,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         pwd: @resource[:password_hash],
         digestPassword: false
       }
+      command[:mechanisms] = ['SCRAM-SHA-1']
 
       mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
     else
