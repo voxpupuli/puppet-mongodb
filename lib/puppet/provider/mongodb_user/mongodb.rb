@@ -103,7 +103,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         pwd: @resource[:password_hash],
         digestPassword: false
       }
-      command[:mechanisms] = ['SCRAM-SHA-1']
+      command[:mechanisms] = @resource[:auth_mechanism] == :scram_sha_1 ? ['SCRAM-SHA-1'] : ['SCRAM-SHA-256']
 
       mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
     else
