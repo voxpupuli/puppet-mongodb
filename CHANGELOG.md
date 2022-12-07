@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v4.2.1](https://github.com/voxpupuli/puppet-mongodb/tree/v4.2.1) (2022-12-06)
+## [v4.2.0](https://github.com/voxpupuli/puppet-mongodb/tree/v4.2.0) (2022-12-07)
 
-[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v4.1.1...v4.2.1)
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v4.1.1...v4.2.0)
 
 **Implemented enhancements:**
 
@@ -18,11 +18,6 @@ These should not affect the functionality of the module.
 - Auth in mongod 3.6 [\#437](https://github.com/voxpupuli/puppet-mongodb/issues/437)
 - mongodb\_user ignores `database` parameter when removing a user [\#644](https://github.com/voxpupuli/puppet-mongodb/pull/644) ([SeanHood](https://github.com/SeanHood))
 - Fix ReplicaSet with Auth creation \(new error message to handle\) [\#632](https://github.com/voxpupuli/puppet-mongodb/pull/632) ([BDelacour](https://github.com/BDelacour))
-
-**Closed issues:**
-
-- All users are created with SCRAM-SHA-1 only [\#597](https://github.com/voxpupuli/puppet-mongodb/issues/597)
-- SSL options deprecated in mongo 4.2.X  [\#567](https://github.com/voxpupuli/puppet-mongodb/issues/567)
 
 ## [v4.1.1](https://github.com/voxpupuli/puppet-mongodb/tree/v4.1.1) (2022-03-12)
 
