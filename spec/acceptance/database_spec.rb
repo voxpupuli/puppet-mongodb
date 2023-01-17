@@ -25,6 +25,29 @@ describe 'mongodb_database' do
       end
     end
 
+    context 'with deferred password hash' do
+      it 'compiles with no errors' do
+        pp = <<-EOS
+          class { 'mongodb::server': }
+          -> class { 'mongodb::client': }
+          -> mongodb::db { 'testdb1':
+            user          => 'testuser',
+            password_hash => Deferred('inline_epp',['0ba06b1790d48b9baf71162124a04685']),
+          }
+          -> mongodb::db { 'testdb2':
+            user          => 'testuser',
+            password_hash => Deferred('inline_epp',['0ba06b1790d48b9baf71162124a04685']),
+          }
+        EOS
+        apply_manifest(pp, catch_failures: true)
+        apply_manifest(pp, catch_changes: true)
+      end
+      it 'creates the databases' do
+        shell("mongo testdb1 --eval 'printjson(db.getMongo().getDBs())'")
+        shell("mongo testdb2 --eval 'printjson(db.getMongo().getDBs())'")
+      end
+    end
+
     context 'with custom port' do
       it 'works with no errors' do
         pp = <<-EOS

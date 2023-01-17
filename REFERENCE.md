@@ -1318,7 +1318,7 @@ Default value: `'requireTLS'`
 
 ##### <a name="-mongodb--server--admin_password_hash"></a>`admin_password_hash`
 
-Data type: `Optional[Variant[String[1], Sensitive[String[1]]]]`
+Data type: `Optional[Variant[Deferred, String[1], Sensitive[String[1]]]]`
 
 Hashed password. Hex encoded md5 hash of "$username:mongo:$password".
 
@@ -2058,7 +2058,7 @@ Default value: `$name`
 
 ##### <a name="-mongodb--db--password_hash"></a>`password_hash`
 
-Data type: `Optional[Variant[String[1], Sensitive[String[1]]]]`
+Data type: `Optional[Variant[Deferred, String[1], Sensitive[String[1]]]]`
 
 
 

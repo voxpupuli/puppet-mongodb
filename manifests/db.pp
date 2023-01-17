@@ -15,13 +15,13 @@
 #
 define mongodb::db (
   String                                             $user,
-  Enum['scram_sha_1', 'scram_sha_256']               $auth_mechanism  = 'scram_sha_1',
-  String                                             $db_name         = $name,
-  Optional[Variant[String[1], Sensitive[String[1]]]] $password_hash   = undef,
-  Optional[Variant[String[1], Sensitive[String[1]]]] $password        = undef,
-  Array[String]                                      $roles           = ['dbAdmin'],
-  Integer[0]                                         $tries           = 10,
-  Boolean                                            $update_password = false,
+  Enum['scram_sha_1', 'scram_sha_256']               $auth_mechanism            = 'scram_sha_1',
+  String                                             $db_name                   = $name,
+  Optional[Variant[Deferred, String[1], Sensitive[String[1]]]] $password_hash   = undef,
+  Optional[Variant[String[1], Sensitive[String[1]]]] $password                  = undef,
+  Array[String]                                      $roles                     = ['dbAdmin'],
+  Integer[0]                                         $tries                     = 10,
+  Boolean                                            $update_password           = false,
 ) {
   unless $facts['mongodb_is_master'] == 'false' { # lint:ignore:quoted_booleans
     mongodb_database { $db_name:
