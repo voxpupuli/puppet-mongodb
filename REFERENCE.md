@@ -1185,6 +1185,7 @@ The following parameters are available in the `mongodb::server` class:
 * [`tls_conn_without_cert`](#-mongodb--server--tls_conn_without_cert)
 * [`tls_invalid_hostnames`](#-mongodb--server--tls_invalid_hostnames)
 * [`tls_mode`](#-mongodb--server--tls_mode)
+* [`admin_password_hash`](#-mongodb--server--admin_password_hash)
 * [`ensure`](#-mongodb--server--ensure)
 * [`user`](#-mongodb--server--user)
 * [`group`](#-mongodb--server--group)
@@ -1314,6 +1315,14 @@ Data type: `Enum['requireTLS', 'preferTLS', 'allowTLS']`
 Defines if TLS is used for all network connections. Allowed values are 'requireTLS', 'preferTLS' or 'allowTLS'.
 
 Default value: `'requireTLS'`
+
+##### <a name="-mongodb--server--admin_password_hash"></a>`admin_password_hash`
+
+Data type: `Optional[Variant[String[1], Sensitive[String[1]]]]`
+
+Hashed password. Hex encoded md5 hash of "$username:mongo:$password".
+
+Default value: `undef`
 
 ##### <a name="-mongodb--server--ensure"></a>`ensure`
 
