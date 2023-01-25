@@ -93,11 +93,12 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
       {
           "updateUser":"new_user",
           "pwd":"pass",
-          "digestPassword":false
+          "digestPassword":false,
+          "mechanisms":["SCRAM-SHA-1"]
       }
       EOS
       allow(provider).to receive(:mongo_eval).
-        with("db.runCommand(#{cmd_json})", 'new_database')
+        with("db.runCommand(#{cmd_json})", 'new_database').and_return('{"ok": 1}')
       provider.password_hash = 'newpass'
       expect(provider).to have_received(:mongo_eval)
     end
