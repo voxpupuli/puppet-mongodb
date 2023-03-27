@@ -73,7 +73,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     end
 
     args += ['--eval', cmd]
-    mongo(args)
+    percona_clean(mongo(args))
   end
 
   def self.conn_string
@@ -157,6 +157,15 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     self.class.mongo_eval(cmd, db, retries, host)
   end
 
+  def self.percona_clean(result)
+    if result.include? "Started a new thread for the timer service"
+      lines = result.split("\n")
+      lines.shift
+      result = lines.join("\n") 
+    end
+    return result
+  end
+
   # Mongo Version checker
   def self.mongo_version
     @mongo_version ||= mongo_eval('db.version()')
@@ -182,5 +191,23 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def mongo_4?
     self.class.mongo_4?
+  end
+
+  def self.mongo_5?
+    v = mongo_version
+    !v[%r{^5\.}].nil?
+  end
+
+  def mongo_5?
+    self.class.mongo_5?
+  end
+
+  def self.mongo_6?
+    v = mongo_version
+    !v[%r{^5\.}].nil?
+  end
+
+  def mongo_6?
+    self.class.mongo_6?
   end
 end
