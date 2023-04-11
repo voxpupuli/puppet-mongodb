@@ -55,7 +55,7 @@ Puppet::Type.newtype(:mongodb_user) do
   newproperty(:password_hash) do
     desc 'The password hash of the user. Use mongodb_password() for creating hash. Only available on MongoDB 3.0 and later. SCRAM-SHA-256 authentication mechanism is not supported.'
     defaultto do
-      if @resource[:password].nil?
+      if @resource[:auth_mechanism] != :x509 && @resource[:password].nil?
         raise Puppet::Error, "Property 'password_hash' must be set. Use mongodb_password() for creating hash." if provider.database == :absent
       end
     end
@@ -99,7 +99,7 @@ Puppet::Type.newtype(:mongodb_user) do
   newparam(:auth_mechanism) do
     desc 'Authentication mechanism. Password verification is not supported with SCRAM-SHA-256.'
     defaultto :scram_sha_1
-    newvalues(:scram_sha_256, :scram_sha_1)
+    newvalues(:scram_sha_256, :scram_sha_1, :x509)
   end
 
   newparam(:update_password, boolean: true) do
@@ -124,12 +124,14 @@ Puppet::Type.newtype(:mongodb_user) do
   end
 
   validate do
-    if self[:password_hash].nil? && self[:password].nil? && provider.password.nil? && provider.password_hash.nil?
-      err("Either 'password_hash' or 'password' should be provided")
-    elsif !self[:password_hash].nil? && !self[:password].nil?
-      err("Only one of 'password_hash' or 'password' should be provided")
-    elsif !self[:password_hash].nil? && self[:auth_mechanism] == :scram_sha_256
-      err("'password_hash' is not supported with SCRAM-SHA-256 authentication mechanism")
+    if self[:auth_mechanism] != :x509
+      if self[:password_hash].nil? && self[:password].nil? && provider.password.nil? && provider.password_hash.nil?
+        err("Either 'password_hash' or 'password' should be provided")
+      elsif !self[:password_hash].nil? && !self[:password].nil?
+        err("Only one of 'password_hash' or 'password' should be provided")
+      elsif !self[:password_hash].nil? && self[:auth_mechanism] == :scram_sha_256
+        err("'password_hash' is not supported with SCRAM-SHA-256 authentication mechanism")
+      end
     end
     if should(:scram_credentials)
       raise("The parameter 'scram_credentials' is read-only and cannot be changed")

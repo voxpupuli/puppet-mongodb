@@ -169,6 +169,13 @@ setParameter:
   <%= v %>
 <% end -%>
 <% end -%>
+<% if @admin_auth_mechanism == 'x509' -%>
+<%# setParameters.auth... gives an error on startup status=2/INVALIDARGUMENT -%>
+<% if !@set_parameter -%>
+setParameter:
+<% end -%>
+  authenticationMechanisms: MONGODB-X509
+<% end -%>
 
 <% if @config_data -%>
 <% @config_data.each do |k,v| -%>

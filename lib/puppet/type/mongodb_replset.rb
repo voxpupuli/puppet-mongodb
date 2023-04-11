@@ -30,6 +30,7 @@ Puppet::Type.newtype(:mongodb_replset) do
     desc 'The replicaSet settings config'
 
     def insync?(is)
+      Puppet.debug("in type replset attribute settings with #{is}")
       should.each do |k, v|
         if v != is[k]
           Puppet.debug 'The replicaset settings config is not insync'
@@ -50,6 +51,7 @@ Puppet::Type.newtype(:mongodb_replset) do
 
     # check if is different
     def insync?(is)
+      Puppet.debug("in type replset attribute members #{is}")
       sync = true
       current = is.clone
       should.each do |sm|

@@ -33,4 +33,10 @@ class mongodb::server::install {
       tag    => 'mongodb_package',
     }
   }
+
+  if $mongodb::server::admin_auth_mechanism == 'x509' {
+    package { $mongodb::server::mongosh_package_name:
+      ensure => present,
+    }
+  }
 }

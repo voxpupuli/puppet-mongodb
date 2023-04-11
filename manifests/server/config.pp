@@ -1,78 +1,80 @@
 # PRIVATE CLASS: do not call directly
 class mongodb::server::config {
-  $ensure           = $mongodb::server::ensure
-  $user             = $mongodb::server::user
-  $group            = $mongodb::server::group
-  $config           = $mongodb::server::config
-  $config_content   = $mongodb::server::config_content
-  $config_template  = $mongodb::server::config_template
-  $config_data      = $mongodb::server::config_data
-  $dbpath           = $mongodb::server::dbpath
-  $dbpath_fix       = $mongodb::server::dbpath_fix
-  $pidfilepath      = $mongodb::server::pidfilepath
-  $pidfilemode      = $mongodb::server::pidfilemode
-  $manage_pidfile   = $mongodb::server::manage_pidfile
-  $logpath          = $mongodb::server::logpath
-  $logappend        = $mongodb::server::logappend
-  $system_logrotate = $mongodb::server::system_logrotate
-  $fork             = $mongodb::server::fork
-  $port             = $mongodb::server::port
-  $journal          = $mongodb::server::journal
-  $nojournal        = $mongodb::server::nojournal
-  $smallfiles       = $mongodb::server::smallfiles
-  $cpu              = $mongodb::server::cpu
-  $auth             = $mongodb::server::auth
-  $noath            = $mongodb::server::noauth
-  $create_admin     = $mongodb::server::create_admin
-  $admin_username   = $mongodb::server::admin_username
-  $admin_password   = $mongodb::server::admin_password
-  $handle_creds     = $mongodb::server::handle_creds
-  $store_creds      = $mongodb::server::store_creds
-  $rcfile           = $mongodb::server::rcfile
-  $verbose          = $mongodb::server::verbose
-  $verbositylevel   = $mongodb::server::verbositylevel
-  $objcheck         = $mongodb::server::objcheck
-  $quota            = $mongodb::server::quota
-  $quotafiles       = $mongodb::server::quotafiles
-  $diaglog          = $mongodb::server::diaglog
-  $oplog_size       = $mongodb::server::oplog_size
-  $nohints          = $mongodb::server::nohints
-  $nohttpinterface  = $mongodb::server::nohttpinterface
-  $noscripting      = $mongodb::server::noscripting
-  $notablescan      = $mongodb::server::notablescan
-  $noprealloc       = $mongodb::server::noprealloc
-  $nssize           = $mongodb::server::nssize
-  $mms_token        = $mongodb::server::mms_token
-  $mms_name         = $mongodb::server::mms_name
-  $mms_interval     = $mongodb::server::mms_interval
-  $configsvr        = $mongodb::server::configsvr
-  $shardsvr         = $mongodb::server::shardsvr
-  $replset          = $mongodb::server::replset
-  $rest             = $mongodb::server::rest
-  $quiet            = $mongodb::server::quiet
-  $slowms           = $mongodb::server::slowms
-  $keyfile          = $mongodb::server::keyfile
-  $key              = $mongodb::server::key
-  $ipv6             = $mongodb::server::ipv6
-  $bind_ip          = $mongodb::server::bind_ip
-  $directoryperdb   = $mongodb::server::directoryperdb
-  $profile          = $mongodb::server::profile
-  $maxconns         = $mongodb::server::maxconns
-  $set_parameter    = $mongodb::server::set_parameter
-  $syslog           = $mongodb::server::syslog
-  $ssl              = $mongodb::server::ssl
-  $ssl_key          = $mongodb::server::ssl_key
-  $ssl_ca           = $mongodb::server::ssl_ca
-  $ssl_weak_cert    = $mongodb::server::ssl_weak_cert
+  $ensure                = $mongodb::server::ensure
+  $user                  = $mongodb::server::user
+  $group                 = $mongodb::server::group
+  $config                = $mongodb::server::config
+  $config_content        = $mongodb::server::config_content
+  $config_template       = $mongodb::server::config_template
+  $config_data           = $mongodb::server::config_data
+  $dbpath                = $mongodb::server::dbpath
+  $dbpath_fix            = $mongodb::server::dbpath_fix
+  $pidfilepath           = $mongodb::server::pidfilepath
+  $pidfilemode           = $mongodb::server::pidfilemode
+  $manage_pidfile        = $mongodb::server::manage_pidfile
+  $logpath               = $mongodb::server::logpath
+  $logappend             = $mongodb::server::logappend
+  $system_logrotate      = $mongodb::server::system_logrotate
+  $fork                  = $mongodb::server::fork
+  $port                  = $mongodb::server::port
+  $journal               = $mongodb::server::journal
+  $nojournal             = $mongodb::server::nojournal
+  $smallfiles            = $mongodb::server::smallfiles
+  $cpu                   = $mongodb::server::cpu
+  $auth                  = $mongodb::server::auth
+  $noath                 = $mongodb::server::noauth
+  $create_admin          = $mongodb::server::create_admin
+  $admin_username        = $mongodb::server::admin_username
+  $admin_password        = $mongodb::server::admin_password
+  $admin_auth_mechanism  = $mongodb::server::admin_auth_mechanism
+  $admin_tls_key         = $mongodb::server::admin_tls_key
+  $handle_creds          = $mongodb::server::handle_creds
+  $store_creds           = $mongodb::server::store_creds
+  $rcfile                = $mongodb::server::rcfile
+  $verbose               = $mongodb::server::verbose
+  $verbositylevel        = $mongodb::server::verbositylevel
+  $objcheck              = $mongodb::server::objcheck
+  $quota                 = $mongodb::server::quota
+  $quotafiles            = $mongodb::server::quotafiles
+  $diaglog               = $mongodb::server::diaglog
+  $oplog_size            = $mongodb::server::oplog_size
+  $nohints               = $mongodb::server::nohints
+  $nohttpinterface       = $mongodb::server::nohttpinterface
+  $noscripting           = $mongodb::server::noscripting
+  $notablescan           = $mongodb::server::notablescan
+  $noprealloc            = $mongodb::server::noprealloc
+  $nssize                = $mongodb::server::nssize
+  $mms_token             = $mongodb::server::mms_token
+  $mms_name              = $mongodb::server::mms_name
+  $mms_interval          = $mongodb::server::mms_interval
+  $configsvr             = $mongodb::server::configsvr
+  $shardsvr              = $mongodb::server::shardsvr
+  $replset               = $mongodb::server::replset
+  $rest                  = $mongodb::server::rest
+  $quiet                 = $mongodb::server::quiet
+  $slowms                = $mongodb::server::slowms
+  $keyfile               = $mongodb::server::keyfile
+  $key                   = $mongodb::server::key
+  $ipv6                  = $mongodb::server::ipv6
+  $bind_ip               = $mongodb::server::bind_ip
+  $directoryperdb        = $mongodb::server::directoryperdb
+  $profile               = $mongodb::server::profile
+  $maxconns              = $mongodb::server::maxconns
+  $set_parameter         = $mongodb::server::set_parameter
+  $syslog                = $mongodb::server::syslog
+  $ssl                   = $mongodb::server::ssl
+  $ssl_key               = $mongodb::server::ssl_key
+  $ssl_ca                = $mongodb::server::ssl_ca
+  $ssl_weak_cert         = $mongodb::server::ssl_weak_cert
   $ssl_invalid_hostnames = $mongodb::server::ssl_invalid_hostnames
-  $ssl_mode         = $mongodb::server::ssl_mode
-  $tls              = $mongodb::server::tls
-  $tls_key          = $mongodb::server::tls_key
-  $tls_ca           = $mongodb::server::tls_ca
+  $ssl_mode              = $mongodb::server::ssl_mode
+  $tls                   = $mongodb::server::tls
+  $tls_key               = $mongodb::server::tls_key
+  $tls_ca                = $mongodb::server::tls_ca
   $tls_conn_without_cert = $mongodb::server::tls_conn_without_cert
   $tls_invalid_hostnames = $mongodb::server::tls_invalid_hostnames
-  $tls_mode         = $mongodb::server::tls_mode
-  $storage_engine   = $mongodb::server::storage_engine
+  $tls_mode              = $mongodb::server::tls_mode
+  $storage_engine        = $mongodb::server::storage_engine
 
   File {
     owner => $user,
@@ -126,6 +128,20 @@ class mongodb::server::config {
       mode    => '0644',
     }
 
+    # TODO: we kind of use this file to force x509 autehntication in the providers when it exsists
+    #       Open for suugestions how to deal with this
+    if $admin_auth_mechanism == 'x509' {
+      $_ensure = 'present'
+    } else {
+      $_ensure = 'absent'
+    }
+
+    file { '/root/.mongosh.yaml':
+      ensure  => $_ensure,
+      mode    => '0400',
+      content => "---\n${admin_username}:\n  tlsCertificateKeyFile: ${admin_tls_key}",
+    }
+
     file { $dbpath:
       ensure   => directory,
       mode     => '0750',
@@ -176,7 +192,7 @@ class mongodb::server::config {
   if $handle_creds {
     file { $rcfile:
       ensure  => file,
-      content => template('mongodb/mongorc.js.erb'),
+      content => template('mongodb/mongoshrc.js.erb'),
       owner   => 'root',
       group   => 'root',
       mode    => '0600',

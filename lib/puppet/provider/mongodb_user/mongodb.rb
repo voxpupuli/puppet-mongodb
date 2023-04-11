@@ -5,6 +5,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   defaultfor kernel: 'Linux'
 
   def self.instances
+    # TODO: add supprt for x509 client certs
     require 'json'
 
     if db_ismaster
@@ -59,27 +60,31 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         roles: role_hashes(@resource[:roles], @resource[:database]),
       }
 
-      if mongo_4? || mongo_5?
-        if @resource[:auth_mechanism] == :scram_sha_256
+      if mongo_4? || mongo_5? || mongo_6?
+        case @resource[:auth_mechanism]
+        when :scram_sha_256
           command[:mechanisms] = ['SCRAM-SHA-256']
           command[:pwd] = @resource[:password]
           command[:digestPassword] = true
-        else
+        when :scram_sha_1
           command[:mechanisms] = ['SCRAM-SHA-1']
           command[:pwd] = password_hash
           command[:digestPassword] = false
+        when :x509
+          command[:mechanisms] = ['MONGODB-X509']
+        else
+          command[:pwd] = password_hash
+          command[:digestPassword] = false
         end
-      else
-        command[:pwd] = password_hash
-        command[:digestPassword] = false
       end
-
+      Puppet.debug("create a user: db.runCommand(#{command.to_json}), #{@resource[:database]}")
       mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
     else
       Puppet.warning 'User creation is available only from master host'
 
       @property_hash[:ensure] = :present
       @property_hash[:username] = @resource[:username]
+      # TODO: enforce '$external$' database here when x509, or in the manifest ?
       @property_hash[:database] = @resource[:database]
       @property_hash[:password_hash] = ''
       @property_hash[:roles] = @resource[:roles]
@@ -111,6 +116,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   end
 
   def password=(value)
+    # TODO: remove since mongosh not available in this version ?
     if mongo_26?
       mongo_eval("db.changeUserPassword(#{@resource[:username].to_json}, #{value.to_json})", @resource[:database])
     else
@@ -120,7 +126,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         digestPassword: true
       }
 
-      if mongo_4? || mongo_5?
+      if mongo_4? || mongo_5? || mongo_6?
+        # TODO: x509 doesnt use password, how to handle ?
         command[:mechanisms] = @resource[:auth_mechanism] == :scram_sha_256 ? ['SCRAM-SHA-256'] : ['SCRAM-SHA-1']
       end
 
