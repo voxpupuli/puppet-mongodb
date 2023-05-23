@@ -1469,7 +1469,7 @@ Default value: `$mongodb::params::logpath`
 
 ##### <a name="-mongodb--server--bind_ip"></a>`bind_ip`
 
-Data type: `Array[Stdlib::Compat::Ip_address]`
+Data type: `Array[Stdlib::IP::Address]`
 
 
 
