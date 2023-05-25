@@ -112,7 +112,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       ip_real = case first_ip_in_list
                 when '0.0.0.0'
                   Facter.value(:fqdn)
-                when %r{\[?::0\]?}
+                when %r{\[?::0\]?} # rubocop:disable Lint/DuplicateBranch
                   Facter.value(:fqdn)
                 else
                   first_ip_in_list
