@@ -185,11 +185,11 @@ describe 'mongodb::server class' do
       it { is_expected.not_to be_running }
     end
 
-    describe port(27_017) do
+    describe port(27_017) do # rubocop:disable RSpec/RepeatedExampleGroupBody
       it { is_expected.not_to be_listening }
     end
 
-    describe port(27_018) do
+    describe port(27_018) do # rubocop:disable RSpec/RepeatedExampleGroupBody
       it { is_expected.not_to be_listening }
     end
   end
