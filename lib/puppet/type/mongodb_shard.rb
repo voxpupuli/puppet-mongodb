@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author: Emilien Macchi <emilien.macchi@enovance.com>
 #

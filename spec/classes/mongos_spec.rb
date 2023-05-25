@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'mongodb::mongos' do
@@ -23,6 +25,7 @@ describe 'mongodb::mongos' do
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
+
         if facts[:os]['release']['major'] =~ %r{(10)}
           it { is_expected.to contain_package('mongodb_mongos').with_ensure('4.4.8').with_name(package_name).with_tag('mongodb_package') }
         else
@@ -34,18 +37,18 @@ describe 'mongodb::mongos' do
 
         case facts[:osfamily]
         when 'RedHat', 'Suse'
-          expected_content = <<-CONFIG
-configdb = 127.0.0.1:27019
-fork = true
-pidfilepath = /var/run/mongodb/mongos.pid
-logpath = /var/log/mongodb/mongos.log
-unixSocketPrefix = /var/run/mongodb
+          expected_content = <<~CONFIG
+            configdb = 127.0.0.1:27019
+            fork = true
+            pidfilepath = /var/run/mongodb/mongos.pid
+            logpath = /var/log/mongodb/mongos.log
+            unixSocketPrefix = /var/run/mongodb
           CONFIG
 
           it { is_expected.to contain_file('/etc/mongos.conf').with_content(expected_content) }
         when 'Debian'
-          expected_content = <<-CONFIG
-configdb = 127.0.0.1:27019
+          expected_content = <<~CONFIG
+            configdb = 127.0.0.1:27019
           CONFIG
 
           it { is_expected.to contain_file('/etc/mongodb-shard.conf').with_content(expected_content) }
@@ -76,7 +79,7 @@ configdb = 127.0.0.1:27019
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^bind_ip = 127\.0\.0\.1\,10\.1\.1\.13$}) }
+        it { is_expected.to contain_file(config_file).with_content(%r{^bind_ip = 127\.0\.0\.1,10\.1\.1\.13$}) }
       end
 
       context 'package_name => mongo-foo' do
@@ -119,6 +122,7 @@ configdb = 127.0.0.1:27019
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
+
         if facts[:osfamily] == 'Suse'
           it { is_expected.to contain_package('mongodb_mongos').with_ensure('absent') }
         else

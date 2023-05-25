@@ -1,16 +1,21 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'mongodb::server' do
   shared_examples 'server classes' do
     it { is_expected.to compile.with_all_deps }
+
     it {
       is_expected.to contain_class('mongodb::server::install').
         that_comes_before('Class[mongodb::server::config]')
     }
+
     it {
       is_expected.to contain_class('mongodb::server::config').
         that_notifies('Class[mongodb::server::service]')
     }
+
     it { is_expected.to contain_class('mongodb::server::service') }
   end
 
@@ -99,6 +104,7 @@ describe 'mongodb::server' do
                           readWriteAnyDatabase userAdminAnyDatabase clusterAdmin clusterManager
                           clusterMonitor hostManager root restore])
         end
+
         it { is_expected.to contain_mongodb_database('admin').that_requires('Service[mongodb]') }
       end
 
@@ -136,7 +142,7 @@ describe 'mongodb::server' do
 
         it do
           is_expected.to contain_file(config_file).
-            with_content(%r{^net\.bindIp:  127\.0\.0\.1\,fd00:beef:dead:55::143$}).
+            with_content(%r{^net\.bindIp:  127\.0\.0\.1,fd00:beef:dead:55::143$}).
             with_content(%r{^net\.ipv6: true$})
         end
       end
@@ -148,7 +154,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^net\.bindIp:  127\.0\.0\.1\,10\.1\.1\.13$}) }
+        it { is_expected.to contain_file(config_file).with_content(%r{^net\.bindIp:  127\.0\.0\.1,10\.1\.1\.13$}) }
       end
 
       describe 'when specifying auth to true' do
@@ -522,6 +528,7 @@ describe 'mongodb::server' do
 
           it { is_expected.to contain_file(config_file).with_content(%r{^net\.http\.enabled: false$}) }
         end
+
         describe 'sets net.http.enabled to true when false' do
           let(:params) do
             { nohttpinterface: false }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative File.join('..', 'util', 'mongodb_md5er')
 
 # Get the mongodb password hash from the clear text password.

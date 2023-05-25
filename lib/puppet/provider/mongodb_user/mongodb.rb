@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
 Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mongodb) do
   desc 'Manage users for a MongoDB database.'
@@ -29,7 +31,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       end
     else
       Puppet.warning 'User info is available only from master host'
-      return []
+      []
     end
   end
 
@@ -47,9 +49,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def create
     if db_ismaster
       password_hash = @resource[:password_hash]
-      if !password_hash && @resource[:password]
-        password_hash = Puppet::Util::MongodbMd5er.md5(@resource[:username], @resource[:password])
-      end
+      password_hash = Puppet::Util::MongodbMd5er.md5(@resource[:username], @resource[:password]) if !password_hash && @resource[:password]
 
       command = {
         createUser: @resource[:username],
@@ -131,14 +131,10 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def roles=(roles)
     if db_ismaster
       grant = to_roles(roles, @resource[:database]) - to_roles(@property_hash[:roles], @resource[:database])
-      unless grant.empty?
-        mongo_eval("db.getSiblingDB(#{@resource[:database].to_json}).grantRolesToUser(#{@resource[:username].to_json}, #{role_hashes(grant, @resource[:database]).to_json})")
-      end
+      mongo_eval("db.getSiblingDB(#{@resource[:database].to_json}).grantRolesToUser(#{@resource[:username].to_json}, #{role_hashes(grant, @resource[:database]).to_json})") unless grant.empty?
 
       revoke = to_roles(@property_hash[:roles], @resource[:database]) - to_roles(roles, @resource[:database])
-      unless revoke.empty?
-        mongo_eval("db.getSiblingDB(#{@resource[:database].to_json}).revokeRolesFromUser(#{@resource[:username].to_json}, #{role_hashes(revoke, @resource[:database]).to_json})")
-      end
+      mongo_eval("db.getSiblingDB(#{@resource[:database].to_json}).revokeRolesFromUser(#{@resource[:username].to_json}, #{role_hashes(revoke, @resource[:database]).to_json})") unless revoke.empty?
     else
       Puppet.warning 'User roles operations are available only from master host'
     end

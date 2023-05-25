@@ -58,6 +58,7 @@ describe Puppet::Util::MongodbOutput do
       sanitized_json = described_class.sanitize(bson_data)
       expect { JSON.parse(sanitized_json) }.not_to raise_error
     end
+
     it 'replaces data types' do
       sanitized_json = described_class.sanitize(bson_data)
       expect(JSON.parse(sanitized_json)).to include(JSON.parse(json_data))

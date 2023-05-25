@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'mongodb_database' do
@@ -19,6 +21,7 @@ describe 'mongodb_database' do
         apply_manifest(pp, catch_failures: true)
         apply_manifest(pp, catch_changes: true)
       end
+
       it 'creates the databases' do
         shell("mongo testdb1 --eval 'printjson(db.getMongo().getDBs())'")
         shell("mongo testdb2 --eval 'printjson(db.getMongo().getDBs())'")
@@ -45,6 +48,7 @@ describe 'mongodb_database' do
         apply_manifest(pp, catch_failures: true)
         apply_manifest(pp, catch_changes: true)
       end
+
       it 'creates the database' do
         shell("mongo testdb1 --port 27018 --eval 'printjson(db.getMongo().getDBs())'")
         shell("mongo testdb2 --port 27018 --eval 'printjson(db.getMongo().getDBs())'")

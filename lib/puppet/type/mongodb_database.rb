@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:mongodb_database) do
   @doc = 'Manage MongoDB databases.'
 

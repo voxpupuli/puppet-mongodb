@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 require 'timeout'
 require 'ipaddr'
@@ -6,11 +8,10 @@ require 'uri'
 module Puppet
   module Util
     class MongodbValidator
-      attr_reader :mongodb_server
-      attr_reader :mongodb_port
+      attr_reader :mongodb_server, :mongodb_port
 
       def initialize(mongodb_resource_name, mongodb_server, mongodb_port)
-        # NOTE (spredzy) : By relying on the uri module
+        # NOTE: (spredzy) : By relying on the uri module
         # we rely on its well tested interface to parse
         # both IPv4 and IPv6 based URL with a port specified.
         # Unfortunately URI needs a scheme, hence the http
@@ -18,7 +19,7 @@ module Puppet
         uri = URI("http://#{mongodb_resource_name}")
         @mongodb_server = IPAddr.new(uri.host).to_s
         @mongodb_port = uri.port
-      rescue
+      rescue StandardError
         @mongodb_server = mongodb_server.to_s
         @mongodb_port   = mongodb_port
       end
@@ -30,13 +31,11 @@ module Puppet
       # @return true if the connection is successful, false otherwise.
       def attempt_connection
         Timeout.timeout(Puppet[:http_connect_timeout]) do
-          begin
-            TCPSocket.new(@mongodb_server, @mongodb_port).close
-            true
-          rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
-            Puppet.debug "Unable to connect to mongodb server (#{@mongodb_server}:#{@mongodb_port}): #{e.message}"
-            false
-          end
+          TCPSocket.new(@mongodb_server, @mongodb_port).close
+          true
+        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+          Puppet.debug "Unable to connect to mongodb server (#{@mongodb_server}:#{@mongodb_port}): #{e.message}"
+          false
         end
       rescue Timeout::Error
         false
