@@ -88,7 +88,7 @@ Puppet::Type.newtype(:mongodb_user) do
     end
 
     def insync?(_is)
-      return !@resource[:update_password] if @resource[:auth_mechanism] == :scram_sha_256
+      return !@resource[:update_password] if @resource[:auth_mechanism] == :scram_sha_256 # rubocop:disable Naming/VariableNumber
 
       should_to_s == to_s?
     end
@@ -96,8 +96,8 @@ Puppet::Type.newtype(:mongodb_user) do
 
   newparam(:auth_mechanism) do
     desc 'Authentication mechanism. Password verification is not supported with SCRAM-SHA-256.'
-    defaultto :scram_sha_1
-    newvalues(:scram_sha_256, :scram_sha_1)
+    defaultto :scram_sha_1 # rubocop:disable Naming/VariableNumber
+    newvalues(:scram_sha_256, :scram_sha_1) # rubocop:disable Naming/VariableNumber
   end
 
   newparam(:update_password, boolean: true) do
@@ -126,7 +126,7 @@ Puppet::Type.newtype(:mongodb_user) do
       err("Either 'password_hash' or 'password' should be provided")
     elsif !self[:password_hash].nil? && !self[:password].nil?
       err("Only one of 'password_hash' or 'password' should be provided")
-    elsif !self[:password_hash].nil? && self[:auth_mechanism] == :scram_sha_256
+    elsif !self[:password_hash].nil? && self[:auth_mechanism] == :scram_sha_256 # rubocop:disable Naming/VariableNumber
       err("'password_hash' is not supported with SCRAM-SHA-256 authentication mechanism")
     end
     raise("The parameter 'scram_credentials' is read-only and cannot be changed") if should(:scram_credentials)

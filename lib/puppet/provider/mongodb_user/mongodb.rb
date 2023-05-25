@@ -60,7 +60,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       }
 
       if mongo_4? || mongo_5?
-        if @resource[:auth_mechanism] == :scram_sha_256
+        if @resource[:auth_mechanism] == :scram_sha_256 # rubocop:disable Naming/VariableNumber
           command[:mechanisms] = ['SCRAM-SHA-256']
           command[:pwd] = @resource[:password]
           command[:digestPassword] = true
@@ -121,7 +121,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       }
 
       if mongo_4? || mongo_5?
-        command[:mechanisms] = @resource[:auth_mechanism] == :scram_sha_256 ? ['SCRAM-SHA-256'] : ['SCRAM-SHA-1']
+        command[:mechanisms] = @resource[:auth_mechanism] == :scram_sha_256 ? ['SCRAM-SHA-256'] : ['SCRAM-SHA-1'] # rubocop:disable Naming/VariableNumber
       end
 
       mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
