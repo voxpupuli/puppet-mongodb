@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'mongodb::mongos class' do
@@ -46,11 +48,11 @@ describe 'mongodb::mongos class' do
       it { is_expected.to be_running }
     end
 
-    describe port(27_017) do
+    describe port(27_017) do # rubocop:disable RSpec/RepeatedExampleGroupBody
       it { is_expected.to be_listening }
     end
 
-    describe port(27_019) do
+    describe port(27_019) do # rubocop:disable RSpec/RepeatedExampleGroupBody
       it { is_expected.to be_listening }
     end
 
@@ -88,11 +90,11 @@ describe 'mongodb::mongos class' do
       it { is_expected.not_to be_running }
     end
 
-    describe port(27_017) do
+    describe port(27_017) do # rubocop:disable RSpec/RepeatedExampleGroupBody
       it { is_expected.not_to be_listening }
     end
 
-    describe port(27_019) do
+    describe port(27_019) do # rubocop:disable RSpec/RepeatedExampleGroupBody
       it { is_expected.not_to be_listening }
     end
   end

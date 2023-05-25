@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Puppet::Type.type(:mongodb_shard).provider(:mongo) do
@@ -65,7 +67,7 @@ describe Puppet::Type.type(:mongodb_shard).provider(:mongo) do
   end
 
   describe 'destroy' do
-    it 'removes a shard' do
+    it 'removes a shard' do # rubocop:disable Lint/EmptyBlock
     end
   end
 

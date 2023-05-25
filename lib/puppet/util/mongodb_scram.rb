@@ -1,15 +1,15 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 require 'base64'
 
 module Puppet
   module Util
     class MongodbScram
-      CLIENT_KEY = 'Client Key'.freeze
-      SERVER_KEY = 'Server Key'.freeze
+      CLIENT_KEY = 'Client Key'
+      SERVER_KEY = 'Server Key'
 
-      attr_reader :password_hash
-      attr_reader :salt
-      attr_reader :iterations
+      attr_reader :password_hash, :salt, :iterations
 
       def initialize(password_hash, salt, iterations)
         @password_hash = password_hash
@@ -18,7 +18,7 @@ module Puppet
       end
 
       def digest
-        @digest ||= OpenSSL::Digest::SHA1.new.freeze
+        @digest ||= OpenSSL::Digest.new('SHA1').freeze
       end
 
       def hash(string)

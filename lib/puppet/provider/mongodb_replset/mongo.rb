@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author: Francois Charlier <francois.charlier@enovance.com>
 #
@@ -6,12 +8,12 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
 Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mongodb) do
   desc 'Manage hosts members for a replicaset.'
 
-  confine true:     begin
-      require 'json'
-      true
-    rescue LoadError
-      false
-    end
+  confine true: begin
+    require 'json'
+    true
+  rescue LoadError
+    false
+  end
 
   mk_resource_methods
 
@@ -128,7 +130,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
   end
 
   def self.replset_properties
-    conn_string = conn_string
+    conn_string = conn_string # rubocop:disable Lint/SelfAssignment
     begin
       output = mongo_command('rs.conf()', conn_string)
     rescue Puppet::ExecutionFailure
@@ -149,39 +151,33 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
   def get_hosts_status(members)
     alive = []
     members.select do |member|
-      begin
-        host = member['host']
-        Puppet.debug "Checking replicaset member #{host} ..."
-        status = rs_status(host)
-        if status.key?('errmsg') && status['errmsg'] == 'not running with --replSet'
-          raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is not supposed to be part of a replicaset."
-        end
+      host = member['host']
+      Puppet.debug "Checking replicaset member #{host} ..."
+      status = rs_status(host)
+      raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is not supposed to be part of a replicaset." if status.key?('errmsg') && status['errmsg'] == 'not running with --replSet'
 
-        if auth_enabled && status.key?('errmsg') && (status['errmsg'].include?('unauthorized') || status['errmsg'].include?('not authorized') || status['errmsg'].include?('requires authentication'))
-          Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
-          alive.push(member)
-        end
-
-        if status.key?('errmsg') && status['errmsg'].include?('no replset config has been received')
-          Puppet.debug 'Mongo v4 rs.status() RS not initialized output'
-          alive.push(member)
-        end
-
-        if status.key?('set')
-          if status['set'] != name
-            raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is already part of another replicaset."
-          end
-
-          # This node is alive and supposed to be a member of our set
-          Puppet.debug "Host #{host} is available for replset #{status['set']}"
-          alive.push(member)
-        elsif status.key?('info')
-          Puppet.debug "Host #{host} is alive but unconfigured: #{status['info']}"
-          alive.push(member)
-        end
-      rescue Puppet::ExecutionFailure
-        Puppet.warning "Can't connect to replicaset member #{host}."
+      if auth_enabled && status.key?('errmsg') && (status['errmsg'].include?('unauthorized') || status['errmsg'].include?('not authorized') || status['errmsg'].include?('requires authentication'))
+        Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
+        alive.push(member)
       end
+
+      if status.key?('errmsg') && status['errmsg'].include?('no replset config has been received')
+        Puppet.debug 'Mongo v4 rs.status() RS not initialized output'
+        alive.push(member)
+      end
+
+      if status.key?('set')
+        raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is already part of another replicaset." if status['set'] != name
+
+        # This node is alive and supposed to be a member of our set
+        Puppet.debug "Host #{host} is available for replset #{status['set']}"
+        alive.push(member)
+      elsif status.key?('info')
+        Puppet.debug "Host #{host} is alive but unconfigured: #{status['info']}"
+        alive.push(member)
+      end
+    rescue Puppet::ExecutionFailure
+      Puppet.warning "Can't connect to replicaset member #{host}."
     end
     alive.uniq!
     dead = members - alive
@@ -199,8 +195,10 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     new_members_conf.each do |nm|
       next unless remove_members.each_with_index do |om, index|
         next unless nm['host'] == om['host']
+
         nm.each do |k, v|
           next unless v != om[k]
+
           # new config for existing node
           update_members.push(nm)
           break
@@ -209,6 +207,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         remove_members.delete_at(index)
         break
       end
+
       # new node for cluster
       add_members.push(nm)
     end
@@ -264,30 +263,26 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       replset_conf = {
         _id: name,
         members: members_conf,
-        settings: (!@property_flush[:settings].nil? ? @property_flush[:settings] : {})
+        settings: (@property_flush[:settings].nil? ? {} : @property_flush[:settings])
       }.to_json
 
       Puppet.debug "Starting replset config is #{replset_conf.to_json}"
       # Set replset members with the first host as the master
       output = rs_initiate(replset_conf, alive_hosts[0]['host'])
-      if output['ok'].zero?
-        raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: #{output['errmsg']}"
-      end
+      raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
 
       # Check that the replicaset has finished initialization
       retry_limit = 10
       retry_sleep = 3
 
       retry_limit.times do |n|
-        begin
-          if db_ismaster(alive_hosts[0]['host'])['ismaster']
-            Puppet.debug 'Replica set initialization has successfully ended'
-            return true
-          else
-            Puppet.debug "Wainting for replica initialization. Retry: #{n}"
-            sleep retry_sleep
-            next
-          end
+        if db_ismaster(alive_hosts[0]['host'])['ismaster']
+          Puppet.debug 'Replica set initialization has successfully ended'
+          return true
+        else
+          Puppet.debug "Wainting for replica initialization. Retry: #{n}"
+          sleep retry_sleep
+          next
         end
       end
       raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: host #{alive_hosts[0]['host']} didn't become master"
@@ -308,13 +303,13 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         output = {}
         retry_limit.times do |n|
           output = rs_add(member, master)
-          if !output['ok'].zero?
-            Puppet.debug 'Host successfully added to replicaset'
-            break
-          else
+          if output['ok'].zero?
             Puppet.debug "Retry adding host to replicaset. Retry: #{n}"
             sleep retry_sleep
             master = master_host(alive_hosts)
+          else
+            Puppet.debug 'Host successfully added to replicaset'
+            break
           end
         end
         raise Puppet::Error, "rs.add() failed to add host to replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
@@ -328,13 +323,13 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         output = {}
         retry_limit.times do |n|
           output = rs_remove(member, master)
-          if !output['ok'].zero?
-            Puppet.debug 'Host successfully removed from replicaset'
-            break
-          else
+          if output['ok'].zero?
             Puppet.debug "Retry removing host from replicaset. Retry: #{n}"
             sleep retry_sleep
             master = master_host(alive_hosts)
+          else
+            Puppet.debug 'Host successfully removed from replicaset'
+            break
           end
         end
         raise Puppet::Error, "rs.remove() failed to remove host from replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
@@ -348,13 +343,13 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         output = {}
         retry_limit.times do |n|
           output = rs_reconfig_member(member, master)
-          if !output['ok'].zero?
-            Puppet.debug 'Host successfully updated in replicaset'
-            break
-          else
+          if output['ok'].zero?
             Puppet.debug "Retry updating host in replicaset. Retry: #{n}"
             sleep retry_sleep
             master = master_host(alive_hosts)
+          else
+            Puppet.debug 'Host successfully updated in replicaset'
+            break
           end
         end
         raise Puppet::Error, "rs.reconfig() failed to update host in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
@@ -368,13 +363,13 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
         output = {}
         retry_limit.times do |n|
           output = rs_reconfig_settings(settings, master)
-          if !output['ok'].zero?
-            Puppet.debug 'Settings successfully updated in replicaset'
-            break
-          else
+          if output['ok'].zero?
             Puppet.debug "Retry updating settings in replicaset. Retry: #{n}"
             sleep retry_sleep
             master = master_host(alive_hosts)
+          else
+            Puppet.debug 'Settings successfully updated in replicaset'
+            break
           end
         end
         raise Puppet::Error, "rs.reconfig() failed to update settings in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?

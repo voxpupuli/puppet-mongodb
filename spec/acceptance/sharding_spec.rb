@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 if hosts.length > 1
@@ -21,6 +23,7 @@ if hosts.length > 1
       apply_manifest_on(hosts_as('shard'), pp, catch_failures: true)
       apply_manifest_on(hosts_as('shard'), pp, catch_changes: true)
     end
+
     it 'configures the router server' do
       pp = <<-EOS
         class { 'mongodb::globals': }
@@ -44,7 +47,7 @@ if hosts.length > 1
 
       apply_manifest_on(hosts_as('router'), pp, catch_failures: true)
       on(hosts_as('router'), 'mongo --quiet --eval "printjson(sh.status())"') do |r|
-        expect(r.stdout).to match %r{foo\/shard:27018}
+        expect(r.stdout).to match %r{foo/shard:27018}
         expect(r.stdout).to match %r{foo\.toto}
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 require 'puppet/util/mongodb_output'
 
@@ -110,7 +112,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       ip_real = case first_ip_in_list
                 when '0.0.0.0'
                   Facter.value(:fqdn)
-                when %r{\[?::0\]?}
+                when %r{\[?::0\]?} # rubocop:disable Lint/DuplicateBranch
                   Facter.value(:fqdn)
                 else
                   first_ip_in_list
@@ -163,18 +165,16 @@ class Puppet::Provider::Mongodb < Puppet::Provider
             else
               mongo_cmd(db, conn_string, cmd)
             end
-    rescue => e
+    rescue StandardError => e
       retry_count -= 1
-      if retry_count > 0
+      if retry_count.positive?
         Puppet.debug "Request failed: '#{e.message}' Retry: '#{retries - retry_count}'"
         sleep retry_sleep
         retry
       end
     end
 
-    unless out
-      raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}"
-    end
+    raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}" unless out
 
     Puppet::Util::MongodbOutput.sanitize(out)
   end

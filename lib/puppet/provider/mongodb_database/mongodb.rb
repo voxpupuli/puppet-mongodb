@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
 Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider::Mongodb) do
   desc 'Manages MongoDB database.'
@@ -8,7 +10,7 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
     require 'json'
 
     pre_cmd = 'try { rs.secondaryOk() } catch (err) { rs.slaveOk() }'
-    dbs = JSON.parse mongo_eval(pre_cmd + ';printjson(db.getMongo().getDBs())')
+    dbs = JSON.parse mongo_eval("#{pre_cmd};printjson(db.getMongo().getDBs())")
 
     dbs['databases'].map do |db|
       new(name: db['name'],
@@ -19,7 +21,7 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
   # Assign prefetched dbs based on name.
   def self.prefetch(resources)
     dbs = instances
-    resources.keys.each do |name|
+    resources.each_key do |name|
       provider = dbs.find { |db| db.name == name }
       resources[name].provider = provider if provider
     end

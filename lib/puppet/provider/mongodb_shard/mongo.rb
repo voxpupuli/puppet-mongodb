@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'mongodb'))
 Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mongodb) do
   desc 'Manage mongodb sharding.'
 
-  confine true:     begin
-      require 'json'
-      true
-    rescue LoadError
-      false
-    end
+  confine true: begin
+    require 'json'
+    true
+  rescue LoadError
+    false
+  end
 
   mk_resource_methods
 
@@ -68,6 +70,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
     Puppet.debug "Adding the shard #{name}"
     output = sh_addshard(@property_flush[:member])
     raise Puppet::Error, "sh.addShard() failed for shard #{name}: #{output['errmsg']}" if output['ok'].zero?
+
     output = sh_enablesharding(name)
     raise Puppet::Error, "sh.enableSharding() failed for shard #{name}: #{output['errmsg']}" if output['ok'].zero?
 
@@ -89,6 +92,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
     collection_array = []
     obj.each do |database|
       next unless database['_id'].eql?(shard_name) && !database['shards'].nil?
+
       collection_array = database['shards'].map do |collection|
         { collection.keys.first => collection.values.first['shardkey'] }
       end
@@ -101,6 +105,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
     output = mongo_command('sh.status()')
     output['shards'].each do |s|
       next unless s['_id'] == shard
+
       properties = {
         name: s['_id'],
         ensure: :present,
@@ -114,7 +119,9 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
 
   def self.shards_properties
     output = mongo_command('sh.status()')
-    properties = if !output['shards'].empty?
+    properties = if output['shards'].empty?
+                   []
+                 else
                    output['shards'].map do |shard|
                      {
                        name: shard['_id'],
@@ -124,8 +131,6 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
                        provider: :mongo
                      }
                    end
-                 else
-                   []
                  end
     Puppet.debug("MongoDB shard properties: #{properties.inspect}")
     properties
@@ -158,7 +163,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
       retry
     end
 
-    # NOTE (spredzy) : sh.status()
+    # NOTE: (spredzy) : sh.status()
     # does not return a json stream
     # we jsonify it so it is easier
     # to parse and deal with it

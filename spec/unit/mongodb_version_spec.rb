@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Facter::Util::Fact do
@@ -11,6 +13,7 @@ describe Facter::Util::Fact do
         allow(Facter::Core::Execution).to receive(:which).with('mongo').and_return(true)
         allow(Facter::Core::Execution).to receive(:execute).with('mongo --version 2>&1').and_return('MongoDB shell version: 3.2.1')
       end
+
       it {
         expect(Facter.fact(:mongodb_version).value).to eq('3.2.1')
       }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author: Francois Charlier <francois.charlier@enovance.com>
 #
@@ -55,6 +57,7 @@ Puppet::Type.newtype(:mongodb_replset) do
       should.each do |sm|
         next unless current.each_with_index do |cm, index|
           next unless sm['host'] == cm['host']
+
           sm.each do |k, v|
             if v != cm[k]
               # new config for existing node so not insync
@@ -65,6 +68,7 @@ Puppet::Type.newtype(:mongodb_replset) do
           current.delete_at(index)
           break
         end
+
         # new node for cluster so not insync
         sync = false
       end
