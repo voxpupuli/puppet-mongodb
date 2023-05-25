@@ -540,7 +540,7 @@ describe 'mongodb::server' do
 
       context 'when setting up replicasets' do
         describe 'should setup using replset_config' do
-          let(:rsConf) do
+          let(:rsConf) do # rubocop:disable RSpec/VariableName
             {
               'rsTest' => {
                 'members' => [
@@ -564,7 +564,7 @@ describe 'mongodb::server' do
         end
 
         describe 'should setup using replset_members' do
-          let(:rsConf) do
+          let(:rsConf) do # rubocop:disable RSpec/VariableName
             {
               'rsTest' => {
                 'ensure' => 'present',
