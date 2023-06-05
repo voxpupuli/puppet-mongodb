@@ -9,8 +9,8 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
   def self.instances
     require 'json'
 
-    pre_cmd = 'try { rs.secondaryOk() } catch (err) { rs.slaveOk() }'
-    dbs = JSON.parse mongo_eval("#{pre_cmd};printjson(db.getMongo().getDBs())")
+    pre_cmd = 'db.getMongo().setReadPref("primaryPreferred")'
+    dbs = JSON.parse mongo_eval("#{pre_cmd};EJSON.stringify(db.getMongo().getDBs())")
 
     dbs['databases'].map do |db|
       new(name: db['name'],

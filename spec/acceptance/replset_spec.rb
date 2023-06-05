@@ -9,7 +9,7 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
   describe 'mongodb_replset resource' do
     after :all do
       # Have to drop the DB to disable replsets for further testing
-      on hosts, %{mongo local --verbose --eval 'db.dropDatabase()'}
+      on hosts, %{mongosh local --verbose --eval 'db.dropDatabase()'}
 
       pp = <<-EOS
         class { 'mongodb::globals':
@@ -55,7 +55,7 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         }
       EOS
       apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
-      on(hosts_as('master'), 'mongo --quiet --eval "printjson(rs.conf())"') do |r|
+      on(hosts_as('master'), 'mongosh --quiet --eval "EJSON.stringify(rs.conf())"') do |r|
         expect(r.stdout).to match %r{#{hosts[0]}:27017}
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
@@ -63,18 +63,18 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
 
     it 'inserts data on the master' do
       sleep(30)
-      on hosts_as('master'), %{mongo --verbose --eval 'db.test.save({name:"test1",value:"some value"})'}
+      on hosts_as('master'), %{mongosh --verbose --eval 'db.test.save({name:"test1",value:"some value"})'}
     end
 
     it 'checks the data on the master' do
-      on hosts_as('master'), %{mongo --verbose --eval 'printjson(db.test.findOne({name:"test1"}))'} do |r|
+      on hosts_as('master'), %{mongosh --verbose --eval 'EJSON.stringify(db.test.findOne({name:"test1"}))'} do |r|
         expect(r.stdout).to match %r{some value}
       end
     end
 
     it 'checks the data on the slave' do
       sleep(10)
-      on hosts_as('slave'), %{mongo --verbose --eval 'try { rs.secondaryOk() } catch (err) { rs.slaveOk() }; printjson(db.test.findOne({name:"test1"}))'} do |r|
+      on hosts_as('slave'), %{mongosh --verbose --eval 'db.getMongo().setReadPref("primaryPreferred"); EJSON.stringify(db.test.findOne({name:"test1"}))'} do |r|
         expect(r.stdout).to match %r{some value}
       end
     end
@@ -83,7 +83,7 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
   describe 'mongodb_replset resource with auth => true' do
     after :all do
       # Have to drop the DB to disable replsets for further testing
-      on hosts, %{mongo local --verbose --eval 'db.dropDatabase()'}
+      on hosts, %{mongosh local --verbose --eval 'db.dropDatabase()'}
 
       pp = <<-EOS
         class { 'mongodb::globals':
@@ -152,7 +152,7 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
       EOS
       apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
       apply_manifest_on(hosts_as('master'), pp, catch_changes: true)
-      on(hosts_as('master'), 'mongo --quiet --eval "load(\'/root/.mongorc.js\');printjson(rs.conf())"') do |r|
+      on(hosts_as('master'), 'mongosh --quiet --eval "load(\'/root/.mongoshrc.js\');EJSON.stringify(rs.conf())"') do |r|
         expect(r.stdout).to match %r{#{hosts[0]}:27017}
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
@@ -160,18 +160,18 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
 
     it 'inserts data on the master' do
       sleep(30)
-      on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");db.dummyData.insert({"created_by_puppet": 1})'}
+      on hosts_as('master'), %{mongosh test --verbose --eval 'load("/root/.mongoshrc.js");db.dummyData.insert({"created_by_puppet": 1})'}
     end
 
     it 'checks the data on the master' do
-      on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");printjson(db.dummyData.findOne())'} do |r|
+      on hosts_as('master'), %{mongosh test --verbose --eval 'load("/root/.mongoshrc.js");EJSON.stringify(db.dummyData.findOne())'} do |r|
         expect(r.stdout).to match %r{created_by_puppet}
       end
     end
 
     it 'checks the data on the slave' do
       sleep(10)
-      on hosts_as('slave'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");try { rs.secondaryOk() } catch (err) { rs.slaveOk() };printjson(db.dummyData.findOne())'} do |r|
+      on hosts_as('slave'), %{mongosh test --verbose --eval 'load("/root/.mongoshrc.js");db.getMongo().setReadPref("primaryPreferred");EJSON.stringify(db.dummyData.findOne())'} do |r|
         expect(r.stdout).to match %r{created_by_puppet}
       end
     end

@@ -328,7 +328,7 @@ class mongodb::server (
   Optional[Stdlib::Absolutepath] $pidfilepath                             = undef,
   String[4,4] $pidfilemode                                                = '0644',
   Boolean $manage_pidfile                                                 = false,
-  String $rcfile                                                          = "${facts['root_home']}/.mongorc.js",
+  String $rcfile                                                          = "${facts['root_home']}/.mongoshrc.js",
   Boolean $service_manage                                                 = true,
   Optional[String[1]] $service_provider                                   = undef,
   String[1] $service_name                                                 = 'mongod',
