@@ -25,12 +25,7 @@ describe 'mongodb::mongos' do
 
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
-
-        if facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to contain_package('mongodb_mongos').with_ensure('4.4.8').with_name(package_name).with_tag('mongodb_package') }
-        else
-          it { is_expected.to contain_package('mongodb_mongos').with_ensure('present').with_name(package_name).with_tag('mongodb_package') }
-        end
+        it { is_expected.to contain_package('mongodb_mongos').with_ensure('present').with_name(package_name).with_tag('mongodb_package') }
 
         # config
         it { is_expected.to contain_class('mongodb::mongos::config') }
@@ -90,12 +85,7 @@ describe 'mongodb::mongos' do
         end
 
         it { is_expected.to compile.with_all_deps }
-
-        if facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('4.4.8').with_tag('mongodb_package') }
-        else
-          it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('present').with_tag('mongodb_package') }
-        end
+        it { is_expected.to contain_package('mongodb_mongos').with_name('mongo-foo').with_ensure('present').with_tag('mongodb_package') }
       end
 
       context 'service_manage => false' do

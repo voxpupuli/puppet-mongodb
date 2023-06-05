@@ -46,8 +46,16 @@ class mongodb::globals (
   $proxy_username                        = undef,
   $proxy_password                        = undef,
 
-  $repo_location                         = undef,
-  $use_enterprise_repo                   = undef,
+  $version               = undef,
+  $mongosh_version       = undef,
+  $manage_package_repo   = fact('os.distro.codename') ? { # Debian 10 doesn't provide mongodb packages. So manage it!
+    'buster' => true,
+    default  => undef
+  },
+  $manage_package        = undef,
+  $repo_proxy            = undef,
+  $proxy_username        = undef,
+  $proxy_password        = undef,
 
   $pidfilepath                           = undef,
   $pidfilemode                           = undef,
@@ -60,27 +68,34 @@ class mongodb::globals (
   }
 
   # Setup of the repo only makes sense globally, so we are doing it here.
-  if $manage_package_repo or $manage_package_repo == undef and $facts['os']['family'] in ['RedHat','Linux','Suse'] {
-    if $use_enterprise_repo == true and $version == undef {
-      fail('You must set mongodb::globals::version when mongodb::globals::use_enterprise_repo is true')
+  case $facts['os']['family'] {
+    'RedHat', 'Linux', 'Suse': {
+      # For RedHat, Linux and Suse family: if manage_package_repo is set at undef that include mongodb::repo
+      if $manage_package_repo != false {
+        class { 'mongodb::repo':
+          ensure              => present,
+          version             => pick($version, '6.0'),
+          use_enterprise_repo => $use_enterprise_repo,
+          repo_location       => $repo_location,
+          proxy               => $repo_proxy,
+        }
+      }
     }
+    default: {
+      # For other (Debian) family: if manage_package_repo is set at undef that not include mongodb::repo
+      if $manage_package_repo {
+        if $use_enterprise_repo == true and $version == undef {
+          fail('You must set mongodb::globals::version when mongodb::globals::use_enterprise_repo is true')
+        }
 
-    # Set some default working repositories per OS if no version
-    # specified.
-    $_repo_version = $version ? {
-      Undef   => $facts['os']['family'] in ['RedHat', 'Linux', 'Suse'] ? {
-        true    => '3.6',
-        default => $version,
-      },
-      default => $version,
-    }
-
-    class { 'mongodb::repo':
-      ensure              => present,
-      version             => $_repo_version,
-      use_enterprise_repo => $use_enterprise_repo,
-      repo_location       => $repo_location,
-      proxy               => $repo_proxy,
+        class { 'mongodb::repo':
+          ensure              => present,
+          version             => pick($version, '6.0'),
+          use_enterprise_repo => $use_enterprise_repo,
+          repo_location       => $repo_location,
+          proxy               => $repo_proxy,
+        }
+      }
     }
   }
 }

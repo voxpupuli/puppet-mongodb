@@ -2,7 +2,7 @@
   "name": "puppet-mongodb",
   "version": "4.2.1-rc0",
   "author": "Vox Pupuli",
-  "summary": "Installs MongoDB on RHEL/Ubuntu/Debian.",
+  "summary": "Installs MongoDB on RHEL/Ubuntu/Debian/Sles.",
   "license": "Apache-2.0",
   "source": "https://github.com/voxpupuli/puppet-mongodb",
   "project_page": "https://github.com/voxpupuli/puppet-mongodb",
@@ -11,26 +11,31 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "7"
+        "7",
+        "8",
+        "9"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "10"
+        "10",
+        "11",
+        "12"
       ]
     },
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "18.04",
-        "20.04"
+        "22.04",
+        "23.04"
       ]
     },
     {

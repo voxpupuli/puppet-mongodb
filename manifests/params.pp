@@ -59,7 +59,8 @@ class mongodb::params inherits mongodb::globals {
         $config                  = '/etc/mongod.conf'
         $pidfilepath             = pick($mongodb::globals::pidfilepath, '/var/run/mongod.pid')
       } else {
-        $server_package_name = pick($mongodb::globals::server_package_name, 'mongodb-server')
+        # as of verion 5.0, we will use the upstream repo.  Seems 4.4 is provided in distro repo ?
+        $server_package_name = pick($mongodb::globals::server_package_name, "mongodb-${mongodb::globals::edition}-server")
         $service_name        = pick($mongodb::globals::service_name, 'mongodb')
         $config              = '/etc/mongodb.conf'
         $pidfilepath         = $mongodb::globals::pidfilepath

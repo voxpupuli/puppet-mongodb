@@ -27,8 +27,8 @@ class mongodb::repo (
       if $repo_location != undef {
         $location = $repo_location
         $description = 'MongoDB Custom Repository'
-      } elsif $version == undef or versioncmp($version, '3.0.0') < 0 {
-        fail('Package repositories for versions older than 3.0 are unsupported')
+      } elsif $version == undef or versioncmp($version, '4.4.0') < 0 {
+        fail('Package repositories for versions older than 4.4 are unsupported')
       } else {
         $mongover = split($version, '[.]')
         if $use_enterprise_repo {
@@ -47,8 +47,8 @@ class mongodb::repo (
       if $repo_location {
         $location = $repo_location
         $description = 'MongoDB Custom Repository'
-      } elsif $version == undef or versioncmp($version, '3.2.0') < 0 {
-        fail('Package repositories for versions older than 3.2 are unsupported')
+      } elsif $version == undef or versioncmp($version, '4.4.0') < 0 {
+        fail('Package repositories for versions older than 4.4 are unsupported')
       } else {
         $mongover = split($version, '[.]')
         $location = "https://repo.mongodb.org/zypper/suse/\$releasever_major/mongodb-org/${mongover[0]}.${mongover[1]}/\$basearch/"
@@ -61,8 +61,8 @@ class mongodb::repo (
     'Debian': {
       if $repo_location != undef {
         $location = $repo_location
-      } elsif $version == undef or versioncmp($version, '3.0.0') < 0 {
-        fail('Package repositories for versions older than 3.0 are unsupported')
+      } elsif $version == undef or versioncmp($version, '4.4.0') < 0 {
+        fail('Package repositories for versions older than 4.4 are unsupported')
       } else {
         if $use_enterprise_repo == true {
           $repo_domain = 'repo.mongodb.com'
@@ -85,13 +85,11 @@ class mongodb::repo (
           default => undef
         }
         $key = "${mongover[0]}.${mongover[1]}" ? {
+          '6.0'   => '39BD841E4BE5FB195A65400E6A26B1AE64C3C388',
           '5.0'   => 'F5679A222C647C87527C2F8CB00A0BD1E2C63C11',
+          '4.8'   => '1283B7BB8CF331A5BE0E1E100EBB00BA3BC3DCCB',
+          '4.6'   => '99DC630F00A2F97F27C6A02A253612A09571B484',
           '4.4'   => '20691EEC35216C63CAF66CE1656408E390CFB1F5',
-          '4.2'   => 'E162F504A20CDF15827F718D4B7C549A058F8B6B',
-          '4.0'   => '9DA31620334BD75D9DCB49F368818C72E52529D4',
-          '3.6'   => '2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5',
-          '3.4'   => '0C49F3730359A14518585931BC711F9BA15703C6',
-          '3.2'   => '42F3E95A2C4F08279C4960ADD68FA50FEA312927',
           default => '492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10'
         }
         $key_server = 'hkp://keyserver.ubuntu.com:80'
