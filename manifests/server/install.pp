@@ -33,4 +33,6 @@ class mongodb::server::install {
       tag    => 'mongodb_package',
     }
   }
+
+  include mongodb::client
 }

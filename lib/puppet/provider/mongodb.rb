@@ -8,15 +8,15 @@ require 'json'
 class Puppet::Provider::Mongodb < Puppet::Provider
   # Without initvars commands won't work.
   initvars
-  commands mongo: 'mongo'
+  commands mongosh: 'mongosh'
 
   # Optional defaults file
-  def self.mongorc_file
-    "load('#{Facter.value(:root_home)}/.mongorc.js'); " if File.file?("#{Facter.value(:root_home)}/.mongorc.js")
+  def self.mongoshrc_file
+    "load('#{Facter.value(:root_home)}/.mongoshrc.js'); " if File.file?("#{Facter.value(:root_home)}/.mongoshrc.js")
   end
 
-  def mongorc_file
-    self.class.mongorc_file
+  def mongoshrc_file
+    self.class.mongoshrc_file
   end
 
   def self.mongod_conf_file
@@ -74,7 +74,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     config['tlsallowInvalidHostnames']
   end
 
-  def self.mongo_cmd(db, host, cmd)
+  def self.mongosh_cmd(db, host, cmd)
     config = mongo_conf
 
     args = [db, '--quiet', '--host', host]
@@ -101,7 +101,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     end
 
     args += ['--eval', cmd]
-    mongo(args)
+    mongosh(args)
   end
 
   def self.conn_string
@@ -137,9 +137,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def self.db_ismaster
     cmd_ismaster = 'db.isMaster().ismaster'
-    cmd_ismaster = mongorc_file + cmd_ismaster if mongorc_file
+    cmd_ismaster = mongoshrc_file + cmd_ismaster if mongoshrc_file
     db = 'admin'
-    res = mongo_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
+    res = mongosh_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
     res.eql?('true')
   end
 
@@ -156,14 +156,14 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   def self.mongo_eval(cmd, db = 'admin', retries = 10, host = nil)
     retry_count = retries
     retry_sleep = 3
-    cmd = mongorc_file + cmd if mongorc_file
+    cmd = mongoshrc_file + cmd if mongoshrc_file
 
     out = nil
     begin
       out = if host
-              mongo_cmd(db, host, cmd)
+              mongosh_cmd(db, host, cmd)
             else
-              mongo_cmd(db, conn_string, cmd)
+              mongosh_cmd(db, conn_string, cmd)
             end
     rescue StandardError => e
       retry_count -= 1
@@ -192,15 +192,6 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     self.class.mongo_version
   end
 
-  def self.mongo_26?
-    v = mongo_version
-    !v[%r{^2\.6\.}].nil?
-  end
-
-  def mongo_26?
-    self.class.mongo_26?
-  end
-
   def self.mongo_4?
     v = mongo_version
     !v[%r{^4\.}].nil?
@@ -217,5 +208,14 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def mongo_5?
     self.class.mongo_5?
+  end
+
+  def self.mongo_6?
+    v = mongo_version
+    !v[%r{^6\.}].nil?
+  end
+
+  def mongo_6?
+    self.class.mongo_6?
   end
 end

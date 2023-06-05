@@ -28,12 +28,7 @@ function authRequired() {
 if (authRequired()) {
   <%- if @replset -%>
   // rs.slaveOk has been deprecated, use secondaryOk if available
-  try {
-    rs.secondaryOk()
-  }
-  catch (err) {
-    rs.slaveOk()
-  }
+  db.getMongo().setReadPref('primaryPreferred')
   <%- end -%>
   try {
     var prev_db = db
@@ -43,7 +38,7 @@ if (authRequired()) {
   }
   catch (err) {
     // This isn't catching authentication errors as I'd expect...
-    abort('Unknown error')
+    throw(err)
   }
 }
 <% end -%>

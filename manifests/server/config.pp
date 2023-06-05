@@ -176,7 +176,7 @@ class mongodb::server::config {
   if $handle_creds {
     file { $rcfile:
       ensure  => file,
-      content => template('mongodb/mongorc.js.erb'),
+      content => template('mongodb/mongoshrc.js.erb'),
       owner   => 'root',
       group   => 'root',
       mode    => '0600',

@@ -177,7 +177,7 @@ if hosts.length > 1
       EOS
       apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
       apply_manifest_on(hosts_as('master'), pp, catch_changes: true)
-      on(hosts_as('master'), 'mongo --quiet --eval "load(\'/root/.mongorc.js\');printjson(rs.conf())"') do |r|
+      on(hosts_as('master'), 'mongo --quiet --eval "load(\'/root/.mongoshrc.js\');printjson(rs.conf())"') do |r|
         expect(r.stdout).to match %r{#{hosts[0]}:27017}
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
@@ -185,18 +185,18 @@ if hosts.length > 1
 
     it 'inserts data on the master' do
       sleep(30)
-      on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");db.dummyData.insert({"created_by_puppet": 1})'}
+      on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongoshrc.js");db.dummyData.insert({"created_by_puppet": 1})'}
     end
 
     it 'checks the data on the master' do
-      on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");printjson(db.dummyData.findOne())'} do |r|
+      on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongoshrc.js");printjson(db.dummyData.findOne())'} do |r|
         expect(r.stdout).to match %r{created_by_puppet}
       end
     end
 
     it 'checks the data on the slave' do
       sleep(10)
-      on hosts_as('slave'), %{mongo test --verbose --eval 'load("/root/.mongorc.js");try { rs.secondaryOk() } catch (err) { rs.slaveOk() };printjson(db.dummyData.findOne())'} do |r|
+      on hosts_as('slave'), %{mongo test --verbose --eval 'load("/root/.mongoshrc.js");try { rs.secondaryOk() } catch (err) { rs.slaveOk() };printjson(db.dummyData.findOne())'} do |r|
         expect(r.stdout).to match %r{created_by_puppet}
       end
     end
