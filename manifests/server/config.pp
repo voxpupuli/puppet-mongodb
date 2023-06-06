@@ -116,7 +116,7 @@ class mongodb::server::config {
     } else {
       # Template has available user-supplied data
       # - $config_data
-      $cfg_content = template('mongodb/mongodb.conf.2.6.erb')
+      $cfg_content = template('mongodb/mongodb.conf.erb')
     }
 
     file { $config:
