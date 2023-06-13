@@ -1,7 +1,7 @@
 # PRIVATE CLASS: do not use directly
 class mongodb::params inherits mongodb::globals {
   $ensure                = true
-  $dbpath                = '/var/lib/mongodb'
+  $dbpath                = '/var/lib/mongo'
   $bind_ip               = pick($mongodb::globals::bind_ip, ['127.0.0.1'])
   $ipv6                  = undef
   $service_manage        = pick($mongodb::globals::mongod_service_manage, true)
