@@ -139,7 +139,20 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     cmd_ismaster = 'db.isMaster().ismaster'
     cmd_ismaster = mongoshrc_file + cmd_ismaster if mongoshrc_file
     db = 'admin'
-    res = mongosh_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
+    full_command = if mongoshrc_file
+                     mongoshrc_file + cmd_ismaster
+                   else
+                     cmd_ismaster
+                   end
+
+    begin
+       res = mongosh_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
+    rescue StandardError => e
+      if self.auth_enabled && e.message =~ %r{Authentication failed}
+        res = mongosh_cmd(db, conn_string, 'db.isMaster().ismaster').to_s.chomp
+      end
+    end
+
     res.eql?('true')
   end
 
@@ -150,6 +163,24 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   def self.auth_enabled(config = nil)
     config ||= mongo_conf
     config['auth'] && config['auth'] != 'disabled'
+  end
+
+  def self.rs_initiated?
+    cmd_status = "rs.status('localhost').set"
+    cmd_status = mongoshrc_file + cmd_status if mongoshrc_file
+    db = 'admin'
+    res = mongosh_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
+
+    # Retry command without authentication when mongorc_file is set and authentication failed
+    if mongorc_file && res =~ %r{Authentication failed}
+      res = mongosh_cmd(db, conn_string, "rs.status('localhost').set").to_s.chomp
+    end
+
+    res == @resource[:name]
+  end
+
+  def rs_initiated?
+    self.rs_initiated?
   end
 
   # Mongo Command Wrapper
@@ -166,11 +197,21 @@ class Puppet::Provider::Mongodb < Puppet::Provider
               mongosh_cmd(db, conn_string, cmd)
             end
     rescue StandardError => e
-      retry_count -= 1
-      if retry_count.positive?
-        Puppet.debug "Request failed: '#{e.message}' Retry: '#{retries - retry_count}'"
-        sleep retry_sleep
-        retry
+      # When using the rc file, we get this eror because in most cases the admin user is not created yet
+      # Can/must we move this out of the resue block ?
+      if self.auth_enabled && e.message =~ %r{Authentication failed}
+        out = if host
+                mongosh_cmd(db, host, no_auth_cmd)
+              else
+                mongosh_cmd(db, conn_string, no_auth_cmd)
+              end
+      else
+        retry_count -= 1
+        if retry_count.positive?
+          Puppet.debug "Request failed: '#{e.message}' Retry: '#{retries - retry_count}'"
+          sleep retry_sleep
+          retry
+        end
       end
     end
 

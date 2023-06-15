@@ -15,13 +15,19 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       script = "try {#{script}} catch (e) { if (e.message.match(/not authorized on admin/)) { 'not authorized on admin' } else {throw e}}" if auth_enabled
 
       out = mongo_eval(script)
-
-      return [] if auth_enabled && out.include?('not authorized on admin')
+      return [] if auth_enabled && (out.include?('requires authentication') || out.include?('not authorized on admin'))
 
       users = JSON.parse out
 
       users.map do |user|
-        new(name: user['_id'],
+        Puppet.debug("Fetching user  #{user}")
+        db = if user['db'] == '$external'
+               # For external users, we need to retreive the original DB name from here.
+               user['customData']['createdBy'][%r{.* (.*)'\]$}, 1]
+             else
+               user['db']
+             end
+        u = new(name: user['_id'],
             ensure: :present,
             username: user['user'],
             database: user['db'],
@@ -74,9 +80,13 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         command[:digestPassword] = false
       end
 
-      mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
-    else
-      Puppet.warning 'User creation is available only from master host'
+      if @resource[:auth_mechanism] == :x509
+        Puppet.debug("Creating user for x509 with command #{command}")
+        mongo_eval("db.getSiblingDB(\"$external\").runCommand(#{command.to_json})", @resource[:database])
+      else
+        Puppet.debug("Creating user for with command #{command}")
+        mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
+      end
 
       @property_hash[:ensure] = :present
       @property_hash[:username] = @resource[:username]
