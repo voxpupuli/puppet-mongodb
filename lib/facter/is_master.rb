@@ -46,7 +46,7 @@ Facter.add('mongodb_is_master') do
         e = File.exist?('/root/.mongoshrc.js') ? 'load(\'/root/.mongoshrc.js\'); ' : ''
 
         # Check if the mongodb server is responding:
-        Facter::Core::Execution.exec("mongosh --quiet #{options} --eval \"#{e}printjson(db.adminCommand({ ping: 1 }))\"")
+        Facter::Core::Execution.exec("mongosh --quiet #{options} --eval \"#{e}EJSON.stringify(db.adminCommand({ ping: 1 }))\"")
 
         if $CHILD_STATUS.success?
           Facter::Core::Execution.exec("mongosh --quiet #{options} --eval \"#{e}db.isMaster().ismaster\"")

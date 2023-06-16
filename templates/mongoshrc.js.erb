@@ -21,7 +21,11 @@ function authRequired() {
   try {
     return db.serverCmdLineOpts().code == 13;
   } catch (err) {
-    return false;
+    if (err.message.match(/requires authentication/) || err.message.match(/not authorized on admin/)) {
+      return true
+    } else {
+      throw("Unknown error :" + err)
+    }
   }
 }
 

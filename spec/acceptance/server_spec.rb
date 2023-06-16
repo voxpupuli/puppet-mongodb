@@ -151,7 +151,7 @@ describe 'mongodb::server class' do
       it { is_expected.to contain 'db.auth(\'admin\', \'password\')' }
     end
 
-    describe command("mongo admin --quiet --eval \"load('/root/.mongorc.js');printjson(db.getUser('admin')['customData'])\"") do
+    describe command("mongo admin --quiet --eval \"load('/root/.mongorc.js');EJSON.stringify(db.getUser('admin')['customData'])\"") do
       its(:exit_status) { is_expected.to eq 0 }
       its(:stdout) { is_expected.to match "{ \"createdBy\" : \"Puppet Mongodb_user['User admin on db admin']\" }\n" }
     end

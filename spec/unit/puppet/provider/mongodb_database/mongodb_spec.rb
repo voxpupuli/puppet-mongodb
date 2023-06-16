@@ -38,7 +38,7 @@ describe Puppet::Type.type(:mongodb_database).provider(:mongodb) do
     tmp = Tempfile.new('test')
     mongodconffile = tmp.path
     allow(provider.class).to receive(:mongod_conf_file).and_return(mongodconffile)
-    allow(provider.class).to receive(:mongo_eval).with('db.getMongo().setReadPref("primaryPreferred");printjson(db.getMongo().getDBs())').and_return(raw_dbs)
+    allow(provider.class).to receive(:mongo_eval).with('db.getMongo().setReadPref("primaryPreferred");EJSON.stringify(db.getMongo().getDBs())').and_return(raw_dbs)
     allow(provider.class).to receive(:db_ismaster).and_return(true)
   end
 
