@@ -67,7 +67,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         roles: role_hashes(@resource[:roles], @resource[:database]),
       }
 
-      if mongo_4? || mongo_5?
+      # is this still needed / we only support verion 4 and higher
+      if mongo_4? || mongo_5? || mongo_6?
         if @resource[:auth_mechanism] == :scram_sha_256
           command[:mechanisms] = ['SCRAM-SHA-256']
           command[:pwd] = @resource[:password]

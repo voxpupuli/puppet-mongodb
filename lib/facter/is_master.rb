@@ -16,16 +16,18 @@ def get_options_from_hash_config(config)
   # - sslMode is "requireSSL"
   # - Parameter --sslPEMKeyFile is set
   # - Parameter --sslCAFile is set
-  result << "--ssl --host #{Facter.value(:fqdn)}" if config['net.ssl.mode'] == 'requireSSL' || !config['net.ssl.PEMKeyFile'].nil? || !config['net.ssl.CAFile'].nil?
+  result << "--ssl --host #{Facter.value(:fqdn)}" if ['allowSSL', 'preferSSL', 'requireSSL'].include? config['net.ssl.mode'] || !config['net.ssl.PEMKeyFile'].nil? || !config['net.ssl.CAFile'].nil?
   result << "--sslPEMKeyFile #{config['net.ssl.PEMKeyFile']}" unless config['net.ssl.PEMKeyFile'].nil?
   result << "--sslCAFile #{config['net.ssl.CAFile']}" unless config['net.ssl.CAFile'].nil?
+  result << "--sslAllowInvalidHostnames" if config['net.ssl.allowInvalidHostnames'] == true
   # use --tls and --host if:
   # - tlsMode is "requireTLS"
   # - Parameter --tlsCertificateKeyFile is set
   # - Parameter --tlsCAFile is set
-  result << "--tls --host #{Facter.value(:fqdn)}" if config['net.tls.mode'] == 'requireTLS' || !config['net.tls.certificateKeyFile'].nil? || !config['net.tls.CAFile'].nil?
+  result << "--tls --host #{Facter.value(:fqdn)}" if ['allowTLS', 'prefeTLS', 'requireTLS'].include? config['net.tls.mode'] || !config['net.tls.certificateKeyFile'].nil? || !config['net.tls.CAFile'].nil?
   result << "--tlsCertificateKeyFile #{config['net.tls.certificateKeyFile']}" unless config['net.tls.certificateKeyFile'].nil?
   result << "--tlsCAFile #{config['net.tls.CAFile']}" unless config['net.tls.CAFile'].nil?
+  result << "--tlsAllowInvalidHostnames" if config['net.tls.allowInvalidHostnames'] == true
 
   result << '--ipv6' unless config['net.ipv6'].nil?
 
