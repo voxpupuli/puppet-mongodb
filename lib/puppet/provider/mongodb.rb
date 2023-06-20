@@ -139,19 +139,13 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     cmd_ismaster = 'db.isMaster().ismaster'
     cmd_ismaster = mongoshrc_file + cmd_ismaster if mongoshrc_file
     db = 'admin'
-    full_command = if mongoshrc_file
-                     mongoshrc_file + cmd_ismaster
-                   else
-                     cmd_ismaster
-                   end
 
     begin
        res = mongosh_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
     rescue StandardError => e
-      if self.auth_enabled && e.message =~ %r{Authentication failed}
+      if mongorc_file && res =~ %r{Authentication failed}
         res = mongosh_cmd(db, conn_string, 'db.isMaster().ismaster').to_s.chomp
       end
-    end
 
     res.eql?('true')
   end
@@ -187,6 +181,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   def self.mongo_eval(cmd, db = 'admin', retries = 10, host = nil)
     retry_count = retries
     retry_sleep = 3
+    no_auth_cmd = cmd
     cmd = mongoshrc_file + cmd if mongoshrc_file
 
     out = nil
@@ -208,14 +203,14 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       else
         retry_count -= 1
         if retry_count.positive?
-          Puppet.debug "Request failed: '#{e.message}' Retry: '#{retries - retry_count}'"
           sleep retry_sleep
           retry
         end
       end
     end
 
-    raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}" unless out
+    # return also the error message, so caller can react on it
+    raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd} with #{e.message}" unless out
 
     Puppet::Util::MongodbOutput.sanitize(out)
   end
