@@ -13,7 +13,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
 
   mk_resource_methods
 
-  commands mongo: 'mongo'
+  commands mongosh: 'mongosh'
 
   def initialize(value = {})
     super(value)

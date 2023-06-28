@@ -18,11 +18,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       return [] if auth_enabled && (out.include?('requires authentication') || out.include?('not authorized on admin'))
 
       users = JSON.parse out
-      Puppet.debug("Result of users in self.instances: #{users}")
-      Puppet.debug("Type of users in self.instances: #{users.class}")
 
       users.map do |user|
-        Puppet.debug("Fetching user  #{user}")
         db = if user['db'] == '$external'
                # For external users, we need to retreive the original DB name from here.
                user['customData']['createdBy'][%r{.* (.*)'\]$}, 1]
@@ -55,7 +52,6 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   mk_resource_methods
 
   def create
-    Puppet.debug("In mongodb_user.create. Only works when on the primery node")
     if db_ismaster
       password_hash = @resource[:password_hash]
       password_hash = Puppet::Util::MongodbMd5er.md5(@resource[:username], @resource[:password]) if !password_hash && @resource[:password]
@@ -85,10 +81,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       end
 
       if @resource[:auth_mechanism] == :x509
-        Puppet.debug("Creating user for x509 with command #{command}")
         mongo_eval("db.getSiblingDB(\"$external\").runCommand(#{command.to_json})", @resource[:database])
       else
-        Puppet.debug("Creating user for with command #{command}")
         mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
       end
 
