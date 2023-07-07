@@ -1,15 +1,40 @@
-# @summary PRIVATE CLASS: do not call directly
+# @private
+#
+# @summary Manages the mongos service.
 #
 # @param package_ensure
+#   This setting can be used to specify if puppet should install the package or not.
+#
 # @param service_manage
+#   Whether or not the MongoDB sharding service resource should be part of the catalog.
+#
 # @param service_name
+#   This setting can be used to override the default Mongos service name.
+#   If not specified, the module will use whatever service name is the default for your OS distro.
+#
 # @param service_enable
+#   This setting can be used to specify if the service should be enable at boot.
+#
 # @param service_ensure
+#   This setting can be used to specify if the service should be running.
+#
 # @param service_status
+#   This setting can be used to override the default status check command for your Mongos service.
+#   If not specified, the module will use whatever service name is the default for your OS distro.
+#
 # @param service_provider
+#   This setting can be used to override the default Mongos service provider.
+#   If not specified, the module will use whatever service provider is the default for your OS distro.
+#
 # @param bind_ip
+#   Set this option to configure the mongod or mongos process to bind to and listen for connections from applicati ons on this address.
+#   If not specified, the module will use the default for your OS distro.
+#
 # @param port
+#   Specifies a TCP port for the server instance to listen for client connections.
+#
 # @param service_template
+#   Path to the service template if the default doesn't match one needs.
 #
 class mongodb::mongos::service (
   $package_ensure   = $mongodb::mongos::package_ensure,

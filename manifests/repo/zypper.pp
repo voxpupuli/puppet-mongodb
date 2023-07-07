@@ -1,5 +1,3 @@
-# PRIVATE CLASS: do not use directly
-#
 # @summary This is a repo class for zypper
 #
 # This is a private class and cannot be used from outside this module.

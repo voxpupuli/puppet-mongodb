@@ -1,16 +1,30 @@
-# PRIVATE CLASS: do not use directly
+# @api private
 #
-# @param ensure 
+# @summary Private clas to manage the mongodb repo
+#
+# @param ensure
+#   present or absent
+#
 # @param version
-#   Optional repo version string.
+#   The version of the mongodb repo
+#
 # @param use_enterprise_repo
-#   Boolean value to use enterprise repository. Defaults to false.
+#   Wether to use the OS or Enterprise repo
+#
 # @param repo_location
-#   Optional location of the repository 
+#   Location of the upstream repository
+#
 # @param proxy
+#   Proxy hostnam
+#
 # @param proxy_username
+#   Proxy user name
+#
 # @param proxy_password
+#   Proxy pasword
+#
 # @param aptkey_options
+#   Options for debian aptkey
 #
 class mongodb::repo (
   Variant[Enum['present', 'absent'], Boolean] $ensure = 'present',
@@ -100,7 +114,7 @@ class mongodb::repo (
 
     default: {
       if($ensure == 'present' or $ensure == true) {
-        fail("Unsupported managed repository for osfamily: ${facts['os']['family']}, operatingsystem: ${facts['os']['name']}, module ${module_name} currently only supports managing repos for osfamily RedHat, Suse, Debian and Ubuntu")
+        fail("Unsupported managed repository for osfamily: ${facts['os']['family']}, operatingsystem: ${facts['os']['name']}, module ${module_name} currently only supports managing repos for osfamily RedHat, Suse, Debian and Ubuntu") # lint:ignore:140chars
       }
     }
   }

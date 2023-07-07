@@ -8,7 +8,7 @@ Puppet::Type.newtype(:mongodb_shard) do
   @doc = 'Manage a MongoDB Shard'
 
   ensurable do
-    desc 'Ensurable property'
+    desc 'Ensure the shard is either present or absent'
     defaultto :present
 
     newvalue(:present) do
