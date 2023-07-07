@@ -1,18 +1,31 @@
-# @summary Manages the mongodb repository
-#
 # @api private
 #
-# @param ensure 
+# @summary Manages the mongodb repository
+#
+#
+# @param ensure
+#   present or absent
+#
 # @param version
-#   Optional repo version string.
+#   The version of the mongodb repo
+#
 # @param use_enterprise_repo
-#   Boolean value to use enterprise repository. Defaults to false.
+#   Wether to use the OS or Enterprise repo
+#
 # @param repo_location
-#   Optional location of the repository 
+#   Location of the upstream repository
+#
 # @param proxy
+#   Proxy hostnam
+#
 # @param proxy_username
+#   Proxy user name
+#
 # @param proxy_password
+#   Proxy pasword
+#
 # @param aptkey_options
+#   Options for debian aptkey
 #
 class mongodb::repo (
   Enum['present', 'absent'] $ensure   = 'present',

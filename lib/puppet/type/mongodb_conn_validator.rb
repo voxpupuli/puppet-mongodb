@@ -8,7 +8,7 @@ Puppet::Type.newtype(:mongodb_conn_validator) do
           purposes such as monitoring."
 
   ensurable do
-    desc 'Ensurable property'
+    desc 'Ensure to verify the connection to mongodb'
     defaultvalues
     defaultto :present
   end
