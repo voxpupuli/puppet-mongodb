@@ -141,11 +141,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     db = 'admin'
 
     begin
-       res = mongosh_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
+      res = mongosh_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
     rescue StandardError => e
-      if mongorc_file && res =~ %r{Authentication failed}
-        res = mongosh_cmd(db, conn_string, 'db.isMaster().ismaster').to_s.chomp
-      end
+      res = mongosh_cmd(db, conn_string, 'db.isMaster().ismaster').to_s.chomp if auth_enabled && e.message =~ %r{Authentication failed}
+    end
 
     res.eql?('true')
   end
@@ -160,21 +159,16 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def self.rs_initiated?
+    # TODO: not used yet, generates a stack level to deep error
     cmd_status = "rs.status('localhost').set"
     cmd_status = mongoshrc_file + cmd_status if mongoshrc_file
     db = 'admin'
-    res = mongosh_cmd(db, conn_string, cmd_ismaster).to_s.split(%r{\n}).last.chomp
+    res = mongosh_cmd(db, conn_string, cmd_status).to_s.split(%r{\n}).last.chomp
 
     # Retry command without authentication when mongorc_file is set and authentication failed
-    if mongorc_file && res =~ %r{Authentication failed}
-      res = mongosh_cmd(db, conn_string, "rs.status('localhost').set").to_s.chomp
-    end
+    res = mongosh_cmd(db, conn_string, "rs.status('localhost').set").to_s.chomp if mongorc_file && res =~ %r{Authentication failed}
 
     res == @resource[:name]
-  end
-
-  def rs_initiated?
-    self.rs_initiated?
   end
 
   # Mongo Command Wrapper
@@ -194,7 +188,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     rescue StandardError => e
       # When using the rc file, we get this eror because in most cases the admin user is not created yet
       # Can/must we move this out of the resue block ?
-      if self.auth_enabled && e.message =~ %r{Authentication failed}
+      if auth_enabled && e.message =~ %r{Authentication failed}
         out = if host
                 mongosh_cmd(db, host, no_auth_cmd)
               else
@@ -226,32 +220,5 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def mongo_version
     self.class.mongo_version
-  end
-
-  def self.mongo_4?
-    v = mongo_version
-    !v[%r{^4\.}].nil?
-  end
-
-  def mongo_4?
-    self.class.mongo_4?
-  end
-
-  def self.mongo_5?
-    v = mongo_version
-    !v[%r{^5\.}].nil?
-  end
-
-  def mongo_5?
-    self.class.mongo_5?
-  end
-
-  def self.mongo_6?
-    v = mongo_version
-    !v[%r{^6\.}].nil?
-  end
-
-  def mongo_6?
-    self.class.mongo_6?
   end
 end

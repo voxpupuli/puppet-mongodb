@@ -16,7 +16,7 @@ describe 'mongodb::repo' do
       describe 'with version set' do
         let :params do
           {
-            version: '3.6.1'
+            version: '6.0.7'
           }
         end
 
@@ -26,14 +26,14 @@ describe 'mongodb::repo' do
 
           it do
             is_expected.to contain_yumrepo('mongodb').
-              with_baseurl('https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.6/$basearch/')
+              with_baseurl('https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/6.0/$basearch/')
           end
         when 'Suse'
           it { is_expected.to contain_class('mongodb::repo::zypper') }
 
           it do
             is_expected.to contain_zypprepo('mongodb').
-              with_baseurl('https://repo.mongodb.org/zypper/suse/$releasever_major/mongodb-org/3.6/$basearch/')
+              with_baseurl('https://repo.mongodb.org/zypper/suse/$releasever_major/mongodb-org/6.0/$basearch/')
           end
         when 'Debian'
           it { is_expected.to contain_class('mongodb::repo::apt') }
@@ -43,13 +43,13 @@ describe 'mongodb::repo' do
             it do
               is_expected.to contain_apt__source('mongodb').
                 with_location('https://repo.mongodb.org/apt/debian').
-                with_release("#{facts[:lsbdistcodename]}/mongodb-org/3.6")
+                with_release("#{facts[:lsbdistcodename]}/mongodb-org/6.0")
             end
           when 'Ubuntu'
             it do
               is_expected.to contain_apt__source('mongodb').
                 with_location('https://repo.mongodb.org/apt/ubuntu').
-                with_release("#{facts[:lsbdistcodename]}/mongodb-org/3.6")
+                with_release("#{facts[:lsbdistcodename]}/mongodb-org/6.0")
             end
           end
         else
@@ -60,7 +60,7 @@ describe 'mongodb::repo' do
       describe 'with proxy' do
         let :params do
           {
-            version: '3.6.1',
+            version: '6.0.7',
             proxy: 'http://proxy-server:8080',
             proxy_username: 'proxyuser1',
             proxy_password: 'proxypassword1'
@@ -85,6 +85,16 @@ describe 'mongodb::repo' do
         else
           it { is_expected.to raise_error(Puppet::Error, %r{not supported}) }
         end
+      end
+
+      describe 'with older version' do
+        let :params do
+          {
+            version: '3.0.2'
+          }
+        end
+
+        it { is_expected.to raise_error(Puppet::Error, %r{older than 4.4 are unsupported}) }
       end
     end
   end

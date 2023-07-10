@@ -30,7 +30,6 @@ describe 'mongodb::server class' do
     it 'works with no errors' do
       pp = <<-EOS
         class { 'mongodb::server': }
-        -> class { 'mongodb::client': }
       EOS
 
       apply_manifest(pp, catch_failures: true)
@@ -54,7 +53,7 @@ describe 'mongodb::server class' do
       it { is_expected.to be_listening }
     end
 
-    describe command('mongo --version') do
+    describe command('mongod --version') do
       its(:exit_status) { is_expected.to eq 0 }
     end
   end
@@ -65,7 +64,6 @@ describe 'mongodb::server class' do
         class { 'mongodb::server':
           port => 27018,
         }
-        -> class { 'mongodb::client': }
       EOS
 
       apply_manifest(pp, catch_failures: true)
@@ -107,7 +105,6 @@ describe 'mongodb::server class' do
           restart        => true,
           set_parameter  => ['enableLocalhostAuthBypass: true']
         }
-        class { 'mongodb::client': }
 
         mongodb_user { "User admin on db admin":
           ensure        => present,
@@ -139,11 +136,11 @@ describe 'mongodb::server class' do
       it { is_expected.to be_listening }
     end
 
-    describe command('mongo --quiet --eval "db.serverCmdLineOpts().code"') do
+    describe command('mongosh --quiet --eval "db.serverCmdLineOpts().code"') do
       its(:stdout) { is_expected.to match '13' }
     end
 
-    describe file('/root/.mongorc.js') do
+    describe file('/root/.mongoshrc.js') do
       it { is_expected.to be_file }
       it { is_expected.to be_owned_by 'root' }
       it { is_expected.to be_grouped_into 'root' }
@@ -151,12 +148,12 @@ describe 'mongodb::server class' do
       it { is_expected.to contain 'db.auth(\'admin\', \'password\')' }
     end
 
-    describe command("mongo admin --quiet --eval \"load('/root/.mongorc.js');EJSON.stringify(db.getUser('admin')['customData'])\"") do
+    describe command("mongosh admin --quiet --eval \"load('/root/.mongoshrc.js');EJSON.stringify(db.getUser('admin')['customData'])\"") do
       its(:exit_status) { is_expected.to eq 0 }
-      its(:stdout) { is_expected.to match "{ \"createdBy\" : \"Puppet Mongodb_user['User admin on db admin']\" }\n" }
+      its(:stdout) { is_expected.to match "{\"createdBy\":\"Puppet Mongodb_user['User admin on db admin']\"}\n" }
     end
 
-    describe command('mongo --version') do
+    describe command('mongod --version') do
       its(:exit_status) { is_expected.to eq 0 }
     end
   end
@@ -170,7 +167,6 @@ describe 'mongodb::server class' do
              service_ensure => stopped,
              service_enable => false
            }
-        -> class { 'mongodb::client': ensure => absent, }
       EOS
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)

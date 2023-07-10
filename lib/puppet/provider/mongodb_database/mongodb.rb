@@ -16,9 +16,9 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
       new(name: db['name'],
           ensure: :present)
     end
-    rescue => e
-      Puppet.warning("Getting instances of mongodb_database failed: #{e}")
-      []
+  rescue StandardError => e
+    Puppet.warning("Getting instances of mongodb_database failed: #{e}")
+    []
   end
 
   # Assign prefetched dbs based on name.
@@ -39,12 +39,12 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
       begin
         out = mongo_eval('db.dummyData.insertOne({"created_by_puppet": 1})', @resource[:name])
       rescue StandardError => e
-        if auth_enabled && e.message =~ %r{not authorized on admin to execute commanda} && @resource[:name] == 'admin'
+        if auth_enabled && e.message =~ %r{not authorized on admin to execute command} && @resource[:name] == 'admin'
           Puppet.warning 'Skipping database creation for admin, need admin user first when security is enabled'
           @property_hash[:ensure] = :present
           @property_hash[:name] = @resource[:name]
-        else
-          raise "Failed to create DB '#{@resource[:name]}'\n#{out}" if %r{writeError} =~ out
+        elsif %r{writeError} =~ out
+          raise "Failed to create DB '#{@resource[:name]}'\n#{out}"
         end
       end
     else

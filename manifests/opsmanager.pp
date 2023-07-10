@@ -149,7 +149,7 @@ class mongodb::opsmanager (
     }
     default:  {
       $my_package_ensure = $package_ensure
-      $file_ensure       = 'present'
+      $file_ensure       = 'file'
     }
   }
 

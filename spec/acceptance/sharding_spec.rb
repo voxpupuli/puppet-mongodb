@@ -15,9 +15,6 @@ if hosts.length > 1
         mongodb_replset { 'foo' :
           members => ["shard:27018"],
         }
-        if $::osfamily == 'RedHat' {
-          class { 'mongodb::client': }
-        }
       EOS
 
       apply_manifest_on(hosts_as('shard'), pp, catch_failures: true)
@@ -40,13 +37,10 @@ if hosts.length > 1
           member => 'foo/shard:27018',
           keys   => [{'foo.toto' => {'name' => 1}}]
         }
-        if $::osfamily == 'RedHat' {
-          class { 'mongodb::client': }
-        }
       EOS
 
       apply_manifest_on(hosts_as('router'), pp, catch_failures: true)
-      on(hosts_as('router'), 'mongo --quiet --eval "EJSON.stringify(sh.status())"') do |r|
+      on(hosts_as('router'), 'mongosh --quiet --eval "EJSON.stringify(sh.status())"') do |r|
         expect(r.stdout).to match %r{foo/shard:27018}
         expect(r.stdout).to match %r{foo\.toto}
       end

@@ -4,9 +4,15 @@
 #
 #  For more details about configuration parameters consult the MongoDB Configuration File Options.
 #
-# @example
-
-
+# @example Basic usage.
+#   include mongodb::server
+#
+# @example Overrule settings
+#   class {'mongodb::server':
+#     port    => 27018,
+#     verbose => true,
+#  }
+#
 # @param ensure
 #   Used to ensure that the package is installed and the service is running, or that the package is
 #   absent/purged and the service is stopped.

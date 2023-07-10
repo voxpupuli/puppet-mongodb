@@ -25,7 +25,6 @@ describe 'mongodb::mongos class' do
           replset_members => ['127.0.0.1:27019'],
           port      => 27019,
         }
-        -> class { 'mongodb::client': }
         -> class { 'mongodb::mongos':
           configdb => ['test/127.0.0.1:27019'],
         }
@@ -56,7 +55,7 @@ describe 'mongodb::mongos class' do
       it { is_expected.to be_listening }
     end
 
-    describe command('mongo --version') do
+    describe command('mongod --version') do
       its(:exit_status) { is_expected.to eq 0 }
     end
   end
@@ -72,9 +71,6 @@ describe 'mongodb::mongos class' do
           package_ensure => absent,
           service_ensure => stopped,
           service_enable => false
-        }
-        -> class { 'mongodb::client':
-          ensure => absent,
         }
       EOS
       apply_manifest(pp, catch_failures: true)

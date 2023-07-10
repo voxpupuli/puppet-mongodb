@@ -6,7 +6,7 @@ if hosts.length > 1
   describe 'mongodb_replset resource' do
     after :all do
       # Have to drop the DB to disable replsets for further testing
-      on hosts, %{mongo local --verbose --eval 'db.dropDatabase()'}
+      on hosts, %{mongosh local --verbose --eval 'db.dropDatabase()'}
 
       pp = <<-EOS
         class { 'mongodb::globals': }
@@ -14,11 +14,6 @@ if hosts.length > 1
           ensure         => absent,
           package_ensure => absent,
           service_ensure => stopped
-        }
-        if $::osfamily == 'RedHat' {
-          class { 'mongodb::client':
-            ensure => absent
-          }
         }
       EOS
 
@@ -31,9 +26,6 @@ if hosts.length > 1
         -> class { 'mongodb::server':
           bind_ip => '0.0.0.0',
           replset => 'test',
-        }
-        if $::osfamily == 'RedHat' {
-          class { 'mongodb::client': }
         }
       EOS
 
@@ -48,7 +40,7 @@ if hosts.length > 1
         }
       EOS
       apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
-      on(hosts_as('master'), 'mongo --quiet --eval "EJSON.stringify(rs.conf())"') do |r|
+      on(hosts_as('master'), 'mongosh --quiet --eval "EJSON.stringify(rs.conf())"') do |r|
         expect(r.stdout).to match %r{#{hosts[0]}:27017}
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
@@ -56,18 +48,18 @@ if hosts.length > 1
 
     it 'inserts data on the master' do
       sleep(30)
-      on hosts_as('master'), %{mongo --verbose --eval 'db.test.save({name:"test1",value:"some value"})'}
+      on hosts_as('master'), %{mongosh --verbose --eval 'db.test.save({name:"test1",value:"some value"})'}
     end
 
     it 'checks the data on the master' do
-      on hosts_as('master'), %{mongo --verbose --eval 'EJSON.stringify(db.test.findOne({name:"test1"}))'} do |r|
+      on hosts_as('master'), %{mongosh --verbose --eval 'EJSON.stringify(db.test.findOne({name:"test1"}))'} do |r|
         expect(r.stdout).to match %r{some value}
       end
     end
 
     it 'checks the data on the slave' do
       sleep(10)
-      on hosts_as('slave'), %{mongo --verbose --eval 'db.getMongo().setReadPref("primaryPreferred"); EJSON.stringify(db.test.findOne({name:"test1"}))'} do |r|
+      on hosts_as('slave'), %{mongosh --verbose --eval 'db.getMongo().setReadPref("primaryPreferred"); EJSON.stringify(db.test.findOne({name:"test1"}))'} do |r|
         expect(r.stdout).to match %r{some value}
       end
     end
@@ -76,7 +68,7 @@ if hosts.length > 1
   describe 'mongodb_replset resource with auth => true' do
     after :all do
       # Have to drop the DB to disable replsets for further testing
-      on hosts, %{mongo local --verbose --eval 'db.dropDatabase()'}
+      on hosts, %{mongosh local --verbose --eval 'db.dropDatabase()'}
 
       pp = <<-EOS
         class { 'mongodb::globals': }
@@ -84,11 +76,6 @@ if hosts.length > 1
           ensure => absent,
           package_ensure => absent,
           service_ensure => stopped
-        }
-        if $::osfamily == 'RedHat' {
-          class { 'mongodb::client':
-            ensure => absent
-          }
         }
       EOS
 
@@ -125,9 +112,6 @@ if hosts.length > 1
         nc1ohyB0lNt8lHf1U00mtgDSV3fwo5LkwhRi6d+bDBTL/C6MZETMLdyCqDlTdUWG
         YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
 
-                }
-                if $::osfamily == 'RedHat' {
-                  include mongodb::client
                 }
       EOS
 
@@ -166,9 +150,6 @@ if hosts.length > 1
         nc1ohyB0lNt8lHf1U00mtgDSV3fwo5LkwhRi6d+bDBTL/C6MZETMLdyCqDlTdUWG
         YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
                 }
-                if $::osfamily == 'RedHat' {
-                  include mongodb::client
-                }
                 mongodb_replset { 'test':
                   auth_enabled => true,
                   members      => [#{hosts.map { |x| "'#{x}:27017'" }.join(',')}],
@@ -177,7 +158,7 @@ if hosts.length > 1
       EOS
       apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
       apply_manifest_on(hosts_as('master'), pp, catch_changes: true)
-      on(hosts_as('master'), 'mongo --quiet --eval "load(\'/root/.mongoshrc.js\');EJSON.stringify(rs.conf())"') do |r|
+      on(hosts_as('master'), 'mongosh --quiet --eval "load(\'/root/.mongoshrc.js\');EJSON.stringify(rs.conf())"') do |r|
         expect(r.stdout).to match %r{#{hosts[0]}:27017}
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
       end
@@ -185,18 +166,18 @@ if hosts.length > 1
 
     it 'inserts data on the master' do
       sleep(30)
-      on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongoshrc.js");db.dummyData.insert({"created_by_puppet": 1})'}
+      on hosts_as('master'), %{mongosh test --verbose --eval 'load("/root/.mongoshrc.js");db.dummyData.insert({"created_by_puppet": 1})'}
     end
 
     it 'checks the data on the master' do
-      on hosts_as('master'), %{mongo test --verbose --eval 'load("/root/.mongoshrc.js");EJSON.stringify(db.dummyData.findOne())'} do |r|
+      on hosts_as('master'), %{mongosh test --verbose --eval 'load("/root/.mongoshrc.js");EJSON.stringify(db.dummyData.findOne())'} do |r|
         expect(r.stdout).to match %r{created_by_puppet}
       end
     end
 
     it 'checks the data on the slave' do
       sleep(10)
-      on hosts_as('slave'), %{mongo test --verbose --eval 'load("/root/.mongoshrc.js");db.getMongo().setReadPref("primaryPreferred");EJSON.stringify(db.dummyData.findOne())'} do |r|
+      on hosts_as('slave'), %{mongosh test --verbose --eval 'load("/root/.mongoshrc.js");db.getMongo().setReadPref("primaryPreferred");EJSON.stringify(db.dummyData.findOne())'} do |r|
         expect(r.stdout).to match %r{created_by_puppet}
       end
     end

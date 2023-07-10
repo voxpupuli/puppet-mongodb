@@ -7,7 +7,6 @@ describe 'mongodb_database' do
     it 'compiles with no errors' do
       pp = <<-EOS
         class { 'mongodb::server': }
-        -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         ->
         mongodb_user {'testuser':
@@ -22,15 +21,14 @@ describe 'mongodb_database' do
     end
 
     it 'creates the user' do
-      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
-        expect(r.stdout.chomp).to eq('1')
+      shell("mongosh testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('{ ok: 1 }')
       end
     end
 
     it 'removes a user with no errors' do
       pp = <<-EOS
         class { 'mongodb::server': }
-        -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         ->
         mongodb_user {'testuser':
@@ -45,7 +43,7 @@ describe 'mongodb_database' do
     end
 
     it 'auth should fail' do
-      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+      shell("mongosh testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
         expect(r.stdout.chomp).to contain('Error: Authentication failed')
       end
     end
@@ -55,7 +53,6 @@ describe 'mongodb_database' do
     it 'works with no errors' do
       pp = <<-EOS
         class { 'mongodb::server': port => 27018 }
-        -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         ->
         mongodb_user {'testuser':
@@ -70,8 +67,8 @@ describe 'mongodb_database' do
     end
 
     it 'creates the user' do
-      shell("mongo testdb --quiet --port 27018 --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
-        expect(r.stdout.chomp).to eq('1')
+      shell("mongosh testdb --quiet --port 27018 --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('{ ok: 1 }')
       end
     end
   end
@@ -80,7 +77,6 @@ describe 'mongodb_database' do
     it 'compiles with no errors' do
       pp = <<-EOS
         class { 'mongodb::server': }
-        -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         ->
         mongodb_user {'testuser':
@@ -96,8 +92,8 @@ describe 'mongodb_database' do
     end
 
     it 'creates the user' do
-      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
-        expect(r.stdout.chomp).to eq('1')
+      shell("mongosh testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('{ ok: 1 }')
       end
     end
   end
@@ -106,7 +102,6 @@ describe 'mongodb_database' do
     it 'compiles with no errors' do
       pp = <<-EOS
         class { 'mongodb::server': }
-        -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         -> mongodb_database { 'testdb2': ensure => present }
         ->
@@ -130,25 +125,25 @@ describe 'mongodb_database' do
     end
 
     it 'allows the testuser' do
-      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
-        expect(r.stdout.chomp).to eq('1')
+      shell("mongosh testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('{ ok: 1 }')
       end
     end
 
     it 'assigns roles to testuser' do
-      shell("mongo testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\"); db.getUser(\"testuser\")[\"roles\"].forEach(function(role){print(role.role + \"@\" + role.db)})'") do |r|
+      shell("mongosh testdb --quiet --eval 'db.auth(\"testuser\",\"passw0rd\"); db.getUser(\"testuser\")[\"roles\"].forEach(function(role){print(role.role + \"@\" + role.db)})'") do |r|
         expect(r.stdout.split(%r{\n})).to contain_exactly('readWrite@testdb', 'dbAdmin@testdb')
       end
     end
 
     it 'allows the second user to connect to its default database' do
-      shell("mongo testdb2 --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\")'") do |r|
-        expect(r.stdout.chomp).to eq('1')
+      shell("mongosh testdb2 --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\")'") do |r|
+        expect(r.stdout.chomp).to eq('{ ok: 1 }')
       end
     end
 
     it 'assigns roles to testuser2' do
-      shell("mongo testdb2 --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\"); db.getUser(\"testuser2\")[\"roles\"].forEach(function(role){print(role.role + \"@\" + role.db)})'") do |r|
+      shell("mongosh testdb2 --quiet --eval 'db.auth(\"testuser2\",\"passw0rd\"); db.getUser(\"testuser2\")[\"roles\"].forEach(function(role){print(role.role + \"@\" + role.db)})'") do |r|
         expect(r.stdout.split(%r{\n})).to contain_exactly('readWrite@testdb2', 'dbAdmin@testdb2', 'readWrite@testdb', 'dbAdmin@testdb')
       end
     end

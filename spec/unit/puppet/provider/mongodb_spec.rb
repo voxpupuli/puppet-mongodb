@@ -14,18 +14,18 @@ describe provider_class do
 
   describe 'mongo version detection' do
     v = {
-      '2.6.x' => { '26' => true,  '4' => false, '5' => false },
-      '4.x.x' => { '26' => false, '4' => true, '5' => false },
-      '5.x.x' => { '26' => false, '4' => false, '5' => true },
-      'x.x.x' => { '26' => false, '4' => false, '5' => false }
+      '4.x.x' => { '4' => true, '5' => false, '6' => false },
+      '5.x.x' => { '4' => false, '5' => true, '6' => false },
+      '6.x.x' => { '4' => false, '5' => false, '6' => true },
+      'x.x.x' => { '4' => false, '5' => false, '6' => false }
     }
 
-    v.each do |key, results|
+    v.each do |key, _results|
       it "version detection for [#{key}]" do
         allow(provider_class).to receive(:mongo_eval).with('db.version()').and_return(key)
-        expect(provider_class.mongo_26?).to be results['26']
         expect(provider_class.mongo_4?).to be results['4']
         expect(provider_class.mongo_5?).to be results['5']
+        expect(provider_class.mongo_6?).to be results['6']
       end
     end
   end

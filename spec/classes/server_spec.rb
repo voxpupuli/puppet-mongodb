@@ -43,13 +43,29 @@ describe 'mongodb::server' do
         end
       end
 
+      let(:mongo_user) do
+        if facts[:os]['family'] == 'Debian'
+          'mongodb'
+        else
+          'mongod'
+        end
+      end
+
+      let(:mongo_group) do
+        if facts[:os]['family'] == 'Debian'
+          'mongodb'
+        else
+          'mongod'
+        end
+      end
+
       describe 'with defaults' do
         it_behaves_like 'server classes'
 
         if facts[:os]['family'] == 'RedHat' || facts[:os]['family'] == 'Suse' || facts[:os]['release']['major'] =~ %r{(10)}
           it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
         else
-          it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-server').with_tag('mongodb_package') }
+          it { is_expected.to contain_package('mongodb_server').with_ensure('6.0').with_name('mongodb-server').with_tag('mongodb_package') }
         end
 
         it do
@@ -57,7 +73,7 @@ describe 'mongodb::server' do
             with_mode('0644').
             with_owner('root').
             with_group('root').
-            with_content(%r{^storage\.dbPath: /var/lib/mongodb$}).
+            with_content(%r{^storage\.dbPath: /var/lib/mongo$}).
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
             with_content(%r{^systemLog\.logAppend: true$}).
             with_content(%r{^systemLog\.path: #{log_path}$})
@@ -70,6 +86,8 @@ describe 'mongodb::server' do
         end
 
         it { is_expected.to contain_file('/root/.mongoshrc.js').with_ensure('file').without_content(%r{db\.auth}) }
+        it { is_expected.to contain_file('/var/lib/mongo').with(ensure: 'directory', mode: '0750', owner: mongo_user, group: mongo_group) }
+
         it { is_expected.not_to contain_exec('fix dbpath permissions') }
       end
 
@@ -272,7 +290,7 @@ describe 'mongodb::server' do
       end
 
       describe 'with store_creds' do
-        context 'true' do
+        context 'true with scram_sha_1' do
           let :params do
             {
               admin_username: 'admin',
@@ -289,6 +307,60 @@ describe 'mongodb::server' do
               with_group('root').
               with_mode('0600').
               with_content(%r{db\.auth\('admin', 'password'\)})
+          }
+        end
+
+        context 'true with scram_sha_256' do
+          let :params do
+            {
+              admin_username: 'admin',
+              admin_password: 'password',
+              admin_auth_mechanism: 'scram_sha_256',
+              admin_update_password: true,
+              auth: true,
+              store_creds: true
+            }
+          end
+
+          it {
+            is_expected.to contain_file('/root/.mongoshrc.js').
+              with_ensure('file').
+              with_owner('root').
+              with_group('root').
+              with_mode('0600').
+              with_content(%r{db\.auth\('admin', 'password'\)})
+          }
+        end
+
+        context 'true with x509' do
+          let :params do
+            {
+              admin_username: 'subject=CN=admin,OU=some,O=company,ST=somewhere,C=EX',
+              admin_auth_mechanism: 'x509',
+              admin_tls_key: '/path/to/key',
+              auth: true,
+              store_creds: true
+            }
+          end
+
+          it {
+            is_expected.to contain_file('/root/.mongoshrc.js').
+              with_ensure('file').
+              with_owner('root').
+              with_group('root').
+              with_mode('0600').
+              with_content(%r{db\.getSiblingDB\('\$external'\)\.auth}).
+              with_content(%r{mechanism: 'MONGODB-X509'})
+          }
+
+          it {
+            is_expected.to contain_file('/root/.mongosh.yaml').
+              with_ensure('file').
+              with_owner('root').
+              with_group('root').
+              with_mode('0600').
+              with_content(%r{^subject=CN=admin,OU=some,O=company,ST=somewhere,C=EX:$}).
+              with_content(%r{tlsCertificateKeyFile: /path/to/key})
           }
         end
 
@@ -325,10 +397,10 @@ describe 'mongodb::server' do
 
         it do
           is_expected.to contain_exec('fix dbpath permissions').
-            with_command('chown -R foo:bar /var/lib/mongodb').
+            with_command('chown -R foo:bar /var/lib/mongo').
             with_path(['/usr/bin', '/bin']).
-            with_onlyif("find /var/lib/mongodb -not -user foo -o -not -group bar -print -quit | grep -q '.*'").
-            that_subscribes_to('File[/var/lib/mongodb]')
+            with_onlyif("find /var/lib/mongo -not -user foo -o -not -group bar -print -quit | grep -q '.*'").
+            that_subscribes_to('File[/var/lib/mongo]')
         end
       end
 
