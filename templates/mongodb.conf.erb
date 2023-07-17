@@ -169,6 +169,14 @@ setParameter:
   <%= v %>
 <% end -%>
 <% end -%>
+<% if @supported_auth_mechanisms -%>
+<%# setParameters.auth... gives an error on startup status=2/INVALIDARGUMENT -%>
+<% if !@set_parameter -%>
+setParameter:
+<% end -%>
+  authenticationMechanisms: <%= @supported_auth_mechanisms.join(',') %>
+<% end -%>
+
 
 <% if @config_data -%>
 <% @config_data.each do |k,v| -%>

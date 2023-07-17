@@ -29,6 +29,16 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
   def self.mongo_conf
     config = YAML.load_file(mongod_conf_file) || {}
+    mongosh_config = {}
+    mongosh_config = YAML.load_file("#{Facter.value(:root_home)}/.mongosh.yaml") if File.file?("#{Facter.value(:root_home)}/.mongosh.yaml")
+    # determine if we need the tls for connecion or client
+    if mongosh_config['admin'] && mongosh_config['admin']['tlsCertificateKeyFile']
+      tlscert = mongosh_config['admin']['tlsCertificateKeyFile']
+      auth_mech = mongosh_config['admin']['auth_mechanism'] if mongosh_config['admin']['auth_mechanism']
+    else
+      tlscert =config['net.tls.certificateKeyFile']
+    end
+
     {
       'bindip' => config['net.bindIp'],
       'port' => config['net.port'],
@@ -39,9 +49,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       'sslca' => config['net.ssl.CAFile'],
       'tlsallowInvalidHostnames' => config['net.tls.allowInvalidHostnames'],
       'tls' => config['net.tls.mode'],
-      'tlscert' => config['net.tls.certificateKeyFile'],
+      'tlscert' => tlscert,
       'tlsca' => config['net.tls.CAFile'],
       'auth' => config['security.authorization'],
+      'auth_mechanism' => auth_mech,
       'shardsvr' => config['sharding.clusterRole'],
       'confsvr' => config['sharding.clusterRole']
     }
@@ -92,15 +103,19 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
     if tls_is_enabled(config)
       args.push('--tls')
-      args += ['--tlsCertificateKeyFile', config['tlscert']]
 
       tls_ca = config['tlsca']
       args += ['--tlsCAFile', tls_ca] unless tls_ca.nil?
+      args += ['--tlsCertificateKeyFile', config['tlscert']]
 
       args.push('--tlsAllowInvalidHostnames') if tls_invalid_hostnames(config)
     end
 
-    args += ['--eval', cmd]
+    if $config['auth_mechanism'] && $config['auth_mechanism'] == 'x509'
+      args.push("--authenticationDatabase '$external' --authenticationMechanism MONGODB-X509")
+    end
+
+    args += ['--eval', "\"#{cmd}\""]
     mongosh(args)
   end
 

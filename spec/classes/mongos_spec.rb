@@ -7,18 +7,13 @@ describe 'mongodb::mongos' do
     context "on #{os}" do
       let(:facts) { facts }
 
-      case facts[:os]['family']
-      when 'Debian'
-        package_name = if facts[:os]['release']['major'] =~ %r{(10)}
-                         'mongodb-org-mongos'
-                       else
-                         'mongodb-server'
-                       end
-        config_file  = '/etc/mongodb-shard.conf'
-      else
-        package_name = 'mongodb-org-mongos'
-        config_file  = '/etc/mongos.conf'
-      end
+      package_name = 'mongodb-org-mongos'
+      config_file = case facts[:os]['family']
+                    when 'Debian'
+                      '/etc/mongodb-shard.conf'
+                    else
+                      '/etc/mongos.conf'
+                    end
 
       context 'with defaults' do
         it { is_expected.to compile.with_all_deps }

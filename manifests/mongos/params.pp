@@ -5,13 +5,8 @@ class mongodb::mongos::params inherits mongodb::globals {
   $version = $mongodb::globals::version
 
   $package_ensure = pick($version, 'present')
-  if $manage_package {
-    $package_name = "mongodb-${mongodb::globals::edition}-mongos"
-  } elsif $facts['os']['family'] in ['RedHat', 'Suse'] {
-    $package_name = "mongodb-${mongodb::globals::edition}-mongos"
-  } else {
-    $package_name = 'mongodb-server'
-  }
+  # from versoin 4.4 on, package name is all the same in the upstream repositories
+  $package_name = "mongodb-${mongodb::globals::edition}-mongos"
 
   $config_content = undef
   $config_template = undef

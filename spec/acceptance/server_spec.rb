@@ -15,16 +15,11 @@ describe 'mongodb::server class' do
                    else
                      'mongodb'
                    end
-    package_name = if fact('os.distro.codename') =~ %r{^(buster)$}
-                     'mongodb-org-server'
-                   else
-                     'mongodb-server'
-                   end
   else
     config_file = '/etc/mongod.conf'
     service_name = 'mongod'
-    package_name = 'mongodb-org-server'
   end
+  package_name = 'mongodb-org-server'
 
   describe 'installation' do
     it 'works with no errors' do

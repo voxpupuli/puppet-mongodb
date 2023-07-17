@@ -7,7 +7,7 @@ require 'tempfile'
 describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
   let(:raw_users) do
     [
-      { '_id' => 'admin.root', 'user' => 'root', 'db' => 'admin', 'credentials' => { 'MONGODB-CR' => 'pass', 'SCRAM-SHA-1' => { 'iterationCount' => 10_000, 'salt' => 'salt', 'storedKey' => 'storedKey', 'serverKey' => 'serverKey' } }, 'roles' => [{ 'role' => 'role2', 'db' => 'admin' }, { 'role' => 'role3', 'db' => 'user_database' }, { 'role' => 'role1', 'db' => 'admin' }] }
+      { '_id' => 'admin.root', 'user' => 'root', 'db' => 'admin', 'credentials' => { 'MONGODB-CR' => 'pass', 'SCRAM-SHA-1' => { 'iterationCount' => 10_000, 'salt' => 'salt', 'storedKey' => 'storedKey', 'serverKey' => 'serverKey' } }, 'roles' => [{ 'role' => 'role1', 'db' => 'admin' }, { 'role' => 'role3', 'db' => 'user_database' }, { 'role' => 'role2', 'db' => 'other_database' },] }
     ].to_json
   end
 
@@ -33,7 +33,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
     mongodconffile = tmp.path
     allow(provider.class).to receive(:mongod_conf_file).and_return(mongodconffile)
     allow(provider.class).to receive(:mongo_eval).with('EJSON.stringify(db.system.users.find().toArray())').and_return(raw_users)
-    allow(provider.class).to receive(:mongo_version).and_return('2.6.x')
+    allow(provider.class).to receive(:mongo_version).and_return('6.0.x')
     allow(provider.class).to receive(:db_ismaster).and_return(true)
   end
 
@@ -58,6 +58,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
         "createUser":"new_user",
         "customData":{"createdBy":"Puppet Mongodb_user['new_user']"},
         "roles":[{"role":"role1","db":"new_database"},{"role":"role2","db":"other_database"}],
+        "mechanisms":["SCRAM-SHA-1"],
         "pwd":"pass",
         "digestPassword":false
       }
@@ -119,7 +120,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
 
   describe 'roles' do
     it 'returns a sorted roles' do
-      expect(instance.roles).to eq(%w[role1 role2 role3@user_database])
+      expect(instance.roles).to eq(%w[role1 role2@other_database role3@user_database])
     end
   end
 

@@ -62,11 +62,7 @@ describe 'mongodb::server' do
       describe 'with defaults' do
         it_behaves_like 'server classes'
 
-        if facts[:os]['family'] == 'RedHat' || facts[:os]['family'] == 'Suse' || facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
-        else
-          it { is_expected.to contain_package('mongodb_server').with_ensure('6.0').with_name('mongodb-server').with_tag('mongodb_package') }
-        end
+        it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
 
         it do
           is_expected.to contain_file(config_file).

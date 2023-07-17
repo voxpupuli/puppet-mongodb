@@ -1238,6 +1238,7 @@ The following parameters are available in the `mongodb::server` class:
 * [`admin_username`](#-mongodb--server--admin_username)
 * [`admin_password`](#-mongodb--server--admin_password)
 * [`admin_auth_mechanism`](#-mongodb--server--admin_auth_mechanism)
+* [`admin_tls_key`](#-mongodb--server--admin_tls_key)
 * [`admin_update_password`](#-mongodb--server--admin_update_password)
 * [`handle_creds`](#-mongodb--server--handle_creds)
 * [`store_creds`](#-mongodb--server--store_creds)
@@ -1909,11 +1910,19 @@ Default value: `undef`
 
 ##### <a name="-mongodb--server--admin_auth_mechanism"></a>`admin_auth_mechanism`
 
-Data type: `Enum['scram_sha_1', 'scram_sha_256']`
+Data type: `Enum['scram_sha_1', 'scram_sha_256', 'x509']`
 
 
 
 Default value: `$mongodb::params::admin_auth_mechanism`
+
+##### <a name="-mongodb--server--admin_tls_key"></a>`admin_tls_key`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Filepath of the administrators x509 certificate. Its the user of this class that needs to manage this certificate.
+
+Default value: `undef`
 
 ##### <a name="-mongodb--server--admin_update_password"></a>`admin_update_password`
 
@@ -2004,7 +2013,7 @@ Database username.
 
 ##### <a name="-mongodb--db--auth_mechanism"></a>`auth_mechanism`
 
-Data type: `Enum['scram_sha_1', 'scram_sha_256']`
+Data type: `Enum['scram_sha_1', 'scram_sha_256', 'x509']`
 
 Authentication mechanism. scram_sha_256 password verification is not supported. Defaults to 'scram_sha_1'.
 
@@ -2322,7 +2331,7 @@ The following parameters are available in the `mongodb_user` type.
 
 ##### <a name="-mongodb_user--auth_mechanism"></a>`auth_mechanism`
 
-Valid values: `scram_sha_256`, `scram_sha_1`
+Valid values: `scram_sha_256`, `scram_sha_1`, `x509`
 
 Authentication mechanism. Password verification is not supported with SCRAM-SHA-256.
 

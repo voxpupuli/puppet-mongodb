@@ -31,7 +31,6 @@ function authRequired() {
 
 if (authRequired()) {
   <%- if @replset -%>
-  // rs.slaveOk has been deprecated, use secondaryOk if available
   db.getMongo().setReadPref('primaryPreferred')
   <%- end -%>
   <%- if @admin_auth_mechanism == 'x509' -%>

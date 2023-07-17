@@ -19,6 +19,8 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
 
       users = JSON.parse out
 
+      Puppet.debug("XXXXXXXX In self.instances, retrieved users: #{users}")
+
       users.map do |user|
         db = if user['db'] == '$external'
                # For external users, we need to retreive the original DB name from here.
@@ -29,10 +31,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         u = new(name: user['_id'],
             ensure: :present,
             username: user['user'],
-            database: user['db'],
-            roles: from_roles(user['roles'], user['db']),
+            database: db,
+            roles: from_roles(user['roles'], db),
             password_hash: user['credentials']['MONGODB-CR'],
             scram_credentials: user['credentials']['SCRAM-SHA-1'])
+        Puppet.debug("Fetching users, creating the found resources: #{u}")
+        u
       end
     else
       Puppet.warning 'User info is available only from master host'
@@ -56,6 +60,7 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       password_hash = @resource[:password_hash]
       password_hash = Puppet::Util::MongodbMd5er.md5(@resource[:username], @resource[:password]) if !password_hash && @resource[:password]
 
+
       command = {
         createUser: @resource[:username],
         customData: {
@@ -64,17 +69,17 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         roles: role_hashes(@resource[:roles], @resource[:database]),
       }
 
-      # is this still needed / we only support verion 4 and higher
-      if mongo_4? || mongo_5? || mongo_6?
-        if @resource[:auth_mechanism] == :scram_sha_256
-          command[:mechanisms] = ['SCRAM-SHA-256']
-          command[:pwd] = @resource[:password]
-          command[:digestPassword] = true
-        else
-          command[:mechanisms] = ['SCRAM-SHA-1']
-          command[:pwd] = password_hash
-          command[:digestPassword] = false
-        end
+      case @resource[:auth_mechanism]
+      when :scram_sha_256 # rubocop:disable Naming/VariableNumber
+        command[:mechanisms] = ['SCRAM-SHA-256']
+        command[:pwd] = @resource[:password]
+        command[:digestPassword] = true
+      when :scram_sha_1 # rubocop:disable Naming/VariableNumber
+        command[:mechanisms] = ['SCRAM-SHA-1']
+        command[:pwd] = password_hash
+        command[:digestPassword] = false
+      when :x509
+        command[:mechanisms] = ['MONGODB-X509']
       else
         command[:pwd] = password_hash
         command[:digestPassword] = false
@@ -93,6 +98,9 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       @property_hash[:roles] = @resource[:roles]
 
       exists?
+
+    else
+      Puppet.warning 'User creation is available only from master host'
     end
   end
 

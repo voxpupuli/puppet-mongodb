@@ -3,18 +3,13 @@
 require 'spec_helper_acceptance'
 
 describe 'mongodb::mongos class' do
-  case fact('osfamily')
-  when 'Debian'
-    package_name = if fact('os.distro.codename') =~ %r{^(buster|bullseye)$}
-                     'mongodb-org-server'
-                   else
-                     'mongodb-server'
-                   end
-    config_file  = '/etc/mongodb-shard.conf'
-  else
-    package_name = 'mongodb-org-server'
-    config_file  = '/etc/mongos.conf'
-  end
+  package_name = 'mongodb-org-server'
+  config_file = case fact('osfamily')
+                when 'Debian'
+                  '/etc/mongodb-shard.conf'
+                else
+                  '/etc/mongos.conf'
+                end
 
   describe 'installation' do
     it 'works with no errors' do
