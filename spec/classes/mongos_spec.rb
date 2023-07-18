@@ -34,7 +34,6 @@ describe 'mongodb::mongos' do
         when 'RedHat', 'Suse'
           expected_content = <<~CONFIG
             configdb = 127.0.0.1:27019
-            fork = true
             pidfilepath = /var/run/mongodb/mongos.pid
             logpath = /var/log/mongodb/mongos.log
             unixSocketPrefix = /var/run/mongodb

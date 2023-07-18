@@ -51,7 +51,7 @@ class mongodb::params inherits mongodb::globals {
       $logpath      = '/var/log/mongodb/mongod.log'
       $pidfilepath  = '/var/run/mongodb/mongod.pid'
       $config       = '/etc/mongod.conf'
-      $fork         = true
+      $fork         = undef   # https://github.com/voxpupuli/puppet-mongodb/issues/667
       $journal      = true
     }
     'Debian': {

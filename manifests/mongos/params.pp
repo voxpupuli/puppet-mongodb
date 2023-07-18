@@ -45,7 +45,7 @@ class mongodb::mongos::params inherits mongodb::globals {
         $pidfilepath      = '/var/run/mongodb/mongos.pid'
         $unixsocketprefix = '/var/run/mongodb'
         $logpath          = '/var/log/mongodb/mongos.log'
-        $fork             = true
+        $fork             = undef # https://github.com/voxpupuli/puppet-mongodb/issues/667
         $service_template = 'mongodb/mongos/RedHat/mongos.service-dropin.epp'
       }
     }
