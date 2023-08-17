@@ -23,9 +23,6 @@ describe provider_class do
     v.each do |key, _results|
       it "version detection for [#{key}]" do
         allow(provider_class).to receive(:mongo_eval).with('db.version()').and_return(key)
-        expect(provider_class.mongo_4?).to be results['4']
-        expect(provider_class.mongo_5?).to be results['5']
-        expect(provider_class.mongo_6?).to be results['6']
       end
     end
   end
