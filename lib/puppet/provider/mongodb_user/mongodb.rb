@@ -19,8 +19,6 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
 
       users = JSON.parse out
 
-      Puppet.debug("XXXXXXXX In self.instances, retrieved users: #{users}")
-
       users.map do |user|
         db = if user['db'] == '$external'
                # For external users, we need to retreive the original DB name from here.

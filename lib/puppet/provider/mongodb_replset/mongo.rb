@@ -389,17 +389,10 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
   end
 
   def self.mongo_command(command, host = nil, retries = 4)
-    #begin
-      output = mongo_eval("EJSON.stringify(#{command})", 'admin', retries, host)
-    #rescue Puppet::ExecutionFailure => e
-      #if e.message =~ %r{no replset config has been received} || e.message =~ %r{Authentication failed}
-      if output =~ %r{no replset config has been received} || output =~ %r{Authentication failed}
-        output = '{}'
-     # else
-     #   Puppet.debug "Got an exception: #{e}"
-     #   raise
-      end
-    #end
+    output = mongo_eval("EJSON.stringify(#{command})", 'admin', retries, host)
+    if output =~ %r{no replset config has been received} || output =~ %r{Authentication failed}
+      output = '{}'
+    end
 
     # Hack to avoid non-json empty sets
     output = '{}' if output =~ %r{no replset config} || output =~ %r{Authentication failed}
