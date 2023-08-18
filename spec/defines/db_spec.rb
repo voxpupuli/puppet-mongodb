@@ -24,13 +24,13 @@ describe 'mongodb::db' do
 
     it 'contains mongodb_user with proper roles' do
       params['roles'] = %w[testrole1 testrole2]
-      is_expected.to contain_mongodb_user('User testuser on db testdb').\
+      is_expected.to contain_mongodb_user('User testuser on db testdb'). \
         with_roles(%w[testrole1 testrole2])
     end
 
     it 'prefers password_hash instead of password' do
       params['password_hash'] = 'securehash'
-      is_expected.to contain_mongodb_user('User testuser on db testdb').\
+      is_expected.to contain_mongodb_user('User testuser on db testdb'). \
         with_password_hash('securehash')
     end
 
@@ -64,13 +64,13 @@ describe 'mongodb::db' do
 
     it 'contains mongodb_user with proper roles' do
       params['roles'] = %w[testrole1 testrole2]
-      is_expected.to contain_mongodb_user('User testuser on db testdb').\
+      is_expected.to contain_mongodb_user('User testuser on db testdb'). \
         with_roles(%w[testrole1 testrole2])
     end
 
     it 'prefers password_hash instead of password' do
       params['password_hash'] = 'securehash'
-      is_expected.to contain_mongodb_user('User testuser on db testdb').\
+      is_expected.to contain_mongodb_user('User testuser on db testdb'). \
         with_password_hash('securehash')
     end
 

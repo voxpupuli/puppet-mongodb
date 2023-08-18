@@ -25,7 +25,7 @@ describe Puppet::Type.type(:mongodb_shard).provider(:mongo) do
         'version' => 4,
         'minCompatibleVersion' => 4,
         'currentVersion' => 5,
-        'clusterId' => "ObjectId(\'548e9110f3aca177c94c5e49\')"
+        'clusterId' => "ObjectId('548e9110f3aca177c94c5e49')"
       },
       'shards' => [
         {  '_id' => 'rs_test', 'host' => 'rs_test/mongo1:27018' }
