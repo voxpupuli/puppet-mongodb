@@ -47,7 +47,9 @@ class mongodb::params inherits mongodb::globals {
 
       $service_name = pick($mongodb::globals::service_name, 'mongod')
       $logpath      = '/var/log/mongodb/mongod.log'
-      $pidfilepath  = '/var/run/mongodb/mongod.pid'
+      if $manage_pidfile {
+        $pidfilepath  = '/var/run/mongodb/mongod.pid'
+      }
       $config       = '/etc/mongod.conf'
       $fork         = true
       $journal      = true
