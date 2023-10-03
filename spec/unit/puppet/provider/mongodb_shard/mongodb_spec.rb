@@ -67,7 +67,7 @@ describe Puppet::Type.type(:mongodb_shard).provider(:mongo) do
   end
 
   describe 'destroy' do
-    it 'removes a shard' do # rubocop:disable Lint/EmptyBlock
+    it 'removes a shard' do
     end
   end
 

@@ -48,11 +48,11 @@ describe 'mongodb::mongos class' do
       it { is_expected.to be_running }
     end
 
-    describe port(27_017) do # rubocop:disable RSpec/RepeatedExampleGroupBody
+    describe port(27_017) do
       it { is_expected.to be_listening }
     end
 
-    describe port(27_019) do # rubocop:disable RSpec/RepeatedExampleGroupBody
+    describe port(27_019) do
       it { is_expected.to be_listening }
     end
 
@@ -90,11 +90,11 @@ describe 'mongodb::mongos class' do
       it { is_expected.not_to be_running }
     end
 
-    describe port(27_017) do # rubocop:disable RSpec/RepeatedExampleGroupBody
+    describe port(27_017) do
       it { is_expected.not_to be_listening }
     end
 
-    describe port(27_019) do # rubocop:disable RSpec/RepeatedExampleGroupBody
+    describe port(27_019) do
       it { is_expected.not_to be_listening }
     end
   end
