@@ -130,7 +130,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
   end
 
   def self.replset_properties
-    conn_string = conn_string # rubocop:disable Lint/SelfAssignment
+    conn_string = conn_string
     begin
       output = mongo_command('rs.conf()', conn_string)
     rescue Puppet::ExecutionFailure

@@ -1,4 +1,4 @@
-require 'spec_helper' # rubocop:todo Style/FrozenStringLiteralComment Frozen strings break the regex below
+require 'spec_helper' # Frozen strings break the regex below
 require 'puppet/util/mongodb_output'
 require 'json'
 

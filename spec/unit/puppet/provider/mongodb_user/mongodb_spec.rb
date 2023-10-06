@@ -47,7 +47,7 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
   describe 'empty self.instances from slave' do
     it 'doesn`t retrun array of users' do
       allow(provider.class).to receive(:db_ismaster).and_return(false)
-      expect(provider.class.instances).to match_array([])
+      expect(provider.class.instances).to be_empty
     end
   end
 
