@@ -108,6 +108,29 @@ describe 'mongodb::server' do
         it { is_expected.to contain_mongodb_database('admin').that_requires('Service[mongodb]') }
       end
 
+      describe 'with admin_password_hash => xxx89adfaxd' do
+        let(:params) do
+          {
+            create_admin: true,
+            admin_username: 'admin',
+            admin_password_hash: 'xxx89adfaxd'
+          }
+        end
+
+        it_behaves_like 'server classes'
+
+        it do
+          is_expected.to contain_mongodb__db('admin').
+            with_user('admin').
+            with_password_hash('xxx89adfaxd').
+            with_roles(%w[userAdmin readWrite dbAdmin dbAdminAnyDatabase readAnyDatabase
+                          readWriteAnyDatabase userAdminAnyDatabase clusterAdmin clusterManager
+                          clusterMonitor hostManager root restore])
+        end
+
+        it { is_expected.to contain_mongodb_database('admin').that_requires('Service[mongodb]') }
+      end
+
       describe 'with preset variables' do
         let :params do
           {
