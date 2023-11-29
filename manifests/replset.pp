@@ -1,8 +1,16 @@
-# Wrapper class useful for hiera based deployments
+#
+# @summary Wrapper class useful for hiera based deployments
+#
+# @param sets_creation
+#   Boolean to disable mongodb_replset resource, we can use it to skipt this on Arbiter nodes that will produce an error when enabled
+# @param sets
+#   Hash containing the replica set config
+#
 class mongodb::replset (
-  $sets = undef
+  Boolean        $sets_creation = true,
+  Optional[Hash] $sets          = undef,
 ) {
-  if $sets {
+  if $sets and $sets_creation {
     create_resources(mongodb_replset, $sets)
   }
 
