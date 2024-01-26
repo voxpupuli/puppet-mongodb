@@ -1,5 +1,29 @@
-# Class for setting cross-class global overrides. See README.md for more
-# details.
+# @summary Class for setting cross-class global overrides. See README.md for more details.
+#
+# @param server_package_name
+# @param client_package_name
+# @param mongod_service_manage
+# @param service_enable
+# @param service_ensure
+# @param service_name
+# @param service_provider
+# @param service_status
+# @param user
+# @param group
+# @param ipv6
+# @param bind_ip
+# @param version
+# @param manage_package_repo
+# @param manage_package
+# @param repo_proxy
+# @param proxy_username
+# @param proxy_password
+# @param repo_location
+# @param use_enterprise_repo
+# @param pidfilepath
+# @param pidfilemode
+# @param manage_pidfile
+#
 class mongodb::globals (
   $server_package_name   = undef,
   $client_package_name   = undef,

@@ -1,11 +1,9 @@
-# Class for installing a MongoDB client shell (CLI).
+# @summary Class for installing a MongoDB client shell (CLI).
 #
-# == Parameters
-#
-# $ensure:: Desired ensure state of the package.
-#
-# $package_name:: Name of the package to install the client from. Default is
-#                 repository dependent.
+# @param ensure
+#   Desired ensure state of the package.
+# @param package_name
+#   Name of the package to install the client from. Default is repository dependent.
 #
 class mongodb::client (
   String[1] $ensure = $mongodb::client::params::package_ensure,
