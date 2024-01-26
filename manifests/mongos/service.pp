@@ -1,4 +1,16 @@
-# PRIVATE CLASS: do not call directly
+# @summary PRIVATE CLASS: do not call directly
+#
+# @param package_ensure
+# @param service_manage
+# @param service_name
+# @param service_enable
+# @param service_ensure
+# @param service_status
+# @param service_provider
+# @param bind_ip
+# @param port
+# @param service_template
+#
 class mongodb::mongos::service (
   $package_ensure   = $mongodb::mongos::package_ensure,
   $service_manage   = $mongodb::mongos::service_manage,

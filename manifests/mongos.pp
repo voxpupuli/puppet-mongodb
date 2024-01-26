@@ -1,4 +1,27 @@
-# This installs a Mongo Shard daemon. See README.md for more details.
+# @summary This installs a Mongo Shard daemon. See README.md for more details.
+#
+# @param config
+# @param config_content
+# @param config_template
+# @param configdb
+# @param config_data
+# @param service_manage
+# @param service_provider
+# @param service_name
+# @param service_template
+# @param service_enable
+# @param service_ensure
+# @param service_status
+# @param package_ensure
+# @param package_name
+# @param unixsocketprefix
+# @param pidfilepath
+# @param logpath
+# @param fork
+# @param bind_ip
+# @param port
+# @param restart
+#
 class mongodb::mongos (
   Stdlib::Absolutepath $config                              = $mongodb::mongos::params::config,
   Optional[String[1]] $config_content                       = $mongodb::mongos::params::config_content,

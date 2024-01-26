@@ -1,4 +1,17 @@
 # PRIVATE CLASS: do not use directly
+#
+# @param ensure 
+# @param version
+#   Optional repo version string.
+# @param use_enterprise_repo
+#   Boolean value to use enterprise repository. Defaults to false.
+# @param repo_location
+#   Optional location of the repository 
+# @param proxy
+# @param proxy_username
+# @param proxy_password
+# @param aptkey_options
+#
 class mongodb::repo (
   Variant[Enum['present', 'absent'], Boolean] $ensure = 'present',
   Optional[String] $version                           = undef,

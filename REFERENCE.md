@@ -8,7 +8,7 @@
 
 #### Public Classes
 
-* [`mongodb::client`](#mongodb--client): Class for installing a MongoDB client shell (CLI).  == Parameters  $ensure:: Desired ensure state of the package.  $package_name:: Name of th
+* [`mongodb::client`](#mongodb--client): Class for installing a MongoDB client shell (CLI).
 * [`mongodb::globals`](#mongodb--globals): Class for setting cross-class global overrides. See README.md for more details.
 * [`mongodb::mongos`](#mongodb--mongos): This installs a Mongo Shard daemon. See README.md for more details.
 * [`mongodb::mongos::config`](#mongodb--mongos--config): PRIVATE CLASS: do not call directly
@@ -34,7 +34,7 @@
 
 ### Defined types
 
-* [`mongodb::db`](#mongodb--db): == Class: mongodb::db  Class for creating mongodb databases and users.  == Parameters   user - Database username.  auth_mechanism - Authentic
+* [`mongodb::db`](#mongodb--db): Class for creating mongodb databases and users.
 
 ### Resource types
 
@@ -54,13 +54,6 @@
 
 Class for installing a MongoDB client shell (CLI).
 
-== Parameters
-
-$ensure:: Desired ensure state of the package.
-
-$package_name:: Name of the package to install the client from. Default is
-                repository dependent.
-
 #### Parameters
 
 The following parameters are available in the `mongodb::client` class:
@@ -72,7 +65,7 @@ The following parameters are available in the `mongodb::client` class:
 
 Data type: `String[1]`
 
-
+Desired ensure state of the package.
 
 Default value: `$mongodb::client::params::package_ensure`
 
@@ -80,14 +73,13 @@ Default value: `$mongodb::client::params::package_ensure`
 
 Data type: `String[1]`
 
-
+Name of the package to install the client from. Default is repository dependent.
 
 Default value: `$mongodb::client::params::package_name`
 
 ### <a name="mongodb--globals"></a>`mongodb::globals`
 
-Class for setting cross-class global overrides. See README.md for more
-details.
+Class for setting cross-class global overrides. See README.md for more details.
 
 #### Parameters
 
@@ -777,11 +769,6 @@ The following parameters are available in the `mongodb::opsmanager` class:
 
 * [`user`](#-mongodb--opsmanager--user)
 * [`group`](#-mongodb--opsmanager--group)
-* [`opsmanager_url`](#-mongodb--opsmanager--opsmanager_url)
-* [`opsmanager_mongo_uri`](#-mongodb--opsmanager--opsmanager_mongo_uri)
-* [`ca_file`](#-mongodb--opsmanager--ca_file)
-* [`pem_key_file`](#-mongodb--opsmanager--pem_key_file)
-* [`pem_key_password`](#-mongodb--opsmanager--pem_key_password)
 * [`ensure`](#-mongodb--opsmanager--ensure)
 * [`package_name`](#-mongodb--opsmanager--package_name)
 * [`package_ensure`](#-mongodb--opsmanager--package_ensure)
@@ -790,6 +777,7 @@ The following parameters are available in the `mongodb::opsmanager` class:
 * [`service_name`](#-mongodb--opsmanager--service_name)
 * [`download_url`](#-mongodb--opsmanager--download_url)
 * [`mongo_uri`](#-mongodb--opsmanager--mongo_uri)
+* [`opsmanager_url`](#-mongodb--opsmanager--opsmanager_url)
 * [`client_certificate_mode`](#-mongodb--opsmanager--client_certificate_mode)
 * [`from_email_addr`](#-mongodb--opsmanager--from_email_addr)
 * [`reply_to_email_addr`](#-mongodb--opsmanager--reply_to_email_addr)
@@ -800,6 +788,9 @@ The following parameters are available in the `mongodb::opsmanager` class:
 * [`smtp_server_port`](#-mongodb--opsmanager--smtp_server_port)
 * [`ssl`](#-mongodb--opsmanager--ssl)
 * [`ignore_ui_setup`](#-mongodb--opsmanager--ignore_ui_setup)
+* [`ca_file`](#-mongodb--opsmanager--ca_file)
+* [`pem_key_file`](#-mongodb--opsmanager--pem_key_file)
+* [`pem_key_password`](#-mongodb--opsmanager--pem_key_password)
 * [`user_svc_class`](#-mongodb--opsmanager--user_svc_class)
 * [`snapshot_interval`](#-mongodb--opsmanager--snapshot_interval)
 * [`snapshot_interval_retention`](#-mongodb--opsmanager--snapshot_interval_retention)
@@ -823,42 +814,6 @@ Data type: `String[1]`
 The group that owns the config file
 
 Default value: `'mongodb-mms'`
-
-##### <a name="-mongodb--opsmanager--opsmanager_url"></a>`opsmanager_url`
-
-Data type: `Stdlib::Httpurl`
-
-The fully qualified url where opsmanager runs. Must include the port.
-
-Default value: `"http://${facts['networking']['fqdn']}:8080"`
-
-##### <a name="-mongodb--opsmanager--opsmanager_mongo_uri"></a>`opsmanager_mongo_uri`
-
-Full URI where the Ops Manager application mongodb server(s) can be found.
-
-##### <a name="-mongodb--opsmanager--ca_file"></a>`ca_file`
-
-Data type: `Optional[String[1]]`
-
-Ca file for secure connection to backup agents.
-
-Default value: `undef`
-
-##### <a name="-mongodb--opsmanager--pem_key_file"></a>`pem_key_file`
-
-Data type: `Optional[String[1]]`
-
-Pem key file containing the cert and private key used for secure connections to backup agents.
-
-Default value: `undef`
-
-##### <a name="-mongodb--opsmanager--pem_key_password"></a>`pem_key_password`
-
-Data type: `Optional[String[1]]`
-
-The password to the pem key file.
-
-Default value: `undef`
 
 ##### <a name="-mongodb--opsmanager--ensure"></a>`ensure`
 
@@ -923,6 +878,14 @@ Data type: `String[1]`
 
 
 Default value: `'mongodb://127.0.0.1:27017'`
+
+##### <a name="-mongodb--opsmanager--opsmanager_url"></a>`opsmanager_url`
+
+Data type: `Stdlib::Httpurl`
+
+The fully qualified url where opsmanager runs. Must include the port.
+
+Default value: `"http://${facts['networking']['fqdn']}:8080"`
 
 ##### <a name="-mongodb--opsmanager--client_certificate_mode"></a>`client_certificate_mode`
 
@@ -1003,6 +966,30 @@ Data type: `Boolean`
 
 
 Default value: `true`
+
+##### <a name="-mongodb--opsmanager--ca_file"></a>`ca_file`
+
+Data type: `Optional[String[1]]`
+
+Ca file for secure connection to backup agents.
+
+Default value: `undef`
+
+##### <a name="-mongodb--opsmanager--pem_key_file"></a>`pem_key_file`
+
+Data type: `Optional[String[1]]`
+
+Pem key file containing the cert and private key used for secure connections to backup agents.
+
+Default value: `undef`
+
+##### <a name="-mongodb--opsmanager--pem_key_password"></a>`pem_key_password`
+
+Data type: `Optional[String[1]]`
+
+The password to the pem key file.
+
+Default value: `undef`
 
 ##### <a name="-mongodb--opsmanager--user_svc_class"></a>`user_svc_class`
 
@@ -1111,7 +1098,7 @@ Default value: `'present'`
 
 Data type: `Optional[String]`
 
-
+Optional repo version string.
 
 Default value: `undef`
 
@@ -1119,7 +1106,7 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-
+Boolean value to use enterprise repository. Defaults to false.
 
 Default value: `false`
 
@@ -1127,7 +1114,7 @@ Default value: `false`
 
 Data type: `Optional[String]`
 
-
+Optional location of the repository
 
 Default value: `undef`
 
@@ -2006,20 +1993,7 @@ Default value: `undef`
 
 ### <a name="mongodb--db"></a>`mongodb::db`
 
-== Class: mongodb::db
-
 Class for creating mongodb databases and users.
-
-== Parameters
-
- user - Database username.
- auth_mechanism - Authentication mechanism. scram_sha_256 password verification is not supported. Defaults to 'scram_sha_1'.
- db_name - Database name. Defaults to $name.
- password_hash - Hashed password. Hex encoded md5 hash of "$username:mongo:$password".
- password - Plain text user password. This is UNSAFE, use 'password_hash' instead.
- roles (default: ['dbAdmin']) - array with user roles.
- tries (default: 10) - The maximum amount of two second tries to wait MongoDB startup.
- update_password (default: false) - Force an update of the password when scram_sha_256 is used.
 
 #### Parameters
 
@@ -2038,13 +2012,13 @@ The following parameters are available in the `mongodb::db` defined type:
 
 Data type: `String`
 
-
+Database username.
 
 ##### <a name="-mongodb--db--auth_mechanism"></a>`auth_mechanism`
 
 Data type: `Enum['scram_sha_1', 'scram_sha_256']`
 
-
+Authentication mechanism. scram_sha_256 password verification is not supported. Defaults to 'scram_sha_1'.
 
 Default value: `'scram_sha_1'`
 
@@ -2052,7 +2026,7 @@ Default value: `'scram_sha_1'`
 
 Data type: `String`
 
-
+Database name. Defaults to $name.
 
 Default value: `$name`
 
@@ -2060,7 +2034,7 @@ Default value: `$name`
 
 Data type: `Optional[Variant[String[1], Sensitive[String[1]]]]`
 
-
+Hashed password. Hex encoded md5 hash of "$username:mongo:$password".
 
 Default value: `undef`
 
@@ -2068,7 +2042,7 @@ Default value: `undef`
 
 Data type: `Optional[Variant[String[1], Sensitive[String[1]]]]`
 
-
+Plain text user password. This is UNSAFE, use 'password_hash' instead.
 
 Default value: `undef`
 
@@ -2076,7 +2050,7 @@ Default value: `undef`
 
 Data type: `Array[String]`
 
-
+Array with user roles. Deaults to ['dbAdmin']
 
 Default value: `['dbAdmin']`
 
@@ -2084,7 +2058,7 @@ Default value: `['dbAdmin']`
 
 Data type: `Integer[0]`
 
-
+The maximum amount of two second tries to wait MongoDB startup. Defaults to 10.
 
 Default value: `10`
 
@@ -2092,7 +2066,7 @@ Default value: `10`
 
 Data type: `Boolean`
 
-
+Force an update of the password when scram_sha_256 is used. Defaults to false.
 
 Default value: `false`
 
@@ -2114,7 +2088,7 @@ The following properties are available in the `mongodb_conn_validator` type.
 
 Valid values: `present`, `absent`
 
-The basic property that the resource should be in.
+Ensurable property
 
 Default value: `present`
 
@@ -2216,7 +2190,7 @@ The following properties are available in the `mongodb_replset` type.
 
 Valid values: `present`
 
-The basic property that the resource should be in.
+Ensurable property
 
 Default value: `present`
 
@@ -2270,7 +2244,7 @@ The following properties are available in the `mongodb_shard` type.
 
 Valid values: `present`
 
-The basic property that the resource should be in.
+Ensurable property
 
 Default value: `present`
 

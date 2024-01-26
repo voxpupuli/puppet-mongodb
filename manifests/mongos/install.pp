@@ -1,4 +1,8 @@
-# PRIVATE CLASS: do not call directly
+# @summary PRIVATE CLASS: do not call directly
+#
+# @param package_ensure
+# @param package_name
+#
 class mongodb::mongos::install (
   $package_ensure = $mongodb::mongos::package_ensure,
   $package_name   = $mongodb::mongos::package_name,
