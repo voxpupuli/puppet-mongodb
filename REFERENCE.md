@@ -207,31 +207,19 @@ Default value: `undef`
 
 ##### <a name="-mongodb--globals--version"></a>`version`
 
-Data type: `Any`
+Data type: `Optional[String[1]]`
 
+Version of mongodb to install
 
-
-Default value:
-
-```puppet
-fact('os.distro.codename') ? { # Debian 10 doesn't provide mongodb 3.6.
-    'buster' => '4.4.8',
-    default  => undef
-```
+Default value: `undef`
 
 ##### <a name="-mongodb--globals--manage_package_repo"></a>`manage_package_repo`
 
-Data type: `Any`
+Data type: `Optional[Boolean]`
 
+If `true` configure upstream mongodb repos
 
-
-Default value:
-
-```puppet
-fact('os.distro.codename') ? { # Debian 10 doesn't provide mongodb packages. So manage it!
-    'buster' => true,
-    default  => undef
-```
+Default value: `undef`
 
 ##### <a name="-mongodb--globals--manage_package"></a>`manage_package`
 
