@@ -1,0 +1,3 @@
+---
+mongodb::globals::version: '4.4.8'           # Debian 10 doesn't provide mongodb 3.6.
+mongodb::globals::manage_package_repo: true  # Debian 10 doesn't provide mongodb packages. So manage it!

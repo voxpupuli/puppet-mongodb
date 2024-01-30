@@ -1,4 +1,19 @@
-# PRIVATE CLASS: do not call directly
+# @summary PRIVATE CLASS: do not call directly
+#
+# @param package_ensure
+# @param config
+# @param config_content
+# @param config_template
+# @param service_manage
+# @param configdb
+# @param bind_ip
+# @param port
+# @param fork
+# @param pidfilepath
+# @param logpath
+# @param unixsocketprefix
+# @param config_data
+#
 class mongodb::mongos::config (
   $package_ensure   = $mongodb::mongos::package_ensure,
   $config           = $mongodb::mongos::config,

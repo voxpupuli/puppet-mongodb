@@ -1,4 +1,7 @@
-# Wrapper class useful for hiera based deployments
+# @summary Wrapper class useful for hiera based deployments
+#
+# @param sets
+#
 class mongodb::replset (
   $sets = undef
 ) {

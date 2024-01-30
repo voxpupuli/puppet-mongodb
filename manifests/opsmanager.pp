@@ -1,25 +1,42 @@
-# This installs Ops Manager
+# @summary This installs Ops Manager
 #
 # @param user
 #   The user that owns the config file
-#
 # @param group
 #   The group that owns the config file
-#
+# @param ensure
+# @param package_name
+# @param package_ensure
+# @param service_enable
+# @param service_manage
+# @param service_name
+# @param download_url
+# @param mongo_uri
 # @param opsmanager_url
 #   The fully qualified url where opsmanager runs. Must include the port.
-#
-# @param opsmanager_mongo_uri
-#   Full URI where the Ops Manager application mongodb server(s) can be found.
-#
+# @param client_certificate_mode
+# @param from_email_addr
+# @param reply_to_email_addr
+# @param admin_email_addr
+# @param email_dao_class
+# @param mail_transport
+# @param smtp_server_hostname
+# @param smtp_server_port
+# @param ssl
+# @param ignore_ui_setup
 # @param ca_file
 #   Ca file for secure connection to backup agents.
-#
 # @param pem_key_file
 #   Pem key file containing the cert and private key used for secure connections to backup agents.
-#
 # @param pem_key_password
 #   The password to the pem key file.
+# @param user_svc_class
+# @param snapshot_interval
+# @param snapshot_interval_retention
+# @param snapshot_daily_retention
+# @param snapshot_weekly_retention
+# @param snapshot_monthly_retention
+# @param versions_directory
 #
 class mongodb::opsmanager (
   String[1] $user                                = 'mongodb-mms',
