@@ -121,9 +121,21 @@ net.ssl.allowInvalidHostnames: <%= @ssl_invalid_hostnames %>
 <% end -%>
 <% if @tls -%>
 net.tls.mode: <%= @tls_mode %>
+<% if @tls_key -%>
 net.tls.certificateKeyFile: <%= @tls_key %>
+<% end -%>
+<% if @tls_cluster_key -%>
+net.tls.ClusterFile = <%= @tls_cluster_key %>
+<% end -%>
+<% if ! @tls_use_system_ca -%>
+<%# its this parameter or the explicit ca file location %>
+<%# This options will be set in the setparameter section below %>
 <% if @tls_ca -%>
 net.tls.CAFile: <%= @tls_ca %>
+<% end -%>
+<% if @tls_cluster_ca -%>
+net.tls.clusterCAFile: <%= @tls_ca %>
+<% end -%>
 <% end -%>
 <% if @tls_conn_without_cert -%>
 net.tls.allowConnectionsWithoutCertificates: <%= @tls_conn_without_cert %>
@@ -167,12 +179,17 @@ setParameter:
   <%= v %>
 <% end -%>
 <% end -%>
-<% if @supported_auth_mechanisms -%>
-<%# setParameters.auth... gives an error on startup status=2/INVALIDARGUMENT -%>
+<% if @supported_auth_mechanisms || @tls_use_system_ca -%>
 <% if !@set_parameter -%>
 setParameter:
 <% end -%>
+<% if @supported_auth_mechanisms -%>
+  <%# setParameters.auth... gives an error on startup status=2/INVALIDARGUMENT -%>
   authenticationMechanisms: <%= @supported_auth_mechanisms.join(',') %>
+<% end -%>
+<% if @tls_use_system_ca -%>
+  tlsUseSystemCA: true
+<% end -%>
 <% end -%>
 
 <% if @config_data -%>

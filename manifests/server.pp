@@ -293,6 +293,21 @@
 #
 # @param tls_mode
 #   Defines if TLS is used for all network connections. Allowed values are 'requireTLS', 'preferTLS' or 'allowTLS'.
+#
+# @param tls_use_system_ca
+#   Use the system-wide CA certificate store when connecting to a TLS-enabled server.
+#
+# @param tls_cluster_key
+#   File that contains the x.509 certificate-key file for membership authentication for the cluster or replica set.
+#
+# @param tls_cluster_ca
+#   file that contains the root certificate chain from the Certificate Authority used to validate the certificate
+#   presented by a client establishing a connection.
+#
+# @param tls_invalid_certificates
+#   Enable or disable the validation checks for TLS/SSL certificates on other servers in the cluster and allows
+#   the use of invalid certificates.
+#
 # @param admin_password_hash
 #   Hashed password. Hex encoded md5 hash of mongodb password.
 #
@@ -316,7 +331,8 @@
 #   Administrator authentication mechanism. scram_sha_256 password synchronization verification is not supported.
 #
 # @param supported_auth_mechanisms
-#   Set the supported authentication mechanisms that the mmongoserver will support. Is set, make sure the $admin_auth_mechanism is also included.
+#   Set the supported authentication mechanisms that the mmongoserver will support. Is set, make sure the
+#   $admin_auth_mechanism is also included.
 #
 # @param admin_tls_key
 #   Filepath of the administrators x509 certificate. Its the user of this class that needs to manage this certificate.
@@ -399,18 +415,24 @@ class mongodb::server (
   $config_content                                                    = undef,
   Optional[String] $config_template                                  = undef,
   Optional[Hash] $config_data                                        = undef,
-  Optional[Boolean] $ssl                                             = undef,
+  Boolean $ssl                                                       = false,
   Optional[Stdlib::Absolutepath] $ssl_key                            = undef,
   Optional[Stdlib::Absolutepath] $ssl_ca                             = undef,
   Boolean $ssl_weak_cert                                             = false,
   Boolean $ssl_invalid_hostnames                                     = false,
-  Enum['requireSSL', 'preferSSL', 'allowSSL'] $ssl_mode              = 'requireSSL',
-  Boolean $tls                                                       = false,
+  Enum['disabled', 'requireSSL', 'preferSSL', 'allowSSL'] $ssl_mode  = 'disabled',
+  Boolean $tls                                                       = true,
+  Enum['disabled', 'requireTLS', 'preferTLS', 'allowTLS'] $tls_mode  = 'requireTLS',
+  # cluster tls settings
+  Optional[Boolean] $tls_use_system_ca                               = undef,
+  Optional[Stdlib::Absolutepath] $tls_cluster_key                    = undef,
+  Optional[Stdlib::Absolutepath] $tls_cluster_ca                     = undef,
+  #client tls settings
   Optional[Stdlib::Absolutepath] $tls_key                            = undef,
   Optional[Stdlib::Absolutepath] $tls_ca                             = undef,
   Boolean $tls_conn_without_cert                                     = false,
   Boolean $tls_invalid_hostnames                                     = false,
-  Enum['requireTLS', 'preferTLS', 'allowTLS'] $tls_mode              = 'requireTLS',
+  Boolean $tls_invalid_certificates                                  = false,
   Boolean $restart                                                   = $mongodb::params::restart,
   Optional[String] $storage_engine                                   = undef,
   Boolean $create_admin                                              = $mongodb::params::create_admin,
@@ -449,11 +471,11 @@ class mongodb::server (
     $admin_password
   }
 
-  # using x509, we need the admin clent certificate in the parameter --tlsCertificateKeyFile
+  # Using x509, we need the admin client certificate in the parameter --tlsCertificateKeyFile
   # there is no way where we can set this in neither the /etc/momgosh.yaml or the /etc/mongod.conf
   # The mongodb provider reads in /etc/mongod.conf  setParameters.authenticationMechanisms: MONGODB-X509 settings
   # to determine that a client cert authentication is used. There is no setting to set the client cert to be used.
-  # so we store it in a file in roots home directory. (this is done in mongodb::server::config
+  # so we store it in a file in roots home directory. (this is done in mongodb::server::config)
 
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
     mongodb::db { 'admin':

@@ -31,7 +31,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     config = YAML.load_file(mongod_conf_file) || {}
     mongosh_config = {}
     mongosh_config = YAML.load_file("#{Facter.value(:root_home)}/.mongosh.yaml") if File.file?("#{Facter.value(:root_home)}/.mongosh.yaml")
-    # determine if we need the tls for connecion or client
+    # determine if we need tls for the admin user
     if mongosh_config['admin'] && mongosh_config['admin']['tlsCertificateKeyFile']
       tlscert = mongosh_config['admin']['tlsCertificateKeyFile']
       auth_mech = mongosh_config['admin']['auth_mechanism'] if mongosh_config['admin']['auth_mechanism']
