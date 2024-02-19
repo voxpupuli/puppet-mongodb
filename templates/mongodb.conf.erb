@@ -71,7 +71,6 @@ storage.quota.maxFilesPerDB: <%= @quotafiles %>
 storage.engine: <%= @storage_engine_internal %>
 <% end -%>
 
-
 #Security
 <% if @auth -%>
 security.authorization: enabled
@@ -84,7 +83,6 @@ security.keyFile: <%= @keyfile %>
 <% if @noscripting -%>
 security.javascriptEnabled: <%= @noscripting %>
 <% end -%>
-
 
 #Net
 <% if @ipv6 -%>
@@ -176,7 +174,6 @@ setParameter:
 <% end -%>
   authenticationMechanisms: <%= @supported_auth_mechanisms.join(',') %>
 <% end -%>
-
 
 <% if @config_data -%>
 <% @config_data.each do |k,v| -%>
