@@ -111,7 +111,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       args.push('--tlsAllowInvalidHostnames') if tls_invalid_hostnames(config)
     end
 
-    if $config['auth_mechanism'] && $config['auth_mechanism'] == 'x509'
+    if config['auth_mechanism'] && config['auth_mechanism'] == 'x509'
       args.push("--authenticationDatabase '$external' --authenticationMechanism MONGODB-X509")
     end
 
