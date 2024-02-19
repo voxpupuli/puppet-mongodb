@@ -131,22 +131,19 @@ class mongodb::globals (
   $ipv6                                  = undef,
   $bind_ip                               = undef,
   Optional[String[1]] $version           = undef,
-  Optional[Boolean] $manage_package_repo = undef,
+  Optional[Boolean] $manage_package_repo = fact('os.distro.codename') ? { # Debian 10 doesn't provide mongodb packages. So manage it!
+    'buster' => true,
+    default  => undef
+  },
   $manage_package                        = undef,
   $repo_proxy                            = undef,
   $proxy_username                        = undef,
   $proxy_password                        = undef,
 
-  $version               = undef,
-  $mongosh_version       = undef,
-  $manage_package_repo   = fact('os.distro.codename') ? { # Debian 10 doesn't provide mongodb packages. So manage it!
-    'buster' => true,
-    default  => undef
-  },
-  $manage_package        = undef,
-  $repo_proxy            = undef,
-  $proxy_username        = undef,
-  $proxy_password        = undef,
+  $repo_location                         = undef,
+  $use_enterprise_repo                   = undef,
+
+  $mongosh_version                       = undef,
 
   $pidfilepath                           = undef,
   $pidfilemode                           = undef,
