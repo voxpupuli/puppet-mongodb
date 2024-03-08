@@ -101,10 +101,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
       command = {
         updateUser: @resource[:username],
         pwd: @resource[:password_hash],
-        digestPassword: false
+        digestPassword: false,
+        mechanisms: @resource[:auth_mechanism] == :scram_sha_1 ? ['SCRAM-SHA-1'] : ['SCRAM-SHA-256'],
       }
 
-      mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
+      out = JSON.parse(mongo_eval("db.runCommand(#{command.to_json})", @resource[:database]))
+      raise "Failed update User password for user '#{@resource[:username]}'\n#{out}" if out['ok'].zero?
     else
       Puppet.warning 'User password operations are available only from master host'
     end
