@@ -1,4 +1,6 @@
-# @summary PRIVATE CLASS: do not call directly
+# @summary Manages the mongos package
+#
+# @api private
 #
 # @param package_ensure
 # @param package_name

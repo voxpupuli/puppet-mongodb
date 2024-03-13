@@ -1,3 +1,7 @@
+<%- | String  $service_user,
+      String  $service_group,
+| -%>
+
 # THIS FILE IS MANAGED BY PUPPET
 [Unit]
 Description=MongoDB Database Server
@@ -5,16 +9,11 @@ Documentation=https://docs.mongodb.org/manual
 After=network.target
 
 [Service]
-User=mongod
-Group=mongod
+User=<%= $service_user %>
+Group=<%= $service_group %>
 Environment="OPTIONS=-f /etc/mongos.conf"
 TimeoutStartSec=400
 ExecStart=/usr/bin/mongos $OPTIONS
-ExecStartPre=/usr/bin/mkdir -p /var/run/mongodb
-ExecStartPre=/usr/bin/chown mongod:mongod /var/run/mongodb
-ExecStartPre=/usr/bin/chmod 0755 /var/run/mongodb
-PermissionsStartOnly=true
-PIDFile=/var/run/mongodb/mongos.pid
 Type=forking
 # file size
 LimitFSIZE=infinity

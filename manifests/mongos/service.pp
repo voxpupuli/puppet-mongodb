@@ -1,4 +1,6 @@
-# @summary PRIVATE CLASS: do not call directly
+# @summary Manages the mongos service
+#
+# @api private
 #
 # @param package_ensure
 # @param service_manage
@@ -15,6 +17,8 @@ class mongodb::mongos::service (
   $package_ensure   = $mongodb::mongos::package_ensure,
   $service_manage   = $mongodb::mongos::service_manage,
   $service_name     = $mongodb::mongos::service_name,
+  $service_user     = $mongodb::mongos::service_user,
+  $service_group    = $mongodb::mongos::service_group,
   $service_enable   = $mongodb::mongos::service_enable,
   $service_ensure   = $mongodb::mongos::service_ensure,
   $service_status   = $mongodb::mongos::service_status,
@@ -38,12 +42,10 @@ class mongodb::mongos::service (
   }
 
   if $service_manage {
-    if $facts['os']['family'] == 'RedHat' {
-      systemd::unit_file { 'mongos.service':
-        content => epp($service_template),
-        enable  => $real_service_enable,
-      } ~> Service['mongos']
-    }
+    systemd::unit_file { 'mongos.service':
+      content => epp($service_template, { service_user => $service_user, service_group => $service_user }),
+      enable  => $real_service_enable,
+    } ~> Service['mongos']
 
     service { 'mongos':
       ensure   => $real_service_ensure,

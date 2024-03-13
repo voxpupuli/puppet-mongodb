@@ -1,0 +1,3 @@
+---
+mongodb::mongos::service_user: 'mongod'
+mongodb::mongos::service_group: 'mongod'

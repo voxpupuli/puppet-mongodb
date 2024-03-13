@@ -1,4 +1,7 @@
-# PRIVATE CLASS: do not use directly
+# @summary mongos params
+#
+# @api private
+#
 class mongodb::mongos::params inherits mongodb::globals {
   $manage_package = pick($mongodb::globals::manage_package, $mongodb::globals::manage_package_repo, false)
 
@@ -28,37 +31,10 @@ class mongodb::mongos::params inherits mongodb::globals {
   $service_ensure = 'running'
   $service_status = undef
 
-  # Amazon Linux's OS Family is 'Linux', operating system 'Amazon'.
-  case $facts['os']['family'] {
-    'RedHat', 'Linux', 'Suse': {
-      if $manage_package {
-        $config           = '/etc/mongodb-shard.conf'
-        $pidfilepath      = undef
-        $unixsocketprefix = undef
-        $logpath          = undef
-        $fork             = undef
-        $service_template = undef
-      } else {
-        # RedHat/CentOS doesn't come with a prepacked mongodb
-        # so we assume that you are using EPEL repository.
-        $config           = '/etc/mongos.conf'
-        $pidfilepath      = '/var/run/mongodb/mongos.pid'
-        $unixsocketprefix = '/var/run/mongodb'
-        $logpath          = '/var/log/mongodb/mongos.log'
-        $fork             = true
-        $service_template = 'mongodb/mongos/RedHat/mongos.service-dropin.epp'
-      }
-    }
-    'Debian': {
-      $config           = '/etc/mongodb-shard.conf'
-      $pidfilepath      = undef
-      $unixsocketprefix = undef
-      $logpath          = undef
-      $fork             = undef
-      $service_template = undef
-    }
-    default: {
-      fail("Osfamily ${facts['os']['family']} is not supported")
-    }
-  }
+  $config           = '/etc/mongos.conf'
+  $pidfilepath      = '/var/run/mongodb/mongos.pid'
+  $unixsocketprefix = '/var/run/mongodb'
+  $logpath          = '/var/log/mongodb/mongos.log'
+  $fork             = true
+  $service_template = 'mongodb/mongos/mongos.service-dropin.epp'
 }
