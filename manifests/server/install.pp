@@ -1,4 +1,7 @@
-# PRIVATE CLASS: do not call directly
+# @summary Manages the mongod package
+#
+# @api private
+#
 class mongodb::server::install {
   $package_ensure = $mongodb::server::package_ensure
   $package_name   = $mongodb::server::package_name

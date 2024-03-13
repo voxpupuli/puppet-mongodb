@@ -1,4 +1,6 @@
-# PRIVATE CLASS: do not use directly
+# @summary Manages the mongodb repository
+#
+# @api private
 #
 # @param ensure 
 # @param version

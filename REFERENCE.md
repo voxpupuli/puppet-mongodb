@@ -11,26 +11,26 @@
 * [`mongodb::client`](#mongodb--client): Class for installing a MongoDB client shell (CLI).
 * [`mongodb::globals`](#mongodb--globals): Class for setting cross-class global overrides. See README.md for more details.
 * [`mongodb::mongos`](#mongodb--mongos): This installs a Mongo Shard daemon. See README.md for more details.
-* [`mongodb::mongos::config`](#mongodb--mongos--config): PRIVATE CLASS: do not call directly
-* [`mongodb::mongos::install`](#mongodb--mongos--install): PRIVATE CLASS: do not call directly
-* [`mongodb::mongos::params`](#mongodb--mongos--params): PRIVATE CLASS: do not use directly
-* [`mongodb::mongos::service`](#mongodb--mongos--service): PRIVATE CLASS: do not call directly
 * [`mongodb::opsmanager`](#mongodb--opsmanager): This installs Ops Manager
-* [`mongodb::params`](#mongodb--params): PRIVATE CLASS: do not use directly
 * [`mongodb::replset`](#mongodb--replset): Wrapper class useful for hiera based deployments
-* [`mongodb::repo`](#mongodb--repo): PRIVATE CLASS: do not use directly
-* [`mongodb::repo::apt`](#mongodb--repo--apt): PRIVATE CLASS: do not use directly
-* [`mongodb::repo::yum`](#mongodb--repo--yum): PRIVATE CLASS: do not use directly
 * [`mongodb::server`](#mongodb--server): This installs a MongoDB server. See README.md for more details.
-* [`mongodb::server::config`](#mongodb--server--config): PRIVATE CLASS: do not call directly
-* [`mongodb::server::install`](#mongodb--server--install): PRIVATE CLASS: do not call directly
-* [`mongodb::server::service`](#mongodb--server--service): PRIVATE CLASS: do not call directly
 * [`mongodb::shardsvr`](#mongodb--shardsvr): Wrapper class useful for hiera based deployments
 
 #### Private Classes
 
-* `mongodb::client::params`
+* `mongodb::client::params`: mongodb client params
+* `mongodb::mongos::config`: Manages mongos config
+* `mongodb::mongos::install`: Manages the mongos package
+* `mongodb::mongos::params`: mongos params
+* `mongodb::mongos::service`: Manages the mongos service
+* `mongodb::params`: mongodb params
+* `mongodb::repo`: Manages the mongodb repository
+* `mongodb::repo::apt`: This is a repo class for apt
+* `mongodb::repo::yum`: This is a repo class for yum
 * `mongodb::repo::zypper`: This is a repo class for zypper
+* `mongodb::server::config`: Manages mongod config
+* `mongodb::server::install`: Manages the mongod package
+* `mongodb::server::service`: Manages the mongos service
 
 ### Defined types
 
@@ -309,6 +309,8 @@ The following parameters are available in the `mongodb::mongos` class:
 * [`service_manage`](#-mongodb--mongos--service_manage)
 * [`service_provider`](#-mongodb--mongos--service_provider)
 * [`service_name`](#-mongodb--mongos--service_name)
+* [`service_user`](#-mongodb--mongos--service_user)
+* [`service_group`](#-mongodb--mongos--service_group)
 * [`service_template`](#-mongodb--mongos--service_template)
 * [`service_enable`](#-mongodb--mongos--service_enable)
 * [`service_ensure`](#-mongodb--mongos--service_ensure)
@@ -386,6 +388,22 @@ Data type: `Optional[String]`
 
 
 Default value: `$mongodb::mongos::params::service_name`
+
+##### <a name="-mongodb--mongos--service_user"></a>`service_user`
+
+Data type: `String`
+
+
+
+Default value: `'mongodb'`
+
+##### <a name="-mongodb--mongos--service_group"></a>`service_group`
+
+Data type: `String`
+
+
+
+Default value: `'mongodb'`
 
 ##### <a name="-mongodb--mongos--service_template"></a>`service_template`
 
@@ -490,262 +508,6 @@ Data type: `Boolean`
 
 
 Default value: `$mongodb::mongos::params::restart`
-
-### <a name="mongodb--mongos--config"></a>`mongodb::mongos::config`
-
-PRIVATE CLASS: do not call directly
-
-#### Parameters
-
-The following parameters are available in the `mongodb::mongos::config` class:
-
-* [`package_ensure`](#-mongodb--mongos--config--package_ensure)
-* [`config`](#-mongodb--mongos--config--config)
-* [`config_content`](#-mongodb--mongos--config--config_content)
-* [`config_template`](#-mongodb--mongos--config--config_template)
-* [`service_manage`](#-mongodb--mongos--config--service_manage)
-* [`configdb`](#-mongodb--mongos--config--configdb)
-* [`bind_ip`](#-mongodb--mongos--config--bind_ip)
-* [`port`](#-mongodb--mongos--config--port)
-* [`fork`](#-mongodb--mongos--config--fork)
-* [`pidfilepath`](#-mongodb--mongos--config--pidfilepath)
-* [`logpath`](#-mongodb--mongos--config--logpath)
-* [`unixsocketprefix`](#-mongodb--mongos--config--unixsocketprefix)
-* [`config_data`](#-mongodb--mongos--config--config_data)
-
-##### <a name="-mongodb--mongos--config--package_ensure"></a>`package_ensure`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::package_ensure`
-
-##### <a name="-mongodb--mongos--config--config"></a>`config`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::config`
-
-##### <a name="-mongodb--mongos--config--config_content"></a>`config_content`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::config_content`
-
-##### <a name="-mongodb--mongos--config--config_template"></a>`config_template`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::config_template`
-
-##### <a name="-mongodb--mongos--config--service_manage"></a>`service_manage`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::service_manage`
-
-##### <a name="-mongodb--mongos--config--configdb"></a>`configdb`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::configdb`
-
-##### <a name="-mongodb--mongos--config--bind_ip"></a>`bind_ip`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::bind_ip`
-
-##### <a name="-mongodb--mongos--config--port"></a>`port`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::port`
-
-##### <a name="-mongodb--mongos--config--fork"></a>`fork`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::fork`
-
-##### <a name="-mongodb--mongos--config--pidfilepath"></a>`pidfilepath`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::pidfilepath`
-
-##### <a name="-mongodb--mongos--config--logpath"></a>`logpath`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::logpath`
-
-##### <a name="-mongodb--mongos--config--unixsocketprefix"></a>`unixsocketprefix`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::unixsocketprefix`
-
-##### <a name="-mongodb--mongos--config--config_data"></a>`config_data`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::config_data`
-
-### <a name="mongodb--mongos--install"></a>`mongodb::mongos::install`
-
-PRIVATE CLASS: do not call directly
-
-#### Parameters
-
-The following parameters are available in the `mongodb::mongos::install` class:
-
-* [`package_ensure`](#-mongodb--mongos--install--package_ensure)
-* [`package_name`](#-mongodb--mongos--install--package_name)
-
-##### <a name="-mongodb--mongos--install--package_ensure"></a>`package_ensure`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::package_ensure`
-
-##### <a name="-mongodb--mongos--install--package_name"></a>`package_name`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::package_name`
-
-### <a name="mongodb--mongos--params"></a>`mongodb::mongos::params`
-
-PRIVATE CLASS: do not use directly
-
-### <a name="mongodb--mongos--service"></a>`mongodb::mongos::service`
-
-PRIVATE CLASS: do not call directly
-
-#### Parameters
-
-The following parameters are available in the `mongodb::mongos::service` class:
-
-* [`package_ensure`](#-mongodb--mongos--service--package_ensure)
-* [`service_manage`](#-mongodb--mongos--service--service_manage)
-* [`service_name`](#-mongodb--mongos--service--service_name)
-* [`service_enable`](#-mongodb--mongos--service--service_enable)
-* [`service_ensure`](#-mongodb--mongos--service--service_ensure)
-* [`service_status`](#-mongodb--mongos--service--service_status)
-* [`service_provider`](#-mongodb--mongos--service--service_provider)
-* [`bind_ip`](#-mongodb--mongos--service--bind_ip)
-* [`port`](#-mongodb--mongos--service--port)
-* [`service_template`](#-mongodb--mongos--service--service_template)
-
-##### <a name="-mongodb--mongos--service--package_ensure"></a>`package_ensure`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::package_ensure`
-
-##### <a name="-mongodb--mongos--service--service_manage"></a>`service_manage`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::service_manage`
-
-##### <a name="-mongodb--mongos--service--service_name"></a>`service_name`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::service_name`
-
-##### <a name="-mongodb--mongos--service--service_enable"></a>`service_enable`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::service_enable`
-
-##### <a name="-mongodb--mongos--service--service_ensure"></a>`service_ensure`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::service_ensure`
-
-##### <a name="-mongodb--mongos--service--service_status"></a>`service_status`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::service_status`
-
-##### <a name="-mongodb--mongos--service--service_provider"></a>`service_provider`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::service_provider`
-
-##### <a name="-mongodb--mongos--service--bind_ip"></a>`bind_ip`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::bind_ip`
-
-##### <a name="-mongodb--mongos--service--port"></a>`port`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::port`
-
-##### <a name="-mongodb--mongos--service--service_template"></a>`service_template`
-
-Data type: `Any`
-
-
-
-Default value: `$mongodb::mongos::service_template`
 
 ### <a name="mongodb--opsmanager"></a>`mongodb::opsmanager`
 
@@ -1035,10 +797,6 @@ Data type: `Optional[Integer]`
 
 Default value: `undef`
 
-### <a name="mongodb--params"></a>`mongodb::params`
-
-PRIVATE CLASS: do not use directly
-
 ### <a name="mongodb--replset"></a>`mongodb::replset`
 
 Wrapper class useful for hiera based deployments
@@ -1056,95 +814,6 @@ Data type: `Any`
 
 
 Default value: `undef`
-
-### <a name="mongodb--repo"></a>`mongodb::repo`
-
-PRIVATE CLASS: do not use directly
-
-#### Parameters
-
-The following parameters are available in the `mongodb::repo` class:
-
-* [`ensure`](#-mongodb--repo--ensure)
-* [`version`](#-mongodb--repo--version)
-* [`use_enterprise_repo`](#-mongodb--repo--use_enterprise_repo)
-* [`repo_location`](#-mongodb--repo--repo_location)
-* [`proxy`](#-mongodb--repo--proxy)
-* [`proxy_username`](#-mongodb--repo--proxy_username)
-* [`proxy_password`](#-mongodb--repo--proxy_password)
-* [`aptkey_options`](#-mongodb--repo--aptkey_options)
-
-##### <a name="-mongodb--repo--ensure"></a>`ensure`
-
-Data type: `Variant[Enum['present', 'absent'], Boolean]`
-
-
-
-Default value: `'present'`
-
-##### <a name="-mongodb--repo--version"></a>`version`
-
-Data type: `Optional[String]`
-
-Optional repo version string.
-
-Default value: `undef`
-
-##### <a name="-mongodb--repo--use_enterprise_repo"></a>`use_enterprise_repo`
-
-Data type: `Boolean`
-
-Boolean value to use enterprise repository. Defaults to false.
-
-Default value: `false`
-
-##### <a name="-mongodb--repo--repo_location"></a>`repo_location`
-
-Data type: `Optional[String]`
-
-Optional location of the repository
-
-Default value: `undef`
-
-##### <a name="-mongodb--repo--proxy"></a>`proxy`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-mongodb--repo--proxy_username"></a>`proxy_username`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-mongodb--repo--proxy_password"></a>`proxy_password`
-
-Data type: `Optional[String]`
-
-
-
-Default value: `undef`
-
-##### <a name="-mongodb--repo--aptkey_options"></a>`aptkey_options`
-
-Data type: `Optional[String[1]]`
-
-
-
-Default value: `undef`
-
-### <a name="mongodb--repo--apt"></a>`mongodb::repo::apt`
-
-PRIVATE CLASS: do not use directly
-
-### <a name="mongodb--repo--yum"></a>`mongodb::repo::yum`
-
-PRIVATE CLASS: do not use directly
 
 ### <a name="mongodb--server"></a>`mongodb::server`
 
@@ -1946,18 +1615,6 @@ Data type: `Array`
 
 
 Default value: `$mongodb::params::admin_roles`
-
-### <a name="mongodb--server--config"></a>`mongodb::server::config`
-
-PRIVATE CLASS: do not call directly
-
-### <a name="mongodb--server--install"></a>`mongodb::server::install`
-
-PRIVATE CLASS: do not call directly
-
-### <a name="mongodb--server--service"></a>`mongodb::server::service`
-
-PRIVATE CLASS: do not call directly
 
 ### <a name="mongodb--shardsvr"></a>`mongodb::shardsvr`
 

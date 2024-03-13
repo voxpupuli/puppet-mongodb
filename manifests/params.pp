@@ -1,4 +1,7 @@
-# PRIVATE CLASS: do not use directly
+# @summary mongodb params
+#
+# @api private
+#
 class mongodb::params inherits mongodb::globals {
   $ensure                = true
   $dbpath                = '/var/lib/mongodb'

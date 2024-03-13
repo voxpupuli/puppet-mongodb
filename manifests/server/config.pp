@@ -1,4 +1,7 @@
-# PRIVATE CLASS: do not call directly
+# @summary Manages mongod config
+#
+# @api private
+#
 class mongodb::server::config {
   $ensure           = $mongodb::server::ensure
   $user             = $mongodb::server::user
