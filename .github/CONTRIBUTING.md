@@ -163,6 +163,11 @@ environment variable:
 BUNDLE_JOBS="$(nproc)"
 ```
 
+Prepare to run tests:
+```sh
+bundle exec rake spec_prep
+```
+
 ### Note for OS X users
 
 `nproc` isn't a valid command under OS x. As an alternative, you can do:
