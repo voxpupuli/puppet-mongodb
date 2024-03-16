@@ -1,4 +1,6 @@
-# PRIVATE CLASS: do not use directly
+# @summary This is a repo class for yum
+#
+# @api private
 class mongodb::repo::yum inherits mongodb::repo {
   # We try to follow/reproduce the instruction
   # http://docs.mongodb.org/manual/tutorial/install-mongodb-on-red-hat-centos-or-fedora-linux/

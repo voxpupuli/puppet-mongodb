@@ -49,7 +49,7 @@ describe 'mongodb::server' do
         if facts[:os]['family'] == 'RedHat' || facts[:os]['family'] == 'Suse'
           it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
         elsif facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to contain_package('mongodb_server').with_ensure('4.4.8').with_name('mongodb-org-server').with_tag('mongodb_package') }
+          it { is_expected.to contain_package('mongodb_server').with_ensure('4.4.29').with_name('mongodb-org-server').with_tag('mongodb_package') }
         else
           it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-server').with_tag('mongodb_package') }
         end

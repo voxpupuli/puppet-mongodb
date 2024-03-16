@@ -1,4 +1,6 @@
-# @summary PRIVATE CLASS: do not call directly
+# @summary Manages mongos config
+#
+# @api private
 #
 # @param package_ensure
 # @param config
@@ -50,25 +52,5 @@ class mongodb::mongos::config (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-  }
-
-  if $service_manage {
-    if $facts['os']['family'] == 'RedHat' or $facts['os']['family'] == 'Suse' {
-      file { '/etc/sysconfig/mongos' :
-        ensure  => $ensure,
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        content => "OPTIONS=\"--quiet -f ${config}\"\n",
-      }
-    } elsif $facts['os']['family'] == 'Debian' {
-      file { '/etc/init.d/mongos' :
-        ensure  => $ensure,
-        content => template('mongodb/mongos/Debian/mongos.erb'),
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0755',
-      }
-    }
   }
 }

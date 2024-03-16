@@ -8,6 +8,8 @@
 # @param service_manage
 # @param service_provider
 # @param service_name
+# @param service_user
+# @param service_group
 # @param service_template
 # @param service_enable
 # @param service_ensure
@@ -31,6 +33,8 @@ class mongodb::mongos (
   Boolean $service_manage                                   = $mongodb::mongos::params::service_manage,
   Optional[String] $service_provider                        = $mongodb::mongos::params::service_provider,
   Optional[String] $service_name                            = $mongodb::mongos::params::service_name,
+  String $service_user                                      = 'mongodb',
+  String $service_group                                     = 'mongodb',
   Optional[String[1]] $service_template                     = $mongodb::mongos::params::service_template,
   Boolean $service_enable                                   = $mongodb::mongos::params::service_enable,
   Stdlib::Ensure::Service $service_ensure                   = $mongodb::mongos::params::service_ensure,

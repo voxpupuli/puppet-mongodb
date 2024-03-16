@@ -1,4 +1,6 @@
-# PRIVATE CLASS: do not use directly
+# @summary This is a repo class for apt
+#
+# @api private
 class mongodb::repo::apt inherits mongodb::repo {
   # we try to follow/reproduce the instruction
   # from http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/

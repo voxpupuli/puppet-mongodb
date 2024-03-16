@@ -1,4 +1,7 @@
-# PRIVATE CLASS: do not call directly
+# @summary Manages the mongos service
+#
+# @api private
+#
 class mongodb::server::service {
   $ensure           = $mongodb::server::service_ensure
   $service_manage   = $mongodb::server::service_manage

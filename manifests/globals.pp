@@ -69,7 +69,7 @@ class mongodb::globals (
     # specified.
     $_repo_version = $version ? {
       Undef   => $facts['os']['family'] in ['RedHat', 'Linux', 'Suse'] ? {
-        true    => '3.6',
+        true    => '4.4',
         default => $version,
       },
       default => $version,
