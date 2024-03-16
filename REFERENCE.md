@@ -98,6 +98,7 @@ The following parameters are available in the `mongodb::globals` class:
 * [`ipv6`](#-mongodb--globals--ipv6)
 * [`bind_ip`](#-mongodb--globals--bind_ip)
 * [`version`](#-mongodb--globals--version)
+* [`repo_version`](#-mongodb--globals--repo_version)
 * [`manage_package_repo`](#-mongodb--globals--manage_package_repo)
 * [`manage_package`](#-mongodb--globals--manage_package)
 * [`repo_proxy`](#-mongodb--globals--repo_proxy)
@@ -213,13 +214,21 @@ Version of mongodb to install
 
 Default value: `undef`
 
+##### <a name="-mongodb--globals--repo_version"></a>`repo_version`
+
+Data type: `String[1]`
+
+Version of mongodb repo to install
+
+Default value: `'5.0'`
+
 ##### <a name="-mongodb--globals--manage_package_repo"></a>`manage_package_repo`
 
-Data type: `Optional[Boolean]`
+Data type: `Boolean`
 
 If `true` configure upstream mongodb repos
 
-Default value: `undef`
+Default value: `true`
 
 ##### <a name="-mongodb--globals--manage_package"></a>`manage_package`
 

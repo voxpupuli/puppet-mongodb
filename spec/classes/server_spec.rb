@@ -24,15 +24,7 @@ describe 'mongodb::server' do
       let(:facts) { facts }
 
       let(:config_file) do
-        if facts[:os]['family'] == 'Debian'
-          if facts[:os]['release']['major'] =~ %r{(10)}
-            '/etc/mongod.conf'
-          else
-            '/etc/mongodb.conf'
-          end
-        else
-          '/etc/mongod.conf'
-        end
+        '/etc/mongod.conf'
       end
 
       let(:log_path) do
@@ -45,14 +37,7 @@ describe 'mongodb::server' do
 
       describe 'with defaults' do
         it_behaves_like 'server classes'
-
-        if facts[:os]['family'] == 'RedHat' || facts[:os]['family'] == 'Suse'
-          it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
-        elsif facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to contain_package('mongodb_server').with_ensure('4.4.29').with_name('mongodb-org-server').with_tag('mongodb_package') }
-        else
-          it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-server').with_tag('mongodb_package') }
-        end
+        it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
 
         it do
           is_expected.to contain_file(config_file).

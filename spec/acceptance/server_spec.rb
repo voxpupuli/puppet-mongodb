@@ -3,28 +3,9 @@
 require 'spec_helper_acceptance'
 
 describe 'mongodb::server class' do
-  case fact('osfamily')
-  when 'Debian'
-    config_file = if fact('os.distro.codename') =~ %r{^(buster)$}
-                    '/etc/mongod.conf'
-                  else
-                    '/etc/mongodb.conf'
-                  end
-    service_name = if fact('os.distro.codename') =~ %r{^(buster)$}
-                     'mongod'
-                   else
-                     'mongodb'
-                   end
-    package_name = if fact('os.distro.codename') =~ %r{^(buster)$}
-                     'mongodb-org-server'
-                   else
-                     'mongodb-server'
-                   end
-  else
-    config_file = '/etc/mongod.conf'
-    service_name = 'mongod'
-    package_name = 'mongodb-org-server'
-  end
+  config_file = '/etc/mongod.conf'
+  service_name = 'mongod'
+  package_name = 'mongodb-org-server'
 
   describe 'installation' do
     it 'works with no errors' do

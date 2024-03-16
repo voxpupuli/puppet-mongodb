@@ -9,26 +9,16 @@ describe 'mongodb::client' do
 
       context 'with defaults' do
         it { is_expected.to compile.with_all_deps }
-
-        if facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to create_package('mongodb_client').with_ensure('4.4.29') }
-        else
-          it { is_expected.to create_package('mongodb_client').with_ensure('present') }
-        end
+        it { is_expected.to create_package('mongodb_client').with_ensure('present').with_name('mongodb-org-shell').with_tag('mongodb_package') }
       end
 
-      context 'with manage_package' do
+      context 'with manage_package_repo set to false' do
         let(:pre_condition) do
-          "class { 'mongodb::globals': manage_package => true }"
+          "class { 'mongodb::globals': manage_package_repo => false }"
         end
 
         it { is_expected.to compile.with_all_deps }
-
-        if facts[:os]['release']['major'] =~ %r{(10)}
-          it { is_expected.to create_package('mongodb_client').with_ensure('4.4.29').with_name('mongodb-org-shell').with_tag('mongodb_package') }
-        else
-          it { is_expected.to create_package('mongodb_client').with_ensure('present').with_name('mongodb-org-shell').with_tag('mongodb_package') }
-        end
+        it { is_expected.to create_package('mongodb_client').with_ensure('present') }
       end
     end
   end
