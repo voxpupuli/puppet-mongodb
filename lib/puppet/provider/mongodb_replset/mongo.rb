@@ -280,7 +280,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
           Puppet.debug 'Replica set initialization has successfully ended'
           return true
         else
-          Puppet.debug "Wainting for replica initialization. Retry: #{n}"
+          Puppet.debug "Waiting for replica initialization. Retry: #{n}"
           sleep retry_sleep
           next
         end
