@@ -59,17 +59,12 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
         roles: role_hashes(@resource[:roles], @resource[:database]),
       }
 
-      if mongo_4? || mongo_5?
-        if @resource[:auth_mechanism] == :scram_sha_256
-          command[:mechanisms] = ['SCRAM-SHA-256']
-          command[:pwd] = @resource[:password]
-          command[:digestPassword] = true
-        else
-          command[:mechanisms] = ['SCRAM-SHA-1']
-          command[:pwd] = password_hash
-          command[:digestPassword] = false
-        end
+      if @resource[:auth_mechanism] == :scram_sha_256
+        command[:mechanisms] = ['SCRAM-SHA-256']
+        command[:pwd] = @resource[:password]
+        command[:digestPassword] = true
       else
+        command[:mechanisms] = ['SCRAM-SHA-1']
         command[:pwd] = password_hash
         command[:digestPassword] = false
       end
@@ -110,22 +105,15 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
     end
   end
 
-  def password=(value)
-    if mongo_26?
-      mongo_eval("db.changeUserPassword(#{@resource[:username].to_json}, #{value.to_json})", @resource[:database])
-    else
-      command = {
-        updateUser: @resource[:username],
-        pwd: @resource[:password],
-        digestPassword: true
-      }
+  def password=(_value)
+    command = {
+      updateUser: @resource[:username],
+      pwd: @resource[:password],
+      digestPassword: true,
+      mechanisms: @resource[:auth_mechanism] == :scram_sha_256 ? ['SCRAM-SHA-256'] : ['SCRAM-SHA-1']
+    }
 
-      if mongo_4? || mongo_5?
-        command[:mechanisms] = @resource[:auth_mechanism] == :scram_sha_256 ? ['SCRAM-SHA-256'] : ['SCRAM-SHA-1']
-      end
-
-      mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
-    end
+    mongo_eval("db.runCommand(#{command.to_json})", @resource[:database])
   end
 
   def roles=(roles)
