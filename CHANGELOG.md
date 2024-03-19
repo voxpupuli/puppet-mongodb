@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v5.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v5.0.0) (2024-03-19)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v4.2.0...v5.0.0)
+
+**Breaking changes:**
+
+- Drop Debian 10 support [\#704](https://github.com/voxpupuli/puppet-mongodb/pull/704) ([h-haaks](https://github.com/h-haaks))
+- Use mongodb repo by default; require repo version \>= 4.4 [\#699](https://github.com/voxpupuli/puppet-mongodb/pull/699) ([h-haaks](https://github.com/h-haaks))
+- Drop Ubuntu 18.04 support [\#693](https://github.com/voxpupuli/puppet-mongodb/pull/693) ([zilchms](https://github.com/zilchms))
+- Drop EoL Puppet 6 [\#672](https://github.com/voxpupuli/puppet-mongodb/pull/672) ([traylenator](https://github.com/traylenator))
+- Drop EoL Debian 9 [\#671](https://github.com/voxpupuli/puppet-mongodb/pull/671) ([traylenator](https://github.com/traylenator))
+- Drop Puppet 6 support [\#669](https://github.com/voxpupuli/puppet-mongodb/pull/669) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- add redhat8, centos8  and debian11 support [\#702](https://github.com/voxpupuli/puppet-mongodb/pull/702) ([h-haaks](https://github.com/h-haaks))
+- Provider cleanup [\#701](https://github.com/voxpupuli/puppet-mongodb/pull/701) ([stevenpost](https://github.com/stevenpost))
+- Mongos as systemd service [\#698](https://github.com/voxpupuli/puppet-mongodb/pull/698) ([h-haaks](https://github.com/h-haaks))
+- puppetlabs/apt: Allow 9.x [\#692](https://github.com/voxpupuli/puppet-mongodb/pull/692) ([zilchms](https://github.com/zilchms))
+- bump systemd: \< 7.0.0 [\#687](https://github.com/voxpupuli/puppet-mongodb/pull/687) ([sandwitch](https://github.com/sandwitch))
+- Set version defaults with hiera data [\#685](https://github.com/voxpupuli/puppet-mongodb/pull/685) ([traylenator](https://github.com/traylenator))
+- Add Puppet 8 support [\#676](https://github.com/voxpupuli/puppet-mongodb/pull/676) ([bastelfreak](https://github.com/bastelfreak))
+- puppetlabs/stdlib: Allow 9.x [\#675](https://github.com/voxpupuli/puppet-mongodb/pull/675) ([bastelfreak](https://github.com/bastelfreak))
+- bump puppet/systemd to \< 5.0.0 [\#665](https://github.com/voxpupuli/puppet-mongodb/pull/665) ([jhoblitt](https://github.com/jhoblitt))
+- New server::admin\_password\_hash parameter [\#659](https://github.com/voxpupuli/puppet-mongodb/pull/659) ([traylenator](https://github.com/traylenator))
+
+**Fixed bugs:**
+
+- Extra json on mongo output causing provider 'mongodb': 783: unexpected token at '{ [\#680](https://github.com/voxpupuli/puppet-mongodb/issues/680)
+- add docs, doc stubs and descriptions to fix validate warnings [\#690](https://github.com/voxpupuli/puppet-mongodb/pull/690) ([zilchms](https://github.com/zilchms))
+- Remove extra line causing errors: "Started a new thread for the timer service" [\#681](https://github.com/voxpupuli/puppet-mongodb/pull/681) ([xepa](https://github.com/xepa))
+- Catch errors on database creation or destroy [\#663](https://github.com/voxpupuli/puppet-mongodb/pull/663) ([JvGinkel](https://github.com/JvGinkel))
+
 ## [v4.2.0](https://github.com/voxpupuli/puppet-mongodb/tree/v4.2.0) (2022-12-07)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v4.1.1...v4.2.0)
