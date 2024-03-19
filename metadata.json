@@ -1,6 +1,6 @@
 {
   "name": "puppet-mongodb",
-  "version": "5.0.0",
+  "version": "5.0.1-rc0",
   "author": "Vox Pupuli",
   "summary": "Installs MongoDB on RHEL/Ubuntu/Debian.",
   "license": "Apache-2.0",
