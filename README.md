@@ -20,33 +20,28 @@
 
 ## Overview
 
-Installs MongoDB on RHEL/Ubuntu/Debian from OS repo, or alternatively from
-MongoDB community/enterprise repositories.
+Installs MongoDB on RHEL/Ubuntu/Debian/SLES from community/enterprise repositories
+or alternatively from custom repositories.
 
 ## Module Description
 
 The MongoDB module manages mongod server installation and configuration of the
-mongod daemon. For the time being it supports only a single MongoDB server
-instance, without sharding functionality.
+mongod daemon.
 
-The MongoDB module also manages Ops Manager setup and the mongdb-mms daemon.
+The MongoDB module also manages mongos, Ops Manager and the mongdb-mms setup.
 
 ## Setup
 
 ### What MongoDB affects
 
-* MongoDB package.
+* MongoDB packages.
 * MongoDB configuration files.
-* MongoDB service.
-* MongoDB client.
-* MongoDB sharding support (mongos)
-* MongoDB apt/yum repository.
-* Ops Manager package.
-* Ops Manager configuration files.
+* MongoDB services.
+* MongoDB apt/yum/zypper repository.
 
 ### Beginning with MongoDB
 
-If you just want a server installation with the default options you can run
+If you want a server installation with the default options you can run
 `include mongodb::server`. If you need to customize configuration
 options you need to do the following:
 
@@ -57,52 +52,20 @@ class {'mongodb::server':
 }
 ```
 
-For Red Hat family systems, the client can be installed in a similar fashion:
+To install client with default options run `include mongodb::client`
 
-```puppet
-class {'mongodb::client':}
-```
-
-Note that for Debian/Ubuntu family systems the client is installed with the
-server. Using the client class will by default install the server.
-
-If one plans to configure sharding for a Mongo deployment, the module offer
-the `mongos` installation. `mongos` can be installed the following way :
-
-```puppet
-class {'mongodb::mongos' :
-  configdb => ['configsvr1.example.com:27018'],
-}
-```
-
-Although most distros come with a prepacked MongoDB server, you may prefer to
-use a more recent version. To install MongoDB from the community repository:
+To override the default mongodb repo version you need the following:
 
 ```puppet
 class {'mongodb::globals':
-  manage_package_repo => true,
-  version             => '3.6',
-}
--> class {'mongodb::client': }
--> class {'mongodb::server': }
-```
-
-If you don't want to use the MongoDB software repository or the OS packages,
-you can point the module to a custom one.
-To install MongoDB from a custom repository:
-
-```puppet
-class {'mongodb::globals':
-  manage_package_repo => true,
-  repo_location => 'http://example.com/repo'
+  repo_version => '4.4',
 }
 -> class {'mongodb::server': }
 -> class {'mongodb::client': }
 ```
 
-Having a local copy of MongoDB repository (that is managed by your private modules)
-you can still enjoy the charms of `mongodb::params` that manage packages.
-To disable managing of repository, but still enable managing packages:
+If you have a custom Mongodb repository
+you can opt out of repo management:
 
 ```puppet
 class {'mongodb::globals':
@@ -138,6 +101,17 @@ mongodb::db { 'testdb':
 ```
 Parameter 'password_hash' is hex encoded md5 hash of "user1:mongo:pass1".
 Unsafe plain text password could be used with 'password' parameter instead of 'password_hash'.
+
+### Sharding
+
+If one plans to configure sharding for a Mongo deployment, the module offer
+the `mongos` installation. `mongos` can be installed the following way :
+
+```puppet
+class {'mongodb::mongos' :
+  configdb => ['configsvr1.example.com:27018'],
+}
+```
 
 ### Ops Manager
 
