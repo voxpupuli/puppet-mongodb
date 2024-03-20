@@ -4,8 +4,7 @@ require 'json'
 require 'yaml'
 
 def mongod_conf_file
-  locations = ['/etc/mongod.conf', '/etc/mongodb.conf']
-  locations.find { |location| File.exist? location }
+  '/etc/mongod.conf'
 end
 
 def get_options_from_hash_config(config)
