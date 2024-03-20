@@ -20,11 +20,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   def self.mongod_conf_file
-    if File.exist? '/etc/mongod.conf'
-      '/etc/mongod.conf'
-    else
-      '/etc/mongodb.conf'
-    end
+    '/etc/mongod.conf'
   end
 
   def self.mongo_conf
