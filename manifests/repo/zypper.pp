@@ -1,4 +1,4 @@
-# PRIVATE CLASS: do not use directly
+# @api private
 #
 # @summary This is a repo class for zypper
 #

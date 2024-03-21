@@ -1,6 +1,6 @@
-# @summary mongodb params
-#
 # @api private
+#
+# @summary mongodb params
 #
 class mongodb::params inherits mongodb::globals {
   $ensure                = true
