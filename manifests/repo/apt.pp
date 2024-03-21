@@ -11,9 +11,6 @@
 # @param keyring_location
 #   Location of the upstream keyring
 #
-# @param version
-#   The version of the mongodb repo
-#
 # @param release
 #   Specifies a distribution of the Apt repository.
 #

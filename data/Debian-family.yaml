@@ -1,3 +1,5 @@
 ---
+mongodb::server::user: 'mongodb'
+mongodb::server::group: 'mongodb'
 mongodb::mongos::service_user: 'mongodb'
 mongodb::mongos::service_group: 'mongodb'

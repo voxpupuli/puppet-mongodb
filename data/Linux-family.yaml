@@ -1,4 +1,5 @@
 ---
+# Amazon uses os family Linux
 mongodb::server::user: 'mongod'
 mongodb::server::group: 'mongod'
 mongodb::server::journal: true

@@ -18,12 +18,9 @@
 
 #### Private Classes
 
-* `mongodb::client::params`: mongodb client params
 * `mongodb::mongos::config`: Manages mongos config
 * `mongodb::mongos::install`: Installs mongos
-* `mongodb::mongos::params`: mongos params
 * `mongodb::mongos::service`: Manages the mongos service
-* `mongodb::params`: mongodb params
 * `mongodb::repo`: Manages the mongodb repository
 * `mongodb::repo::apt`: This is a repo class for apt
 * `mongodb::repo::yum`: This is a repo class for yum
@@ -67,7 +64,7 @@ Data type: `String[1]`
 
 Used to ensure that the package is installed, or that the package is absent/purged
 
-Default value: `$mongodb::client::params::package_ensure`
+Default value: `pick($mongodb::globals::version, 'present')`
 
 ##### <a name="-mongodb--client--package_name"></a>`package_name`
 
@@ -76,7 +73,7 @@ Data type: `String[1]`
 This setting can be used to specify the name of the package that should be installed.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-Default value: `$mongodb::client::params::package_name`
+Default value: `"mongodb-${mongodb::globals::edition}-shell"`
 
 ### <a name="mongodb--globals"></a>`mongodb::globals`
 
@@ -128,7 +125,6 @@ class {'mongodb::globals':
 
 class {'mongodb::globals':
   manage_package_repo => false,
-  manage_package      => true,
 }
 -> class {'mongodb::server': }
 -> class {'mongodb::client': }
@@ -138,147 +134,32 @@ class {'mongodb::globals':
 
 The following parameters are available in the `mongodb::globals` class:
 
-* [`server_package_name`](#-mongodb--globals--server_package_name)
-* [`client_package_name`](#-mongodb--globals--client_package_name)
-* [`mongod_service_manage`](#-mongodb--globals--mongod_service_manage)
-* [`service_enable`](#-mongodb--globals--service_enable)
-* [`service_ensure`](#-mongodb--globals--service_ensure)
-* [`service_name`](#-mongodb--globals--service_name)
-* [`service_provider`](#-mongodb--globals--service_provider)
-* [`service_status`](#-mongodb--globals--service_status)
-* [`user`](#-mongodb--globals--user)
-* [`group`](#-mongodb--globals--group)
-* [`ipv6`](#-mongodb--globals--ipv6)
-* [`bind_ip`](#-mongodb--globals--bind_ip)
 * [`version`](#-mongodb--globals--version)
-* [`repo_version`](#-mongodb--globals--repo_version)
 * [`manage_package_repo`](#-mongodb--globals--manage_package_repo)
-* [`manage_package`](#-mongodb--globals--manage_package)
+* [`repo_version`](#-mongodb--globals--repo_version)
+* [`use_enterprise_repo`](#-mongodb--globals--use_enterprise_repo)
+* [`repo_location`](#-mongodb--globals--repo_location)
 * [`repo_proxy`](#-mongodb--globals--repo_proxy)
+* [`keyring_location`](#-mongodb--globals--keyring_location)
 * [`proxy_username`](#-mongodb--globals--proxy_username)
 * [`proxy_password`](#-mongodb--globals--proxy_password)
-* [`repo_location`](#-mongodb--globals--repo_location)
-* [`keyring_location`](#-mongodb--globals--keyring_location)
-* [`use_enterprise_repo`](#-mongodb--globals--use_enterprise_repo)
-* [`pidfilepath`](#-mongodb--globals--pidfilepath)
-* [`pidfilemode`](#-mongodb--globals--pidfilemode)
-* [`manage_pidfile`](#-mongodb--globals--manage_pidfile)
-
-##### <a name="-mongodb--globals--server_package_name"></a>`server_package_name`
-
-Data type: `Any`
-
-This setting can be used to override the default MongoDB server package name.
-If not specified, the module will use whatever package name is the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--client_package_name"></a>`client_package_name`
-
-Data type: `Any`
-
-This setting can be used to specify the name of the client package that should be installed.
-If not specified, the module will use whatever service name is the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--mongod_service_manage"></a>`mongod_service_manage`
-
-Data type: `Any`
-
-This setting can be used to override the default management of the mongod service.
-By default the module will manage the mongod process.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--service_enable"></a>`service_enable`
-
-Data type: `Any`
-
-This setting can be used to specify if the service should be enable at boot
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--service_ensure"></a>`service_ensure`
-
-Data type: `Any`
-
-This setting can be used to specify if the service should be running
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--service_name"></a>`service_name`
-
-Data type: `Any`
-
-This setting can be used to override the default MongoDB service name.
-If not specified, the module will use whatever service name is the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--service_provider"></a>`service_provider`
-
-Data type: `Any`
-
-This setting can be used to override the default MongoDB service provider.
-If not specified, the module will use whatever service provider is the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--service_status"></a>`service_status`
-
-Data type: `Any`
-
-This setting can be used to override the default status check command for your MongoDB service.
- If not specified, the module will use whatever service name is the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--user"></a>`user`
-
-Data type: `Any`
-
-This setting can be used to override the default MongoDB user and owner of the service and related files in the file system.
-If not specified, the module will use the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--group"></a>`group`
-
-Data type: `Any`
-
-This setting can be used to override the default MongoDB user group to be used for related files in the file system.
-If not specified, the module will use the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--ipv6"></a>`ipv6`
-
-Data type: `Any`
-
-This setting is used to configure MongoDB to turn on ipv6 support.
-If not specified and ipv6 address is passed to MongoDB bind_ip it will just fail.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--bind_ip"></a>`bind_ip`
-
-Data type: `Any`
-
-This setting can be used to configure MonogDB process to bind to and listen for connections from applications on this address.
-If not specified, the module will use the default for your OS distro.
-Note: This value should be passed as an array.
-
-Default value: `undef`
 
 ##### <a name="-mongodb--globals--version"></a>`version`
 
 Data type: `Optional[String[1]]`
 
-The version of MonogDB to install/manage. This is needed when managing repositories.
-If not specified, the module will use the default for your OS distro.
+The version of MonogDB to install/manage.
+If not specified, the module will ensure packages with `present`.
 
 Default value: `undef`
+
+##### <a name="-mongodb--globals--manage_package_repo"></a>`manage_package_repo`
+
+Data type: `Boolean`
+
+Whether to manage MongoDB software repository.
+
+Default value: `true`
 
 ##### <a name="-mongodb--globals--repo_version"></a>`repo_version`
 
@@ -288,34 +169,45 @@ The version of the package repo.
 
 Default value: `'5.0'`
 
-##### <a name="-mongodb--globals--manage_package_repo"></a>`manage_package_repo`
+##### <a name="-mongodb--globals--use_enterprise_repo"></a>`use_enterprise_repo`
 
 Data type: `Boolean`
 
-Whether to use the MongoDB software repository or the OS packages (True) or a Custom repo (False)
+When manage_package_repo is set to true, this setting indicates if it will use the Community Edition
+(false, the default) or the Enterprise one (true).
 
-Default value: `true`
+Default value: `false`
 
-##### <a name="-mongodb--globals--manage_package"></a>`manage_package`
+##### <a name="-mongodb--globals--repo_location"></a>`repo_location`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-wgether this module willm manage the mongoDB server package
+This setting can be used to override the default MongoDB repository location.
+If not specified, the module will use the default repository for your OS distro.
 
 Default value: `undef`
 
 ##### <a name="-mongodb--globals--repo_proxy"></a>`repo_proxy`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
 This will allow you to set a proxy for your repository in case you are behind a corporate firewall.
 Currently this is only supported with yum repositories
 
 Default value: `undef`
 
+##### <a name="-mongodb--globals--keyring_location"></a>`keyring_location`
+
+Data type: `Optional[String]`
+
+When `repo_location` is used for an apt repository this setting can be used for the keyring
+file to download.
+
+Default value: `undef`
+
 ##### <a name="-mongodb--globals--proxy_username"></a>`proxy_username`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
 This sets the username for the proxyserver, should authentication be required.
 
@@ -323,61 +215,9 @@ Default value: `undef`
 
 ##### <a name="-mongodb--globals--proxy_password"></a>`proxy_password`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
 This sets the password for the proxyserver, should authentication be required
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--repo_location"></a>`repo_location`
-
-Data type: `Any`
-
-This setting can be used to override the default MongoDB repository location.
-If not specified, the module will use the default repository for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--keyring_location"></a>`keyring_location`
-
-Data type: `Any`
-
-When `repo_location` is used for an apt repository this setting can be used for the keyring
-file to download.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--use_enterprise_repo"></a>`use_enterprise_repo`
-
-Data type: `Any`
-
-When manage_package_repo is set to true, this setting indicates if it will use the Community Edition
-(false, the default) or the Enterprise one (true).
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--pidfilepath"></a>`pidfilepath`
-
-Data type: `Any`
-
-Specify a file location to hold the PID or process ID of the mongod process.
-If not specified, the module will use the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--pidfilemode"></a>`pidfilemode`
-
-Data type: `Any`
-
-The file mode of the pid file
-
-Default value: `undef`
-
-##### <a name="-mongodb--globals--manage_pidfile"></a>`manage_pidfile`
-
-Data type: `Any`
-
-If true, the pidfile will be managed by puppet
 
 Default value: `undef`
 
@@ -431,7 +271,7 @@ Data type: `Stdlib::Absolutepath`
 
 Path of the config file. If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::mongos::params::config`
+Default value: `'/etc/mongos.conf'`
 
 ##### <a name="-mongodb--mongos--config_content"></a>`config_content`
 
@@ -439,7 +279,7 @@ Data type: `Optional[String[1]]`
 
 Config content if the default doesn't match one needs.
 
-Default value: `$mongodb::mongos::params::config_content`
+Default value: `undef`
 
 ##### <a name="-mongodb--mongos--config_template"></a>`config_template`
 
@@ -447,7 +287,7 @@ Data type: `Optional[String[1]]`
 
 Path to the config template if the default doesn't match one needs.
 
-Default value: `$mongodb::mongos::params::config_template`
+Default value: `undef`
 
 ##### <a name="-mongodb--mongos--configdb"></a>`configdb`
 
@@ -455,7 +295,7 @@ Data type: `Variant[String[1], Array[String[1]]]`
 
 Array of the config servers IP addresses the mongos should connect to.
 
-Default value: `$mongodb::mongos::params::configdb`
+Default value: `'127.0.0.1:27019'`
 
 ##### <a name="-mongodb--mongos--config_data"></a>`config_data`
 
@@ -463,7 +303,7 @@ Data type: `Optional[Hash]`
 
 Hash containing key-value pairs to allow for additional configuration options to be set in user-provided template.
 
-Default value: `$mongodb::mongos::params::config_data`
+Default value: `undef`
 
 ##### <a name="-mongodb--mongos--service_manage"></a>`service_manage`
 
@@ -471,7 +311,7 @@ Data type: `Boolean`
 
 Whether or not the MongoDB sharding service resource should be part of the catalog.
 
-Default value: `$mongodb::mongos::params::service_manage`
+Default value: `true`
 
 ##### <a name="-mongodb--mongos--service_provider"></a>`service_provider`
 
@@ -480,20 +320,20 @@ Data type: `Optional[String]`
 This setting can be used to override the default Mongos service provider.
 If not specified, the module will use whatever service provider is the default for your OS distro.
 
-Default value: `$mongodb::mongos::params::service_provider`
+Default value: `undef`
 
 ##### <a name="-mongodb--mongos--service_name"></a>`service_name`
 
-Data type: `Optional[String]`
+Data type: `String[1]`
 
 This setting can be used to override the default Mongos service name.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-Default value: `$mongodb::mongos::params::service_name`
+Default value: `'mongos'`
 
 ##### <a name="-mongodb--mongos--service_user"></a>`service_user`
 
-Data type: `String`
+Data type: `String[1]`
 
 The user used by Systemd for running the service.
 
@@ -501,7 +341,7 @@ Default value: `'mongodb'`
 
 ##### <a name="-mongodb--mongos--service_group"></a>`service_group`
 
-Data type: `String`
+Data type: `String[1]`
 
 The group used by Systemd for running the service
 
@@ -509,11 +349,11 @@ Default value: `'mongodb'`
 
 ##### <a name="-mongodb--mongos--service_template"></a>`service_template`
 
-Data type: `Optional[String[1]]`
+Data type: `String[1]`
 
 Path to the service template if the default doesn't match one needs.
 
-Default value: `$mongodb::mongos::params::service_template`
+Default value: `'mongodb/mongos/mongos.service-dropin.epp'`
 
 ##### <a name="-mongodb--mongos--service_enable"></a>`service_enable`
 
@@ -521,7 +361,7 @@ Data type: `Boolean`
 
 This setting can be used to specify if the service should be enable at boot
 
-Default value: `$mongodb::mongos::params::service_enable`
+Default value: `true`
 
 ##### <a name="-mongodb--mongos--service_ensure"></a>`service_ensure`
 
@@ -529,7 +369,7 @@ Data type: `Stdlib::Ensure::Service`
 
 This setting can be used to specify if the service should be running
 
-Default value: `$mongodb::mongos::params::service_ensure`
+Default value: `'running'`
 
 ##### <a name="-mongodb--mongos--service_status"></a>`service_status`
 
@@ -538,15 +378,15 @@ Data type: `Optional[String]`
 This setting can be used to override the default status check command for your Mongos service.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-Default value: `$mongodb::mongos::params::service_status`
+Default value: `undef`
 
 ##### <a name="-mongodb--mongos--package_ensure"></a>`package_ensure`
 
-Data type: `Variant[Boolean, String]`
+Data type: `String[1]`
 
 This setting can be used to specify if puppet should install the package or not
 
-Default value: `$mongodb::mongos::params::package_ensure`
+Default value: `pick($mongodb::globals::version, 'present')`
 
 ##### <a name="-mongodb--mongos--package_name"></a>`package_name`
 
@@ -555,41 +395,41 @@ Data type: `String`
 This setting can be used to specify the name of the package that should be installed.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-Default value: `$mongodb::mongos::params::package_name`
+Default value: `"mongodb-${mongodb::globals::edition}-mongos"`
 
 ##### <a name="-mongodb--mongos--unixsocketprefix"></a>`unixsocketprefix`
 
-Data type: `Optional[Stdlib::Absolutepath]`
+Data type: `Stdlib::Absolutepath`
 
 The path for the UNIX socket. If this option has no value, the mongos process creates a socket with /tmp as a prefix.
 
-Default value: `$mongodb::mongos::params::unixsocketprefix`
+Default value: `'/var/run/mongodb'`
 
 ##### <a name="-mongodb--mongos--pidfilepath"></a>`pidfilepath`
 
-Data type: `Optional[Stdlib::Absolutepath]`
+Data type: `Stdlib::Absolutepath`
 
 Specify a file location to hold the PID or process ID of the mongod process.
 If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::mongos::params::pidfilepath`
+Default value: `'/var/run/mongodb/mongos.pid'`
 
 ##### <a name="-mongodb--mongos--logpath"></a>`logpath`
 
-Data type: `Optional[Variant[Boolean, Stdlib::Absolutepath]]`
+Data type: `Variant[Boolean, Stdlib::Absolutepath]`
 
 Specify the path to a file name for the log file that will hold all diagnostic logging information.
 Unless specified, mongod will output all log information to the standard output.
 
-Default value: `$mongodb::mongos::params::logpath`
+Default value: `'/var/log/mongodb/mongos.log'`
 
 ##### <a name="-mongodb--mongos--fork"></a>`fork`
 
-Data type: `Optional[Boolean]`
+Data type: `Boolean`
 
 Set to true to fork server process at launch time. The default setting depends on the operating system.
 
-Default value: `$mongodb::mongos::params::fork`
+Default value: `true`
 
 ##### <a name="-mongodb--mongos--bind_ip"></a>`bind_ip`
 
@@ -598,7 +438,7 @@ Data type: `Optional[Array[Stdlib::IP::Address]]`
 Set this option to configure the mongod or mongos process to bind to and listen for connections from applications on this address.
 If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::mongos::params::bind_ip`
+Default value: `undef`
 
 ##### <a name="-mongodb--mongos--port"></a>`port`
 
@@ -606,7 +446,7 @@ Data type: `Optional[Stdlib::Port]`
 
 Specifies a TCP port for the server instance to listen for client connections.
 
-Default value: `$mongodb::mongos::params::port`
+Default value: `undef`
 
 ##### <a name="-mongodb--mongos--restart"></a>`restart`
 
@@ -614,7 +454,7 @@ Data type: `Boolean`
 
 Specifies whether the service should be restarted on config changes.
 
-Default value: `$mongodb::mongos::params::restart`
+Default value: `true`
 
 ### <a name="mongodb--opsmanager"></a>`mongodb::opsmanager`
 
@@ -1044,30 +884,30 @@ The following parameters are available in the `mongodb::server` class:
 
 ##### <a name="-mongodb--server--ensure"></a>`ensure`
 
-Data type: `Variant[Boolean, String]`
+Data type: `String[1]`
 
 Used to ensure that the package is installed and the service is running, or that the package is
 absent/purged and the service is stopped.
 
-Default value: `$mongodb::params::ensure`
+Default value: `'present'`
 
 ##### <a name="-mongodb--server--user"></a>`user`
 
-Data type: `String`
+Data type: `String[1]`
 
 This setting can be used to override the default MongoDB user and owner of the service and related files in the file system.
 If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::params::user`
+Default value: `'mongod'`
 
 ##### <a name="-mongodb--server--group"></a>`group`
 
-Data type: `String`
+Data type: `String[1]`
 
 This setting can be used to override the default MongoDB user group to be used for related files in the file system.
 If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::params::group`
+Default value: `'mongod'`
 
 ##### <a name="-mongodb--server--config"></a>`config`
 
@@ -1075,7 +915,7 @@ Data type: `Stdlib::Absolutepath`
 
 Path of the config file. If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::params::config`
+Default value: `'/etc/mongod.conf'`
 
 ##### <a name="-mongodb--server--dbpath"></a>`dbpath`
 
@@ -1084,7 +924,7 @@ Data type: `Stdlib::Absolutepath`
 Set this value to designate a directory for the mongod instance to store it's data.
 If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::params::dbpath`
+Default value: `'/var/lib/mongodb'`
 
 ##### <a name="-mongodb--server--dbpath_fix"></a>`dbpath_fix`
 
@@ -1094,15 +934,15 @@ Set this value to true if you want puppet to recursively manage the permissions 
 directory. If you are using the default dbpath, this should probably be false. Set this to true if you are
 using a custom dbpath.
 
-Default value: `$mongodb::params::dbpath_fix`
+Default value: `false`
 
 ##### <a name="-mongodb--server--pidfilemode"></a>`pidfilemode`
 
-Data type: `String`
+Data type: `String[4,4]`
 
 The file mode of the pidfilepath
 
-Default value: `$mongodb::params::pidfilemode`
+Default value: `'0644'`
 
 ##### <a name="-mongodb--server--pidfilepath"></a>`pidfilepath`
 
@@ -1111,7 +951,7 @@ Data type: `Optional[Stdlib::Absolutepath]`
 Specify a file location to hold the PID or process ID of the mongod process.
 If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::params::pidfilepath`
+Default value: `undef`
 
 ##### <a name="-mongodb--server--manage_pidfile"></a>`manage_pidfile`
 
@@ -1119,7 +959,7 @@ Data type: `Boolean`
 
 Should puppet create the pidfile. Mongod 6.2.10 will not start if pidfile exists
 
-Default value: `$mongodb::params::manage_pidfile`
+Default value: `false`
 
 ##### <a name="-mongodb--server--rcfile"></a>`rcfile`
 
@@ -1127,7 +967,7 @@ Data type: `String`
 
 The path to the custom mongosh rc file.
 
-Default value: `$mongodb::params::rcfile`
+Default value: `"${facts['root_home']}/.mongorc.js"`
 
 ##### <a name="-mongodb--server--service_manage"></a>`service_manage`
 
@@ -1135,31 +975,31 @@ Data type: `Boolean`
 
 Whether or not the MongoDB service resource should be part of the catalog.
 
-Default value: `$mongodb::params::service_manage`
+Default value: `true`
 
 ##### <a name="-mongodb--server--service_manage"></a>`service_manage`
 
 Whether or not the MongoDB sharding service resource should be part of the catalog.
 
-Default value: `$mongodb::params::service_manage`
+Default value: `true`
 
 ##### <a name="-mongodb--server--service_name"></a>`service_name`
 
-Data type: `Optional[String]`
+Data type: `String[1]`
 
 This setting can be used to override the default Mongos service name.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-Default value: `$mongodb::params::service_name`
+Default value: `'mongod'`
 
 ##### <a name="-mongodb--server--service_provider"></a>`service_provider`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 This setting can be used to override the default Mongos service provider.
 If not specified, the module will use whatever service provider is the default for your OS distro.
 
-Default value: `$mongodb::params::service_provider`
+Default value: `undef`
 
 ##### <a name="-mongodb--server--service_status"></a>`service_status`
 
@@ -1168,7 +1008,7 @@ Data type: `Optional[Enum['stopped', 'running']]`
 This setting can be used to override the default status check command for your Mongos service.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-Default value: `$mongodb::params::service_status`
+Default value: `undef`
 
 ##### <a name="-mongodb--server--service_enable"></a>`service_enable`
 
@@ -1176,7 +1016,7 @@ Data type: `Boolean`
 
 This setting can be used to specify if the service should be enable at boot.
 
-Default value: `$mongodb::params::service_enable`
+Default value: `true`
 
 ##### <a name="-mongodb--server--service_ensure"></a>`service_ensure`
 
@@ -1184,33 +1024,33 @@ Data type: `Enum['stopped', 'running']`
 
 
 
-Default value: `$mongodb::params::service_ensure`
+Default value: `'running'`
 
 ##### <a name="-mongodb--server--package_ensure"></a>`package_ensure`
 
-Data type: `Variant[Boolean, String]`
+Data type: `String[1]`
 
 This setting can be used to specify if puppet should install the package or not.
 
-Default value: `$mongodb::params::package_ensure`
+Default value: `pick($mongodb::globals::version, 'present')`
 
 ##### <a name="-mongodb--server--package_name"></a>`package_name`
 
-Data type: `String`
+Data type: `String[1]`
 
 This setting can be used to specify the name of the package that should be installed.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-Default value: `$mongodb::params::server_package_name`
+Default value: `"mongodb-${mongodb::globals::edition}-server"`
 
 ##### <a name="-mongodb--server--logpath"></a>`logpath`
 
-Data type: `Variant[Boolean, Stdlib::Absolutepath]`
+Data type: `Stdlib::Absolutepath`
 
 Specify the path to a file name for the log file that will hold all diagnostic logging information.
 Unless specified, mongod will output all log information to the standard output.
 
-Default value: `$mongodb::params::logpath`
+Default value: `'/var/log/mongodb/mongod.log'`
 
 ##### <a name="-mongodb--server--bind_ip"></a>`bind_ip`
 
@@ -1219,7 +1059,7 @@ Data type: `Array[Stdlib::IP::Address]`
 Set this option to configure the mongod or mongos process to bind to and listen for connections from
 applications on this address. If not specified, the module will use the default for your OS distro.
 
-Default value: `$mongodb::params::bind_ip`
+Default value: `['127.0.0.1']`
 
 ##### <a name="-mongodb--server--ipv6"></a>`ipv6`
 
@@ -1250,11 +1090,11 @@ Default value: `undef`
 
 ##### <a name="-mongodb--server--fork"></a>`fork`
 
-Data type: `Optional[Boolean]`
+Data type: `Boolean`
 
 Set to true to fork server process at launch time. The default setting depends on the operating system.
 
-Default value: `$mongodb::params::fork`
+Default value: `false`
 
 ##### <a name="-mongodb--server--port"></a>`port`
 
@@ -1270,7 +1110,7 @@ Data type: `Optional[Boolean]`
 
 Set to true to enable operation journaling to ensure write durability and data consistency.
 
-Default value: `$mongodb::params::journal`
+Default value: `undef`
 
 ##### <a name="-mongodb--server--nojournal"></a>`nojournal`
 
@@ -1582,12 +1422,11 @@ Default value: `undef`
 
 ##### <a name="-mongodb--server--syslog"></a>`syslog`
 
-Data type: `Optional[Boolean]`
+Data type: `Boolean`
 
 Sends all logging output to the host’s syslog system rather than to standard output or a log file.
-Important: You cannot use syslog with logpath. Set logpath to false to disable it.
 
-Default value: `undef`
+Default value: `false`
 
 ##### <a name="-mongodb--server--config_content"></a>`config_content`
 
@@ -1725,7 +1564,7 @@ Data type: `Boolean`
 
 Specifies whether the service should be restarted on config changes.
 
-Default value: `$mongodb::params::restart`
+Default value: `true`
 
 ##### <a name="-mongodb--server--storage_engine"></a>`storage_engine`
 
@@ -1742,7 +1581,7 @@ Data type: `Boolean`
 
 Allows to create admin user for admin database.
 
-Default value: `$mongodb::params::create_admin`
+Default value: `false`
 
 ##### <a name="-mongodb--server--admin_username"></a>`admin_username`
 
@@ -1750,7 +1589,7 @@ Data type: `String`
 
 Administrator user name
 
-Default value: `$mongodb::params::admin_username`
+Default value: `'admin'`
 
 ##### <a name="-mongodb--server--admin_password"></a>`admin_password`
 
@@ -1766,7 +1605,7 @@ Data type: `Enum['scram_sha_1', 'scram_sha_256']`
 
 Administrator authentication mechanism. scram_sha_256 password synchronization verification is not supported.
 
-Default value: `$mongodb::params::admin_auth_mechanism`
+Default value: `'scram_sha_1'`
 
 ##### <a name="-mongodb--server--admin_update_password"></a>`admin_update_password`
 
@@ -1778,11 +1617,19 @@ Default value: `false`
 
 ##### <a name="-mongodb--server--admin_roles"></a>`admin_roles`
 
-Data type: `Array`
+Data type: `Array[String[1]]`
 
 Administrator user roles
 
-Default value: `$mongodb::params::admin_roles`
+Default value:
+
+```puppet
+[
+    'userAdmin', 'readWrite', 'dbAdmin', 'dbAdminAnyDatabase', 'readAnyDatabase',
+    'readWriteAnyDatabase', 'userAdminAnyDatabase', 'clusterAdmin',
+    'clusterManager', 'clusterMonitor', 'hostManager', 'root', 'restore',
+  ]
+```
 
 ##### <a name="-mongodb--server--handle_creds"></a>`handle_creds`
 
@@ -1791,7 +1638,7 @@ Data type: `Boolean`
 Set this to false to avoid having puppet handle .mongoshrc.js in case you wish to deliver it by other
 means. This is needed for facts and providers to work if you have auth set to true.
 
-Default value: `$mongodb::params::handle_creds`
+Default value: `true`
 
 ##### <a name="-mongodb--server--store_creds"></a>`store_creds`
 
@@ -1799,7 +1646,7 @@ Data type: `Boolean`
 
 Store admin credentials in mongoshrc.js file. Uses with create_admin parameter
 
-Default value: `$mongodb::params::store_creds`
+Default value: `false`
 
 ### <a name="mongodb--shardsvr"></a>`mongodb::shardsvr`
 

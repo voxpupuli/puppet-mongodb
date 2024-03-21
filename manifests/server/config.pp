@@ -82,8 +82,6 @@ class mongodb::server::config {
     group => $group,
   }
 
-  if ($logpath and $syslog) { fail('You cannot use syslog with logpath') }
-
   if ($ssl and $tls) { fail('You cannot use ssl and tls options together') }
 
   if ($ensure == 'present' or $ensure == true) {
