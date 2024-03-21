@@ -109,6 +109,19 @@ class {'mongodb::globals':
 -> class {'mongodb::server': }
 ```
 
+##### Use a custom MongoDB apt repository.
+
+```puppet
+
+class {'mongodb::globals':
+  manage_package_repo => true,
+  repo_location       => 'https://example.com/repo',
+  keyring_location    => 'https://example.com/keyring.asc'
+}
+-> class {'mongodb::client': }
+-> class {'mongodb::server': }
+```
+
 ##### To disable managing of repository, but still enable managing packages.
 
 ```puppet
@@ -145,6 +158,7 @@ The following parameters are available in the `mongodb::globals` class:
 * [`proxy_username`](#-mongodb--globals--proxy_username)
 * [`proxy_password`](#-mongodb--globals--proxy_password)
 * [`repo_location`](#-mongodb--globals--repo_location)
+* [`keyring_location`](#-mongodb--globals--keyring_location)
 * [`use_enterprise_repo`](#-mongodb--globals--use_enterprise_repo)
 * [`pidfilepath`](#-mongodb--globals--pidfilepath)
 * [`pidfilemode`](#-mongodb--globals--pidfilemode)
@@ -321,6 +335,15 @@ Data type: `Any`
 
 This setting can be used to override the default MongoDB repository location.
 If not specified, the module will use the default repository for your OS distro.
+
+Default value: `undef`
+
+##### <a name="-mongodb--globals--keyring_location"></a>`keyring_location`
+
+Data type: `Any`
+
+When `repo_location` is used for an apt repository this setting can be used for the keyring
+file to download.
 
 Default value: `undef`
 
