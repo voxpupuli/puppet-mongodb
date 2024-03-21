@@ -32,43 +32,9 @@ def get_options_from_hash_config(config)
   result.join(' ')
 end
 
-def get_options_from_keyvalue_config(file)
-  config = {}
-  File.readlines(file).map do |line|
-    k, v = line.split('=')
-    config[k.rstrip] = v.lstrip.chomp if k && v
-  end
-
-  result = []
-
-  result << "--port #{config['port']}" unless config['port'].nil?
-  # use --ssl and --host if:
-  # - sslMode is "requireSSL"
-  # - Parameter --sslPEMKeyFile is set
-  # - Parameter --sslCAFile is set
-  result << "--ssl --host #{Facter.value(:fqdn)}" if config['ssl'] == 'requireSSL' || !config['sslcert'].nil? || !config['sslca'].nil?
-  result << "--sslPEMKeyFile #{config['sslcert']}" unless config['sslcert'].nil?
-  result << "--sslCAFile #{config['sslca']}" unless config['sslca'].nil?
-  # use --tls and --host if:
-  # - tlsMode is "requireTLS"
-  # - Parameter --tlsCertificateKeyFile is set
-  # - Parameter --tlsCAFile is set
-  result << "--tls --host #{Facter.value(:fqdn)}" if config['tls'] == 'requireTLS' || !config['tlscert'].nil? || !config['tlsca'].nil?
-  result << "--tlsCertificateKeyFile #{config['tlscert']}" unless config['tlscert'].nil?
-  result << "--tlsCAFile #{config['tlsca']}" unless config['tlsca'].nil?
-
-  result << '--ipv6' unless config['ipv6'].nil?
-
-  result.join(' ')
-end
-
 def get_options_from_config(file)
   config = YAML.load_file(file)
-  if config.is_a?(Hash) # Using a valid YAML file for mongo 2.6
-    get_options_from_hash_config(config)
-  else # It has to be a key-value config file
-    get_options_from_keyvalue_config(file)
-  end
+  get_options_from_hash_config(config)
 end
 
 Facter.add('mongodb_is_master') do
