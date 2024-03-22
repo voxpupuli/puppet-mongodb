@@ -4,7 +4,6 @@
 #
 class mongodb::params inherits mongodb::globals {
   $ensure                = true
-  $dbpath                = '/var/lib/mongodb'
   $bind_ip               = pick($mongodb::globals::bind_ip, ['127.0.0.1'])
   $ipv6                  = undef
   $service_manage        = pick($mongodb::globals::mongod_service_manage, true)
@@ -49,6 +48,7 @@ class mongodb::params inherits mongodb::globals {
       $server_package_name     = pick($mongodb::globals::server_package_name, "mongodb-${mongodb::globals::edition}-server")
 
       $service_name = pick($mongodb::globals::service_name, 'mongod')
+      $dbpath       = '/var/lib/mongo'
       $logpath      = '/var/log/mongodb/mongod.log'
       $pidfilepath  = '/var/run/mongodb/mongod.pid'
       $config       = '/etc/mongod.conf'
@@ -69,6 +69,7 @@ class mongodb::params inherits mongodb::globals {
       }
       $user                    = pick($mongodb::globals::user, 'mongodb')
       $group                   = pick($mongodb::globals::group, 'mongodb')
+      $dbpath                  = '/var/lib/mongodb'
       $logpath                 = '/var/log/mongodb/mongodb.log'
       # avoid using fork because of the init scripts design
       $fork                    = undef
