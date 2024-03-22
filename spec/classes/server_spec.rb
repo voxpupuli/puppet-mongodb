@@ -44,10 +44,15 @@ describe 'mongodb::server' do
             with_mode('0644').
             with_owner('root').
             with_group('root').
-            with_content(%r{^storage\.dbPath: /var/lib/mongodb$}).
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
             with_content(%r{^systemLog\.logAppend: true$}).
             with_content(%r{^systemLog\.path: #{log_path}$})
+        end
+
+        if facts[:os]['family'] == 'RedHat'
+          it { is_expected.to contain_file(config_file).with_content(%r{^storage\.dbPath: /var/lib/mongo$}) }
+        else
+          it { is_expected.to contain_file(config_file).with_content(%r{^storage\.dbPath: /var/lib/mongodb$}) }
         end
 
         if facts[:os]['family'] == 'Debian'
