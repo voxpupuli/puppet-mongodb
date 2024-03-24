@@ -27,11 +27,19 @@ describe 'mongodb::server' do
         '/etc/mongod.conf'
       end
 
-      let(:log_path) do
-        '/var/log/mongodb/mongod.log'
+      let(:db_path) do
+        if facts[:os]['family'] == 'RedHat'
+          '/var/lib/mongo'
+        else
+          '/var/lib/mongodb'
+        end
       end
 
       describe 'with defaults' do
+        let(:log_path) do
+          '/var/log/mongodb/mongod.log'
+        end
+
         it_behaves_like 'server classes'
         it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
 
@@ -40,7 +48,7 @@ describe 'mongodb::server' do
             with_mode('0644').
             with_owner('root').
             with_group('root').
-            with_content(%r{^storage\.dbPath: /var/lib/mongodb$}).
+            with_content(%r{^storage\.dbPath: #{db_path}$}).
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
             with_content(%r{^systemLog\.logAppend: true$}).
             with_content(%r{^systemLog\.path: #{log_path}$})
@@ -295,10 +303,10 @@ describe 'mongodb::server' do
 
         it do
           is_expected.to contain_exec('fix dbpath permissions').
-            with_command('chown -R foo:bar /var/lib/mongodb').
+            with_command("chown -R foo:bar #{db_path}").
             with_path(['/usr/bin', '/bin']).
-            with_onlyif("find /var/lib/mongodb -not -user foo -o -not -group bar -print -quit | grep -q '.*'").
-            that_subscribes_to('File[/var/lib/mongodb]')
+            with_onlyif("find #{db_path} -not -user foo -o -not -group bar -print -quit | grep -q '.*'").
+            that_subscribes_to("File[#{db_path}]")
         end
       end
 
