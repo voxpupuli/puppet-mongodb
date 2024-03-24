@@ -52,19 +52,19 @@
   "dependencies": [
     {
       "name": "puppetlabs/apt",
-      "version_requirement": ">= 2.1.0 < 10.0.0"
+      "version_requirement": ">= 9.2.0 < 10.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.25.0 < 10.0.0"
+      "version_requirement": ">= 9.0.0 < 10.0.0"
     },
     {
       "name": "puppet/systemd",
-      "version_requirement": ">= 2.5.1 < 7.0.0"
+      "version_requirement": ">= 5.1.0 < 7.0.0"
     },
     {
       "name": "puppet/zypprepo",
-      "version_requirement": ">= 4.0.1 < 6.0.0"
+      "version_requirement": ">= 5.0.0 < 6.0.0"
     }
   ]
 }

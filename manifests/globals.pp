@@ -19,6 +19,16 @@
 #   -> class {'mongodb::client': }
 #   -> class {'mongodb::server': }
 #
+# @example Use a custom MongoDB apt repository.
+#
+#   class {'mongodb::globals':
+#     manage_package_repo => true,
+#     repo_location       => 'https://example.com/repo',
+#     keyring_location    => 'https://example.com/keyring.asc'
+#   }
+#   -> class {'mongodb::client': }
+#   -> class {'mongodb::server': }
+#
 # @example To disable managing of repository, but still enable managing packages.
 #
 #   class {'mongodb::globals':
@@ -101,6 +111,10 @@
 #   This setting can be used to override the default MongoDB repository location.
 #   If not specified, the module will use the default repository for your OS distro.
 #
+# @param keyring_location
+#   When `repo_location` is used for an apt repository this setting can be used for the keyring
+#   file to download.
+#
 # @param use_enterprise_repo
 #   When manage_package_repo is set to true, this setting indicates if it will use the Community Edition
 #   (false, the default) or the Enterprise one (true).
@@ -139,6 +153,7 @@ class mongodb::globals (
   $proxy_password              = undef,
 
   $repo_location               = undef,
+  $keyring_location            = undef,
   $use_enterprise_repo         = undef,
 
   $pidfilepath                 = undef,
@@ -158,7 +173,10 @@ class mongodb::globals (
       version             => $repo_version,
       use_enterprise_repo => $use_enterprise_repo,
       repo_location       => $repo_location,
+      keyring_location    => $keyring_location,
       proxy               => $repo_proxy,
+      proxy_username      => $proxy_username,
+      proxy_password      => $proxy_password,
     }
   }
 }
