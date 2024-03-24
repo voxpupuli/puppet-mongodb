@@ -2,11 +2,16 @@
 
 require 'spec_helper_acceptance'
 
-if hosts.length > 1
+repo_version = ENV.fetch('BEAKER_FACTER_mongodb_repo_version', nil)
+repo_ver_param = "repo_version => '#{repo_version}'" if repo_version
+
+if hosts.length > 1 && supported_version?(default[:platform], repo_version)
   describe 'mongodb_shard resource' do
     it 'configures the shard server' do
       pp = <<-EOS
-        class { 'mongodb::globals': }
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
         -> class { 'mongodb::server':
           bind_ip   => '0.0.0.0',
           replset   => 'foo',
@@ -26,7 +31,9 @@ if hosts.length > 1
 
     it 'configures the router server' do
       pp = <<-EOS
-        class { 'mongodb::globals': }
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
         -> class { 'mongodb::server':
           bind_ip   => '0.0.0.0',
           configsvr => true,

@@ -2,14 +2,20 @@
 
 require 'spec_helper_acceptance'
 
-describe 'mongodb::mongos class' do
+repo_version = ENV.fetch('BEAKER_FACTER_mongodb_repo_version', nil)
+repo_ver_param = "repo_version => '#{repo_version}'" if repo_version
+
+describe 'mongodb::mongos class', if: supported_version?(default[:platform], repo_version) do
   package_name = 'mongodb-org-server'
   config_file = '/etc/mongos.conf'
 
   describe 'installation' do
     it 'works with no errors' do
       pp = <<-EOS
-        class { 'mongodb::server':
+          class { 'mongodb::globals':
+            #{repo_ver_param}
+          }
+          -> class { 'mongodb::server':
           configsvr => true,
           replset   => 'test',
           replset_members => ['127.0.0.1:27019'],

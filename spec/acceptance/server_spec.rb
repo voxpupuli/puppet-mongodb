@@ -2,7 +2,10 @@
 
 require 'spec_helper_acceptance'
 
-describe 'mongodb::server class' do
+repo_version = ENV.fetch('BEAKER_FACTER_mongodb_repo_version', nil)
+repo_ver_param = "repo_version => '#{repo_version}'" if repo_version
+
+describe 'mongodb::server class', if: supported_version?(default[:platform], repo_version) do
   config_file = '/etc/mongod.conf'
   service_name = 'mongod'
   package_name = 'mongodb-org-server'
@@ -10,7 +13,10 @@ describe 'mongodb::server class' do
   describe 'installation' do
     it 'works with no errors' do
       pp = <<-EOS
-        class { 'mongodb::server': }
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
       EOS
 
@@ -43,7 +49,10 @@ describe 'mongodb::server class' do
   describe 'installation using custom port' do
     it 'change port to 27018' do
       pp = <<-EOS
-        class { 'mongodb::server':
+        class { 'mongodb::globals':
+        #{repo_ver_param}
+      }
+        -> class { 'mongodb::server':
           port => 27018,
         }
         -> class { 'mongodb::client': }
@@ -78,7 +87,10 @@ describe 'mongodb::server class' do
   describe 'installation using authentication' do
     it 'works with no errors' do
       pp = <<-EOS
-        class { 'mongodb::server':
+        class { 'mongodb::globals':
+        #{repo_ver_param}
+        }
+        -> class { 'mongodb::server':
           auth           => true,
           create_admin   => false,
           handle_creds   => true,
@@ -88,7 +100,7 @@ describe 'mongodb::server class' do
           restart        => true,
           set_parameter  => ['enableLocalhostAuthBypass: true']
         }
-        class { 'mongodb::client': }
+        -> class { 'mongodb::client': }
 
         mongodb_user { "User admin on db admin":
           ensure        => present,
@@ -146,11 +158,11 @@ describe 'mongodb::server class' do
     it 'uninstalls mongodb' do
       pp = <<-EOS
         class { 'mongodb::server':
-             ensure => absent,
-             package_ensure => absent,
-             service_ensure => stopped,
-             service_enable => false
-           }
+            ensure => absent,
+            package_ensure => absent,
+            service_ensure => stopped,
+            service_enable => false
+          }
         -> class { 'mongodb::client': ensure => absent, }
       EOS
       apply_manifest(pp, catch_failures: true)
