@@ -2,11 +2,17 @@
 
 require 'spec_helper_acceptance'
 
-describe 'mongodb_database' do
-  context 'with default port' do
+repo_version = ENV.fetch('BEAKER_FACTER_mongodb_repo_version', nil)
+repo_ver_param = "repo_version => '#{repo_version}'" if repo_version
+
+describe 'mongodb_user', if: supported_version?(default[:platform], repo_version) do
+  context 'with default server port' do
     it 'compiles with no errors' do
       pp = <<-EOS
-        class { 'mongodb::server': }
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         ->
@@ -29,7 +35,10 @@ describe 'mongodb_database' do
 
     it 'removes a user with no errors' do
       pp = <<-EOS
-        class { 'mongodb::server': }
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         ->
@@ -51,10 +60,13 @@ describe 'mongodb_database' do
     end
   end
 
-  context 'with custom port' do
+  context 'with custom server port' do
     it 'works with no errors' do
       pp = <<-EOS
-        class { 'mongodb::server': port => 27018 }
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::server': port => 27018 }
         -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         ->
@@ -79,7 +91,10 @@ describe 'mongodb_database' do
   context 'with the basic roles syntax' do
     it 'compiles with no errors' do
       pp = <<-EOS
-        class { 'mongodb::server': }
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         ->
@@ -105,7 +120,10 @@ describe 'mongodb_database' do
   context 'with the new multidb role syntax' do
     it 'compiles with no errors' do
       pp = <<-EOS
-        class { 'mongodb::server': }
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
         -> mongodb_database { 'testdb': ensure => present }
         -> mongodb_database { 'testdb2': ensure => present }

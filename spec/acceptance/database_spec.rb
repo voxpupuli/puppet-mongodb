@@ -2,12 +2,18 @@
 
 require 'spec_helper_acceptance'
 
-describe 'mongodb_database' do
+repo_version = ENV.fetch('BEAKER_FACTER_mongodb_repo_version', nil)
+repo_ver_param = "repo_version => '#{repo_version}'" if repo_version
+
+describe 'mongodb_database', if: supported_version?(default[:platform], repo_version) do
   describe 'creating a database' do
     context 'with default port' do
       it 'compiles with no errors' do
         pp = <<-EOS
-          class { 'mongodb::server': }
+          class { 'mongodb::globals':
+            #{repo_ver_param}
+          }
+          -> class { 'mongodb::server': }
           -> class { 'mongodb::client': }
           -> mongodb::db { 'testdb1':
             user     => 'testuser',
@@ -31,7 +37,10 @@ describe 'mongodb_database' do
     context 'with custom port' do
       it 'works with no errors' do
         pp = <<-EOS
-          class { 'mongodb::server':
+          class { 'mongodb::globals':
+            #{repo_ver_param}
+          }
+          -> class { 'mongodb::server':
             port => 27018,
           }
           -> class { 'mongodb::client': }
