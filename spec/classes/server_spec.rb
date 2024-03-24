@@ -28,11 +28,7 @@ describe 'mongodb::server' do
       end
 
       let(:log_path) do
-        if facts[:os]['family'] == 'Debian'
-          '/var/log/mongodb/mongodb.log'
-        else
-          '/var/log/mongodb/mongod.log'
-        end
+        '/var/log/mongodb/mongod.log'
       end
 
       describe 'with defaults' do
@@ -50,24 +46,22 @@ describe 'mongodb::server' do
             with_content(%r{^systemLog\.path: #{log_path}$})
         end
 
-        if facts[:os]['family'] == 'Debian'
-          it { is_expected.not_to contain_file(config_file).with_content(%r{fork}) }
-        else
-          it { is_expected.to contain_file(config_file).with_content(%r{^  fork: true$}) }
-        end
+        it { is_expected.to contain_class('mongodb::repo') }
+        it { is_expected.not_to contain_file(config_file).with_content(%r{fork}) }
 
         it { is_expected.to contain_file('/root/.mongorc.js').with_ensure('file').without_content(%r{db\.auth}) }
         it { is_expected.not_to contain_exec('fix dbpath permissions') }
       end
 
-      describe 'with manage_package => true' do
+      describe 'with manage_package_repo => false' do
         let(:pre_condition) do
           'class { mongodb::globals:
-            manage_package => true
+          manage_package_repo => false
           }'
         end
 
         it_behaves_like 'server classes'
+        it { is_expected.not_to contain_class('mongodb::repo') }
       end
 
       describe 'with create_admin => true' do
@@ -239,22 +233,10 @@ describe 'mongodb::server' do
           let :params do
             {
               syslog: true,
-              logpath: false
             }
           end
 
           it { is_expected.to contain_file(config_file).with_content(%r{^systemLog\.destination: syslog$}) }
-        end
-
-        context 'if logpath is also set an error should be raised' do
-          let :params do
-            {
-              syslog: true,
-              logpath: '/var/log/mongo/mongod.log'
-            }
-          end
-
-          it { is_expected.to raise_error(Puppet::Error, %r{You cannot use syslog with logpath}) }
         end
       end
 
@@ -293,6 +275,7 @@ describe 'mongodb::server' do
       describe 'with custom pidfilemode' do
         let :params do
           {
+            manage_pidfile: true,
             pidfilepath: '/var/run/mongodb/mongod.pid',
             pidfilemode: '0640'
           }

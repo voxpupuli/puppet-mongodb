@@ -63,13 +63,11 @@ class {'mongodb::globals':
 -> class {'mongodb::client': }
 ```
 
-If you have a custom Mongodb repository
-you can opt out of repo management:
+If you have a custom Mongodb repository you can opt out of repo management:
 
 ```puppet
 class {'mongodb::globals':
   manage_package_repo => false,
-  manage_package      => true,
 }
 -> class {'mongodb::server': }
 -> class {'mongodb::client': }

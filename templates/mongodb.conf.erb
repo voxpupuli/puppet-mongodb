@@ -2,7 +2,9 @@
 
 #System Log
 
-<% if @logpath -%>
+<% if @syslog -%>
+systemLog.destination: syslog
+<% elsif @logpath -%>
 systemLog.path: <%= @logpath %>
 systemLog.destination: file
 <% if @logappend -%>
@@ -11,8 +13,6 @@ systemLog.logAppend: <%= @logappend %>
 <% if @system_logrotate -%>
 systemLog.logRotate: <%= @system_logrotate %>
 <% end -%>
-<% elsif @syslog -%>
-systemLog.destination: syslog
 <% end -%>
 <% if @verbose -%>
 systemLog.quiet: false

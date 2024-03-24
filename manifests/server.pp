@@ -236,7 +236,6 @@
 #
 # @param  syslog
 #   Sends all logging output to the host’s syslog system rather than to standard output or a log file.
-#   Important: You cannot use syslog with logpath. Set logpath to false to disable it.
 #
 # @param config_content
 #   Config content if the default doesn't match one needs.
@@ -320,32 +319,32 @@
 #   Store admin credentials in mongoshrc.js file. Uses with create_admin parameter
 #
 class mongodb::server (
-  Variant[Boolean, String] $ensure                                        = $mongodb::params::ensure,
-  String $user                                                            = $mongodb::params::user,
-  String $group                                                           = $mongodb::params::group,
-  Stdlib::Absolutepath $config                                            = $mongodb::params::config,
-  Stdlib::Absolutepath $dbpath                                            = $mongodb::params::dbpath,
-  Boolean $dbpath_fix                                                     = $mongodb::params::dbpath_fix,
-  Optional[Stdlib::Absolutepath] $pidfilepath                             = $mongodb::params::pidfilepath,
-  String $pidfilemode                                                     = $mongodb::params::pidfilemode,
-  Boolean $manage_pidfile                                                 = $mongodb::params::manage_pidfile,
-  String $rcfile                                                          = $mongodb::params::rcfile,
-  Boolean $service_manage                                                 = $mongodb::params::service_manage,
-  Optional[String] $service_provider                                      = $mongodb::params::service_provider,
-  Optional[String] $service_name                                          = $mongodb::params::service_name,
-  Boolean $service_enable                                                 = $mongodb::params::service_enable,
-  Enum['stopped', 'running'] $service_ensure                              = $mongodb::params::service_ensure,
-  Optional[Enum['stopped', 'running']] $service_status                    = $mongodb::params::service_status,
-  Variant[Boolean, String] $package_ensure                                = $mongodb::params::package_ensure,
-  String $package_name                                                    = $mongodb::params::server_package_name,
-  Variant[Boolean, Stdlib::Absolutepath] $logpath                         = $mongodb::params::logpath,
-  Array[Stdlib::IP::Address] $bind_ip                                     = $mongodb::params::bind_ip,
+  String[1] $ensure                                                       = 'present',
+  String[1] $user                                                         = 'mongod',
+  String[1] $group                                                        = 'mongod',
+  Stdlib::Absolutepath $config                                            = '/etc/mongod.conf',
+  Stdlib::Absolutepath $dbpath                                            = '/var/lib/mongodb',
+  Boolean $dbpath_fix                                                     = false,
+  Optional[Stdlib::Absolutepath] $pidfilepath                             = undef,
+  String[4,4] $pidfilemode                                                = '0644',
+  Boolean $manage_pidfile                                                 = false,
+  String $rcfile                                                          = "${facts['root_home']}/.mongorc.js",
+  Boolean $service_manage                                                 = true,
+  Optional[String[1]] $service_provider                                   = undef,
+  String[1] $service_name                                                 = 'mongod',
+  Boolean $service_enable                                                 = true,
+  Enum['stopped', 'running'] $service_ensure                              = 'running',
+  Optional[Enum['stopped', 'running']] $service_status                    = undef,
+  String[1] $package_ensure                                               = pick($mongodb::globals::version, 'present'),
+  String[1] $package_name                                                 = "mongodb-${mongodb::globals::edition}-server",
+  Stdlib::Absolutepath $logpath                                           = '/var/log/mongodb/mongod.log',
+  Array[Stdlib::IP::Address] $bind_ip                                     = ['127.0.0.1'],
   Optional[Boolean] $ipv6                                                 = undef,
   Boolean $logappend                                                      = true,
   Optional[String] $system_logrotate                                      = undef,
-  Optional[Boolean] $fork                                                 = $mongodb::params::fork,
+  Boolean $fork                                                           = false,
   Optional[Integer[1, 65535]] $port                                       = undef,
-  Optional[Boolean] $journal                                              = $mongodb::params::journal,
+  Optional[Boolean] $journal                                              = undef,
   Optional[Boolean] $nojournal                                            = undef,
   Optional[Boolean] $smallfiles                                           = undef,
   Optional[Boolean] $cpu                                                  = undef,
@@ -381,7 +380,7 @@ class mongodb::server (
   Optional[Stdlib::Absolutepath] $keyfile                                 = undef,
   Optional[Variant[String[6], Sensitive[String[6]]]] $key                 = undef,
   Optional[Variant[String[1], Array[String[1]]]] $set_parameter           = undef,
-  Optional[Boolean] $syslog                                               = undef,
+  Boolean $syslog                                                         = false,
   $config_content                                                         = undef,
   Optional[String] $config_template                                       = undef,
   Optional[Hash] $config_data                                             = undef,
@@ -397,18 +396,22 @@ class mongodb::server (
   Boolean $tls_conn_without_cert                                          = false,
   Boolean $tls_invalid_hostnames                                          = false,
   Enum['requireTLS', 'preferTLS', 'allowTLS'] $tls_mode                   = 'requireTLS',
-  Boolean $restart                                                        = $mongodb::params::restart,
+  Boolean $restart                                                        = true,
   Optional[String] $storage_engine                                        = undef,
-  Boolean $create_admin                                                   = $mongodb::params::create_admin,
-  String $admin_username                                                  = $mongodb::params::admin_username,
+  Boolean $create_admin                                                   = false,
+  String $admin_username                                                  = 'admin',
   Optional[Variant[String, Sensitive[String]]] $admin_password            = undef,
   Optional[Variant[String[1], Sensitive[String[1]]]] $admin_password_hash = undef,
-  Enum['scram_sha_1', 'scram_sha_256'] $admin_auth_mechanism              = $mongodb::params::admin_auth_mechanism,
+  Enum['scram_sha_1', 'scram_sha_256'] $admin_auth_mechanism              = 'scram_sha_1',
   Boolean $admin_update_password                                          = false,
-  Boolean $handle_creds                                                   = $mongodb::params::handle_creds,
-  Boolean $store_creds                                                    = $mongodb::params::store_creds,
-  Array $admin_roles                                                      = $mongodb::params::admin_roles,
-) inherits mongodb::params {
+  Boolean $handle_creds                                                   = true,
+  Boolean $store_creds                                                    = false,
+  Array[String[1]] $admin_roles                                           = [
+    'userAdmin', 'readWrite', 'dbAdmin', 'dbAdminAnyDatabase', 'readAnyDatabase',
+    'readWriteAnyDatabase', 'userAdminAnyDatabase', 'clusterAdmin',
+    'clusterManager', 'clusterMonitor', 'hostManager', 'root', 'restore',
+  ],
+) inherits mongodb::globals {
   contain mongodb::server::install
   contain mongodb::server::config
   contain mongodb::server::service
