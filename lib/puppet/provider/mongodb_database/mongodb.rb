@@ -29,7 +29,7 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
 
   def create
     if db_ismaster
-      out = mongo_eval('db.dummyData.insert({"created_by_puppet": 1})', @resource[:name])
+      out = mongo_eval('db.dummyData.insertOne({"created_by_puppet": 1})', @resource[:name])
       raise "Failed to create DB '#{@resource[:name]}'\n#{out}" if %r{writeError} =~ out
     else
       Puppet.warning 'Database creation is available only from master host'
