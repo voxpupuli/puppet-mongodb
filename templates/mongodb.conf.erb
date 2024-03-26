@@ -44,11 +44,13 @@ processManagement:
 
 #Storage
 storage.dbPath: <%= @dbpath %>
+<%- if scope.function_versioncmp([scope['s_mongodb::version'], '6.1']) < 0 -%>
 <% if @nojournal -%>
 storage.journal.enabled: false
 <% elsif @journal -%>
 storage.journal.enabled: true
 <% end -%>
+<%- end -%>
 <% if @noprealloc -%>
 storage.preallocDataFiles: <%= !@noprealloc %>
 <% end -%>
