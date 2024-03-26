@@ -111,9 +111,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       first_ip_in_list = bindip.split(',').first
       ip_real = case first_ip_in_list
                 when '0.0.0.0'
-                  Facter.value(:fqdn)
+                  '127.0.0.1'
                 when %r{\[?::0\]?}
-                  Facter.value(:fqdn)
+                  '::1'
                 else
                   first_ip_in_list
                 end
@@ -133,6 +133,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
                 end
 
     "#{ip_real}:#{port_real}"
+  end
+
+  def conn_string
+    self.class.conn_string
   end
 
   def self.db_ismaster

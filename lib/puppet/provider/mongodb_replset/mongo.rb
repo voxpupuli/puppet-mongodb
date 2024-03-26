@@ -154,7 +154,11 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       host = member['host']
       Puppet.debug "Checking replicaset member #{host} ..."
       begin
-        status = rs_status(host)
+        status = if host.split(':').first == Facter.value(:fqdn)
+                   rs_status(conn_string)
+                 else
+                   rs_status(host)
+                 end
 
         if status.key?('set')
           raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is already part of another replicaset." if status['set'] != name
