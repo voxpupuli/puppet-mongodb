@@ -19,13 +19,15 @@ function rsReconfigSettings(settings){
 <% if @auth and @store_creds -%>
 function authRequired() {
   try {
-    return db.serverCmdLineOpts().ok != 1;
+    return rs.status().ok != 1;
   } catch (err) {
     if (err.message.match(/requires authentication/) || err.message.match(/not authorized on admin/)) {
       return true
-    } else {
-      throw("Unknown error :" + err)
+    if (err.message.match(/not running with --replSet/)) {
+      return false
     }
+    throw("Unknown error :" + err)
+  }
   }
 }
 
