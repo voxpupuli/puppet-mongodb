@@ -14,8 +14,9 @@ describe 'mongodb_user', if: supported_version?(default[:platform], repo_version
         }
         -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
-        -> mongodb_database { 'testdb': ensure => present }
-        ->
+
+        mongodb_database { 'testdb': ensure => present }
+
         mongodb_user {'testuser':
           ensure        => present,
           password_hash => mongodb_password('testuser', 'passw0rd'),
@@ -40,8 +41,9 @@ describe 'mongodb_user', if: supported_version?(default[:platform], repo_version
         }
         -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
-        -> mongodb_database { 'testdb': ensure => present }
-        ->
+
+        mongodb_database { 'testdb': ensure => present }
+
         mongodb_user {'testuser':
           ensure        => absent,
           password_hash => mongodb_password('testuser', 'passw0rd'),
@@ -68,8 +70,9 @@ describe 'mongodb_user', if: supported_version?(default[:platform], repo_version
         }
         -> class { 'mongodb::server': port => 27018 }
         -> class { 'mongodb::client': }
-        -> mongodb_database { 'testdb': ensure => present }
-        ->
+
+        mongodb_database { 'testdb': ensure => present }
+
         mongodb_user {'testuser':
           ensure        => present,
           password_hash => mongodb_password('testuser', 'passw0rd'),
@@ -96,8 +99,9 @@ describe 'mongodb_user', if: supported_version?(default[:platform], repo_version
         }
         -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
-        -> mongodb_database { 'testdb': ensure => present }
-        ->
+
+        mongodb_database { 'testdb': ensure => present }
+
         mongodb_user {'testuser':
           ensure        => present,
           password_hash => mongodb_password('testuser', 'passw0rd'),
@@ -125,16 +129,18 @@ describe 'mongodb_user', if: supported_version?(default[:platform], repo_version
         }
         -> class { 'mongodb::server': }
         -> class { 'mongodb::client': }
-        -> mongodb_database { 'testdb': ensure => present }
-        -> mongodb_database { 'testdb2': ensure => present }
-        ->
+
+        mongodb_database { 'testdb': ensure => present }
+
+        mongodb_database { 'testdb2': ensure => present }
+
         mongodb_user {'testuser':
           ensure        => present,
           password_hash => mongodb_password('testuser', 'passw0rd'),
           database      => 'testdb',
           roles         => ['readWrite', 'dbAdmin'],
         }
-        ->
+
         mongodb_user {'testuser2':
           ensure        => present,
           password_hash => mongodb_password('testuser2', 'passw0rd'),
