@@ -310,29 +310,6 @@ describe 'mongodb::server' do
         end
       end
 
-      describe 'with ssl' do
-        context 'enabled' do
-          let :params do
-            {
-              ssl: true,
-              ssl_mode: 'requireSSL'
-            }
-          end
-
-          it { is_expected.to contain_file(config_file).with_content(%r{^net\.ssl\.mode: requireSSL$}) }
-        end
-
-        context 'disabled' do
-          let :params do
-            {
-              ssl: false
-            }
-          end
-
-          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.ssl\.mode}) }
-        end
-      end
-
       describe 'with tls' do
         context 'enabled' do
           let :params do

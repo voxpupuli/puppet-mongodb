@@ -243,26 +243,6 @@
 # @param config_data
 #   A hash to allow for additional configuration options to be set in user-provided template.
 #
-# @param ssl
-#   Use SSL validation.
-#   Important: You need to have ssl_key set as well, and the file needs to pre-exist on node. If you wish to
-#   use certificate validation, ssl_ca must also be set.
-#
-# @param ssl_key
-#   Defines the path of the file that contains the TLS/SSL certificate and key.
-#
-# @param ssl_ca
-#   Defines the path of the file that contains the certificate chain for verifying client certificates.
-#
-# @param ssl_weak_cert
-#   Set to true to disable mandatory SSL client authentication.
-#
-# @param ssl_invalid_hostnames
-#   Set to true to disable fqdn SSL cert check.
-#
-# @param ssl_mode
-#   Ssl authorization mode.
-#
 # @param tls
 #   Ensure tls is enabled.
 #
@@ -381,12 +361,6 @@ class mongodb::server (
   $config_content                                                         = undef,
   Optional[String] $config_template                                       = undef,
   Optional[Hash] $config_data                                             = undef,
-  Optional[Boolean] $ssl                                                  = undef,
-  Optional[Stdlib::Absolutepath] $ssl_key                                 = undef,
-  Optional[Stdlib::Absolutepath] $ssl_ca                                  = undef,
-  Boolean $ssl_weak_cert                                                  = false,
-  Boolean $ssl_invalid_hostnames                                          = false,
-  Enum['requireSSL', 'preferSSL', 'allowSSL'] $ssl_mode                   = 'requireSSL',
   Boolean $tls                                                            = false,
   Optional[Stdlib::Absolutepath] $tls_key                                 = undef,
   Optional[Stdlib::Absolutepath] $tls_ca                                  = undef,

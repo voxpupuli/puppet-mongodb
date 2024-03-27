@@ -865,12 +865,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`config_content`](#-mongodb--server--config_content)
 * [`config_template`](#-mongodb--server--config_template)
 * [`config_data`](#-mongodb--server--config_data)
-* [`ssl`](#-mongodb--server--ssl)
-* [`ssl_key`](#-mongodb--server--ssl_key)
-* [`ssl_ca`](#-mongodb--server--ssl_ca)
-* [`ssl_weak_cert`](#-mongodb--server--ssl_weak_cert)
-* [`ssl_invalid_hostnames`](#-mongodb--server--ssl_invalid_hostnames)
-* [`ssl_mode`](#-mongodb--server--ssl_mode)
 * [`tls`](#-mongodb--server--tls)
 * [`tls_key`](#-mongodb--server--tls_key)
 * [`tls_ca`](#-mongodb--server--tls_ca)
@@ -1444,56 +1438,6 @@ Data type: `Optional[Hash]`
 A hash to allow for additional configuration options to be set in user-provided template.
 
 Default value: `undef`
-
-##### <a name="-mongodb--server--ssl"></a>`ssl`
-
-Data type: `Optional[Boolean]`
-
-Use SSL validation.
-Important: You need to have ssl_key set as well, and the file needs to pre-exist on node. If you wish to
-use certificate validation, ssl_ca must also be set.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--ssl_key"></a>`ssl_key`
-
-Data type: `Optional[Stdlib::Absolutepath]`
-
-Defines the path of the file that contains the TLS/SSL certificate and key.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--ssl_ca"></a>`ssl_ca`
-
-Data type: `Optional[Stdlib::Absolutepath]`
-
-Defines the path of the file that contains the certificate chain for verifying client certificates.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--ssl_weak_cert"></a>`ssl_weak_cert`
-
-Data type: `Boolean`
-
-Set to true to disable mandatory SSL client authentication.
-
-Default value: `false`
-
-##### <a name="-mongodb--server--ssl_invalid_hostnames"></a>`ssl_invalid_hostnames`
-
-Data type: `Boolean`
-
-Set to true to disable fqdn SSL cert check.
-
-Default value: `false`
-
-##### <a name="-mongodb--server--ssl_mode"></a>`ssl_mode`
-
-Data type: `Enum['requireSSL', 'preferSSL', 'allowSSL']`
-
-Ssl authorization mode.
-
-Default value: `'requireSSL'`
 
 ##### <a name="-mongodb--server--tls"></a>`tls`
 
