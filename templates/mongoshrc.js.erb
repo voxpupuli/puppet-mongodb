@@ -23,11 +23,11 @@ function authRequired() {
   } catch (err) {
     if (err.message.match(/requires authentication/) || err.message.match(/not authorized on admin/)) {
       return true
+    }
     if (err.message.match(/not running with --replSet/)) {
       return false
     }
     throw("Unknown error :" + err)
-  }
   }
 }
 
