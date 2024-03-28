@@ -13,7 +13,7 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
 
   mk_resource_methods
 
-  commands mongo: 'mongo'
+  commands mongosh: 'mongosh'
 
   def initialize(value = {})
     super(value)
@@ -152,8 +152,8 @@ Puppet::Type.type(:mongodb_shard).provide(:mongo, parent: Puppet::Provider::Mong
       args = []
       args << '--quiet'
       args << ['--host', host] if host
-      args << ['--eval', "printjson(#{command})"]
-      output = mongo(args.flatten)
+      args << ['--eval', "EJSON.stringify(#{command})"]
+      output = mongosh(args.flatten)
     rescue Puppet::ExecutionFailure => e
       raise unless e =~ %r{Error: couldn't connect to server} && wait <= (2**max_wait)
 

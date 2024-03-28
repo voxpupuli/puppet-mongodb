@@ -153,31 +153,36 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     members.select do |member|
       host = member['host']
       Puppet.debug "Checking replicaset member #{host} ..."
-      status = rs_status(host)
-      raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is not supposed to be part of a replicaset." if status.key?('errmsg') && status['errmsg'] == 'not running with --replSet'
+      begin
+        status = if host.split(':').first == Facter.value(:fqdn)
+                   rs_status(conn_string)
+                 else
+                   rs_status(host)
+                 end
 
-      if auth_enabled && status.key?('errmsg') && (status['errmsg'].include?('unauthorized') || status['errmsg'].include?('not authorized') || status['errmsg'].include?('requires authentication'))
-        Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
-        alive.push(member)
+        if status.key?('set')
+          raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is already part of another replicaset." if status['set'] != name
+
+          # This node is alive and supposed to be a member of our set
+          Puppet.debug "Host #{host} is available for replset #{status['set']}"
+          alive.push(member)
+        elsif status.key?('info')
+          Puppet.debug "Host #{host} is alive but unconfigured: #{status['info']}"
+          alive.push(member)
+        end
+      rescue Puppet::ExecutionFailure => e
+        raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is not supposed to be part of a replicaset." if e.message =~ %r{not running with --replSet}
+
+        if auth_enabled && (e.message.include?('unauthorized') || e.message.include?('not authorized') || e.message.include?('requires authentication'))
+          Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
+          alive.push(member)
+        elsif e.message.include?('no replset config has been received')
+          Puppet.debug 'Mongo v4 rs.status() RS not initialized output'
+          alive.push(member)
+        else
+          Puppet.warning "Can't connect to replicaset member #{host}."
+        end
       end
-
-      if status.key?('errmsg') && status['errmsg'].include?('no replset config has been received')
-        Puppet.debug 'Mongo v4 rs.status() RS not initialized output'
-        alive.push(member)
-      end
-
-      if status.key?('set')
-        raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is already part of another replicaset." if status['set'] != name
-
-        # This node is alive and supposed to be a member of our set
-        Puppet.debug "Host #{host} is available for replset #{status['set']}"
-        alive.push(member)
-      elsif status.key?('info')
-        Puppet.debug "Host #{host} is alive but unconfigured: #{status['info']}"
-        alive.push(member)
-      end
-    rescue Puppet::ExecutionFailure
-      Puppet.warning "Can't connect to replicaset member #{host}."
     end
     alive.uniq!
     dead = members - alive
@@ -383,7 +388,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
 
   def self.mongo_command(command, host = nil, retries = 4)
     begin
-      output = mongo_eval("printjson(#{command})", 'admin', retries, host)
+      output = mongo_eval("EJSON.stringify(#{command})", 'admin', retries, host)
     rescue Puppet::ExecutionFailure => e
       Puppet.debug "Got an exception: #{e}"
       raise

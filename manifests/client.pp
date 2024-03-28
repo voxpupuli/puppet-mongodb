@@ -11,8 +11,8 @@
 #   If not specified, the module will use whatever service name is the default for your OS distro.
 #
 class mongodb::client (
-  String[1] $ensure = pick($mongodb::globals::version, 'present'),
-  String[1] $package_name = "mongodb-${mongodb::globals::edition}-shell",
+  String[1] $ensure = pick($mongodb::globals::client_version, 'present'),
+  String[1] $package_name = 'mongodb-mongosh',
 ) inherits mongodb::globals {
   package { 'mongodb_client':
     ensure => $ensure,

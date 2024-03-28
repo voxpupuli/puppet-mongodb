@@ -41,6 +41,10 @@
 #   The version of MonogDB to install/manage.
 #   If not specified, the module will ensure packages with `present`.
 #
+# @param client_version
+#   The version of MongoDB Shell to install/manage.
+#   If not specified, the module will ensure packages with `present`.
+#
 # @param manage_package_repo
 #   Whether to manage MongoDB software repository.
 #
@@ -71,6 +75,7 @@
 #
 class mongodb::globals (
   Optional[String[1]] $version        = undef,
+  Optional[String[1]] $client_version = undef,
   Boolean $manage_package_repo        = true,
   String[1] $repo_version             = '5.0',
   Boolean $use_enterprise_repo        = false,

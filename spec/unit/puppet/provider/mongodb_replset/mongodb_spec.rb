@@ -166,7 +166,7 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
     end
 
     it 'raises an error when at least one member is not running with --replSet' do
-      allow(provider).to receive(:rs_status).and_return('ok' => 0, 'errmsg' => 'not running with --replSet')
+      allow(provider).to receive(:rs_status).and_raise(Puppet::ExecutionFailure, 'MongoServerError: not running with --replSet')
       provider.members = valid_members
       expect { provider.flush }.to raise_error(Puppet::Error, %r{is not supposed to be part of a replicaset\.$})
     end

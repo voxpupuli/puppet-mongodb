@@ -52,7 +52,7 @@ describe 'mongodb::mongos class', if: supported_version?(default[:platform], rep
       it { is_expected.to be_listening }
     end
 
-    describe command('mongo --version') do
+    describe command('mongod --version') do
       its(:exit_status) { is_expected.to eq 0 }
     end
   end

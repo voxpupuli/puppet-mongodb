@@ -41,7 +41,7 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
       it { is_expected.to be_listening }
     end
 
-    describe command('mongo --version') do
+    describe command('mongod --version') do
       its(:exit_status) { is_expected.to eq 0 }
     end
   end
@@ -132,11 +132,11 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
       it { is_expected.to be_listening }
     end
 
-    describe command('mongo --quiet --eval "db.serverCmdLineOpts().code"') do
-      its(:stdout) { is_expected.to match '13' }
+    describe command('mongosh --quiet --eval "db.serverCmdLineOpts().ok"') do
+      its(:stderr) { is_expected.to match %r{requires authentication} }
     end
 
-    describe file('/root/.mongorc.js') do
+    describe file('/root/.mongoshrc.js') do
       it { is_expected.to be_file }
       it { is_expected.to be_owned_by 'root' }
       it { is_expected.to be_grouped_into 'root' }
@@ -144,12 +144,12 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
       it { is_expected.to contain 'db.auth(\'admin\', \'password\')' }
     end
 
-    describe command("mongo admin --quiet --eval \"load('/root/.mongorc.js');printjson(db.getUser('admin')['customData'])\"") do
+    describe command("mongosh admin --quiet --eval \"load('/root/.mongoshrc.js');EJSON.stringify(db.getUser('admin')['customData'])\"") do
       its(:exit_status) { is_expected.to eq 0 }
-      its(:stdout) { is_expected.to match "{ \"createdBy\" : \"Puppet Mongodb_user['User admin on db admin']\" }\n" }
+      its(:stdout) { is_expected.to match "{\"createdBy\":\"Puppet Mongodb_user['User admin on db admin']\"}\n" }
     end
 
-    describe command('mongo --version') do
+    describe command('mongod --version') do
       its(:exit_status) { is_expected.to eq 0 }
     end
   end
