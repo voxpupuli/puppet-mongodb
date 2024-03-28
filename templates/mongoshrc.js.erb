@@ -27,7 +27,7 @@ function authRequired() {
     if (err.message.match(/not running with --replSet/)) {
       return false
     }
-    throw("Unknown error :" + err)
+    throw("Unknown error: " + err)
   }
 }
 
