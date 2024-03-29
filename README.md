@@ -77,10 +77,8 @@ class {'mongodb::globals':
 
 Most of the interaction for the server is done via `mongodb::server`. For
 more options please have a look at [mongodb::server](#class-mongodbserver).
-Also in this version we introduced `mongodb::globals`, which is meant more
-for future implementation, where you can configure the main settings for
-this module in a global way, to be used by other classes and defined resources.
-On its own it does nothing.
+There is also `mongodb::globals` to set some global settings, on its own this
+class does nothing.
 
 ### Create MongoDB database
 
