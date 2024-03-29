@@ -117,7 +117,7 @@ Puppet::Type.newtype(:mongodb_user) do
     %w[mongodb mongod]
   end
 
-  autorequire(:mongodb_database) do
+  autobefore(:mongodb_database) do
     self[:database]
   end
 

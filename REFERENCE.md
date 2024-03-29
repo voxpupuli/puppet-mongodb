@@ -64,7 +64,7 @@ Data type: `String[1]`
 
 Used to ensure that the package is installed, or that the package is absent/purged
 
-Default value: `pick($mongodb::globals::version, 'present')`
+Default value: `pick($mongodb::globals::client_version, 'present')`
 
 ##### <a name="-mongodb--client--package_name"></a>`package_name`
 
@@ -73,7 +73,7 @@ Data type: `String[1]`
 This setting can be used to specify the name of the package that should be installed.
 If not specified, the module will use whatever service name is the default for your OS distro.
 
-Default value: `"mongodb-${mongodb::globals::edition}-shell"`
+Default value: `'mongodb-mongosh'`
 
 ### <a name="mongodb--globals"></a>`mongodb::globals`
 
@@ -135,6 +135,7 @@ class {'mongodb::globals':
 The following parameters are available in the `mongodb::globals` class:
 
 * [`version`](#-mongodb--globals--version)
+* [`client_version`](#-mongodb--globals--client_version)
 * [`manage_package_repo`](#-mongodb--globals--manage_package_repo)
 * [`repo_version`](#-mongodb--globals--repo_version)
 * [`use_enterprise_repo`](#-mongodb--globals--use_enterprise_repo)
@@ -149,6 +150,15 @@ The following parameters are available in the `mongodb::globals` class:
 Data type: `Optional[String[1]]`
 
 The version of MonogDB to install/manage.
+If not specified, the module will ensure packages with `present`.
+
+Default value: `undef`
+
+##### <a name="-mongodb--globals--client_version"></a>`client_version`
+
+Data type: `Optional[String[1]]`
+
+The version of MongoDB Shell to install/manage.
 If not specified, the module will ensure packages with `present`.
 
 Default value: `undef`
@@ -967,7 +977,7 @@ Data type: `String`
 
 The path to the custom mongosh rc file.
 
-Default value: `"${facts['root_home']}/.mongorc.js"`
+Default value: `"${facts['root_home']}/.mongoshrc.js"`
 
 ##### <a name="-mongodb--server--service_manage"></a>`service_manage`
 

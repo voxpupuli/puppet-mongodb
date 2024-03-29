@@ -19,31 +19,31 @@ function rsReconfigSettings(settings){
 <% if @auth and @store_creds -%>
 function authRequired() {
   try {
-    return db.serverCmdLineOpts().code == 13;
+    return rs.status().ok != 1;
   } catch (err) {
-    return false;
+    if (err.message.match(/requires authentication/) || err.message.match(/not authorized on admin/)) {
+      return true
+    }
+    return false
   }
 }
 
 if (authRequired()) {
   <%- if @replset -%>
-  // rs.slaveOk has been deprecated, use secondaryOk if available
-  try {
-    rs.secondaryOk()
-  }
-  catch (err) {
-    rs.slaveOk()
-  }
+  db.getMongo().setReadPref('primaryPreferred')
   <%- end -%>
   try {
-    var prev_db = db
+    var prev_db = db.getName()
     db = db.getSiblingDB('admin')
     db.auth('<%= @admin_username %>', '<%= @admin_password_unsensitive %>')
     db = db.getSiblingDB(prev_db)
   }
   catch (err) {
-    // This isn't catching authentication errors as I'd expect...
-    abort('Unknown error')
+    // Silently ignore this error, we can't really do anything about it.
+    // If authentication fails here, that can mean 2 things:
+    // - Some error or corruption
+    // - Authentication is required, but no user is set up yet.
+    //   This is normal when setting up a new cluster/server.
   }
 }
 <% end -%>

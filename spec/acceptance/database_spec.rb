@@ -29,8 +29,8 @@ describe 'mongodb_database', if: supported_version?(default[:platform], repo_ver
       end
 
       it 'creates the databases' do
-        shell("mongo testdb1 --eval 'printjson(db.getMongo().getDBs())'")
-        shell("mongo testdb2 --eval 'printjson(db.getMongo().getDBs())'")
+        shell("mongosh testdb1 --eval 'EJSON.stringify(db.getMongo().getDBs())'")
+        shell("mongosh testdb2 --eval 'EJSON.stringify(db.getMongo().getDBs())'")
       end
     end
 
@@ -59,8 +59,8 @@ describe 'mongodb_database', if: supported_version?(default[:platform], repo_ver
       end
 
       it 'creates the database' do
-        shell("mongo testdb1 --port 27018 --eval 'printjson(db.getMongo().getDBs())'")
-        shell("mongo testdb2 --port 27018 --eval 'printjson(db.getMongo().getDBs())'")
+        shell("mongosh testdb1 --port 27018 --eval 'EJSON.stringify(db.getMongo().getDBs())'")
+        shell("mongosh testdb2 --port 27018 --eval 'EJSON.stringify(db.getMongo().getDBs())'")
       end
     end
   end
