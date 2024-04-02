@@ -114,7 +114,7 @@
 #  processor waits for I/O operations to complete (i.e. I/O wait.)
 #
 # @param auth
-#  et to true to enable database authentication for users connecting from remote hosts. If no users exist,
+#  Set to true to enable database authentication for users connecting from remote hosts. If no users exist,
 #  the localhost interface will continue to have access to the database until you create the first user.
 #
 # @param noauth

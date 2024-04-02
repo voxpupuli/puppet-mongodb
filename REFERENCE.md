@@ -1153,7 +1153,7 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-et to true to enable database authentication for users connecting from remote hosts. If no users exist,
+Set to true to enable database authentication for users connecting from remote hosts. If no users exist,
 the localhost interface will continue to have access to the database until you create the first user.
 
 Default value: `false`
