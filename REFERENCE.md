@@ -833,7 +833,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`smallfiles`](#-mongodb--server--smallfiles)
 * [`cpu`](#-mongodb--server--cpu)
 * [`auth`](#-mongodb--server--auth)
-* [`noauth`](#-mongodb--server--noauth)
 * [`verbose`](#-mongodb--server--verbose)
 * [`verbositylevel`](#-mongodb--server--verbositylevel)
 * [`objcheck`](#-mongodb--server--objcheck)
@@ -1153,18 +1152,10 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-et to true to enable database authentication for users connecting from remote hosts. If no users exist,
+Set to true to enable database authentication for users connecting from remote hosts. If no users exist,
 the localhost interface will continue to have access to the database until you create the first user.
 
 Default value: `false`
-
-##### <a name="-mongodb--server--noauth"></a>`noauth`
-
-Data type: `Optional[Boolean]`
-
-Disable authentication.
-
-Default value: `undef`
 
 ##### <a name="-mongodb--server--verbose"></a>`verbose`
 
