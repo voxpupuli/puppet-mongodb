@@ -124,9 +124,9 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     confsvr = config.fetch('confsvr')
     port_real = if port
                   port
-                elsif !port && (confsvr.eql?('configsvr') || confsvr.eql?('true'))
+                elsif confsvr.eql?('configsvr') || confsvr.eql?('true')
                   27_019
-                elsif !port && (shardsvr.eql?('shardsvr') || shardsvr.eql?('true'))
+                elsif shardsvr.eql?('shardsvr') || shardsvr.eql?('true')
                   27_018
                 else
                   27_017
