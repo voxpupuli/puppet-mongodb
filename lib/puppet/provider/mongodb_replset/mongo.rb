@@ -62,7 +62,33 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
   end
 
   def flush
-    set_members
+    if @property_flush[:ensure] == :absent
+      # TODO: I don't know how to remove a node from a replset; unimplemented
+      # Puppet.debug "Removing all members from replset #{self.name}"
+      # @property_hash[:members].collect do |member|
+      #  rs_remove(member, master_host(@property_hash[:members]))
+      # end
+      return
+    end
+
+    alive_hosts = if !@property_flush[:members].nil? && !@property_flush[:members].empty?
+                    # Find the alive members so we don't try to add dead members to the replset using new config
+                    get_alive_members(@property_flush[:members])
+                  elsif !resource[:members].nil? && !resource[:members].empty?
+                    # Find the alive members using current 'is' config
+                    get_alive_members(@resource[:members])
+                  else
+                    []
+                  end
+
+    raise Puppet::Error, 'Replica set needs at least one member alive to make changes' if alive_hosts.empty?
+
+    if @property_flush[:ensure] == :present && @property_hash[:ensure] != :present && !master_host(alive_hosts)
+      create_replica_set(alive_hosts)
+    else
+      update_members(alive_hosts)
+      update_settings if !@property_flush[:settings].nil? && !@property_flush[:settings].empty?
+    end
     @property_hash = self.class.replset_properties
   end
 
@@ -223,158 +249,139 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     current_settings
   end
 
-  def set_members
-    if @property_flush[:ensure] == :absent
-      # TODO: I don't know how to remove a node from a replset; unimplemented
-      # Puppet.debug "Removing all members from replset #{self.name}"
-      # @property_hash[:members].collect do |member|
-      #  rs_remove(member, master_host(@property_hash[:members]))
-      # end
-      return
-    end
-
+  def get_alive_members(members)
     Puppet.debug 'Checking for dead and alive members'
-    if !@property_flush[:members].nil? && !@property_flush[:members].empty?
-      # Find the alive members so we don't try to add dead members to the replset using new config
-      alive_hosts, dead_hosts = get_hosts_status(@property_flush[:members])
-      Puppet.debug "Alive members: #{alive_hosts.inspect}"
-      Puppet.debug "Dead members: #{dead_hosts.inspect}" unless dead_hosts.empty?
-      raise Puppet::Error, "Can't connect to any member of replicaset #{name}." if alive_hosts.empty?
-    elsif !resource[:members].nil? && !resource[:members].empty?
-      # Find the alive members using current 'is' config
-      alive_hosts, dead_hosts = get_hosts_status(@resource[:members])
-      Puppet.debug "Alive members: #{alive_hosts.inspect}"
-      Puppet.debug "Dead members: #{dead_hosts.inspect}" unless dead_hosts.empty?
-      raise Puppet::Error, "Can't connect to any member of replicaset #{name}." if alive_hosts.empty?
-    else
-      alive_hosts = []
+    alive_hosts, dead_hosts = get_hosts_status(members)
+    Puppet.debug "Alive members: #{alive_hosts.inspect}"
+    Puppet.debug "Dead members: #{dead_hosts.inspect}" unless dead_hosts.empty?
+    raise Puppet::Error, "Can't connect to any member of replicaset #{name}." if alive_hosts.empty?
+
+    alive_hosts
+  end
+
+  def create_replica_set(alive_hosts)
+    Puppet.debug "Initializing the replset #{name}"
+
+    # Create a replset configuration
+    members_conf = alive_hosts.each_with_index.map do |host, id|
+      member = host
+      member['_id'] = id
+      member
     end
 
-    Puppet.debug 'Checking for new replset'
-    if @property_flush[:ensure] == :present && @property_hash[:ensure] != :present && !master_host(alive_hosts)
-      Puppet.debug "Initializing the replset #{name}"
+    replset_conf = {
+      _id: name,
+      members: members_conf,
+      settings: (@property_flush[:settings].nil? ? {} : @property_flush[:settings])
+    }.to_json
 
-      # Create a replset configuration
-      members_conf = alive_hosts.each_with_index.map do |host, id|
-        member = host
-        member['_id'] = id
-        member
+    Puppet.debug "Starting replset config is #{replset_conf.to_json}"
+    output = rs_initiate(replset_conf)
+    raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
+
+    # Check that the replicaset has finished initialization
+    retry_limit = 10
+    retry_sleep = 3
+
+    retry_limit.times do |n|
+      if db_ismaster(alive_hosts[0]['host'])['ismaster']
+        Puppet.debug 'Replica set initialization has successfully ended'
+        return true
+      else
+        Puppet.debug "Waiting for replica initialization. Retry: #{n}"
+        sleep retry_sleep
+        next
       end
+    end
+    raise Puppet::Error, "rs.initiate() failed for replicaset #{name}"
+  end
 
-      replset_conf = {
-        _id: name,
-        members: members_conf,
-        settings: (@property_flush[:settings].nil? ? {} : @property_flush[:settings])
-      }.to_json
+  def update_members(alive_hosts)
+    Puppet.debug "Checking for replset #{name} changes"
+    master = master_host(alive_hosts)
+    raise Puppet::Error, "Can't find master host for replicaset #{name}." unless master
 
-      Puppet.debug "Starting replset config is #{replset_conf.to_json}"
-      output = rs_initiate(replset_conf)
-      raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
+    master_rs_config = rs_config(master)
+    add_members, remove_members, update_members = get_members_changes(master_rs_config['members'], @property_flush[:members])
 
-      # Check that the replicaset has finished initialization
+    Puppet.debug "Members to be Added: #{add_members.inspect}" unless add_members.empty?
+    add_members.each do |member|
       retry_limit = 10
       retry_sleep = 3
 
+      output = {}
       retry_limit.times do |n|
-        if db_ismaster(alive_hosts[0]['host'])['ismaster']
-          Puppet.debug 'Replica set initialization has successfully ended'
-          return true
-        else
-          Puppet.debug "Waiting for replica initialization. Retry: #{n}"
+        output = rs_add(member, master)
+        if output['ok'].zero?
+          Puppet.debug "Retry adding host to replicaset. Retry: #{n}"
           sleep retry_sleep
-          next
+          master = master_host(alive_hosts)
+        else
+          Puppet.debug 'Host successfully added to replicaset'
+          break
         end
       end
-      raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: host #{alive_hosts[0]['host']} didn't become master"
+      raise Puppet::Error, "rs.add() failed to add host to replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
+    end
 
-    else
-      Puppet.debug "Checking for replset #{name} changes"
-      master = master_host(alive_hosts)
-      raise Puppet::Error, "Can't find master host for replicaset #{name}." unless master
+    Puppet.debug "Members to be Removed: #{remove_members.inspect}" unless remove_members.empty?
+    remove_members.each do |member|
+      retry_limit = 10
+      retry_sleep = 3
 
-      master_rs_config = rs_config(master)
-      add_members, remove_members, update_members = get_members_changes(master_rs_config['members'], @property_flush[:members])
-
-      Puppet.debug "Members to be Added: #{add_members.inspect}" unless add_members.empty?
-      add_members.each do |member|
-        retry_limit = 10
-        retry_sleep = 3
-
-        output = {}
-        retry_limit.times do |n|
-          output = rs_add(member, master)
-          if output['ok'].zero?
-            Puppet.debug "Retry adding host to replicaset. Retry: #{n}"
-            sleep retry_sleep
-            master = master_host(alive_hosts)
-          else
-            Puppet.debug 'Host successfully added to replicaset'
-            break
-          end
+      output = {}
+      retry_limit.times do |n|
+        output = rs_remove(member, master)
+        if output['ok'].zero?
+          Puppet.debug "Retry removing host from replicaset. Retry: #{n}"
+          sleep retry_sleep
+          master = master_host(alive_hosts)
+        else
+          Puppet.debug 'Host successfully removed from replicaset'
+          break
         end
-        raise Puppet::Error, "rs.add() failed to add host to replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
       end
+      raise Puppet::Error, "rs.remove() failed to remove host from replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
+    end
 
-      Puppet.debug "Members to be Removed: #{remove_members.inspect}" unless remove_members.empty?
-      remove_members.each do |member|
-        retry_limit = 10
-        retry_sleep = 3
+    Puppet.debug "Members to be Updated: #{update_members.inspect}" unless update_members.empty?
+    update_members.each do |member|
+      retry_limit = 10
+      retry_sleep = 3
 
-        output = {}
-        retry_limit.times do |n|
-          output = rs_remove(member, master)
-          if output['ok'].zero?
-            Puppet.debug "Retry removing host from replicaset. Retry: #{n}"
-            sleep retry_sleep
-            master = master_host(alive_hosts)
-          else
-            Puppet.debug 'Host successfully removed from replicaset'
-            break
-          end
+      output = {}
+      retry_limit.times do |n|
+        output = rs_reconfig_member(member, master)
+        if output['ok'].zero?
+          Puppet.debug "Retry updating host in replicaset. Retry: #{n}"
+          sleep retry_sleep
+          master = master_host(alive_hosts)
+        else
+          Puppet.debug 'Host successfully updated in replicaset'
+          break
         end
-        raise Puppet::Error, "rs.remove() failed to remove host from replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
       end
+      raise Puppet::Error, "rs.reconfig() failed to update host in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
+    end
+  end
 
-      Puppet.debug "Members to be Updated: #{update_members.inspect}" unless update_members.empty?
-      update_members.each do |member|
-        retry_limit = 10
-        retry_sleep = 3
-
-        output = {}
-        retry_limit.times do |n|
-          output = rs_reconfig_member(member, master)
-          if output['ok'].zero?
-            Puppet.debug "Retry updating host in replicaset. Retry: #{n}"
-            sleep retry_sleep
-            master = master_host(alive_hosts)
-          else
-            Puppet.debug 'Host successfully updated in replicaset'
-            break
-          end
-        end
-        raise Puppet::Error, "rs.reconfig() failed to update host in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
-      end
-
-      if !@property_flush[:settings].nil? && !@property_flush[:settings].empty?
-        settings = get_replset_settings_changes(master_rs_config, @property_flush[:settings])
-        Puppet.warning "Updating settings for replset #{name}"
-        retry_limit = 10
-        retry_sleep = 3
-        output = {}
-        retry_limit.times do |n|
-          output = rs_reconfig_settings(settings, master)
-          if output['ok'].zero?
-            Puppet.debug "Retry updating settings in replicaset. Retry: #{n}"
-            sleep retry_sleep
-            master = master_host(alive_hosts)
-          else
-            Puppet.debug 'Settings successfully updated in replicaset'
-            break
-          end
-        end
-        raise Puppet::Error, "rs.reconfig() failed to update settings in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
+  def update_settings
+    settings = get_replset_settings_changes(master_rs_config, @property_flush[:settings])
+    Puppet.warning "Updating settings for replset #{name}"
+    retry_limit = 10
+    retry_sleep = 3
+    output = {}
+    retry_limit.times do |n|
+      output = rs_reconfig_settings(settings, master)
+      if output['ok'].zero?
+        Puppet.debug "Retry updating settings in replicaset. Retry: #{n}"
+        sleep retry_sleep
+      else
+        Puppet.debug 'Settings successfully updated in replicaset'
+        break
       end
     end
+    raise Puppet::Error, "rs.reconfig() failed to update settings in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
   end
 
   def mongo_command(command, host, retries = 4)
