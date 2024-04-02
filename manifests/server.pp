@@ -224,14 +224,14 @@
 #    Specify the path to a key file to store authentication information. This option is only useful for the
 #    connection between replica set members.
 #
-# @param  key
+# @param key
 #   Specify the key contained within the keyfile. This option is only useful for the connection between
 #   replica set members.
 #
 # @param set_parameter
 #   Specify extra configuration file parameters (i.e. textSearchEnabled=true).
 #
-# @param  syslog
+# @param syslog
 #   Sends all logging output to the host’s syslog system rather than to standard output or a log file.
 #
 # @param config_content
@@ -280,6 +280,7 @@
 #
 # @param tls_mode
 #   Defines if TLS is used for all network connections. Allowed values are 'requireTLS', 'preferTLS' or 'allowTLS'.
+#
 # @param admin_password_hash
 #   Hashed password. Hex encoded md5 hash of mongodb password.
 #
@@ -296,7 +297,7 @@
 # @param admin_username
 #   Administrator user name
 #
-# @param  admin_password
+# @param admin_password
 #   Administrator user password
 #
 # @param admin_auth_mechanism
