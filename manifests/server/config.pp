@@ -25,7 +25,6 @@ class mongodb::server::config {
   $smallfiles       = $mongodb::server::smallfiles
   $cpu              = $mongodb::server::cpu
   $auth             = $mongodb::server::auth
-  $noath            = $mongodb::server::noauth
   $create_admin     = $mongodb::server::create_admin
   $admin_username   = $mongodb::server::admin_username
   $admin_password   = $mongodb::server::admin_password
@@ -85,13 +84,6 @@ class mongodb::server::config {
   if ($ssl and $tls) { fail('You cannot use ssl and tls options together') }
 
   if ($ensure == 'present' or $ensure == true) {
-    # Exists for future compatibility and clarity.
-    if $auth {
-      $noauth = false
-    }
-    else {
-      $noauth = true
-    }
     if $keyfile and $key {
       file { $keyfile:
         content => $key,
