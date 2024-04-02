@@ -38,8 +38,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       'tlscert' => config['net.tls.certificateKeyFile'],
       'tlsca' => config['net.tls.CAFile'],
       'auth' => config['security.authorization'],
-      'shardsvr' => config['sharding.clusterRole'],
-      'confsvr' => config['sharding.clusterRole']
+      'clusterRole' => config['sharding.clusterRole'],
     }
   end
 
@@ -116,13 +115,12 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     end
 
     port = config.fetch('port')
-    shardsvr = config.fetch('shardsvr')
-    confsvr = config.fetch('confsvr')
+    cluster_role = config.fetch('clusterRole')
     port_real = if port
                   port
-                elsif confsvr.eql?('configsvr') || confsvr.eql?('true')
+                elsif cluster_role.eql?('configsvr')
                   27_019
-                elsif shardsvr.eql?('shardsvr') || shardsvr.eql?('true')
+                elsif cluster_role.eql?('shardsvr')
                   27_018
                 else
                   27_017
