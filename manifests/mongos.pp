@@ -36,9 +36,11 @@
 #
 # @param service_user
 #   The user used by Systemd for running the service.
+#   If not specified, the module will use the default for your OS distro.
 #
 # @param service_group
 #   The group used by Systemd for running the service
+#   If not specified, the module will use the default for your OS distro.
 #
 # @param service_template
 #   Path to the service template if the default doesn't match one needs.
@@ -85,6 +87,8 @@
 #   Specifies whether the service should be restarted on config changes.
 #
 class mongodb::mongos (
+  String[1] $service_user,
+  String[1] $service_group,
   Stdlib::Absolutepath $config                       = '/etc/mongos.conf',
   Optional[String[1]] $config_content                = undef,
   Optional[String[1]] $config_template               = undef,
@@ -93,8 +97,6 @@ class mongodb::mongos (
   Boolean $service_manage                            = true,
   Optional[String] $service_provider                 = undef,
   String[1] $service_name                            = 'mongos',
-  String[1] $service_user                            = 'mongodb',
-  String[1] $service_group                           = 'mongodb',
   String[1] $service_template                        = 'mongodb/mongos/mongos.service-dropin.epp',
   Boolean $service_enable                            = true,
   Stdlib::Ensure::Service $service_ensure            = 'running',

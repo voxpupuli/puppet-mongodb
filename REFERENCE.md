@@ -336,16 +336,14 @@ Default value: `'mongos'`
 Data type: `String[1]`
 
 The user used by Systemd for running the service.
-
-Default value: `'mongodb'`
+If not specified, the module will use the default for your OS distro.
 
 ##### <a name="-mongodb--mongos--service_group"></a>`service_group`
 
 Data type: `String[1]`
 
 The group used by Systemd for running the service
-
-Default value: `'mongodb'`
+If not specified, the module will use the default for your OS distro.
 
 ##### <a name="-mongodb--mongos--service_template"></a>`service_template`
 
@@ -898,16 +896,12 @@ Data type: `String[1]`
 This setting can be used to override the default MongoDB user and owner of the service and related files in the file system.
 If not specified, the module will use the default for your OS distro.
 
-Default value: `'mongod'`
-
 ##### <a name="-mongodb--server--group"></a>`group`
 
 Data type: `String[1]`
 
 This setting can be used to override the default MongoDB user group to be used for related files in the file system.
 If not specified, the module will use the default for your OS distro.
-
-Default value: `'mongod'`
 
 ##### <a name="-mongodb--server--config"></a>`config`
 
@@ -923,8 +917,6 @@ Data type: `Stdlib::Absolutepath`
 
 Set this value to designate a directory for the mongod instance to store it's data.
 If not specified, the module will use the default for your OS distro.
-
-Default value: `'/var/lib/mongodb'`
 
 ##### <a name="-mongodb--server--dbpath_fix"></a>`dbpath_fix`
 

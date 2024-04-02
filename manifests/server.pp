@@ -319,11 +319,11 @@
 #   Store admin credentials in mongoshrc.js file. Uses with create_admin parameter
 #
 class mongodb::server (
+  String[1] $user,
+  String[1] $group,
+  Stdlib::Absolutepath $dbpath,
   String[1] $ensure                                                       = 'present',
-  String[1] $user                                                         = 'mongod',
-  String[1] $group                                                        = 'mongod',
   Stdlib::Absolutepath $config                                            = '/etc/mongod.conf',
-  Stdlib::Absolutepath $dbpath                                            = '/var/lib/mongodb',
   Boolean $dbpath_fix                                                     = false,
   Optional[Stdlib::Absolutepath] $pidfilepath                             = undef,
   String[4,4] $pidfilemode                                                = '0644',
