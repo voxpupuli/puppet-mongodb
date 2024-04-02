@@ -77,10 +77,8 @@ class {'mongodb::globals':
 
 Most of the interaction for the server is done via `mongodb::server`. For
 more options please have a look at [mongodb::server](#class-mongodbserver).
-Also in this version we introduced `mongodb::globals`, which is meant more
-for future implementation, where you can configure the main settings for
-this module in a global way, to be used by other classes and defined resources.
-On its own it does nothing.
+There is also `mongodb::globals` to set some global settings, on its own this
+class does nothing.
 
 ### Create MongoDB database
 
@@ -137,12 +135,11 @@ more options please have a look at [mongodb::opsmanager](#class-mongodbopsmanage
 
 This module has been tested on:
 
-* Debian 7.* (Wheezy)
-* Debian 6.* (squeeze)
-* Ubuntu 12.04.2 (precise)
-* Ubuntu 10.04.4 LTS (lucid)
-* RHEL 5/6/7
-* CentOS 5/6/7
+* Debian 10.* (Buster)
+* Debian 11.* (Bookworm)
+* Ubuntu 20.04.0 LTS (Focal Fossa)
+* RHEL 7/8
+* CentOS 7/8
 
 For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/voxpupuli/puppet-mongodb/blob/master/.nodeset.yml) definition.
 
