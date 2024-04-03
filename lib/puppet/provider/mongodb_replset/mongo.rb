@@ -72,12 +72,8 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     mongo_command('db.isMaster()', host)
   end
 
-  def rs_initiate(conf, master)
-    if auth_enabled && auth_enabled != 'disabled'
-      mongo_command("rs.initiate(#{conf})", initialize_host)
-    else
-      mongo_command("rs.initiate(#{conf})", master)
-    end
+  def rs_initiate(conf)
+    mongo_command("rs.initiate(#{conf})", initialize_host)
   end
 
   def rs_status(host)
@@ -272,8 +268,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       }.to_json
 
       Puppet.debug "Starting replset config is #{replset_conf.to_json}"
-      # Set replset members with the first host as the master
-      output = rs_initiate(replset_conf, alive_hosts[0]['host'])
+      output = rs_initiate(replset_conf)
       raise Puppet::Error, "rs.initiate() failed for replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
 
       # Check that the replicaset has finished initialization
