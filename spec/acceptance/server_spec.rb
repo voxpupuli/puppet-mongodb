@@ -159,11 +159,11 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
       pp = <<-EOS
         class { 'mongodb::server':
             ensure => absent,
-            package_ensure => absent,
+            package_ensure => purged,
             service_ensure => stopped,
             service_enable => false
           }
-        -> class { 'mongodb::client': ensure => absent, }
+        -> class { 'mongodb::client': ensure => purged, }
       EOS
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)

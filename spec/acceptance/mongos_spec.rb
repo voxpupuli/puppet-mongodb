@@ -65,12 +65,12 @@ describe 'mongodb::mongos class', if: supported_version?(default[:platform], rep
         }
         -> class { 'mongodb::server':
           ensure         => absent,
-          package_ensure => absent,
+          package_ensure => purged,
           service_ensure => stopped,
           service_enable => false
         }
         -> class { 'mongodb::client':
-          ensure => absent,
+          ensure => purged,
         }
       EOS
       apply_manifest(pp, catch_failures: true)
