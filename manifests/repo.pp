@@ -77,8 +77,13 @@ class mongodb::repo (
         $_repo_location = $repo_location
         $description = 'MongoDB Custom Repository'
       } else {
-        $_repo_location = "https://repo.mongodb.org/zypper/suse/\$releasever_major/mongodb-org/${version}/\$basearch/"
-        $description = 'MongoDB Repository'
+        if $use_enterprise_repo {
+          $_repo_location = "https://repo.mongodb.com/zypper/suse/\$releasever_major/mongodb-enterprise/${version}/\$basearch/"
+          $description = 'MongoDB Enterprise Repository'
+        } else {
+          $_repo_location = "https://repo.mongodb.org/zypper/suse/\$releasever_major/mongodb-org/${version}/\$basearch/"
+          $description = 'MongoDB Repository'
+        }
       }
 
       class { 'mongodb::repo::zypper':
