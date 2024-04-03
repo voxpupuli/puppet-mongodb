@@ -17,12 +17,12 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         }
         -> class { 'mongodb::server':
           ensure         => absent,
-          package_ensure => absent,
+          package_ensure => purged,
           service_ensure => stopped
         }
         if $::osfamily == 'RedHat' {
           class { 'mongodb::client':
-            ensure => absent
+            ensure => purged
           }
         }
       EOS
@@ -91,12 +91,12 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         }
         -> class { 'mongodb::server':
           ensure => absent,
-          package_ensure => absent,
+          package_ensure => purged,
           service_ensure => stopped
         }
         if $::osfamily == 'RedHat' {
           class { 'mongodb::client':
-            ensure => absent
+            ensure => purged
           }
         }
       EOS
