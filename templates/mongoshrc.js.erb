@@ -33,10 +33,8 @@ if (authRequired()) {
   db.getMongo().setReadPref('primaryPreferred')
   <%- end -%>
   try {
-    var prev_db = db.getName()
-    db = db.getSiblingDB('admin')
-    db.auth('<%= @admin_username %>', '<%= @admin_password_unsensitive %>')
-    db = db.getSiblingDB(prev_db)
+    admin = db.getSiblingDB('admin')
+    admin.auth('<%= @admin_username %>', '<%= @admin_password_unsensitive %>')
   }
   catch (err) {
     // Silently ignore this error, we can't really do anything about it.

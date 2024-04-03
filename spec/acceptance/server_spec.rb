@@ -141,7 +141,7 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
       it { is_expected.to be_owned_by 'root' }
       it { is_expected.to be_grouped_into 'root' }
       it { is_expected.to be_mode 600 }
-      it { is_expected.to contain 'db.auth(\'admin\', \'password\')' }
+      it { is_expected.to contain 'admin.auth(\'admin\', \'password\')' }
     end
 
     describe command("mongosh admin --quiet --eval \"load('/root/.mongoshrc.js');EJSON.stringify(db.getUser('admin')['customData'])\"") do
