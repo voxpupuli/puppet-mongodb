@@ -157,7 +157,10 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
   describe 'uninstallation' do
     it 'uninstalls mongodb' do
       pp = <<-EOS
-        class { 'mongodb::server':
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::server':
             ensure => absent,
             package_ensure => purged,
             service_ensure => stopped,
