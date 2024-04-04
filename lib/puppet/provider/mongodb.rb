@@ -26,19 +26,15 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   def self.mongo_conf
     config = YAML.load_file(mongod_conf_file) || {}
     {
-      'bindip' => config['net.bindIp'],
-      'port' => config['net.port'],
-      'ipv6' => config['net.ipv6'],
-      'sslallowInvalidHostnames' => config['net.ssl.allowInvalidHostnames'],
-      'ssl' => config['net.ssl.mode'],
-      'sslcert' => config['net.ssl.PEMKeyFile'],
-      'sslca' => config['net.ssl.CAFile'],
-      'tlsallowInvalidHostnames' => config['net.tls.allowInvalidHostnames'],
-      'tls' => config['net.tls.mode'],
-      'tlscert' => config['net.tls.certificateKeyFile'],
-      'tlsca' => config['net.tls.CAFile'],
-      'auth' => config['security.authorization'],
-      'clusterRole' => config['sharding.clusterRole'],
+      'bindip' => config['net.bindIp'] || config.fetch('net', {}).fetch('bindIp', nil),
+      'port' => config['net.port'] || config.fetch('net', {}).fetch('port', nil),
+      'ipv6' => config['net.ipv6'] || config.fetch('net', {}).fetch('ipv6', nil),
+      'tlsallowInvalidHostnames' => config['net.tls.allowInvalidHostnames'] || config.fetch('net', {}).fetch('tls', {}).fetch('allowInvalidHostnames', nil),
+      'tls' => config['net.tls.mode'] || config.fetch('net', {}).fetch('tls', {}).fetch('mode', nil),
+      'tlscert' => config['net.tls.certificateKeyFile'] || config.fetch('net', {}).fetch('tls', {}).fetch('certificateKeyFile', nil),
+      'tlsca' => config['net.tls.CAFile'] || config.fetch('net', {}).fetch('tls', {}).fetch('CAFile', nil),
+      'auth' => config['security.authorization'] || config.fetch('security', {}).fetch('authorization', nil),
+      'clusterRole' => config['sharding.clusterRole'] || config.fetch('sharding', {}).fetch('clusterRole', nil),
     }
   end
 
@@ -47,21 +43,10 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     config['ipv6']
   end
 
-  def self.ssl_is_enabled(config = nil)
-    config ||= mongo_conf
-    ssl_mode = config.fetch('ssl')
-    !ssl_mode.nil? && ssl_mode != 'disabled'
-  end
-
   def self.tls_is_enabled(config = nil)
     config ||= mongo_conf
     tls_mode = config.fetch('tls')
     !tls_mode.nil? && tls_mode != 'disabled'
-  end
-
-  def self.ssl_invalid_hostnames(config = nil)
-    config ||= mongo_conf
-    config['sslallowInvalidHostnames']
   end
 
   def self.tls_invalid_hostnames(config = nil)
@@ -76,16 +61,6 @@ class Puppet::Provider::Mongodb < Puppet::Provider
 
     args = [db, '--quiet', '--host', host]
     args.push('--ipv6') if ipv6_is_enabled(config)
-
-    if ssl_is_enabled(config)
-      args.push('--ssl')
-      args += ['--sslPEMKeyFile', config['sslcert']]
-
-      ssl_ca = config['sslca']
-      args += ['--sslCAFile', ssl_ca] unless ssl_ca.nil?
-
-      args.push('--sslAllowInvalidHostnames') if ssl_invalid_hostnames(config)
-    end
 
     if tls_is_enabled(config)
       args.push('--tls')

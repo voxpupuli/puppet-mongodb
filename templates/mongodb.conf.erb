@@ -108,19 +108,6 @@ net.maxIncomingConnections: <%= @maxconns %>
 <% if ! @nohttpinterface.nil? -%>
 net.http.enabled: <%= ! @nohttpinterface %>
 <% end -%>
-<% if @ssl -%>
-net.ssl.mode: <%= @ssl_mode %>
-net.ssl.PEMKeyFile: <%= @ssl_key %>
-<% if @ssl_ca -%>
-net.ssl.CAFile: <%= @ssl_ca %>
-<% end -%>
-<% if @ssl_weak_cert -%>
-net.ssl.weakCertificateValidation: <%= @ssl_weak_cert %>
-<% end -%>
-<% if @ssl_invalid_hostnames -%>
-net.ssl.allowInvalidHostnames: <%= @ssl_invalid_hostnames %>
-<% end -%>
-<% end -%>
 <% if @tls -%>
 net.tls.mode: <%= @tls_mode %>
 net.tls.certificateKeyFile: <%= @tls_key %>

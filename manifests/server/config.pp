@@ -62,12 +62,6 @@ class mongodb::server::config {
   $maxconns         = $mongodb::server::maxconns
   $set_parameter    = $mongodb::server::set_parameter
   $syslog           = $mongodb::server::syslog
-  $ssl              = $mongodb::server::ssl
-  $ssl_key          = $mongodb::server::ssl_key
-  $ssl_ca           = $mongodb::server::ssl_ca
-  $ssl_weak_cert    = $mongodb::server::ssl_weak_cert
-  $ssl_invalid_hostnames = $mongodb::server::ssl_invalid_hostnames
-  $ssl_mode         = $mongodb::server::ssl_mode
   $tls              = $mongodb::server::tls
   $tls_key          = $mongodb::server::tls_key
   $tls_ca           = $mongodb::server::tls_ca
@@ -80,8 +74,6 @@ class mongodb::server::config {
     owner => $user,
     group => $group,
   }
-
-  if ($ssl and $tls) { fail('You cannot use ssl and tls options together') }
 
   if ($ensure == 'present' or $ensure == true) {
     if $keyfile and $key {

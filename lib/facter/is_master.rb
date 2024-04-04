@@ -11,13 +11,6 @@ def get_options_from_hash_config(config)
   result = []
 
   result << "--port #{config['net.port']}" unless config['net.port'].nil?
-  # use --ssl and --host if:
-  # - sslMode is "requireSSL"
-  # - Parameter --sslPEMKeyFile is set
-  # - Parameter --sslCAFile is set
-  result << "--ssl --host #{Facter.value(:fqdn)}" if config['net.ssl.mode'] == 'requireSSL' || !config['net.ssl.PEMKeyFile'].nil? || !config['net.ssl.CAFile'].nil?
-  result << "--sslPEMKeyFile #{config['net.ssl.PEMKeyFile']}" unless config['net.ssl.PEMKeyFile'].nil?
-  result << "--sslCAFile #{config['net.ssl.CAFile']}" unless config['net.ssl.CAFile'].nil?
   # use --tls and --host if:
   # - tlsMode is "requireTLS"
   # - Parameter --tlsCertificateKeyFile is set
