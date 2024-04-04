@@ -21,7 +21,6 @@ class mongodb::server::config {
   $fork             = $mongodb::server::fork
   $port             = $mongodb::server::port
   $journal          = $mongodb::server::journal
-  $nojournal        = $mongodb::server::nojournal
   $smallfiles       = $mongodb::server::smallfiles
   $cpu              = $mongodb::server::cpu
   $auth             = $mongodb::server::auth

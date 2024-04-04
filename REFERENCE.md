@@ -827,7 +827,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`fork`](#-mongodb--server--fork)
 * [`port`](#-mongodb--server--port)
 * [`journal`](#-mongodb--server--journal)
-* [`nojournal`](#-mongodb--server--nojournal)
 * [`smallfiles`](#-mongodb--server--smallfiles)
 * [`cpu`](#-mongodb--server--cpu)
 * [`auth`](#-mongodb--server--auth)
@@ -1103,16 +1102,9 @@ Default value: `undef`
 
 Data type: `Optional[Boolean]`
 
-Set to true to enable operation journaling to ensure write durability and data consistency.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--nojournal"></a>`nojournal`
-
-Data type: `Optional[Boolean]`
-
-Set nojournal = true to disable durability journaling. By default, mongod enables journaling in 64-bit versions after v2.0.
-Note: You must use journal to enable journaling on 32-bit systems.
+Enable or disable the durability journal to ensure data files remain valid and recoverable.
+Available in MongoDB < 7.0
+Default: true on 64-bit systems, false on 32-bit systems
 
 Default value: `undef`
 

@@ -99,11 +99,9 @@
 #   Specifies a TCP port for the server instance to listen for client connections.
 #
 # @param journal
-#   Set to true to enable operation journaling to ensure write durability and data consistency.
-#
-# @param nojournal
-#   Set nojournal = true to disable durability journaling. By default, mongod enables journaling in 64-bit versions after v2.0.
-#   Note: You must use journal to enable journaling on 32-bit systems.
+#   Enable or disable the durability journal to ensure data files remain valid and recoverable.
+#   Available in MongoDB < 7.0
+#   Default: true on 64-bit systems, false on 32-bit systems
 #
 # @param smallfiles
 #   Set to true to modify MongoDB to use a smaller default data file size. Specifically, smallfiles reduces
@@ -323,7 +321,6 @@ class mongodb::server (
   Boolean $fork                                                           = false,
   Optional[Integer[1, 65535]] $port                                       = undef,
   Optional[Boolean] $journal                                              = undef,
-  Optional[Boolean] $nojournal                                            = undef,
   Optional[Boolean] $smallfiles                                           = undef,
   Optional[Boolean] $cpu                                                  = undef,
   Boolean $auth                                                           = false,
@@ -383,6 +380,28 @@ class mongodb::server (
     'clusterManager', 'clusterMonitor', 'hostManager', 'root', 'restore',
   ],
 ) inherits mongodb::globals {
+  if $journal != undef {
+    if $mongodb::globals::repo_location == undef {
+      $_repo_loc_version_match = undef
+    } else {
+      $_repo_loc_version_match = $mongodb::globals::repo_location.match(/[0-9]+\.[0-9]+/)
+    }
+    if (
+      $mongodb::globals::manage_package_repo
+      and $mongodb::globals::repo_location == undef
+      and versioncmp($mongodb::globals::repo_version, '7.0') >= 0
+    ) or (
+      $mongodb::globals::manage_package_repo
+      and $mongodb::globals::repo_location != undef
+      and $_repo_loc_version_match != undef
+      and versioncmp($_repo_loc_version_match[0], '7.0') >= 0
+    ) or (
+      $package_ensure =~ /\./ and versioncmp($package_ensure, '7.0.0') >= 0
+    ) {
+      fail('`journal` parameter is only supported for MongoDB < 7.0')
+    }
+  }
+
   contain mongodb::server::install
   contain mongodb::server::config
   contain mongodb::server::service

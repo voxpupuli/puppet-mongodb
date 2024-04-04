@@ -2,6 +2,5 @@
 mongodb::server::user: 'mongodb'
 mongodb::server::group: 'mongodb'
 mongodb::server::dbpath: '/var/lib/mongodb'
-mongodb::server::journal: false
 mongodb::mongos::service_user: 'mongodb'
 mongodb::mongos::service_group: 'mongodb'
