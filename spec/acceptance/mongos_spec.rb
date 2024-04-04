@@ -60,7 +60,10 @@ describe 'mongodb::mongos class', if: supported_version?(default[:platform], rep
   describe 'uninstalling' do
     it 'uninstalls mongodb' do
       pp = <<-EOS
-        class { 'mongodb::mongos':
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::mongos':
           package_ensure => 'purged',
         }
         -> class { 'mongodb::server':
