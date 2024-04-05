@@ -141,8 +141,6 @@ This module has been tested on:
 * RHEL 7/8
 * CentOS 7/8
 
-This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
-
 ## Development
 
 This module is maintained by [Vox Pupuli](https://voxpupuli.org/). Voxpupuli
