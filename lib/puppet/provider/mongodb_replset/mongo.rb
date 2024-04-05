@@ -195,8 +195,8 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       rescue Puppet::ExecutionFailure => e
         raise Puppet::Error, "Can't configure replicaset #{name}, host #{host} is not supposed to be part of a replicaset." if e.message =~ %r{not running with --replSet}
 
-        if auth_enabled && (e.message.include?('unauthorized') || e.message.include?('not authorized') || e.message.include?('requires authentication'))
-          Puppet.warning "Host #{host} is available, but you are unauthorized because of authentication is enabled: #{auth_enabled}"
+        if e.message.include?('unauthorized') || e.message.include?('not authorized') || e.message.include?('requires authentication')
+          Puppet.warning "Host #{host} is available, but you are unauthorized. Authentication enabled: #{auth_enabled}"
           alive.push(member)
         elsif e.message.include?('no replset config has been received')
           Puppet.debug 'Mongo v4 rs.status() RS not initialized output'
