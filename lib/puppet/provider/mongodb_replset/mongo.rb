@@ -110,7 +110,7 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
       update_members(alive_hosts)
       update_settings if !@property_flush[:settings].nil? && !@property_flush[:settings].empty?
     end
-    @property_hash = self.class.replset_properties
+    @property_hash = resource.to_hash
   end
 
   private

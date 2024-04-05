@@ -48,7 +48,6 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
       provider.create
       provider.flush
 
-      expect(provider.class).to have_received(:replset_properties)
       expect(provider).to have_received(:get_hosts_status)
       expect(provider).to have_received(:master_host)
       expect(provider).to have_received(:rs_initiate)
