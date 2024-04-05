@@ -79,16 +79,34 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
     end
 
     describe 'when the replicaset exists' do
-      it 'returns true' do
-        allow(provider.class).to receive(:mongo_eval).and_return(<<~EOT)
-          {
-          	"_id" : "rs_test",
-          	"version" : 1,
-          	"members" : [ ]
-          }
-        EOT
-        provider.class.prefetch(resources)
-        expect(resource.provider.exists?).to be true
+      describe 'with auth disabled' do
+        it 'returns true' do
+          allow(provider.class).to receive(:mongo_eval).and_return(<<~EOT)
+            {
+              "set" : "rs_test",
+              "version" : 1,
+              "members" : [ ]
+            }
+          EOT
+          allow(provider.class).to receive(:auth_enabled).and_return(false)
+          provider.class.prefetch(resources)
+          expect(resource.provider.exists?).to be true
+        end
+      end
+
+      describe 'with auth enabled' do
+        it 'returns true' do
+          allow(provider.class).to receive(:mongo_eval).and_return(<<~EOT)
+            {
+              "_id" : "rs_test",
+              "version" : 1,
+              "members" : [ ]
+            }
+          EOT
+          allow(provider.class).to receive(:auth_enabled).and_return(true)
+          provider.class.prefetch(resources)
+          expect(resource.provider.exists?).to be true
+        end
       end
     end
   end
@@ -100,29 +118,60 @@ describe Puppet::Type.type(:mongodb_replset).provider(:mongo) do
       allow(provider.class).to receive(:mongod_conf_file).and_return(mongodconffile)
     end
 
-    it 'returns the members of a configured replicaset' do
-      allow(provider.class).to receive(:mongo_eval).and_return(<<~EOT)
-        {
-        	"_id" : "rs_test",
-        	"version" : 1,
-        	"members" : [
-        		{
-        			"_id" : 0,
-        			"host" : "mongo1:27017"
-        		},
-        		{
-        			"_id" : 1,
-        			"host" : "mongo2:27017"
-        		},
-        		{
-        			"_id" : 2,
-        			"host" : "mongo3:27017"
-        		}
-        	]
-        }
-      EOT
-      provider.class.prefetch(resources)
-      expect(resource.provider.members).to match_array(valid_members)
+    describe 'with auth enabled' do
+      it 'returns the members of a configured replicaset' do
+        allow(provider.class).to receive(:auth_enabled).and_return(true)
+        allow(provider.class).to receive(:mongo_eval).and_return(<<~EOT)
+          {
+              "_id" : "rs_test",
+              "version" : 1,
+              "members" : [
+                  {
+                      "_id" : 0,
+                      "host" : "mongo1:27017"
+                  },
+                  {
+                      "_id" : 1,
+                      "host" : "mongo2:27017"
+                  },
+                  {
+                      "_id" : 2,
+                      "host" : "mongo3:27017"
+                  }
+              ]
+          }
+        EOT
+        provider.class.prefetch(resources)
+        expect(resource.provider.members).to match_array(valid_members)
+      end
+    end
+
+    describe 'with auth disabled' do
+      it 'returns the members of a configured replicaset' do
+        allow(provider.class).to receive(:auth_enabled).and_return(false)
+        allow(provider.class).to receive(:mongo_eval).and_return(<<~EOT)
+          {
+              "set" : "rs_test",
+              "version" : 1,
+              "members" : [
+                  {
+                      "_id" : 0,
+                      "name" : "mongo1:27017"
+                  },
+                  {
+                      "_id" : 1,
+                      "name" : "mongo2:27017"
+                  },
+                  {
+                      "_id" : 2,
+                      "name" : "mongo3:27017"
+                  }
+              ]
+          }
+        EOT
+        provider.class.prefetch(resources)
+        expect(resource.provider.members).to match_array(valid_members)
+      end
     end
   end
 

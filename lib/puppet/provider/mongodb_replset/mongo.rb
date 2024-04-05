@@ -31,12 +31,33 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
   end
 
   def self.instances
-    instance = replset_properties
-    if instance
-      # There can only be one replset per node
-      [new(instance)]
+    if auth_enabled
+      instance = replset_properties
+      if instance
+        # There can only be one replset per node
+        [new(instance)]
+      else
+        []
+      end
     else
-      []
+      begin
+        status = rs_status(conn_string)
+        return [] unless status.key?('set')
+
+        # There can only be one replset per node
+        [
+          new(
+            {
+              name: status['set'],
+              ensure: :present,
+              members: status['members'].map { |member| { '_id' => member['_id'], 'host' => member['name'] } },
+              provider: :mongo
+            }
+          )
+        ]
+      rescue Puppet::ExecutionFailure
+        []
+      end
     end
   end
 
@@ -102,8 +123,12 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     mongo_command("rs.initiate(#{conf})", initialize_host)
   end
 
-  def rs_status(host)
+  def self.rs_status(host)
     mongo_command('rs.status()', host)
+  end
+
+  def rs_status(host)
+    self.class.rs_status(host)
   end
 
   def rs_config(host)
