@@ -51,7 +51,8 @@ describe 'mongodb::server' do
             with_content(%r{^storage\.dbPath: #{db_path}$}).
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
             with_content(%r{^systemLog\.logAppend: true$}).
-            with_content(%r{^systemLog\.path: #{log_path}$})
+            with_content(%r{^systemLog\.path: #{log_path}$}).
+            without_content(%r{^storage\.journal\.enabled:})
         end
 
         it { is_expected.to contain_class('mongodb::repo') }
@@ -198,7 +199,7 @@ describe 'mongodb::server' do
         it { is_expected.to contain_file(config_file).with_content(%r{^setParameter:\n  textSearchEnable=true}) }
       end
 
-      describe 'with journal:' do
+      describe 'with journal: true' do
         let :params do
           {
             journal: true
@@ -206,6 +207,101 @@ describe 'mongodb::server' do
         end
 
         it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
+      end
+
+      describe 'with journal: false' do
+        let :params do
+          {
+            journal: false
+          }
+        end
+
+        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: false$}) }
+      end
+
+      describe 'with journal and package_version < 7.0.0' do
+        let :params do
+          {
+            package_ensure: '6.0.0',
+            journal: true
+          }
+        end
+
+        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
+      end
+
+      describe 'with journal and package_version >= 7.0.0' do
+        let :params do
+          {
+            package_ensure: '7.0.0',
+            journal: true
+          }
+        end
+
+        it { is_expected.to raise_error(Puppet::Error) }
+      end
+
+      describe 'with journal and user defined repo_location without version' do
+        let :params do
+          {
+            journal: true
+          }
+        end
+        let(:pre_condition) do
+          [
+            'class mongodb::globals {
+              $manage_package_repo = true
+              $version = "5.0"
+              $edition = "org"
+              $repo_location = "https://repo.myorg.com/"
+            }',
+            'class{"mongodb::globals": }'
+          ]
+        end
+
+        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
+      end
+
+      describe 'with journal and user defined repo_location with version < 7.0' do
+        let :params do
+          {
+            journal: true
+          }
+        end
+        let(:pre_condition) do
+          [
+            'class mongodb::globals {
+              $manage_package_repo = true
+              $version = "5.0"
+              $edition = "org"
+              $repo_location = "https://repo.myorg.com/6.0/"
+            }',
+            'class{"mongodb::globals": }'
+          ]
+        end
+
+        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
+      end
+
+      describe 'with journal and user defined repo_location with version >= 7.0' do
+        let :params do
+          {
+            journal: true
+          }
+        end
+        let(:pre_condition) do
+          [
+            'class mongodb::globals {
+              $manage_package_repo = true
+              $version = "5.0"
+              $edition = "org"
+              $repo_location = "https://repo.myorg.com/7.0/"
+            }',
+            'class{"mongodb::globals": }'
+          ]
+        end
+
+        it { is_expected.to raise_error(Puppet::Error) }
       end
 
       # check nested quota and quotafiles

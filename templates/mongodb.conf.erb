@@ -44,10 +44,8 @@ processManagement:
 
 #Storage
 storage.dbPath: <%= @dbpath %>
-<% if @nojournal -%>
-storage.journal.enabled: false
-<% elsif @journal -%>
-storage.journal.enabled: true
+<% if @journal != nil -%>
+storage.journal.enabled: <%= @journal %>
 <% end -%>
 <% if @noprealloc -%>
 storage.preallocDataFiles: <%= !@noprealloc %>
