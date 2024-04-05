@@ -141,8 +141,6 @@ This module has been tested on:
 * RHEL 7/8
 * CentOS 7/8
 
-For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/voxpupuli/puppet-mongodb/blob/master/.nodeset.yml) definition.
-
 This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
 
 ## Development
