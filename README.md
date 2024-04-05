@@ -97,6 +97,69 @@ mongodb::db { 'testdb':
 Parameter 'password_hash' is hex encoded md5 hash of "user1:mongo:pass1".
 Unsafe plain text password could be used with 'password' parameter instead of 'password_hash'.
 
+### Replica sets
+
+When deciding to use replica setups (recommended for production environments)
+there are a few things to keep in mind when using this module.
+
+When setting up replicasets, prefer fully qualified domain names.
+
+#### Basic usage with authentication
+
+```puppet
+class { 'mongodb::server':
+  auth                 => true,
+  create_admin         => true,
+  admin_username       => 'admin',
+  admin_password       => $admin_password,
+  admin_auth_mechanism => 'scram_sha_256',
+  store_creds          => true,
+  handle_creds         => true,
+  replset              => 'rs0',
+  replset_members      => [
+    'mongo1.example.com:27017',
+    'mongo2.example.com:27017',
+    'mongo3.example.com:27017'
+   ],
+}
+class { 'mongodb::client' }
+```
+
+#### Basic usage without authentication
+
+First set up a basic installation on all nodes:
+
+```puppet
+class { 'mongodb::server':
+  auth    => false,
+  replset => 'rs0',
+}
+class { 'mongodb::client' }
+```
+
+Modify manifest and run on a single node:
+
+```puppet
+class { 'mongodb::server':
+  auth            => false,
+  replset         => 'rs0',
+  replset_members => [
+    'mongo1.example.com:27017',
+    'mongo2.example.com:27017',
+    'mongo3.example.com:27017'
+   ],
+}
+class { 'mongodb::client' }
+```
+
+This initiates the replicaset on the first node.
+From now on, this can be run on any node without changes to the node.
+
+#### Limitations
+
+This module may **not** be able to update a replica set once it is created when
+authentication is disabled.
+
 ### Sharding
 
 If one plans to configure sharding for a Mongo deployment, the module offer
