@@ -384,13 +384,13 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     raise Puppet::Error, "rs.reconfig() failed to update settings in replicaset #{name}: #{output['errmsg']}" if output['ok'].zero?
   end
 
-  def mongo_command(command, host, retries = 4)
-    self.class.mongo_command(command, host, retries)
+  def mongo_command(command, host)
+    self.class.mongo_command(command, host)
   end
 
-  def self.mongo_command(command, host = nil, retries = 4)
+  def self.mongo_command(command, host = nil)
     begin
-      output = mongo_eval("EJSON.stringify(#{command})", 'admin', retries, host)
+      output = mongo_eval("EJSON.stringify(#{command})", 'admin', host)
     rescue Puppet::ExecutionFailure => e
       Puppet.debug "Got an exception: #{e}"
       raise

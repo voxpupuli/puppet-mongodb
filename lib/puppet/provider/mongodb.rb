@@ -127,30 +127,21 @@ class Puppet::Provider::Mongodb < Puppet::Provider
   end
 
   # Mongo Command Wrapper
-  def self.mongo_eval(cmd, db = 'admin', retries = 10, host = nil)
-    retry_count = retries
-    retry_sleep = 3
+  def self.mongo_eval(cmd, db = 'admin', host = nil)
     cmd = mongoshrc_file + cmd if mongoshrc_file
 
     out = nil
     begin
       out = mongosh_cmd(db, host, cmd)
     rescue StandardError => e
-      retry_count -= 1
-      if retry_count.positive?
-        Puppet.debug "Request failed: '#{e.message}' Retry: '#{retries - retry_count}'"
-        sleep retry_sleep
-        retry
-      end
+      raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}, with: #{e.message}"
     end
-
-    raise Puppet::ExecutionFailure, "Could not evaluate MongoDB shell command: #{cmd}, with: #{e.message}" unless out
 
     Puppet::Util::MongodbOutput.sanitize(out)
   end
 
-  def mongo_eval(cmd, db = 'admin', retries = 10, host = nil)
-    self.class.mongo_eval(cmd, db, retries, host)
+  def mongo_eval(cmd, db = 'admin', host = nil)
+    self.class.mongo_eval(cmd, db, host)
   end
 
   # Mongo Version checker
