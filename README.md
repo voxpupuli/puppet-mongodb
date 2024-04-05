@@ -141,14 +141,6 @@ This module has been tested on:
 * RHEL 7/8
 * CentOS 7/8
 
-For a full list of tested operating systems please have a look at the [.nodeset.xml](https://github.com/voxpupuli/puppet-mongodb/blob/master/.nodeset.yml) definition.
-
-This module should support `service_ensure` separate from the `ensure` value on `Class[mongodb::server]` but it does not yet.
-
-### Apt module support
-
-While this module supports both 1.x and 2.x versions of the puppetlabs-apt module, it does not support puppetlabs-apt 2.0.0 or 2.0.1.
-
 ## Development
 
 This module is maintained by [Vox Pupuli](https://voxpupuli.org/). Voxpupuli
