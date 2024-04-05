@@ -6,6 +6,7 @@ class mongodb::server::config {
   $ensure           = $mongodb::server::ensure
   $user             = $mongodb::server::user
   $group            = $mongodb::server::group
+  $system_log_config = $mongodb::server::system_log_config
   $config           = $mongodb::server::config
   $config_content   = $mongodb::server::config_content
   $config_template  = $mongodb::server::config_template
@@ -15,9 +16,6 @@ class mongodb::server::config {
   $pidfilepath      = $mongodb::server::pidfilepath
   $pidfilemode      = $mongodb::server::pidfilemode
   $manage_pidfile   = $mongodb::server::manage_pidfile
-  $logpath          = $mongodb::server::logpath
-  $logappend        = $mongodb::server::logappend
-  $system_logrotate = $mongodb::server::system_logrotate
   $fork             = $mongodb::server::fork
   $port             = $mongodb::server::port
   $journal          = $mongodb::server::journal
@@ -30,8 +28,6 @@ class mongodb::server::config {
   $handle_creds     = $mongodb::server::handle_creds
   $store_creds      = $mongodb::server::store_creds
   $rcfile           = $mongodb::server::rcfile
-  $verbose          = $mongodb::server::verbose
-  $verbositylevel   = $mongodb::server::verbositylevel
   $objcheck         = $mongodb::server::objcheck
   $quota            = $mongodb::server::quota
   $quotafiles       = $mongodb::server::quotafiles
@@ -60,7 +56,6 @@ class mongodb::server::config {
   $profile          = $mongodb::server::profile
   $maxconns         = $mongodb::server::maxconns
   $set_parameter    = $mongodb::server::set_parameter
-  $syslog           = $mongodb::server::syslog
   $tls              = $mongodb::server::tls
   $tls_key          = $mongodb::server::tls_key
   $tls_ca           = $mongodb::server::tls_ca

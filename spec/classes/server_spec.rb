@@ -50,8 +50,7 @@ describe 'mongodb::server' do
             with_group('root').
             with_content(%r{^storage\.dbPath: #{db_path}$}).
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
-            with_content(%r{^systemLog\.logAppend: true$}).
-            with_content(%r{^systemLog\.path: #{log_path}$}).
+            with_content(%r{systemLog:\n\s*destination: file\n\s*logAppend: true\n\s*path: "#{log_path}"\n}m)
             without_content(%r{^storage\.journal\.enabled:})
         end
 
@@ -329,18 +328,6 @@ describe 'mongodb::server' do
               with_content(%r{^storage\.quota\.enforced: true$}).
               with_content(%r{^storage\.quota\.maxFilesPerDB: 1$})
           }
-        end
-      end
-
-      describe 'when specifying syslog value' do
-        context 'it should be set to true' do
-          let :params do
-            {
-              syslog: true,
-            }
-          end
-
-          it { is_expected.to contain_file(config_file).with_content(%r{^systemLog\.destination: syslog$}) }
         end
       end
 
