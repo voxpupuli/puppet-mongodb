@@ -804,12 +804,10 @@ The following parameters are available in the `mongodb::server` class:
 * [`user`](#-mongodb--server--user)
 * [`group`](#-mongodb--server--group)
 * [`system_log_config`](#-mongodb--server--system_log_config)
+* [`process_management_config`](#-mongodb--server--process_management_config)
 * [`config`](#-mongodb--server--config)
 * [`dbpath`](#-mongodb--server--dbpath)
 * [`dbpath_fix`](#-mongodb--server--dbpath_fix)
-* [`pidfilemode`](#-mongodb--server--pidfilemode)
-* [`pidfilepath`](#-mongodb--server--pidfilepath)
-* [`manage_pidfile`](#-mongodb--server--manage_pidfile)
 * [`rcfile`](#-mongodb--server--rcfile)
 * [`service_manage`](#-mongodb--server--service_manage)
 * [`service_manage`](#-mongodb--server--service_manage)
@@ -822,7 +820,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`package_name`](#-mongodb--server--package_name)
 * [`bind_ip`](#-mongodb--server--bind_ip)
 * [`ipv6`](#-mongodb--server--ipv6)
-* [`fork`](#-mongodb--server--fork)
 * [`port`](#-mongodb--server--port)
 * [`journal`](#-mongodb--server--journal)
 * [`smallfiles`](#-mongodb--server--smallfiles)
@@ -907,6 +904,13 @@ Data type: `Hash`
 Content to add to the systemLog key of the server configuration file
 If not specified, the module will use the default for your OS distro.
 
+##### <a name="-mongodb--server--process_management_config"></a>`process_management_config`
+
+Data type: `Hash`
+
+Content to add to the processManagement key of the server configuration file
+If not specified, the module will use the default for your OS distro.
+
 ##### <a name="-mongodb--server--config"></a>`config`
 
 Data type: `Stdlib::Absolutepath`
@@ -929,31 +933,6 @@ Data type: `Boolean`
 Set this value to true if you want puppet to recursively manage the permissions of the files in the dbpath
 directory. If you are using the default dbpath, this should probably be false. Set this to true if you are
 using a custom dbpath.
-
-Default value: `false`
-
-##### <a name="-mongodb--server--pidfilemode"></a>`pidfilemode`
-
-Data type: `String[4,4]`
-
-The file mode of the pidfilepath
-
-Default value: `'0644'`
-
-##### <a name="-mongodb--server--pidfilepath"></a>`pidfilepath`
-
-Data type: `Optional[Stdlib::Absolutepath]`
-
-Specify a file location to hold the PID or process ID of the mongod process.
-If not specified, the module will use the default for your OS distro.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--manage_pidfile"></a>`manage_pidfile`
-
-Data type: `Boolean`
-
-Should puppet create the pidfile. Mongod 6.2.10 will not start if pidfile exists
 
 Default value: `false`
 
@@ -1056,14 +1035,6 @@ This setting has to be true to configure MongoDB to turn on ipv6 support. If not
 address is passed to MongoDB bind_ip it will just fail.
 
 Default value: `undef`
-
-##### <a name="-mongodb--server--fork"></a>`fork`
-
-Data type: `Boolean`
-
-Set to true to fork server process at launch time. The default setting depends on the operating system.
-
-Default value: `false`
 
 ##### <a name="-mongodb--server--port"></a>`port`
 

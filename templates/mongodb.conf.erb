@@ -1,18 +1,8 @@
 #mongodb.conf - generated from Puppet
 
 <% config = {'systemLog' => @system_log_config} -%>
+<% config['processManagement'] = @process_management_config -%>
 <%= config.to_yaml %>
-
-#Process Management
-<% if @fork or @pidfilepath -%>
-processManagement:
-  <%- if @fork -%>
-  fork: <%= @fork %>
-  <%- end -%>
-  <%- if @pidfilepath -%>
-  pidFilePath: <%= @pidfilepath %>
-  <%- end -%>
-<% end -%>
 
 #Storage
 storage.dbPath: <%= @dbpath %>

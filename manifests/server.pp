@@ -20,6 +20,10 @@
 #   Content to add to the systemLog key of the server configuration file
 #   If not specified, the module will use the default for your OS distro.
 #
+# @param process_management_config
+#   Content to add to the processManagement key of the server configuration file
+#   If not specified, the module will use the default for your OS distro.
+#
 # @param config
 #   Path of the config file. If not specified, the module will use the default for your OS distro.
 #
@@ -31,16 +35,6 @@
 #   Set this value to true if you want puppet to recursively manage the permissions of the files in the dbpath
 #   directory. If you are using the default dbpath, this should probably be false. Set this to true if you are
 #   using a custom dbpath.
-#
-# @param pidfilemode
-#   The file mode of the pidfilepath
-#
-# @param pidfilepath
-#   Specify a file location to hold the PID or process ID of the mongod process.
-#   If not specified, the module will use the default for your OS distro.
-#
-# @param manage_pidfile
-#   Should puppet create the pidfile. Mongod 6.2.10 will not start if pidfile exists
 #
 # @param rcfile
 #   The path to the custom mongosh rc file.
@@ -83,9 +77,6 @@
 # @param ipv6
 #   This setting has to be true to configure MongoDB to turn on ipv6 support. If not specified and ipv6
 #   address is passed to MongoDB bind_ip it will just fail.
-#
-# @param fork
-#   Set to true to fork server process at launch time. The default setting depends on the operating system.
 #
 # @param port
 #   Specifies a TCP port for the server instance to listen for client connections.
@@ -282,12 +273,10 @@ class mongodb::server (
   String[1] $group,
   Stdlib::Absolutepath $dbpath,
   Hash $system_log_config,
+  Hash $process_management_config,
   String[1] $ensure                                                       = 'present',
   Stdlib::Absolutepath $config                                            = '/etc/mongod.conf',
   Boolean $dbpath_fix                                                     = false,
-  Optional[Stdlib::Absolutepath] $pidfilepath                             = undef,
-  String[4,4] $pidfilemode                                                = '0644',
-  Boolean $manage_pidfile                                                 = false,
   String $rcfile                                                          = "${facts['root_home']}/.mongoshrc.js",
   Boolean $service_manage                                                 = true,
   Optional[String[1]] $service_provider                                   = undef,
@@ -299,7 +288,6 @@ class mongodb::server (
   String[1] $package_name                                                 = "mongodb-${mongodb::globals::edition}-server",
   Array[Stdlib::IP::Address] $bind_ip                                     = ['127.0.0.1'],
   Optional[Boolean] $ipv6                                                 = undef,
-  Boolean $fork                                                           = false,
   Optional[Integer[1, 65535]] $port                                       = undef,
   Optional[Boolean] $journal                                              = undef,
   Optional[Boolean] $smallfiles                                           = undef,

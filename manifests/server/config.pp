@@ -7,16 +7,13 @@ class mongodb::server::config {
   $user             = $mongodb::server::user
   $group            = $mongodb::server::group
   $system_log_config = $mongodb::server::system_log_config
+  $process_management_config = $mongodb::server::process_management_config
   $config           = $mongodb::server::config
   $config_content   = $mongodb::server::config_content
   $config_template  = $mongodb::server::config_template
   $config_data      = $mongodb::server::config_data
   $dbpath           = $mongodb::server::dbpath
   $dbpath_fix       = $mongodb::server::dbpath_fix
-  $pidfilepath      = $mongodb::server::pidfilepath
-  $pidfilemode      = $mongodb::server::pidfilemode
-  $manage_pidfile   = $mongodb::server::manage_pidfile
-  $fork             = $mongodb::server::fork
   $port             = $mongodb::server::port
   $journal          = $mongodb::server::journal
   $smallfiles       = $mongodb::server::smallfiles
@@ -123,17 +120,6 @@ class mongodb::server::config {
         path      => ['/usr/bin', '/bin'],
         onlyif    => "find ${dbpath} -not -user ${user} -o -not -group ${group} -print -quit | grep -q '.*'",
         subscribe => File[$dbpath],
-      }
-    }
-
-    if $pidfilepath {
-      if $manage_pidfile {
-        file { $pidfilepath:
-          ensure => file,
-          mode   => $pidfilemode,
-          owner  => $user,
-          group  => $group,
-        }
       }
     }
   } else {

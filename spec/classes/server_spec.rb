@@ -50,12 +50,12 @@ describe 'mongodb::server' do
             with_group('root').
             with_content(%r{^storage\.dbPath: #{db_path}$}).
             with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
-            with_content(%r{systemLog:\n\s*destination: file\n\s*logAppend: true\n\s*path: "#{log_path}"\n}m)
+            with_content(%r{systemLog:\n\s*destination: file\n\s*logAppend: true\n\s*path: "#{log_path}"\n}m).
+            with_content(%r{processManagement:\n\s*timeZoneInfo: "/usr/share/zoneinfo"\n}m)
             without_content(%r{^storage\.journal\.enabled:})
         end
 
         it { is_expected.to contain_class('mongodb::repo') }
-        it { is_expected.not_to contain_file(config_file).with_content(%r{fork}) }
 
         it { is_expected.to contain_file('/root/.mongoshrc.js').with_ensure('file').without_content(%r{admin\.auth}) }
         it { is_expected.not_to contain_exec('fix dbpath permissions') }
@@ -361,18 +361,6 @@ describe 'mongodb::server' do
 
           it { is_expected.to contain_file('/root/.mongoshrc.js').with_ensure('file').without_content(%r{admin\.auth}) }
         end
-      end
-
-      describe 'with custom pidfilemode' do
-        let :params do
-          {
-            manage_pidfile: true,
-            pidfilepath: '/var/run/mongodb/mongod.pid',
-            pidfilemode: '0640'
-          }
-        end
-
-        it { is_expected.to contain_file('/var/run/mongodb/mongod.pid').with_mode('0640') }
       end
 
       describe 'with dbpath_fix enabled' do
