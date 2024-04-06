@@ -53,7 +53,9 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
         #{repo_ver_param}
       }
         -> class { 'mongodb::server':
-          port => 27018,
+          net_config => {
+            port => 27018,
+          },
         }
         -> class { 'mongodb::client': }
       EOS

@@ -68,7 +68,11 @@ describe 'mongodb_user', if: supported_version?(default[:platform], repo_version
         class { 'mongodb::globals':
           #{repo_ver_param}
         }
-        -> class { 'mongodb::server': port => 27018 }
+        -> class { 'mongodb::server':
+          net_config => {
+            port => 27018,
+          },
+        }
         -> class { 'mongodb::client': }
 
         mongodb_database { 'testdb': ensure => present }

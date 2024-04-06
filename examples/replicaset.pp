@@ -3,8 +3,10 @@ node default {
     manage_package_repo => true,
   }
   -> class { 'mongodb::server':
+    net        => {
+      bind_ip => [$facts['networking']['ip']],
+    },
     smallfiles => true,
-    bind_ip    => ['0.0.0.0'],
     replset    => 'rsmain',
   }
   mongodb_replset { 'rsmain':

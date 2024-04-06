@@ -89,6 +89,8 @@ class Puppet::Provider::Mongodb < Puppet::Provider
                 else
                   first_ip_in_list
                 end
+    else
+      ip_real = '127.0.0.1'
     end
 
     port = config.fetch('port')

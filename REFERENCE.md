@@ -805,6 +805,7 @@ The following parameters are available in the `mongodb::server` class:
 * [`group`](#-mongodb--server--group)
 * [`system_log_config`](#-mongodb--server--system_log_config)
 * [`process_management_config`](#-mongodb--server--process_management_config)
+* [`net_config`](#-mongodb--server--net_config)
 * [`config`](#-mongodb--server--config)
 * [`dbpath`](#-mongodb--server--dbpath)
 * [`dbpath_fix`](#-mongodb--server--dbpath_fix)
@@ -818,23 +819,17 @@ The following parameters are available in the `mongodb::server` class:
 * [`service_ensure`](#-mongodb--server--service_ensure)
 * [`package_ensure`](#-mongodb--server--package_ensure)
 * [`package_name`](#-mongodb--server--package_name)
-* [`bind_ip`](#-mongodb--server--bind_ip)
-* [`ipv6`](#-mongodb--server--ipv6)
-* [`port`](#-mongodb--server--port)
 * [`journal`](#-mongodb--server--journal)
 * [`smallfiles`](#-mongodb--server--smallfiles)
 * [`cpu`](#-mongodb--server--cpu)
 * [`auth`](#-mongodb--server--auth)
-* [`objcheck`](#-mongodb--server--objcheck)
 * [`quota`](#-mongodb--server--quota)
 * [`quotafiles`](#-mongodb--server--quotafiles)
 * [`diaglog`](#-mongodb--server--diaglog)
 * [`directoryperdb`](#-mongodb--server--directoryperdb)
 * [`profile`](#-mongodb--server--profile)
-* [`maxconns`](#-mongodb--server--maxconns)
 * [`oplog_size`](#-mongodb--server--oplog_size)
 * [`nohints`](#-mongodb--server--nohints)
-* [`nohttpinterface`](#-mongodb--server--nohttpinterface)
 * [`noscripting`](#-mongodb--server--noscripting)
 * [`notablescan`](#-mongodb--server--notablescan)
 * [`noprealloc`](#-mongodb--server--noprealloc)
@@ -847,7 +842,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`replset_members`](#-mongodb--server--replset_members)
 * [`configsvr`](#-mongodb--server--configsvr)
 * [`shardsvr`](#-mongodb--server--shardsvr)
-* [`rest`](#-mongodb--server--rest)
 * [`quiet`](#-mongodb--server--quiet)
 * [`slowms`](#-mongodb--server--slowms)
 * [`keyfile`](#-mongodb--server--keyfile)
@@ -856,12 +850,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`config_content`](#-mongodb--server--config_content)
 * [`config_template`](#-mongodb--server--config_template)
 * [`config_data`](#-mongodb--server--config_data)
-* [`tls`](#-mongodb--server--tls)
-* [`tls_key`](#-mongodb--server--tls_key)
-* [`tls_ca`](#-mongodb--server--tls_ca)
-* [`tls_conn_without_cert`](#-mongodb--server--tls_conn_without_cert)
-* [`tls_invalid_hostnames`](#-mongodb--server--tls_invalid_hostnames)
-* [`tls_mode`](#-mongodb--server--tls_mode)
 * [`admin_password_hash`](#-mongodb--server--admin_password_hash)
 * [`restart`](#-mongodb--server--restart)
 * [`storage_engine`](#-mongodb--server--storage_engine)
@@ -909,6 +897,13 @@ If not specified, the module will use the default for your OS distro.
 Data type: `Hash`
 
 Content to add to the processManagement key of the server configuration file
+If not specified, the module will use the default for your OS distro.
+
+##### <a name="-mongodb--server--net_config"></a>`net_config`
+
+Data type: `Hash`
+
+Content to add to the net key of the server configuration file
 If not specified, the module will use the default for your OS distro.
 
 ##### <a name="-mongodb--server--config"></a>`config`
@@ -1018,32 +1013,6 @@ If not specified, the module will use whatever service name is the default for y
 
 Default value: `"mongodb-${mongodb::globals::edition}-server"`
 
-##### <a name="-mongodb--server--bind_ip"></a>`bind_ip`
-
-Data type: `Array[Stdlib::IP::Address]`
-
-Set this option to configure the mongod or mongos process to bind to and listen for connections from
-applications on this address. If not specified, the module will use the default for your OS distro.
-
-Default value: `['127.0.0.1']`
-
-##### <a name="-mongodb--server--ipv6"></a>`ipv6`
-
-Data type: `Optional[Boolean]`
-
-This setting has to be true to configure MongoDB to turn on ipv6 support. If not specified and ipv6
-address is passed to MongoDB bind_ip it will just fail.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--port"></a>`port`
-
-Data type: `Optional[Integer[1, 65535]]`
-
-Specifies a TCP port for the server instance to listen for client connections.
-
-Default value: `undef`
-
 ##### <a name="-mongodb--server--journal"></a>`journal`
 
 Data type: `Optional[Boolean]`
@@ -1080,15 +1049,6 @@ Set to true to enable database authentication for users connecting from remote h
 the localhost interface will continue to have access to the database until you create the first user.
 
 Default value: `false`
-
-##### <a name="-mongodb--server--objcheck"></a>`objcheck`
-
-Data type: `Optional[Boolean]`
-
-Forces the mongod to validate all requests from clients upon receipt to ensure that clients never insert
-invalid documents into the database.
-
-Default value: `undef`
 
 ##### <a name="-mongodb--server--quota"></a>`quota`
 
@@ -1133,15 +1093,6 @@ performance into output of mongod or the log file if specified by logpath.
 
 Default value: `undef`
 
-##### <a name="-mongodb--server--maxconns"></a>`maxconns`
-
-Data type: `Optional[Integer]`
-
-Specifies a value to set the maximum number of simultaneous connections that MongoDB will accept.
-Unless set, MongoDB will not limit its own connections.
-
-Default value: `undef`
-
 ##### <a name="-mongodb--server--oplog_size"></a>`oplog_size`
 
 Data type: `Optional[Integer]`
@@ -1157,15 +1108,6 @@ Default value: `undef`
 Data type: `Any`
 
 Ignore query hints.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--nohttpinterface"></a>`nohttpinterface`
-
-Data type: `Optional[Boolean]`
-
-Set to true to disable the HTTP interface. This command will override the rest and disable the HTTP
-interface if you specify both.
 
 Default value: `undef`
 
@@ -1274,14 +1216,6 @@ Use this setting to enable shard server mode for mongod.
 
 Default value: `undef`
 
-##### <a name="-mongodb--server--rest"></a>`rest`
-
-Data type: `Optional[Boolean]`
-
-Set to true to enable a simple REST interface.
-
-Default value: `undef`
-
 ##### <a name="-mongodb--server--quiet"></a>`quiet`
 
 Data type: `Optional[Boolean]`
@@ -1352,54 +1286,6 @@ Data type: `Optional[Hash]`
 A hash to allow for additional configuration options to be set in user-provided template.
 
 Default value: `undef`
-
-##### <a name="-mongodb--server--tls"></a>`tls`
-
-Data type: `Boolean`
-
-Ensure tls is enabled.
-
-Default value: `false`
-
-##### <a name="-mongodb--server--tls_key"></a>`tls_key`
-
-Data type: `Optional[Stdlib::Absolutepath]`
-
-Defines the path of the file that contains the TLS/SSL certificate and key.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--tls_ca"></a>`tls_ca`
-
-Data type: `Optional[Stdlib::Absolutepath]`
-
-Defines the path of the file that contains the certificate chain for verifying client certificates.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--tls_conn_without_cert"></a>`tls_conn_without_cert`
-
-Data type: `Boolean`
-
-Set to true to bypass client certificate validation for clients that do not present a certificate.
-
-Default value: `false`
-
-##### <a name="-mongodb--server--tls_invalid_hostnames"></a>`tls_invalid_hostnames`
-
-Data type: `Boolean`
-
-Set to true to disable the validation of the hostnames in TLS certificates.
-
-Default value: `false`
-
-##### <a name="-mongodb--server--tls_mode"></a>`tls_mode`
-
-Data type: `Enum['requireTLS', 'preferTLS', 'allowTLS']`
-
-Defines if TLS is used for all network connections. Allowed values are 'requireTLS', 'preferTLS' or 'allowTLS'.
-
-Default value: `'requireTLS'`
 
 ##### <a name="-mongodb--server--admin_password_hash"></a>`admin_password_hash`
 

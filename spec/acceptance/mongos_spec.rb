@@ -12,14 +12,16 @@ describe 'mongodb::mongos class', if: supported_version?(default[:platform], rep
   describe 'installation' do
     it 'works with no errors' do
       pp = <<-EOS
-          class { 'mongodb::globals':
-            #{repo_ver_param}
-          }
-          -> class { 'mongodb::server':
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        }
+        -> class { 'mongodb::server':
+          net_config => {
+            port => 27019,
+          },
           configsvr => true,
           replset   => 'test',
           replset_members => ['127.0.0.1:27019'],
-          port      => 27019,
         }
         -> class { 'mongodb::client': }
         -> class { 'mongodb::mongos':

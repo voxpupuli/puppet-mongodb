@@ -36,7 +36,9 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
           #{repo_ver_param}
         }
         -> class { 'mongodb::server':
-          bind_ip => '0.0.0.0',
+          net_config => {
+            bindIp => '0.0.0.0',
+          },
           replset => 'test',
         }
         if $::osfamily == 'RedHat' {
@@ -110,10 +112,12 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
           #{repo_ver_param}
         } ->
         class { 'mongodb::server':
+          net_config => {
+            bindIp => '0.0.0.0',
+          },
           admin_username => 'admin',
           admin_password => 'password',
           auth           => true,
-          bind_ip        => '0.0.0.0',
           replset        => 'test',
           keyfile        => '/var/lib/mongodb/mongodb-keyfile',
           key            => '+dxlTrury7xtD0FRqFf3YWGnKqWAtlyauuemxuYuyz9POPUuX1Uj3chGU8MFMHa7

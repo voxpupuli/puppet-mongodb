@@ -13,7 +13,9 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
           #{repo_ver_param}
         }
         -> class { 'mongodb::server':
-          bind_ip   => '0.0.0.0',
+          net_config => {
+            bindIp => '0.0.0.0',
+          },
           replset   => 'foo',
           shardsvr  => true,
         }->
@@ -35,7 +37,9 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
           #{repo_ver_param}
         }
         -> class { 'mongodb::server':
-          bind_ip   => '0.0.0.0',
+          net_config => {
+            bindIp => '0.0.0.0',
+          },
           configsvr => true,
         } ->
         class { 'mongodb::mongos' :

@@ -9,8 +9,8 @@ class mongodb::server::service {
   $service_name     = $mongodb::server::service_name
   $service_provider = $mongodb::server::service_provider
   $service_status   = $mongodb::server::service_status
-  $bind_ip          = $mongodb::server::bind_ip
-  $port             = $mongodb::server::port
+  $bind_ip          = $mongodb::server::net_config['bind_ip']
+  $port             = $mongodb::server::net_config['port']
   $configsvr        = $mongodb::server::configsvr
   $shardsvr         = $mongodb::server::shardsvr
 

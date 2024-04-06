@@ -24,6 +24,10 @@
 #   Content to add to the processManagement key of the server configuration file
 #   If not specified, the module will use the default for your OS distro.
 #
+# @param net_config
+#   Content to add to the net key of the server configuration file
+#   If not specified, the module will use the default for your OS distro.
+#
 # @param config
 #   Path of the config file. If not specified, the module will use the default for your OS distro.
 #
@@ -70,17 +74,6 @@
 #   This setting can be used to specify the name of the package that should be installed.
 #   If not specified, the module will use whatever service name is the default for your OS distro.
 #
-# @param bind_ip
-#   Set this option to configure the mongod or mongos process to bind to and listen for connections from
-#   applications on this address. If not specified, the module will use the default for your OS distro.
-#
-# @param ipv6
-#   This setting has to be true to configure MongoDB to turn on ipv6 support. If not specified and ipv6
-#   address is passed to MongoDB bind_ip it will just fail.
-#
-# @param port
-#   Specifies a TCP port for the server instance to listen for client connections.
-#
 # @param journal
 #   Enable or disable the durability journal to ensure data files remain valid and recoverable.
 #   Available in MongoDB < 7.0
@@ -97,10 +90,6 @@
 # @param auth
 #  Set to true to enable database authentication for users connecting from remote hosts. If no users exist,
 #  the localhost interface will continue to have access to the database until you create the first user.
-#
-# @param objcheck
-#   Forces the mongod to validate all requests from clients upon receipt to ensure that clients never insert
-#   invalid documents into the database.
 #
 # @param quota
 #   Set to true to enable a maximum limit for the number of data files each database can have. The default
@@ -120,10 +109,6 @@
 #   Modify this value to changes the level of database profiling, which inserts information about operation
 #   performance into output of mongod or the log file if specified by logpath.
 #
-# @param maxconns
-#   Specifies a value to set the maximum number of simultaneous connections that MongoDB will accept.
-#   Unless set, MongoDB will not limit its own connections.
-#
 # @param oplog_size
 #    Specifies a maximum size in megabytes for the replication operation log (e.g. oplog.) mongod creates an
 #    oplog based on the maximum amount of space available. For 64-bit systems, the oplog is typically 5% of
@@ -131,10 +116,6 @@
 #
 # @param nohints
 #   Ignore query hints.
-#
-# @param nohttpinterface
-#   Set to true to disable the HTTP interface. This command will override the rest and disable the HTTP
-#   interface if you specify both.
 #
 # @param noscripting
 #   Set noscripting = true to disable the scripting engine.
@@ -181,9 +162,6 @@
 # @param shardsvr
 #   Use this setting to enable shard server mode for mongod.
 #
-# @param rest
-#   Set to true to enable a simple REST interface.
-#
 # @param quiet
 #   Runs the mongod or mongos instance in a quiet mode that attempts to limit the amount of output.
 #   This option suppresses : "output from database commands, including drop, dropIndexes, diagLogging,
@@ -214,24 +192,6 @@
 #
 # @param config_data
 #   A hash to allow for additional configuration options to be set in user-provided template.
-#
-# @param tls
-#   Ensure tls is enabled.
-#
-# @param tls_key
-#   Defines the path of the file that contains the TLS/SSL certificate and key.
-#
-# @param tls_ca
-#   Defines the path of the file that contains the certificate chain for verifying client certificates.
-#
-# @param tls_conn_without_cert
-#   Set to true to bypass client certificate validation for clients that do not present a certificate.
-#
-# @param tls_invalid_hostnames
-#   Set to true to disable the validation of the hostnames in TLS certificates.
-#
-# @param tls_mode
-#   Defines if TLS is used for all network connections. Allowed values are 'requireTLS', 'preferTLS' or 'allowTLS'.
 #
 # @param admin_password_hash
 #   Hashed password. Hex encoded md5 hash of mongodb password.
@@ -274,6 +234,7 @@ class mongodb::server (
   Stdlib::Absolutepath $dbpath,
   Hash $system_log_config,
   Hash $process_management_config,
+  Hash $net_config,
   String[1] $ensure                                                       = 'present',
   Stdlib::Absolutepath $config                                            = '/etc/mongod.conf',
   Boolean $dbpath_fix                                                     = false,
@@ -286,23 +247,17 @@ class mongodb::server (
   Optional[Enum['stopped', 'running']] $service_status                    = undef,
   String[1] $package_ensure                                               = pick($mongodb::globals::version, 'present'),
   String[1] $package_name                                                 = "mongodb-${mongodb::globals::edition}-server",
-  Array[Stdlib::IP::Address] $bind_ip                                     = ['127.0.0.1'],
-  Optional[Boolean] $ipv6                                                 = undef,
-  Optional[Integer[1, 65535]] $port                                       = undef,
   Optional[Boolean] $journal                                              = undef,
   Optional[Boolean] $smallfiles                                           = undef,
   Optional[Boolean] $cpu                                                  = undef,
   Boolean $auth                                                           = false,
-  Optional[Boolean] $objcheck                                             = undef,
   Optional[Boolean] $quota                                                = undef,
   Optional[Integer] $quotafiles                                           = undef,
   Optional[Integer[0, 7]] $diaglog                                        = undef,
   Optional[Boolean] $directoryperdb                                       = undef,
   $profile                                                                = undef,
-  Optional[Integer] $maxconns                                             = undef,
   Optional[Integer] $oplog_size                                           = undef,
   $nohints                                                                = undef,
-  Optional[Boolean] $nohttpinterface                                      = undef,
   Optional[Boolean] $noscripting                                          = undef,
   Optional[Boolean] $notablescan                                          = undef,
   Optional[Boolean] $noprealloc                                           = undef,
@@ -315,7 +270,6 @@ class mongodb::server (
   Optional[Array] $replset_members                                        = undef,
   Optional[Boolean] $configsvr                                            = undef,
   Optional[Boolean] $shardsvr                                             = undef,
-  Optional[Boolean] $rest                                                 = undef,
   Optional[Boolean] $quiet                                                = undef,
   Optional[Integer] $slowms                                               = undef,
   Optional[Stdlib::Absolutepath] $keyfile                                 = undef,
@@ -324,12 +278,6 @@ class mongodb::server (
   $config_content                                                         = undef,
   Optional[String] $config_template                                       = undef,
   Optional[Hash] $config_data                                             = undef,
-  Boolean $tls                                                            = false,
-  Optional[Stdlib::Absolutepath] $tls_key                                 = undef,
-  Optional[Stdlib::Absolutepath] $tls_ca                                  = undef,
-  Boolean $tls_conn_without_cert                                          = false,
-  Boolean $tls_invalid_hostnames                                          = false,
-  Enum['requireTLS', 'preferTLS', 'allowTLS'] $tls_mode                   = 'requireTLS',
   Boolean $restart                                                        = true,
   Optional[String] $storage_engine                                        = undef,
   Boolean $create_admin                                                   = false,

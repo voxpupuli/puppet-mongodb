@@ -41,7 +41,9 @@ describe 'mongodb_database', if: supported_version?(default[:platform], repo_ver
             #{repo_ver_param}
           }
           -> class { 'mongodb::server':
-            port => 27018,
+            net_config => {
+              port => 27018,
+            },
           }
           -> class { 'mongodb::client': }
           -> mongodb::db { 'testdb1':

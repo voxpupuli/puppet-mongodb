@@ -6,3 +6,6 @@ mongodb::server::system_log_config:
   path: /var/log/mongodb/mongod.log
 mongodb::server::process_management_config:
   timeZoneInfo: /usr/share/zoneinfo
+mongodb::server::net_config:
+  bindIp: 127.0.0.1
+  port: 27017

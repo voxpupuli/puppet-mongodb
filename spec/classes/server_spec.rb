@@ -48,10 +48,10 @@ describe 'mongodb::server' do
             with_mode('0644').
             with_owner('root').
             with_group('root').
-            with_content(%r{^storage\.dbPath: #{db_path}$}).
-            with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
             with_content(%r{systemLog:\n\s*destination: file\n\s*logAppend: true\n\s*path: "#{log_path}"\n}m).
-            with_content(%r{processManagement:\n\s*timeZoneInfo: "/usr/share/zoneinfo"\n}m)
+            with_content(%r{processManagement:\n\s*timeZoneInfo: "/usr/share/zoneinfo"\n}m).
+            with_content(%r{net:\n\s*bindIp: 127\.0\.0\.1\n\s*port: 27017\n}m).
+            with_content(%r{^storage\.dbPath: #{db_path}$}).
             without_content(%r{^storage\.journal\.enabled:})
         end
 
@@ -145,26 +145,31 @@ describe 'mongodb::server' do
       describe 'with specific bind_ip values and ipv6' do
         let :params do
           {
-            bind_ip: ['127.0.0.1', 'fd00:beef:dead:55::143'],
-            ipv6: true
+            net_config: {
+              'bindIp' => '127.0.0.1,fd00:beef:dead:55::143',
+              'port' => 27_017,
+              'ipv6' => true,
+            }
           }
         end
 
         it do
           is_expected.to contain_file(config_file).
-            with_content(%r{^net\.bindIp:  127\.0\.0\.1,fd00:beef:dead:55::143$}).
-            with_content(%r{^net\.ipv6: true$})
+            with_content(%r{net:\n\s*bindIp: 127\.0\.0\.1,fd00:beef:dead:55::143\n\s*port: 27017\n\s*ipv6: true\n}m)
         end
       end
 
       describe 'with specific bind_ip values' do
         let :params do
           {
-            bind_ip: ['127.0.0.1', '10.1.1.13']
+            net_config: {
+              'bindIp' => '127.0.0.1,10.1.1.13',
+              'port' => 27_017
+            }
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^net\.bindIp:  127\.0\.0\.1,10\.1\.1\.13$}) }
+        it { is_expected.to contain_file(config_file).with_content(%r{net:\n\s*bindIp: 127\.0\.0\.1,10\.1\.1\.13\n\s*port: 27017\n}m) }
       end
 
       describe 'when specifying auth to true' do
@@ -378,210 +383,6 @@ describe 'mongodb::server' do
             with_path(['/usr/bin', '/bin']).
             with_onlyif("find #{db_path} -not -user foo -o -not -group bar -print -quit | grep -q '.*'").
             that_subscribes_to("File[#{db_path}]")
-        end
-      end
-
-      describe 'with tls' do
-        context 'enabled' do
-          let :params do
-            {
-              tls: true,
-              tls_mode: 'requireTLS',
-              tls_key: '/etc/ssl/mongodb.pem'
-            }
-          end
-
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$})
-          }
-        end
-
-        context 'disabled' do
-          let :params do
-            {
-              tls: false
-            }
-          end
-
-          it {
-            is_expected.not_to contain_file(config_file).
-              with_content(%r{net\.tls\.mode}).
-              with_content(%r{net\.tls\.certificateKeyFile})
-          }
-        end
-      end
-
-      describe 'with tls and client certificate validation' do
-        context 'enabled' do
-          let :params do
-            {
-              tls: true,
-              tls_mode: 'requireTLS',
-              tls_key: '/etc/ssl/mongodb.pem',
-              tls_ca: '/etc/ssl/caToValidateClientCertificates.pem'
-            }
-          end
-
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$}).
-              with_content(%r{^net\.tls\.CAFile: /etc/ssl/caToValidateClientCertificates.pem$})
-          }
-        end
-
-        context 'client certificate validation disabled but tls enabled' do
-          let :params do
-            {
-              tls: true,
-              tls_mode: 'requireTLS',
-              tls_key: '/etc/ssl/mongodb.pem'
-            }
-          end
-
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$})
-            is_expected.not_to contain_file(config_file).
-              with_content(%r{net\.tls\.CAFile})
-          }
-        end
-
-        context 'disabled' do
-          let :params do
-            {
-              tls: false
-            }
-          end
-
-          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.tls\.CAFile}) }
-        end
-      end
-
-      describe 'with tls, client certificate validation and allow connection without certificates' do
-        context 'enabled' do
-          let :params do
-            {
-              tls: true,
-              tls_mode: 'requireTLS',
-              tls_key: '/etc/ssl/mongodb.pem',
-              tls_ca: '/etc/ssl/caToValidateClientCertificates.pem',
-              tls_conn_without_cert: true
-            }
-          end
-
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$}).
-              with_content(%r{^net\.tls\.CAFile: /etc/ssl/caToValidateClientCertificates.pem$}).
-              with_content(%r{^net\.tls\.allowConnectionsWithoutCertificates: true$})
-          }
-        end
-
-        context 'connection without certificates disabled but tls and client certificate validation enabled' do
-          let :params do
-            {
-              tls: true,
-              tls_mode: 'requireTLS',
-              tls_key: '/etc/ssl/mongodb.pem',
-              tls_ca: '/etc/ssl/caToValidateClientCertificates.pem',
-              tls_conn_without_cert: false
-            }
-          end
-
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$}).
-              with_content(%r{net\.tls\.CAFile})
-            is_expected.not_to contain_file(config_file).
-              with_content(%r{net\.tls\.allowConnectionsWithoutCertificates:\s*true})
-          }
-        end
-
-        context 'disabled' do
-          let :params do
-            {
-              tls: false
-            }
-          end
-
-          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.tls\.allowConnectionsWithoutCertificates:\s*true}) }
-        end
-      end
-
-      describe 'with tls and allow invalid hostnames' do
-        context 'enabled' do
-          let :params do
-            {
-              tls: true,
-              tls_mode: 'requireTLS',
-              tls_key: '/etc/ssl/mongodb.pem',
-              tls_invalid_hostnames: true
-            }
-          end
-
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$}).
-              with_content(%r{^net\.tls\.allowInvalidHostnames: true$})
-          }
-        end
-
-        context 'disallow invalid hostnames but tls enabled' do
-          let :params do
-            {
-              tls: true,
-              tls_mode: 'requireTLS',
-              tls_key: '/etc/ssl/mongodb.pem',
-              tls_invalid_hostnames: false
-            }
-          end
-
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$})
-            is_expected.not_to contain_file(config_file).
-              with_content(%r{net\.tls\.allowInvalidHostnames:\s*true})
-          }
-        end
-
-        context 'disabled' do
-          let :params do
-            {
-              tls: false
-            }
-          end
-
-          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.tls\.allowInvalidHostnames:\s*true}) }
-        end
-      end
-
-      context 'setting nohttpinterface' do
-        it "isn't set when undef" do
-          is_expected.not_to contain_file(config_file).with_content(%r{net\.http\.enabled})
-        end
-
-        describe 'sets net.http.enabled to false when true' do
-          let(:params) do
-            { nohttpinterface: true }
-          end
-
-          it { is_expected.to contain_file(config_file).with_content(%r{^net\.http\.enabled: false$}) }
-        end
-
-        describe 'sets net.http.enabled to true when false' do
-          let(:params) do
-            { nohttpinterface: false }
-          end
-
-          it { is_expected.to contain_file(config_file).with_content(%r{^net\.http\.enabled: true$}) }
         end
       end
 

@@ -2,6 +2,7 @@
 
 <% config = {'systemLog' => @system_log_config} -%>
 <% config['processManagement'] = @process_management_config -%>
+<% config['net'] = @net_config -%>
 <%= config.to_yaml %>
 
 #Storage
@@ -43,43 +44,6 @@ security.keyFile: <%= @keyfile %>
 <% end -%>
 <% if @noscripting -%>
 security.javascriptEnabled: <%= @noscripting %>
-<% end -%>
-
-
-#Net
-<% if @ipv6 -%>
-net.ipv6: <%= @ipv6 %>
-<% end -%>
-<% if @bind_ip -%>
-net.bindIp:  <%= @bind_ip.join(',') %>
-<% end -%>
-<% if @port -%>
-net.port: <%= @port %>
-<% end -%>
-<% if @objcheck -%>
-net.wireObjectCheck: <%= @objcheck %>
-<% end -%>
-<% if @rest -%>
-net.http.RESTInterfaceEnabled: true
-<% end -%>
-<% if @maxconns -%>
-net.maxIncomingConnections: <%= @maxconns %>
-<% end -%>
-<% if ! @nohttpinterface.nil? -%>
-net.http.enabled: <%= ! @nohttpinterface %>
-<% end -%>
-<% if @tls -%>
-net.tls.mode: <%= @tls_mode %>
-net.tls.certificateKeyFile: <%= @tls_key %>
-<% if @tls_ca -%>
-net.tls.CAFile: <%= @tls_ca %>
-<% end -%>
-<% if @tls_conn_without_cert -%>
-net.tls.allowConnectionsWithoutCertificates: <%= @tls_conn_without_cert %>
-<% end -%>
-<% if @tls_invalid_hostnames -%>
-net.tls.allowInvalidHostnames: <%= @tls_invalid_hostnames %>
-<% end -%>
 <% end -%>
 
 #Replication

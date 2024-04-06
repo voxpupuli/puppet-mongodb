@@ -8,13 +8,13 @@ class mongodb::server::config {
   $group            = $mongodb::server::group
   $system_log_config = $mongodb::server::system_log_config
   $process_management_config = $mongodb::server::process_management_config
+  $net_config = $mongodb::server::net_config
   $config           = $mongodb::server::config
   $config_content   = $mongodb::server::config_content
   $config_template  = $mongodb::server::config_template
   $config_data      = $mongodb::server::config_data
   $dbpath           = $mongodb::server::dbpath
   $dbpath_fix       = $mongodb::server::dbpath_fix
-  $port             = $mongodb::server::port
   $journal          = $mongodb::server::journal
   $smallfiles       = $mongodb::server::smallfiles
   $cpu              = $mongodb::server::cpu
@@ -25,13 +25,11 @@ class mongodb::server::config {
   $handle_creds     = $mongodb::server::handle_creds
   $store_creds      = $mongodb::server::store_creds
   $rcfile           = $mongodb::server::rcfile
-  $objcheck         = $mongodb::server::objcheck
   $quota            = $mongodb::server::quota
   $quotafiles       = $mongodb::server::quotafiles
   $diaglog          = $mongodb::server::diaglog
   $oplog_size       = $mongodb::server::oplog_size
   $nohints          = $mongodb::server::nohints
-  $nohttpinterface  = $mongodb::server::nohttpinterface
   $noscripting      = $mongodb::server::noscripting
   $notablescan      = $mongodb::server::notablescan
   $noprealloc       = $mongodb::server::noprealloc
@@ -42,23 +40,13 @@ class mongodb::server::config {
   $configsvr        = $mongodb::server::configsvr
   $shardsvr         = $mongodb::server::shardsvr
   $replset          = $mongodb::server::replset
-  $rest             = $mongodb::server::rest
   $quiet            = $mongodb::server::quiet
   $slowms           = $mongodb::server::slowms
   $keyfile          = $mongodb::server::keyfile
   $key              = $mongodb::server::key
-  $ipv6             = $mongodb::server::ipv6
-  $bind_ip          = $mongodb::server::bind_ip
   $directoryperdb   = $mongodb::server::directoryperdb
   $profile          = $mongodb::server::profile
-  $maxconns         = $mongodb::server::maxconns
   $set_parameter    = $mongodb::server::set_parameter
-  $tls              = $mongodb::server::tls
-  $tls_key          = $mongodb::server::tls_key
-  $tls_ca           = $mongodb::server::tls_ca
-  $tls_conn_without_cert = $mongodb::server::tls_conn_without_cert
-  $tls_invalid_hostnames = $mongodb::server::tls_invalid_hostnames
-  $tls_mode         = $mongodb::server::tls_mode
   $storage_engine   = $mongodb::server::storage_engine
 
   File {
