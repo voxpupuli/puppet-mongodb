@@ -28,6 +28,10 @@
 #   Content to add to the net key of the server configuration file
 #   If not specified, the module will use the default for your OS distro.
 #
+# @param security_config
+#   Content to add to the security key of the server configuration file
+#   If not specified, the module will use the default for your OS distro.
+#
 # @param config
 #   Path of the config file. If not specified, the module will use the default for your OS distro.
 #
@@ -87,10 +91,6 @@
 #  Set to true to force mongod to report every four seconds CPU utilization and the amount of time that the
 #  processor waits for I/O operations to complete (i.e. I/O wait.)
 #
-# @param auth
-#  Set to true to enable database authentication for users connecting from remote hosts. If no users exist,
-#  the localhost interface will continue to have access to the database until you create the first user.
-#
 # @param quota
 #   Set to true to enable a maximum limit for the number of data files each database can have. The default
 #   quota is 8 data files, when quota is true.
@@ -116,9 +116,6 @@
 #
 # @param nohints
 #   Ignore query hints.
-#
-# @param noscripting
-#   Set noscripting = true to disable the scripting engine.
 #
 # @param notablescan
 #   Set notablescan = true to forbid operations that require a table scan.
@@ -173,13 +170,9 @@
 # @param slowms
 #   Sets the threshold for mongod to consider a query “slow” for the database profiler.
 #
-# @param keyfile
-#    Specify the path to a key file to store authentication information. This option is only useful for the
-#    connection between replica set members.
-#
 # @param key
-#   Specify the key contained within the keyfile. This option is only useful for the connection between
-#   replica set members.
+#   When $security_config['keyFile'] is configured this parameter can be used to manage the file content.
+#   This option is only useful for the connection between replica set members.
 #
 # @param set_parameter
 #   Specify extra configuration file parameters (i.e. textSearchEnabled=true).
@@ -235,7 +228,8 @@ class mongodb::server (
   Hash $system_log_config,
   Hash $process_management_config,
   Hash $net_config,
-  String[1] $ensure                                                       = 'present',
+  Optional[Hash] $security_config                                         = undef,
+  Enum['present', 'absent'] $ensure                                       = 'present',
   Stdlib::Absolutepath $config                                            = '/etc/mongod.conf',
   Boolean $dbpath_fix                                                     = false,
   String $rcfile                                                          = "${facts['root_home']}/.mongoshrc.js",
@@ -250,7 +244,6 @@ class mongodb::server (
   Optional[Boolean] $journal                                              = undef,
   Optional[Boolean] $smallfiles                                           = undef,
   Optional[Boolean] $cpu                                                  = undef,
-  Boolean $auth                                                           = false,
   Optional[Boolean] $quota                                                = undef,
   Optional[Integer] $quotafiles                                           = undef,
   Optional[Integer[0, 7]] $diaglog                                        = undef,
@@ -258,7 +251,6 @@ class mongodb::server (
   $profile                                                                = undef,
   Optional[Integer] $oplog_size                                           = undef,
   $nohints                                                                = undef,
-  Optional[Boolean] $noscripting                                          = undef,
   Optional[Boolean] $notablescan                                          = undef,
   Optional[Boolean] $noprealloc                                           = undef,
   Optional[Integer] $nssize                                               = undef,
@@ -272,7 +264,6 @@ class mongodb::server (
   Optional[Boolean] $shardsvr                                             = undef,
   Optional[Boolean] $quiet                                                = undef,
   Optional[Integer] $slowms                                               = undef,
-  Optional[Stdlib::Absolutepath] $keyfile                                 = undef,
   Optional[Variant[String[6], Sensitive[String[6]]]] $key                 = undef,
   Optional[Variant[String[1], Array[String[1]]]] $set_parameter           = undef,
   $config_content                                                         = undef,
@@ -320,7 +311,7 @@ class mongodb::server (
   contain mongodb::server::config
   contain mongodb::server::service
 
-  if ($ensure == 'present' or $ensure == true) {
+  if ($ensure == 'present') {
     Class['mongodb::server::install'] -> Class['mongodb::server::config']
 
     if $restart {

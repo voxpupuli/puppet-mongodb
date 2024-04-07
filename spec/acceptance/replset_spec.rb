@@ -107,20 +107,8 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
     end
 
     it 'configures mongo on both nodes' do
-      pp = <<~EOS
-        class { 'mongodb::globals':
-          #{repo_ver_param}
-        } ->
-        class { 'mongodb::server':
-          net_config => {
-            bindIp => '0.0.0.0',
-          },
-          admin_username => 'admin',
-          admin_password => 'password',
-          auth           => true,
-          replset        => 'test',
-          keyfile        => '/var/lib/mongodb/mongodb-keyfile',
-          key            => '+dxlTrury7xtD0FRqFf3YWGnKqWAtlyauuemxuYuyz9POPUuX1Uj3chGU8MFMHa7
+      key = <<~KEY
+        +dxlTrury7xtD0FRqFf3YWGnKqWAtlyauuemxuYuyz9POPUuX1Uj3chGU8MFMHa7
         UxASqex7NLMALQXHL+Th4T3dyb6kMZD7KiMcJObO4M+JLiX9drcTiifsDEgGMi7G
         vYn3pWSm5TTDrHJw7RNWfMHw3sHk0muGQcO+0dWv3sDJ6SiU8yOKRtYcTEA15GbP
         ReDZuHFy1T1qhk5NIt6pTtPGsZKSm2wAWIOa2f2IXvpeQHhjxP8aDFb3fQaCAqOD
@@ -135,7 +123,24 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         g+Bybk5qHv1b7M8Tv9/I/BRXcpLHeIkMICMY8sVPGmP8xzL1L3i0cws8p5h0zPBa
         YG/QX0BmltAni8owgymFuyJgvr/gaRX4WHbKFD+9nKpqJ3ocuVNuCDsxDqLsJEME
         nc1ohyB0lNt8lHf1U00mtgDSV3fwo5LkwhRi6d+bDBTL/C6MZETMLdyCqDlTdUWG
-        YXIsJ0gYcu9XG3mx10LbdPJvxSMg'
+        YXIsJ0gYcu9XG3mx10LbdPJvxSMg
+      KEY
+      pp = <<~EOS
+        class { 'mongodb::globals':
+          #{repo_ver_param}
+        } ->
+        class { 'mongodb::server':
+          net_config     => {
+            bindIp => '0.0.0.0',
+          },
+          security       => {
+            authorization => "enabled",
+            keyFile       => '/var/lib/mongodb/mongodb-keyfile',
+          },
+          admin_username => 'admin',
+          admin_password => 'password',
+          replset        => 'test',
+          key            => #{key},
         }
         if $::osfamily == 'RedHat' {
           include mongodb::client

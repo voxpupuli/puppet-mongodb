@@ -3,6 +3,7 @@
 <% config = {'systemLog' => @system_log_config} -%>
 <% config['processManagement'] = @process_management_config -%>
 <% config['net'] = @net_config -%>
+<% config['security'] = @security_config if @security_config -%>
 <%= config.to_yaml %>
 
 #Storage
@@ -30,20 +31,6 @@ storage.quota.maxFilesPerDB: <%= @quotafiles %>
 <% end -%>
 <% if @storage_engine_internal -%>
 storage.engine: <%= @storage_engine_internal %>
-<% end -%>
-
-
-#Security
-<% if @auth -%>
-security.authorization: enabled
-<% else -%>
-security.authorization: disabled
-<% end -%>
-<% if @keyfile -%>
-security.keyFile: <%= @keyfile %>
-<% end -%>
-<% if @noscripting -%>
-security.javascriptEnabled: <%= @noscripting %>
 <% end -%>
 
 #Replication

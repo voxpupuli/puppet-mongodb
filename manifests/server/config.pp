@@ -9,6 +9,7 @@ class mongodb::server::config {
   $system_log_config = $mongodb::server::system_log_config
   $process_management_config = $mongodb::server::process_management_config
   $net_config = $mongodb::server::net_config
+  $security_config = $mongodb::server::security_config
   $config           = $mongodb::server::config
   $config_content   = $mongodb::server::config_content
   $config_template  = $mongodb::server::config_template
@@ -18,7 +19,6 @@ class mongodb::server::config {
   $journal          = $mongodb::server::journal
   $smallfiles       = $mongodb::server::smallfiles
   $cpu              = $mongodb::server::cpu
-  $auth             = $mongodb::server::auth
   $create_admin     = $mongodb::server::create_admin
   $admin_username   = $mongodb::server::admin_username
   $admin_password   = $mongodb::server::admin_password
@@ -30,7 +30,6 @@ class mongodb::server::config {
   $diaglog          = $mongodb::server::diaglog
   $oplog_size       = $mongodb::server::oplog_size
   $nohints          = $mongodb::server::nohints
-  $noscripting      = $mongodb::server::noscripting
   $notablescan      = $mongodb::server::notablescan
   $noprealloc       = $mongodb::server::noprealloc
   $nssize           = $mongodb::server::nssize
@@ -42,7 +41,6 @@ class mongodb::server::config {
   $replset          = $mongodb::server::replset
   $quiet            = $mongodb::server::quiet
   $slowms           = $mongodb::server::slowms
-  $keyfile          = $mongodb::server::keyfile
   $key              = $mongodb::server::key
   $directoryperdb   = $mongodb::server::directoryperdb
   $profile          = $mongodb::server::profile
@@ -54,9 +52,9 @@ class mongodb::server::config {
     group => $group,
   }
 
-  if ($ensure == 'present' or $ensure == true) {
-    if $keyfile and $key {
-      file { $keyfile:
+  if ($ensure == 'present') {
+    if $key != undef and $security_config and $security_config['keyFile'] {
+      file { $security_config['keyFile']:
         content => $key,
         owner   => $user,
         group   => $group,

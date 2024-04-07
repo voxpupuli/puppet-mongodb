@@ -93,7 +93,9 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
         #{repo_ver_param}
         }
         -> class { 'mongodb::server':
-          auth           => true,
+          security_config => {
+            authorization => "enabled",
+          },
           create_admin   => false,
           handle_creds   => true,
           store_creds    => true,

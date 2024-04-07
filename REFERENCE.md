@@ -806,6 +806,7 @@ The following parameters are available in the `mongodb::server` class:
 * [`system_log_config`](#-mongodb--server--system_log_config)
 * [`process_management_config`](#-mongodb--server--process_management_config)
 * [`net_config`](#-mongodb--server--net_config)
+* [`security_config`](#-mongodb--server--security_config)
 * [`config`](#-mongodb--server--config)
 * [`dbpath`](#-mongodb--server--dbpath)
 * [`dbpath_fix`](#-mongodb--server--dbpath_fix)
@@ -822,7 +823,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`journal`](#-mongodb--server--journal)
 * [`smallfiles`](#-mongodb--server--smallfiles)
 * [`cpu`](#-mongodb--server--cpu)
-* [`auth`](#-mongodb--server--auth)
 * [`quota`](#-mongodb--server--quota)
 * [`quotafiles`](#-mongodb--server--quotafiles)
 * [`diaglog`](#-mongodb--server--diaglog)
@@ -830,7 +830,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`profile`](#-mongodb--server--profile)
 * [`oplog_size`](#-mongodb--server--oplog_size)
 * [`nohints`](#-mongodb--server--nohints)
-* [`noscripting`](#-mongodb--server--noscripting)
 * [`notablescan`](#-mongodb--server--notablescan)
 * [`noprealloc`](#-mongodb--server--noprealloc)
 * [`nssize`](#-mongodb--server--nssize)
@@ -844,7 +843,6 @@ The following parameters are available in the `mongodb::server` class:
 * [`shardsvr`](#-mongodb--server--shardsvr)
 * [`quiet`](#-mongodb--server--quiet)
 * [`slowms`](#-mongodb--server--slowms)
-* [`keyfile`](#-mongodb--server--keyfile)
 * [`key`](#-mongodb--server--key)
 * [`set_parameter`](#-mongodb--server--set_parameter)
 * [`config_content`](#-mongodb--server--config_content)
@@ -864,7 +862,7 @@ The following parameters are available in the `mongodb::server` class:
 
 ##### <a name="-mongodb--server--ensure"></a>`ensure`
 
-Data type: `String[1]`
+Data type: `Enum['present', 'absent']`
 
 Used to ensure that the package is installed and the service is running, or that the package is
 absent/purged and the service is stopped.
@@ -905,6 +903,15 @@ Data type: `Hash`
 
 Content to add to the net key of the server configuration file
 If not specified, the module will use the default for your OS distro.
+
+##### <a name="-mongodb--server--security_config"></a>`security_config`
+
+Data type: `Optional[Hash]`
+
+Content to add to the security key of the server configuration file
+If not specified, the module will use the default for your OS distro.
+
+Default value: `undef`
 
 ##### <a name="-mongodb--server--config"></a>`config`
 
@@ -1041,15 +1048,6 @@ processor waits for I/O operations to complete (i.e. I/O wait.)
 
 Default value: `undef`
 
-##### <a name="-mongodb--server--auth"></a>`auth`
-
-Data type: `Boolean`
-
-Set to true to enable database authentication for users connecting from remote hosts. If no users exist,
-the localhost interface will continue to have access to the database until you create the first user.
-
-Default value: `false`
-
 ##### <a name="-mongodb--server--quota"></a>`quota`
 
 Data type: `Optional[Boolean]`
@@ -1108,14 +1106,6 @@ Default value: `undef`
 Data type: `Any`
 
 Ignore query hints.
-
-Default value: `undef`
-
-##### <a name="-mongodb--server--noscripting"></a>`noscripting`
-
-Data type: `Optional[Boolean]`
-
-Set noscripting = true to disable the scripting engine.
 
 Default value: `undef`
 
@@ -1237,21 +1227,12 @@ Sets the threshold for mongod to consider a query “slow” for the database pr
 
 Default value: `undef`
 
-##### <a name="-mongodb--server--keyfile"></a>`keyfile`
-
-Data type: `Optional[Stdlib::Absolutepath]`
-
-Specify the path to a key file to store authentication information. This option is only useful for the
-connection between replica set members.
-
-Default value: `undef`
-
 ##### <a name="-mongodb--server--key"></a>`key`
 
 Data type: `Optional[Variant[String[6], Sensitive[String[6]]]]`
 
-Specify the key contained within the keyfile. This option is only useful for the connection between
-replica set members.
+When $security_config['keyFile'] is configured this parameter can be used to manage the file content.
+This option is only useful for the connection between replica set members.
 
 Default value: `undef`
 

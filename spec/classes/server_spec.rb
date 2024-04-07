@@ -172,17 +172,6 @@ describe 'mongodb::server' do
         it { is_expected.to contain_file(config_file).with_content(%r{net:\n\s*bindIp: 127\.0\.0\.1,10\.1\.1\.13\n\s*port: 27017\n}m) }
       end
 
-      describe 'when specifying auth to true' do
-        let :params do
-          {
-            auth: true
-          }
-        end
-
-        it { is_expected.to contain_file(config_file).with_content(%r{^security\.authorization: enabled$}) }
-        it { is_expected.to contain_file('/root/.mongoshrc.js') }
-      end
-
       describe 'when specifying set_parameter array value' do
         let :params do
           {
@@ -340,9 +329,11 @@ describe 'mongodb::server' do
         context 'true' do
           let :params do
             {
+              'security_config' => {
+                'authorization' => 'enabled',
+              },
               admin_username: 'admin',
               admin_password: 'password',
-              auth: true,
               store_creds: true
             }
           end

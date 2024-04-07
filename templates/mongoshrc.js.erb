@@ -16,7 +16,7 @@ function rsReconfigSettings(settings){
   return rs.reconfig(cfg)
 }
 
-<% if @auth and @store_creds -%>
+<% if @security_config and @security_config['authorization'] == 'enabled' and @store_creds -%>
 function authRequired() {
   try {
     return rs.status().ok != 1;
