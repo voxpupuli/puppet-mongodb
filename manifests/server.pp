@@ -227,7 +227,11 @@
 #   replica set members.
 #
 # @param set_parameter
-#   Specify extra configuration file parameters (i.e. textSearchEnabled=true).
+#   Set MongoDB parameters
+#   Supported types:
+#     String (i.e. 'textSearchEnabled=true' or 'textSearchEnabled: true' )
+#     Array  (i.e. ['textSearchEnabled=true'] or ['textSearchEnabled: true'] )
+#     Hash   (i.e. {'textSearchEnabled' => true}
 #
 # @param syslog
 #   Sends all logging output to the host’s syslog system rather than to standard output or a log file.
@@ -239,7 +243,8 @@
 #   Path to the config template if the default doesn't match one needs.
 #
 # @param config_data
-#   A hash to allow for additional configuration options to be set in user-provided template.
+#   A hash to allow for additional configuration options to be set.
+#   (i.e {'security' => { 'javascriptEnabled' => false}})
 #
 # @param tls
 #   Ensure tls is enabled.
@@ -318,7 +323,7 @@ class mongodb::server (
   Optional[Boolean] $ipv6                                                 = undef,
   Boolean $logappend                                                      = true,
   Optional[String] $system_logrotate                                      = undef,
-  Boolean $fork                                                           = false,
+  Optional[Boolean] $fork                                                 = undef,
   Optional[Integer[1, 65535]] $port                                       = undef,
   Optional[Boolean] $journal                                              = undef,
   Optional[Boolean] $smallfiles                                           = undef,
@@ -353,7 +358,7 @@ class mongodb::server (
   Optional[Integer] $slowms                                               = undef,
   Optional[Stdlib::Absolutepath] $keyfile                                 = undef,
   Optional[Variant[String[6], Sensitive[String[6]]]] $key                 = undef,
-  Optional[Variant[String[1], Array[String[1]]]] $set_parameter           = undef,
+  Optional[Variant[String[1], Array[String[1]], Hash]] $set_parameter     = undef,
   Boolean $syslog                                                         = false,
   $config_content                                                         = undef,
   Optional[String] $config_template                                       = undef,
@@ -361,8 +366,8 @@ class mongodb::server (
   Boolean $tls                                                            = false,
   Optional[Stdlib::Absolutepath] $tls_key                                 = undef,
   Optional[Stdlib::Absolutepath] $tls_ca                                  = undef,
-  Boolean $tls_conn_without_cert                                          = false,
-  Boolean $tls_invalid_hostnames                                          = false,
+  Optional[Boolean] $tls_conn_without_cert                                = undef,
+  Optional[Boolean] $tls_invalid_hostnames                                = undef,
   Enum['requireTLS', 'preferTLS', 'allowTLS'] $tls_mode                   = 'requireTLS',
   Boolean $restart                                                        = true,
   Optional[String] $storage_engine                                        = undef,
