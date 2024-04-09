@@ -20,4 +20,4 @@ jobs:
     name: Puppet
     uses: voxpupuli/gha-puppet/.github/workflows/beaker.yml@v2
     with:
-      beaker_facter: 'mongodb_repo_version:MongoDB:4.4,5.0'
+      beaker_facter: 'mongodb_repo_version:MongoDB:4.4,5.0,6.0,7.0'
