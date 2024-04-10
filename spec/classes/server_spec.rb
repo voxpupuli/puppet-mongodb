@@ -643,6 +643,54 @@ describe 'mongodb::server' do
         end
       end
 
+      describe 'with tls and allow invalid certificates' do
+        context 'enabled' do
+          let :params do
+            {
+              tls: true,
+              tls_mode: 'requireTLS',
+              tls_key: '/etc/ssl/mongodb.pem',
+              tls_invalid_certificates: true
+            }
+          end
+
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+            expect(config_data['net']['tls']['allowInvalidCertificates']).to be(true)
+          end
+        end
+
+        context 'disallow invalid certificates but tls enabled' do
+          let :params do
+            {
+              tls: true,
+              tls_mode: 'requireTLS',
+              tls_key: '/etc/ssl/mongodb.pem',
+              tls_invalid_certificates: false
+            }
+          end
+
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+            expect(config_data['net']['tls']['allowInvalidCertificates']).to be(false)
+          end
+        end
+
+        context 'disabled' do
+          let :params do
+            {
+              tls: false
+            }
+          end
+
+          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.tls\.allowInvalidHostnames:\s*true}) }
+        end
+      end
+
       context 'setting nohttpinterface' do
         it "isn't set when undef" do
           config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])

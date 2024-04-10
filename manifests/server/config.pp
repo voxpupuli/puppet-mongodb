@@ -66,6 +66,7 @@ class mongodb::server::config {
   $tls_ca           = $mongodb::server::tls_ca
   $tls_conn_without_cert = $mongodb::server::tls_conn_without_cert
   $tls_invalid_hostnames = $mongodb::server::tls_invalid_hostnames
+  $tls_invalid_certificates = $mongodb::server::tls_invalid_certificates
   $tls_mode         = $mongodb::server::tls_mode
   $storage_engine   = $mongodb::server::storage_engine
 

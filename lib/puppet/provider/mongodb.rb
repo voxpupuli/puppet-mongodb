@@ -54,6 +54,11 @@ class Puppet::Provider::Mongodb < Puppet::Provider
     config['tlsallowInvalidHostnames']
   end
 
+  def self.tls_invalid_certificates(config = nil)
+    config ||= mongo_conf
+    config['tlsallowInvalidCertificates']
+  end
+
   def self.mongosh_cmd(db, host, cmd)
     config = mongo_conf
 
@@ -70,6 +75,7 @@ class Puppet::Provider::Mongodb < Puppet::Provider
       args += ['--tlsCAFile', tls_ca] unless tls_ca.nil?
 
       args.push('--tlsAllowInvalidHostnames') if tls_invalid_hostnames(config)
+      args.push('--tlsAllowInvalidCertificates') if tls_invalid_certificates(config)
     end
 
     args += ['--eval', cmd]
