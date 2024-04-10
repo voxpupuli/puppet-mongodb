@@ -10,16 +10,19 @@ end
 def get_options_from_hash_config(config)
   result = []
 
-  result << "--port #{config['net.port']}" unless config['net.port'].nil?
-  # use --tls and --host if:
-  # - tlsMode is "requireTLS"
-  # - Parameter --tlsCertificateKeyFile is set
-  # - Parameter --tlsCAFile is set
-  result << "--tls --host #{Facter.value(:fqdn)}" if config['net.tls.mode'] == 'requireTLS' || !config['net.tls.certificateKeyFile'].nil? || !config['net.tls.CAFile'].nil?
-  result << "--tlsCertificateKeyFile #{config['net.tls.certificateKeyFile']}" unless config['net.tls.certificateKeyFile'].nil?
-  result << "--tlsCAFile #{config['net.tls.CAFile']}" unless config['net.tls.CAFile'].nil?
+  port = config['net.port'] || config.fetch('net', {}).fetch('port', nil)
+  ipv6 = config['net.ipv6'] || config.fetch('net', {}).fetch('ipv6', nil)
+  tls_mode = config['net.tls.mode'] || config.fetch('net', {}).fetch('tls', {}).fetch('mode', nil)
+  tls_cert_key = config['net.tls.certificateKeyFile'] || config.fetch('net', {}).fetch('tls', {}).fetch('certificateKeyFile', nil)
+  tls_ca = config['net.tls.CAFile'] || config.fetch('net', {}).fetch('tls', {}).fetch('CAFile', nil)
 
-  result << '--ipv6' unless config['net.ipv6'].nil?
+  result << "--port #{port}" unless port.nil?
+  result << '--ipv6' if ipv6
+  unless tls_mode.nil? || tls_mode == 'diabled'
+    result << "--tls --host #{Facter.value(:fqdn)}"
+    result << "--tlsCertificateKeyFile #{tls_cert_key}" unless tls_cert_key.nil?
+    result << "--tlsCAFile #{tls_ca}" unless tls_ca.nil?
+  end
 
   result.join(' ')
 end
