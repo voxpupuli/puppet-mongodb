@@ -9,12 +9,16 @@ Puppet::Type.type(:mongodb_database).provide(:mongodb, parent: Puppet::Provider:
   def self.instances
     require 'json'
 
-    pre_cmd = 'db.getMongo().setReadPref("primaryPreferred")'
-    dbs = JSON.parse mongo_eval("#{pre_cmd};EJSON.stringify(db.getMongo().getDBs())")
+    if db_ismaster
+      dbs = JSON.parse mongo_eval('EJSON.stringify(db.getMongo().getDBs())')
 
-    dbs['databases'].map do |db|
-      new(name: db['name'],
-          ensure: :present)
+      dbs['databases'].map do |db|
+        new(name: db['name'],
+            ensure: :present)
+      end
+    else
+      Puppet.warning 'Database info is available only from master host'
+      []
     end
   end
 
