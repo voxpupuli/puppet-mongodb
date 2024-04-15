@@ -43,16 +43,19 @@ describe 'mongodb::server' do
         it_behaves_like 'server classes'
         it { is_expected.to contain_package('mongodb_server').with_ensure('present').with_name('mongodb-org-server').with_tag('mongodb_package') }
 
+        it { is_expected.to contain_file(config_file).with_mode('0644').with_owner('root').with_group('root') }
+
         it do
-          is_expected.to contain_file(config_file).
-            with_mode('0644').
-            with_owner('root').
-            with_group('root').
-            with_content(%r{^storage\.dbPath: #{db_path}$}).
-            with_content(%r{^net\.bindIp:  127\.0\.0\.1$}).
-            with_content(%r{^systemLog\.logAppend: true$}).
-            with_content(%r{^systemLog\.path: #{log_path}$}).
-            without_content(%r{^storage\.journal\.enabled:})
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data).not_to have_key('processManagement')
+          expect(config_data['systemLog']['destination']).to eql('file')
+          expect(config_data['systemLog']['logAppend']).to be(true)
+          expect(config_data['systemLog']['path']).to eql(log_path)
+          expect(config_data['storage']['dbPath']).to eql(db_path)
+          expect(config_data['storage']).not_to have_key('journal')
+          expect(config_data['security']['authorization']).to eql('disabled')
+          expect(config_data['net']['bindIp']).to eql('127.0.0.1')
+          expect(config_data['net']).not_to have_key('ipv6')
         end
 
         it { is_expected.to contain_class('mongodb::repo') }
@@ -152,9 +155,9 @@ describe 'mongodb::server' do
         end
 
         it do
-          is_expected.to contain_file(config_file).
-            with_content(%r{^net\.bindIp:  127\.0\.0\.1,fd00:beef:dead:55::143$}).
-            with_content(%r{^net\.ipv6: true$})
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['net']['bindIp']).to eql('127.0.0.1,fd00:beef:dead:55::143')
+          expect(config_data['net']['ipv6']).to be(true)
         end
       end
 
@@ -165,7 +168,10 @@ describe 'mongodb::server' do
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^net\.bindIp:  127\.0\.0\.1,10\.1\.1\.13$}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['net']['bindIp']).to eql('127.0.0.1,10.1.1.13')
+        end
       end
 
       describe 'when specifying auth to true' do
@@ -175,28 +181,89 @@ describe 'mongodb::server' do
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^security\.authorization: enabled$}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['security']['authorization']).to eql('enabled')
+        end
+
         it { is_expected.to contain_file('/root/.mongoshrc.js') }
       end
 
-      describe 'when specifying set_parameter array value' do
+      describe 'when specifying set_parameter array value with : separator' do
         let :params do
           {
-            set_parameter: ['textSearchEnable=true']
+            set_parameter: [
+              'textSearchEnable: true',
+              'authenticationMechanisms: PLAIN'
+            ]
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^setParameter:\n  textSearchEnable=true}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['setParameter']['textSearchEnable']).to be(true)
+          expect(config_data['setParameter']['authenticationMechanisms']).to eql('PLAIN')
+        end
       end
 
-      describe 'when specifying set_parameter string value' do
+      describe 'when specifying set_parameter string value with : separator' do
         let :params do
           {
-            set_parameter: 'textSearchEnable=true'
+            set_parameter: 'textSearchEnable: true'
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^setParameter:\n  textSearchEnable=true}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['setParameter']['textSearchEnable']).to be(true)
+        end
+      end
+
+      describe 'when specifying set_parameter array value with = separator' do
+        let :params do
+          {
+            set_parameter: [
+              'textSearchEnable = true',
+              'authenticationMechanisms = PLAIN'
+            ]
+          }
+        end
+
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['setParameter']['textSearchEnable']).to be(true)
+          expect(config_data['setParameter']['authenticationMechanisms']).to eql('PLAIN')
+        end
+      end
+
+      describe 'when specifying set_parameter string value with = separator' do
+        let :params do
+          {
+            set_parameter: 'textSearchEnable = true'
+          }
+        end
+
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['setParameter']['textSearchEnable']).to be(true)
+        end
+      end
+
+      describe 'when specifying set_parameter hash value' do
+        let :params do
+          {
+            set_parameter: {
+              'textSearchEnable' => true,
+              'authenticationMechanisms' => 'PLAIN',
+            }
+          }
+        end
+
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['setParameter']['textSearchEnable']).to be(true)
+          expect(config_data['setParameter']['authenticationMechanisms']).to eql('PLAIN')
+        end
       end
 
       describe 'with journal: true' do
@@ -206,7 +273,10 @@ describe 'mongodb::server' do
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['storage']['journal']['enabled']).to be(true)
+        end
       end
 
       describe 'with journal: false' do
@@ -216,7 +286,10 @@ describe 'mongodb::server' do
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: false$}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['storage']['journal']['enabled']).to be(false)
+        end
       end
 
       describe 'with journal and package_version < 7.0.0' do
@@ -227,7 +300,10 @@ describe 'mongodb::server' do
           }
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['storage']['journal']['enabled']).to be(true)
+        end
       end
 
       describe 'with journal and package_version >= 7.0.0' do
@@ -259,7 +335,10 @@ describe 'mongodb::server' do
           ]
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['storage']['journal']['enabled']).to be(true)
+        end
       end
 
       describe 'with journal and user defined repo_location with version < 7.0' do
@@ -280,7 +359,10 @@ describe 'mongodb::server' do
           ]
         end
 
-        it { is_expected.to contain_file(config_file).with_content(%r{^storage\.journal\.enabled: true$}) }
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['storage']['journal']['enabled']).to be(true)
+        end
       end
 
       describe 'with journal and user defined repo_location with version >= 7.0' do
@@ -313,7 +395,11 @@ describe 'mongodb::server' do
             }
           end
 
-          it { is_expected.to contain_file(config_file).with_content(%r{^storage\.quota\.enforced: true$}) }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['storage']['quota']['enforced']).to be(true)
+            expect(config_data['storage']['quota']).not_to have_key('maxFilesPerDB')
+          end
         end
 
         context 'true and with quotafiles' do
@@ -324,11 +410,11 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^storage\.quota\.enforced: true$}).
-              with_content(%r{^storage\.quota\.maxFilesPerDB: 1$})
-          }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['storage']['quota']['enforced']).to be(true)
+            expect(config_data['storage']['quota']['maxFilesPerDB']).to be(1)
+          end
         end
       end
 
@@ -340,7 +426,10 @@ describe 'mongodb::server' do
             }
           end
 
-          it { is_expected.to contain_file(config_file).with_content(%r{^systemLog\.destination: syslog$}) }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['systemLog']['destination']).to eql('syslog')
+          end
         end
       end
 
@@ -416,11 +505,11 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$})
-          }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+          end
         end
 
         context 'disabled' do
@@ -430,11 +519,10 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.not_to contain_file(config_file).
-              with_content(%r{net\.tls\.mode}).
-              with_content(%r{net\.tls\.certificateKeyFile})
-          }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']).not_to have_key('tls')
+          end
         end
       end
 
@@ -449,12 +537,12 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$}).
-              with_content(%r{^net\.tls\.CAFile: /etc/ssl/caToValidateClientCertificates.pem$})
-          }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+            expect(config_data['net']['tls']['CAFile']).to eql('/etc/ssl/caToValidateClientCertificates.pem')
+          end
         end
 
         context 'client certificate validation disabled but tls enabled' do
@@ -466,23 +554,12 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$})
-            is_expected.not_to contain_file(config_file).
-              with_content(%r{net\.tls\.CAFile})
-          }
-        end
-
-        context 'disabled' do
-          let :params do
-            {
-              tls: false
-            }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+            expect(config_data['net']['tls']).not_to have_key('CAFile')
           end
-
-          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.tls\.CAFile}) }
         end
       end
 
@@ -498,13 +575,13 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$}).
-              with_content(%r{^net\.tls\.CAFile: /etc/ssl/caToValidateClientCertificates.pem$}).
-              with_content(%r{^net\.tls\.allowConnectionsWithoutCertificates: true$})
-          }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+            expect(config_data['net']['tls']['CAFile']).to eql('/etc/ssl/caToValidateClientCertificates.pem')
+            expect(config_data['net']['tls']['allowConnectionsWithoutCertificates']).to be(true)
+          end
         end
 
         context 'connection without certificates disabled but tls and client certificate validation enabled' do
@@ -518,24 +595,13 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$}).
-              with_content(%r{net\.tls\.CAFile})
-            is_expected.not_to contain_file(config_file).
-              with_content(%r{net\.tls\.allowConnectionsWithoutCertificates:\s*true})
-          }
-        end
-
-        context 'disabled' do
-          let :params do
-            {
-              tls: false
-            }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+            expect(config_data['net']['tls']['CAFile']).to eql('/etc/ssl/caToValidateClientCertificates.pem')
+            expect(config_data['net']['tls']['allowConnectionsWithoutCertificates']).to be(false)
           end
-
-          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.tls\.allowConnectionsWithoutCertificates:\s*true}) }
         end
       end
 
@@ -550,12 +616,12 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$}).
-              with_content(%r{^net\.tls\.allowInvalidHostnames: true$})
-          }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+            expect(config_data['net']['tls']['allowInvalidHostnames']).to be(true)
+          end
         end
 
         context 'disallow invalid hostnames but tls enabled' do
@@ -568,29 +634,19 @@ describe 'mongodb::server' do
             }
           end
 
-          it {
-            is_expected.to contain_file(config_file).
-              with_content(%r{^net\.tls\.mode: requireTLS$}).
-              with_content(%r{^net\.tls\.certificateKeyFile: /etc/ssl/mongodb.pem$})
-            is_expected.not_to contain_file(config_file).
-              with_content(%r{net\.tls\.allowInvalidHostnames:\s*true})
-          }
-        end
-
-        context 'disabled' do
-          let :params do
-            {
-              tls: false
-            }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['tls']['mode']).to eql('requireTLS')
+            expect(config_data['net']['tls']['certificateKeyFile']).to eql('/etc/ssl/mongodb.pem')
+            expect(config_data['net']['tls']['allowInvalidHostnames']).to be(false)
           end
-
-          it { is_expected.not_to contain_file(config_file).with_content(%r{net\.tls\.allowInvalidHostnames:\s*true}) }
         end
       end
 
       context 'setting nohttpinterface' do
         it "isn't set when undef" do
-          is_expected.not_to contain_file(config_file).with_content(%r{net\.http\.enabled})
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['net']).not_to have_key('http')
         end
 
         describe 'sets net.http.enabled to false when true' do
@@ -598,7 +654,10 @@ describe 'mongodb::server' do
             { nohttpinterface: true }
           end
 
-          it { is_expected.to contain_file(config_file).with_content(%r{^net\.http\.enabled: false$}) }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['http']['enabled']).to be(false)
+          end
         end
 
         describe 'sets net.http.enabled to true when false' do
@@ -606,7 +665,10 @@ describe 'mongodb::server' do
             { nohttpinterface: false }
           end
 
-          it { is_expected.to contain_file(config_file).with_content(%r{^net\.http\.enabled: true$}) }
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['net']['http']['enabled']).to be(true)
+          end
         end
       end
 
@@ -661,6 +723,48 @@ describe 'mongodb::server' do
           end
 
           it { is_expected.to contain_class('mongodb::replset').with_sets(rsConf) }
+        end
+      end
+
+      describe 'with config_data' do
+        context 'without other params' do
+          let :params do
+            {
+              config_data: {
+                'auditLog' => {
+                  'destination' => 'file',
+                  'format' => 'JSON',
+                  'path' => '/var/log/mobgodb/audit.log',
+                },
+              },
+            }
+          end
+
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['auditLog']['destination']).to eql('file')
+            expect(config_data['auditLog']['format']).to eql('JSON')
+            expect(config_data['auditLog']['path']).to eql('/var/log/mobgodb/audit.log')
+          end
+        end
+
+        context 'with other params' do
+          let :params do
+            {
+              auth: true,
+              config_data: {
+                'security' => {
+                  'javascriptEnabled' => false,
+                },
+              },
+            }
+          end
+
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['security']['authorization']).to eql('enabled')
+            expect(config_data['security']['javascriptEnabled']).to be(false)
+          end
         end
       end
     end
