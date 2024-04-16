@@ -20,21 +20,23 @@ describe Puppet::Type.type(:mongodb_shard).provider(:mongo) do
 
   let(:raw_shards) do
     {
-      'sharding version' => {
-        '_id' => 1,
-        'version' => 4,
-        'minCompatibleVersion' => 4,
-        'currentVersion' => 5,
-        'clusterId' => "ObjectId('548e9110f3aca177c94c5e49')"
-      },
-      'shards' => [
-        {  '_id' => 'rs_test', 'host' => 'rs_test/mongo1:27018' }
-      ],
-      'databases' => [
-        {  '_id' => 'admin', 'partitioned' => false, 'primary' => 'config' },
-        {  '_id' => 'test', 'partitioned' => false, 'primary' => 'rs_test' },
-        {  '_id' => 'rs_test', 'partitioned' => true, 'primary' => 'rs_test' }
-      ]
+      'value' => {
+        'sharding version' => {
+          '_id' => 1,
+          'version' => 4,
+          'minCompatibleVersion' => 4,
+          'currentVersion' => 5,
+          'clusterId' => "ObjectId('548e9110f3aca177c94c5e49')"
+        },
+        'shards' => [
+          {  '_id' => 'rs_test', 'host' => 'rs_test/mongo1:27018' }
+        ],
+        'databases' => [
+          {  '_id' => 'admin', 'partitioned' => false, 'primary' => 'config' },
+          {  '_id' => 'test', 'partitioned' => false, 'primary' => 'rs_test' },
+          {  '_id' => 'rs_test', 'partitioned' => true, 'primary' => 'rs_test' }
+        ]
+      }
     }
   end
 
