@@ -136,6 +136,9 @@
   <%- if !@tls_invalid_hostnames.nil? -%>
     <%- config_hash['net']['tls']['allowInvalidHostnames'] = @tls_invalid_hostnames -%>
   <%- end -%>
+  <%- if !@tls_invalid_certificates.nil? -%>
+    <%- config_hash['net']['tls']['allowInvalidCertificates'] = @tls_invalid_certificates -%>
+  <%- end -%>
 <%- end -%>
 <%- if @replset || @oplog_size -%>
   <%- if !config_hash['replication'] -%>

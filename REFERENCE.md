@@ -869,6 +869,7 @@ The following parameters are available in the `mongodb::server` class:
 * [`tls_ca`](#-mongodb--server--tls_ca)
 * [`tls_conn_without_cert`](#-mongodb--server--tls_conn_without_cert)
 * [`tls_invalid_hostnames`](#-mongodb--server--tls_invalid_hostnames)
+* [`tls_invalid_certificates`](#-mongodb--server--tls_invalid_certificates)
 * [`tls_mode`](#-mongodb--server--tls_mode)
 * [`admin_password_hash`](#-mongodb--server--admin_password_hash)
 * [`restart`](#-mongodb--server--restart)
@@ -1473,6 +1474,15 @@ Default value: `undef`
 Data type: `Optional[Boolean]`
 
 Set to true to disable the validation of the hostnames in TLS certificates.
+
+Default value: `undef`
+
+##### <a name="-mongodb--server--tls_invalid_certificates"></a>`tls_invalid_certificates`
+
+Data type: `Optional[Boolean]`
+
+Enable or disable the validation checks for TLS certificates on other servers in the cluster and allows the use of
+invalid certificates to connect.
 
 Default value: `undef`
 

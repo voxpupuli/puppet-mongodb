@@ -261,6 +261,10 @@
 # @param tls_invalid_hostnames
 #   Set to true to disable the validation of the hostnames in TLS certificates.
 #
+# @param tls_invalid_certificates
+#   Enable or disable the validation checks for TLS certificates on other servers in the cluster and allows the use of
+#   invalid certificates to connect.
+#
 # @param tls_mode
 #   Defines if TLS is used for all network connections. Allowed values are 'requireTLS', 'preferTLS' or 'allowTLS'.
 #
@@ -368,6 +372,7 @@ class mongodb::server (
   Optional[Stdlib::Absolutepath] $tls_ca                                  = undef,
   Optional[Boolean] $tls_conn_without_cert                                = undef,
   Optional[Boolean] $tls_invalid_hostnames                                = undef,
+  Optional[Boolean] $tls_invalid_certificates                             = undef,
   Enum['requireTLS', 'preferTLS', 'allowTLS'] $tls_mode                   = 'requireTLS',
   Boolean $restart                                                        = true,
   Optional[String] $storage_engine                                        = undef,
