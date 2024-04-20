@@ -284,14 +284,14 @@ Puppet::Type.type(:mongodb_replset).provide(:mongo, parent: Puppet::Provider::Mo
     retry_sleep = 3
 
     retry_limit.times do |n|
-      if db_ismaster(alive_hosts[0]['host'])['ismaster']
-        Puppet.debug 'Replica set initialization has successfully ended'
-        return true
-      else
-        Puppet.debug "Waiting for replica initialization. Retry: #{n}"
-        sleep retry_sleep
-        next
+      alive_hosts.each do |alive_host|
+        if db_ismaster(alive_host['host'])['ismaster']
+          Puppet.debug 'Replica set initialization has successfully ended'
+          return true
+        end
       end
+      Puppet.debug "Waiting for replica initialization. Retry: #{n}"
+      sleep retry_sleep
     end
     raise Puppet::Error, "rs.initiate() failed for replicaset #{name}"
   end
