@@ -30,24 +30,22 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         class { 'mongodb::globals':
           #{repo_ver_param}
         }
+        -> class { 'mongodb::client': }
         -> class { 'mongodb::server':
           bind_ip => ['0.0.0.0'],
           replset => 'test',
         }
-        -> class { 'mongodb::client': }
+        -> mongodb_replset { 'test':
+          members => [#{hosts.map { |x| "'#{x}:27017'" }.join(',')}],
+        }
+
       EOS
 
-      apply_manifest_on(hosts.reverse, pp, catch_failures: true)
-      apply_manifest_on(hosts.reverse, pp, catch_changes: true)
+      apply_manifest_on(hosts, pp, catch_failures: true)
+      apply_manifest_on(hosts, pp, catch_changes: true)
     end
 
     it 'sets up the replset with puppet' do
-      pp = <<-EOS
-        mongodb_replset { 'test':
-          members => [#{hosts.map { |x| "'#{x}:27017'" }.join(',')}],
-        }
-      EOS
-      apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
       on(hosts_as('master'), 'mongosh --quiet --eval "EJSON.stringify(rs.conf())"') do |r|
         expect(r.stdout).to match %r{#{hosts[0]}:27017}
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
@@ -101,12 +99,12 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         class { 'mongodb::globals':
           #{repo_ver_param}
         }
+        -> class { 'mongodb::client': }
         -> class { 'mongodb::server':
           bind_ip => ['0.0.0.0'],
           replset => 'test',
           replset_members => [#{hosts.map { |x| "'#{x}:27017'" }.join(',')}],
         }
-        -> class { 'mongodb::client': }
       EOS
 
       apply_manifest_on(hosts, pp, catch_failures: true)
@@ -176,6 +174,7 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         class { 'mongodb::globals':
           #{repo_ver_param}
         }
+        -> class { 'mongodb::client': }
         -> class { 'mongodb::server':
           admin_username => 'admin',
           admin_password => 'password',
@@ -201,30 +200,29 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         nc1ohyB0lNt8lHf1U00mtgDSV3fwo5LkwhRi6d+bDBTL/C6MZETMLdyCqDlTdUWG
         YXIsJ0gYcu9XG3mx10LbdPJvxSMg',
         }
-        -> class { 'mongodb::client': }
+        -> mongodb_replset { 'test':
+          members => [#{hosts.map { |x| "'#{x}:27017'" }.join(',')}],
+        }
+
+        unless $facts['mongodb_is_master'] == 'false' { # lint:ignore:quoted_booleans
+          mongodb_user { "User admin on db admin":
+            ensure        => present,
+            password_hash => mongodb_password('admin', 'password'),
+            username      => 'admin',
+            database      => 'admin',
+            roles         => ['userAdmin', 'readWrite', 'dbAdmin', 'dbAdminAnyDatabase', 'readAnyDatabase',
+            'readWriteAnyDatabase', 'userAdminAnyDatabase', 'clusterAdmin',
+            'clusterManager', 'clusterMonitor', 'hostManager', 'root', 'restore',],
+            require       => Mongodb_replset['test'],
+          }
+        }
       EOS
 
-      apply_manifest_on(hosts.reverse, pp, catch_failures: true)
-      apply_manifest_on(hosts.reverse, pp, catch_changes: true)
+      apply_manifest_on(hosts, pp, catch_failures: true)
+      apply_manifest_on(hosts, pp, catch_changes: true)
     end
 
     it 'sets up the replset with puppet' do
-      pp = <<~EOS
-        mongodb_replset { 'test':
-          members => [#{hosts.map { |x| "'#{x}:27017'" }.join(',')}],
-        }
-        -> mongodb_user { "User admin on db admin":
-          ensure        => present,
-          password_hash => mongodb_password('admin', 'password'),
-          username      => 'admin',
-          database      => 'admin',
-          roles         => ['userAdmin', 'readWrite', 'dbAdmin', 'dbAdminAnyDatabase', 'readAnyDatabase',
-          'readWriteAnyDatabase', 'userAdminAnyDatabase', 'clusterAdmin',
-          'clusterManager', 'clusterMonitor', 'hostManager', 'root', 'restore',],
-        }
-      EOS
-      apply_manifest_on(hosts_as('master'), pp, catch_failures: true)
-      apply_manifest_on(hosts_as('master'), pp, catch_changes: true)
       on(hosts_as('master'), 'mongosh --quiet --eval "load(\'/root/.mongoshrc.js\');EJSON.stringify(rs.conf())"') do |r|
         expect(r.stdout).to match %r{#{hosts[0]}:27017}
         expect(r.stdout).to match %r{#{hosts[1]}:27017}
