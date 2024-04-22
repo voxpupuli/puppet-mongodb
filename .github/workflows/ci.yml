@@ -1,108 +1,24 @@
 ---
-# Managed by modulesync - DO NOT EDIT
-# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
-
-name: 'CI'
-
-on:
-  pull_request: {}
-  push:
-    branches:
-      - main
-      - master
-
-concurrency:
-  group: ${{ github.ref_name }}
-  cancel-in-progress: true
-
-jobs:
-  setup_matrix:
-    name: 'Static validations'
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    outputs:
-      puppet_unit_test_matrix: ${{ steps.get-outputs.outputs.puppet_unit_test_matrix }}
-      puppet_beaker_test_matrix: ${{ steps.get-outputs.outputs.puppet_beaker_test_matrix }}
-    env:
-      BUNDLE_WITHOUT: development:system_tests:release
-      PUPPET_GEM_VERSION: ">= 7.0"
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-      - name: Run static validations
-        run: bundle exec rake validate lint check
-      - name: Run rake rubocop
-        run: bundle exec rake rubocop
-      - name: Setup Test Matrix
-        id: get-outputs
-        run: bundle exec metadata2gha --pidfile-workaround false
-
-  unit:
-    needs: setup_matrix
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    strategy:
-      fail-fast: false
-      matrix:
-        include: ${{fromJson(needs.setup_matrix.outputs.puppet_unit_test_matrix)}}
-    env:
-      BUNDLE_WITHOUT: development:system_tests:release
-      PUPPET_GEM_VERSION: "~> ${{ matrix.puppet }}.0"
-    name: Puppet ${{ matrix.puppet }} (Ruby ${{ matrix.ruby }})
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-      - name: Run tests
-        run: bundle exec rake parallel_spec
-
-  acceptance:
-    needs: setup_matrix
-    runs-on: ubuntu-20.04
-    env:
-      BEAKER_HYPERVISOR: docker
-      BUNDLE_WITHOUT: development:test:release
-    strategy:
-      fail-fast: false
-      matrix:
-        puppet: ${{fromJson(needs.setup_matrix.outputs.puppet_beaker_test_matrix)}}
-        mongodb:
-          - name: MongoDB 4.4
-            value: '4.4'
-          - name: MongoDB 5.0
-            value: '5.0'
-          - name: MongoDB 6.0
-            value: '6.0'
-          - name: MongoDB 7.0
-            value: '7.0'
-    name: ${{ matrix.puppet.name }} - ${{ matrix.mongodb.name }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-      - name: Run tests
-        run: bundle exec rake beaker
-        env:
-          BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet.env.BEAKER_PUPPET_COLLECTION }}
-          BEAKER_setfile: ${{ matrix.puppet.env.BEAKER_SETFILE }}shard.ma{hostname=${{ matrix.puppet.env.BEAKER_SETFILE }}-1-${{ matrix.puppet.env.BEAKER_PUPPET_COLLECTION }}.example.com}-${{ matrix.puppet.env.BEAKER_SETFILE }}slave,router.a{hostname=${{ matrix.puppet.env.BEAKER_SETFILE }}-2-${{ matrix.puppet.env.BEAKER_PUPPET_COLLECTION }}.example.com}
-          BEAKER_FACTER_mongodb_repo_version: ${{ matrix.mongodb.value }}
-
-  tests:
-    needs:
-      - acceptance
-    runs-on: ubuntu-latest
-    name: Test suite
-    steps:
-      - run: echo Test suite completed
-        # explicitly run at the root dir. In case people set working-directory this will otherwise fail (because this jobs doesn't clone the repo and the subdir doesn't exist)
-        working-directory: '.'
+  # Managed by modulesync - DO NOT EDIT
+  # https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
+  
+  name: CI
+  
+  on:
+    pull_request: {}
+    push:
+      branches:
+        - main
+        - master
+  
+  concurrency:
+    group: ${{ github.ref_name }}
+    cancel-in-progress: true
+  
+  jobs:
+    puppet:
+      name: Puppet
+      uses: StatensPensjonskasse/gha-puppet/.github/workflows/beaker.yml@add-metadata2gha-option-beaker-hosts
+      with:
+        pidfile_workaround: 'false'
+        beaker_facter: 'mongodb_repo_version:MongoDB:4.4,5.0,6.0,7.0'
