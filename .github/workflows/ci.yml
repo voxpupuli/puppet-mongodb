@@ -21,4 +21,5 @@
       uses: StatensPensjonskasse/gha-puppet/.github/workflows/beaker.yml@add-metadata2gha-option-beaker-hosts
       with:
         pidfile_workaround: 'false'
+        beaker_hosts: 'host1:shard.ma;host2:slave,router.a'
         beaker_facter: 'mongodb_repo_version:MongoDB:4.4,5.0,6.0,7.0'

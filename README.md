@@ -158,4 +158,3 @@ We would like to thank everyone who has contributed issues and pull requests to 
 A complete list of contributors can be found on the
 [GitHub Contributor Graph](https://github.com/voxpupuli/puppet-mongodb/graphs/contributors)
 for the [puppet-mongodb module](https://github.com/voxpupuli/puppet-mongodb).
-
