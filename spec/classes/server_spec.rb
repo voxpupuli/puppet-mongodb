@@ -266,11 +266,36 @@ describe 'mongodb::server' do
         end
       end
 
-      describe 'with journal: true' do
+      describe 'with journal' do
         let :params do
           {
             journal: true
           }
+        end
+
+        if (facts[:os]['name'] == 'Debian') && (facts[:os]['release']['major'] <= '10')
+          it do
+            config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+            expect(config_data['storage']['journal']['enabled']).to be(true)
+          end
+        else
+          it { is_expected.to raise_error(Puppet::Error) }
+        end
+      end
+
+      describe 'with journal: true and package_ensure < 7.0.0' do
+        let :params do
+          {
+            package_ensure: '6.0.0',
+            journal: true
+          }
+        end
+        let(:pre_condition) do
+          [
+            'class{"mongodb::globals":
+              manage_package_repo => false
+            }'
+          ]
         end
 
         it do
@@ -279,11 +304,19 @@ describe 'mongodb::server' do
         end
       end
 
-      describe 'with journal: false' do
+      describe 'with journal: false and package_ensure < 7.0.0' do
         let :params do
           {
+            package_ensure: '6.0.0',
             journal: false
           }
+        end
+        let(:pre_condition) do
+          [
+            'class{"mongodb::globals":
+              manage_package_repo => false
+            }'
+          ]
         end
 
         it do
@@ -292,21 +325,7 @@ describe 'mongodb::server' do
         end
       end
 
-      describe 'with journal and package_version < 7.0.0' do
-        let :params do
-          {
-            package_ensure: '6.0.0',
-            journal: true
-          }
-        end
-
-        it do
-          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
-          expect(config_data['storage']['journal']['enabled']).to be(true)
-        end
-      end
-
-      describe 'with journal and package_version >= 7.0.0' do
+      describe 'with journal and package_ensure >= 7.0.0' do
         let :params do
           {
             package_ensure: '7.0.0',
@@ -317,7 +336,7 @@ describe 'mongodb::server' do
         it { is_expected.to raise_error(Puppet::Error) }
       end
 
-      describe 'with journal and user defined repo_location without version' do
+      describe 'with journal and user defined repo_version with version < 7.0' do
         let :params do
           {
             journal: true
@@ -325,13 +344,9 @@ describe 'mongodb::server' do
         end
         let(:pre_condition) do
           [
-            'class mongodb::globals {
-              $manage_package_repo = true
-              $version = "5.0"
-              $edition = "org"
-              $repo_location = "https://repo.myorg.com/"
-            }',
-            'class{"mongodb::globals": }'
+            'class{"mongodb::globals":
+              repo_version => "6.0"
+            }'
           ]
         end
 
@@ -341,7 +356,7 @@ describe 'mongodb::server' do
         end
       end
 
-      describe 'with journal and user defined repo_location with version < 7.0' do
+      describe 'with journal and user defined repo_version with version >= 7.0' do
         let :params do
           {
             journal: true
@@ -349,37 +364,9 @@ describe 'mongodb::server' do
         end
         let(:pre_condition) do
           [
-            'class mongodb::globals {
-              $manage_package_repo = true
-              $version = "5.0"
-              $edition = "org"
-              $repo_location = "https://repo.myorg.com/6.0/"
-            }',
-            'class{"mongodb::globals": }'
-          ]
-        end
-
-        it do
-          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
-          expect(config_data['storage']['journal']['enabled']).to be(true)
-        end
-      end
-
-      describe 'with journal and user defined repo_location with version >= 7.0' do
-        let :params do
-          {
-            journal: true
-          }
-        end
-        let(:pre_condition) do
-          [
-            'class mongodb::globals {
-              $manage_package_repo = true
-              $version = "5.0"
-              $edition = "org"
-              $repo_location = "https://repo.myorg.com/7.0/"
-            }',
-            'class{"mongodb::globals": }'
+            'class{"mongodb::globals":
+              repo_version => "7.0"
+            }'
           ]
         end
 
