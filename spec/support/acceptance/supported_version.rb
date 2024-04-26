@@ -3,7 +3,7 @@
 def supported_version?(platform, version)
   return true if version.nil?
 
-  supported_versions = %w[4.4 5.0 6.0 7.0]
+  supported_versions = %w[5.0 6.0 7.0]
   return false unless supported_versions.include?(version)
 
   supported_versions.reject! do |v|
