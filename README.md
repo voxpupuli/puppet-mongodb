@@ -133,13 +133,7 @@ more options please have a look at [mongodb::opsmanager](#class-mongodbopsmanage
 
 ## Limitations
 
-This module has been tested on:
-
-* Debian 10.* (Buster)
-* Debian 11.* (Bookworm)
-* Ubuntu 20.04.0 LTS (Focal Fossa)
-* RHEL 7/8
-* CentOS 7/8
+Look at [metadata.json](metadata.json) for tested OSes.
 
 ## Development
 
