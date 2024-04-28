@@ -4,7 +4,7 @@
 #
 #   class {'mongodb::globals':
 #     manage_package_repo => true,
-#     repo_version        => '4.4',
+#     repo_version        => '6.0',
 #   }
 #   -> class {'mongodb::client': }
 #   -> class {'mongodb::server': }
@@ -13,7 +13,7 @@
 #
 #   class {'mongodb::globals':
 #     manage_package_repo => true,
-#     repo_version        => '4.4',
+#     repo_version        => '6.0',
 #     use_enterprise_repo => true,
 #   }
 #   -> class {'mongodb::client': }
