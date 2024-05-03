@@ -452,6 +452,22 @@ describe 'mongodb::server' do
               with_mode('0600').
               with_content(%r{admin\.auth\('admin', 'password'\)})
           }
+
+          context 'with backslash in password' do
+            let :params do
+              {
+                admin_username: 'admin',
+                admin_password: 'password_\_with_backslash',
+                auth: true,
+                store_creds: true
+              }
+            end
+
+            it {
+              is_expected.to contain_file('/root/.mongoshrc.js').
+                with_content(%r{admin\.auth\('admin', 'password_\\\\_with_backslash'\)})
+            }
+          end
         end
 
         context 'false' do
