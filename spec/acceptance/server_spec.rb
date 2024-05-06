@@ -184,7 +184,7 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
           handle_creds   => true,
           store_creds    => true,
           admin_username => 'admin',
-          admin_password => 'admin_\\_password',
+          admin_password => 'admin_\\\\_\\'_"_&_password',
           restart        => true,
         }
         class { 'mongodb::client': }
@@ -220,7 +220,7 @@ describe 'mongodb::server class', if: supported_version?(default[:platform], rep
       it { is_expected.to be_owned_by 'root' }
       it { is_expected.to be_grouped_into 'root' }
       it { is_expected.to be_mode 600 }
-      it { is_expected.to contain 'admin.auth(\'admin\', \'admin_\\\\_password\')' }
+      it { is_expected.to contain 'admin.auth(\'admin\', \'admin_\\\\_\\\'_"_&_password\')' }
     end
 
     describe command("mongosh admin --quiet --eval \"load('/root/.mongoshrc.js');EJSON.stringify(db.getUser('admin')['customData'])\"") do
