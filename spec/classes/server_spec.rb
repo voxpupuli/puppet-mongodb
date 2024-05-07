@@ -452,6 +452,22 @@ describe 'mongodb::server' do
               with_mode('0600').
               with_content(%r{admin\.auth\('admin', 'password'\)})
           }
+
+          context 'with complex password' do
+            let :params do
+              {
+                admin_username: 'admin',
+                admin_password: 'complex_\\_\'_"_&_password',
+                auth: true,
+                store_creds: true
+              }
+            end
+
+            it {
+              is_expected.to contain_file('/root/.mongoshrc.js').
+                with_content(%r{admin\.auth\('admin', 'complex_\\\\_\\'_"_&_password'\)})
+            }
+          end
         end
 
         context 'false' do

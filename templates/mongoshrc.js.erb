@@ -34,7 +34,7 @@ if (authRequired()) {
   <%- end -%>
   try {
     admin = db.getSiblingDB('admin')
-    admin.auth('<%= @admin_username %>', '<%= @admin_password_unsensitive %>')
+    admin.auth('<%= @admin_username %>', '<%= @admin_password_unsensitive.gsub('\\','\\\\\\\\').gsub("'","\\\\'") %>')
   }
   catch (err) {
     // Silently ignore this error, we can't really do anything about it.
