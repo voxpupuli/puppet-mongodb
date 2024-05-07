@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v6.0.1](https://github.com/voxpupuli/puppet-mongodb/tree/v6.0.1) (2024-05-07)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v6.0.0...v6.0.1)
+
+**Fixed bugs:**
+
+- Wrong "pidFilePath:" setting in `/etc/mongodb.conf` on Debian [\#647](https://github.com/voxpupuli/puppet-mongodb/issues/647)
+- Backslashes in a password need to be escaped [\#760](https://github.com/voxpupuli/puppet-mongodb/pull/760) ([stevenpost](https://github.com/stevenpost))
+
+**Closed issues:**
+
+- Roadmap to get this module in better shape [\#696](https://github.com/voxpupuli/puppet-mongodb/issues/696)
+
 ## [v6.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v6.0.0) (2024-04-29)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v5.0.0...v6.0.0)
