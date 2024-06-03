@@ -20,6 +20,5 @@ jobs:
     name: Puppet
     uses: voxpupuli/gha-puppet/.github/workflows/beaker.yml@v2
     with:
-      pidfile_workaround: 'false'
       beaker_hosts: 'host1:shard.ma;host2:slave,router.a'
       beaker_facter: 'mongodb_repo_version:MongoDB:5.0,6.0,7.0'
