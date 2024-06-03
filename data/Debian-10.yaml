@@ -1,0 +1,2 @@
+---
+mongodb::globals::repo_version: '6.0'
