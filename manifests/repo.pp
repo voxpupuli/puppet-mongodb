@@ -53,11 +53,16 @@ class mongodb::repo (
         $_repo_location = $repo_location
         $description = 'MongoDB Custom Repository'
       } else {
+        if $facts['os']['name'] == 'Amazon' {
+          $distro = 'amazon'
+        } else {
+          $distro = 'redhat'
+        }
         if $use_enterprise_repo {
-          $_repo_location = "https://repo.mongodb.com/yum/redhat/\$releasever/mongodb-enterprise/${version}/\$basearch/"
+          $_repo_location = "https://repo.mongodb.com/yum/${distro}/\$releasever/mongodb-enterprise/${version}/\$basearch/"
           $description = 'MongoDB Enterprise Repository'
         } else {
-          $_repo_location = "https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/${version}/\$basearch/"
+          $_repo_location = "https://repo.mongodb.org/yum/${distro}/\$releasever/mongodb-org/${version}/\$basearch/"
           $description = 'MongoDB Repository'
         }
       }
