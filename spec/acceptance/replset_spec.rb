@@ -73,6 +73,20 @@ if hosts.length > 1 && supported_version?(default[:platform], repo_version)
         expect(r.stdout).to match %r{some value}
       end
     end
+
+    it 'create a user' do
+      pp = <<-EOS
+        mongodb_user {'testuser':
+          ensure        => present,
+          password_hash => mongodb_password('testuser', 'passw0rd'),
+          database      => 'testdb',
+          roles         => ['readWrite', 'dbAdmin'],
+        }
+      EOS
+
+      apply_manifest_on(hosts, pp, catch_failures: true)
+      apply_manifest_on(hosts, pp, catch_changes: true)
+    end
   end
 
   describe 'mongodb::server with replset_members' do
