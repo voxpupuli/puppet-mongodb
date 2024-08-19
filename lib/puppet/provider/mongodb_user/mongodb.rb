@@ -9,28 +9,23 @@ Puppet::Type.type(:mongodb_user).provide(:mongodb, parent: Puppet::Provider::Mon
   def self.instances
     require 'json'
 
-    if db_ismaster
-      script = 'EJSON.stringify(db.system.users.find().toArray())'
-      # A hack to prevent prefetching failures until admin user is created
-      script = "try {#{script}} catch (e) { if (e.message.match(/requires authentication/) || e.message.match(/not authorized on admin/)) { 'not authorized on admin' } else {throw e}}" if auth_enabled
+    script = 'EJSON.stringify(db.system.users.find().toArray())'
+    # A hack to prevent prefetching failures until admin user is created
+    script = "try {#{script}} catch (e) { if (e.message.match(/requires authentication/) || e.message.match(/not authorized on admin/)) { 'not authorized on admin' } else {throw e}}" if auth_enabled
 
-      out = mongo_eval(script)
-      return [] if auth_enabled && (out.include?('requires authentication') || out.include?('not authorized on admin'))
+    out = mongo_eval(script)
+    return [] if auth_enabled && (out.include?('requires authentication') || out.include?('not authorized on admin'))
 
-      users = JSON.parse out
+    users = JSON.parse out
 
-      users.map do |user|
-        new(name: user['_id'],
-            ensure: :present,
-            username: user['user'],
-            database: user['db'],
-            roles: from_roles(user['roles'], user['db']),
-            password_hash: user['credentials']['MONGODB-CR'],
-            scram_credentials: user['credentials']['SCRAM-SHA-1'])
-      end
-    else
-      Puppet.warning 'User info is available only from master host'
-      []
+    users.map do |user|
+      new(name: user['_id'],
+          ensure: :present,
+          username: user['user'],
+          database: user['db'],
+          roles: from_roles(user['roles'], user['db']),
+          password_hash: user['credentials']['MONGODB-CR'],
+          scram_credentials: user['credentials']['SCRAM-SHA-1'])
     end
   end
 
