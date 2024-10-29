@@ -38,7 +38,7 @@ class mongodb::repo (
   Optional[String[1]] $proxy_password   = undef,
 ) {
   if $version == undef and $repo_location == undef {
-    fail('`version` or `repo_location` is required')
+    $version = '5.0'
   }
   if $version != undef and $repo_location != undef {
     fail('`version` is not supported with `repo_location`')
