@@ -141,6 +141,8 @@ class mongodb::opsmanager (
   Optional[Integer] $snapshot_weekly_retention   = undef, # Default: 2
   Optional[Integer] $snapshot_monthly_retention  = undef, # Default: 1
   Optional[Integer] $versions_directory          = undef, # Linux default: /opt/mongodb/mms/mongodb-releases/
+  Optional[String[1]] $slack_oauth2_clientId     = undef,
+  Optional[String[1]] $slack_oauth2_clientSecret = undef,
 ) {
   case $package_ensure {
     'absent': {
