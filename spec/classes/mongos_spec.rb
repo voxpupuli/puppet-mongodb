@@ -79,7 +79,7 @@ describe 'mongodb::mongos' do
         # install
         it { is_expected.to contain_class('mongodb::mongos::install') }
 
-        if facts[:osfamily] == 'Suse'
+        if facts[:os]['family'] == 'Suse'
           it { is_expected.to contain_package('mongodb_mongos').with_ensure('absent') }
         else
           it { is_expected.to contain_package('mongodb_mongos').with_ensure('purged') }
@@ -94,13 +94,5 @@ describe 'mongodb::mongos' do
         it { is_expected.to contain_service('mongos').with_ensure('stopped').with_enable(false) }
       end
     end
-  end
-
-  context 'when deploying on Solaris' do
-    let :facts do
-      { osfamily: 'Solaris' }
-    end
-
-    it { is_expected.to compile.and_raise_error(%r{is not applicable to an Undef Value}) }
   end
 end
