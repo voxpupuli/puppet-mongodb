@@ -20,7 +20,7 @@ describe 'mongodb::repo' do
           }
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'RedHat'
           it { is_expected.to contain_class('mongodb::repo::yum') }
 
@@ -38,18 +38,18 @@ describe 'mongodb::repo' do
         when 'Debian'
           it { is_expected.to contain_class('mongodb::repo::apt') }
 
-          case facts[:operatingsystem]
+          case facts[:os]['name']
           when 'Debian'
             it do
               is_expected.to contain_apt__source('mongodb').
                 with_location('https://repo.mongodb.org/apt/debian').
-                with_release("#{facts[:lsbdistcodename]}/mongodb-org/5.0")
+                with_release("#{facts[:os]['distro']['codename']}/mongodb-org/5.0")
             end
           when 'Ubuntu'
             it do
               is_expected.to contain_apt__source('mongodb').
                 with_location('https://repo.mongodb.org/apt/ubuntu').
-                with_release("#{facts[:lsbdistcodename]}/mongodb-org/5.0")
+                with_release("#{facts[:os]['distro']['codename']}/mongodb-org/5.0")
             end
           end
         else
@@ -67,7 +67,7 @@ describe 'mongodb::repo' do
           }
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'RedHat'
           it { is_expected.to contain_class('mongodb::repo::yum') }
 

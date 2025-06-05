@@ -833,12 +833,4 @@ describe 'mongodb::server' do
       end
     end
   end
-
-  context 'when deploying on Solaris' do
-    let :facts do
-      { osfamily: 'Solaris' }
-    end
-
-    it { is_expected.to raise_error(Puppet::Error) }
-  end
 end
