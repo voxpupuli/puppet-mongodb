@@ -1944,7 +1944,7 @@ The password hash of the user. Use mongodb_password() for creating hash. Only av
 
 ##### `roles`
 
-Valid values: `%r{^\w+(@\w+)?$}`
+Valid values: `%r{^\w+(@[\w-]+)?$}`
 
 The user's roles.
 
