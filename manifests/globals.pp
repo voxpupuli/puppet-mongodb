@@ -77,7 +77,7 @@ class mongodb::globals (
   Optional[String[1]] $version        = undef,
   Optional[String[1]] $client_version = undef,
   Boolean $manage_package_repo        = true,
-  String[1] $repo_version             = '5.0',
+  Optional[String[1]] $repo_version   = undef,
   Boolean $use_enterprise_repo        = false,
   Optional[String] $repo_location     = undef,
   Optional[String] $keyring_location  = undef,
