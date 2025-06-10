@@ -176,8 +176,8 @@ Default value: `true`
 Data type: `String[1]`
 
 The version of the package repo.
-
-Default value: `'5.0'`
+If not specified, the module will default to the latest supported version for your OS distro.
+When `repo_location` is specified `repo_version` is ignored.
 
 ##### <a name="-mongodb--globals--use_enterprise_repo"></a>`use_enterprise_repo`
 

@@ -273,10 +273,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it do
-          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
-          expect(config_data['storage']['journal']['enabled']).to be(true)
-        end
+        it { is_expected.to raise_error(Puppet::Error) }
       end
 
       describe 'with journal: false' do
@@ -286,10 +283,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it do
-          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
-          expect(config_data['storage']['journal']['enabled']).to be(false)
-        end
+        it { is_expected.to raise_error(Puppet::Error) }
       end
 
       describe 'with journal and package_version < 7.0.0' do
@@ -300,10 +294,7 @@ describe 'mongodb::server' do
           }
         end
 
-        it do
-          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
-          expect(config_data['storage']['journal']['enabled']).to be(true)
-        end
+        it { is_expected.to raise_error(Puppet::Error) }
       end
 
       describe 'with journal and package_version >= 7.0.0' do
@@ -317,6 +308,31 @@ describe 'mongodb::server' do
         it { is_expected.to raise_error(Puppet::Error) }
       end
 
+      describe 'with journal and user defined repo_version < 7.0' do
+        let :params do
+          {
+            journal: true
+          }
+        end
+        let(:pre_condition) do
+          [
+            'class mongodb::globals {
+              $manage_package_repo = true
+              $version = undef
+              $edition = "org"
+              $repo_version = "6.0"
+              $repo_location = undef
+            }',
+            'class{"mongodb::globals": }'
+          ]
+        end
+
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['storage']['journal']['enabled']).to be(true)
+        end
+      end
+
       describe 'with journal and user defined repo_location without version' do
         let :params do
           {
@@ -327,7 +343,7 @@ describe 'mongodb::server' do
           [
             'class mongodb::globals {
               $manage_package_repo = true
-              $version = "5.0"
+              $version = undef
               $edition = "org"
               $repo_location = "https://repo.myorg.com/"
             }',
@@ -341,6 +357,53 @@ describe 'mongodb::server' do
         end
       end
 
+      describe 'with journal, package_version < 7.0.0 and user defined repo_location without version' do
+        let :params do
+          {
+            package_ensure: '6.0.0',
+            journal: true
+          }
+        end
+        let(:pre_condition) do
+          [
+            'class mongodb::globals {
+              $manage_package_repo = true
+              $version = undef
+              $edition = "org"
+              $repo_location = "https://repo.myorg.com/"
+            }',
+            'class{"mongodb::globals": }'
+          ]
+        end
+
+        it do
+          config_data = YAML.safe_load(catalogue.resource("File[#{config_file}]")[:content])
+          expect(config_data['storage']['journal']['enabled']).to be(true)
+        end
+      end
+
+      describe 'with journal, package_version >= 7.0.0 and user defined repo_location without version' do
+        let :params do
+          {
+            package_ensure: '7.0.0',
+            journal: true
+          }
+        end
+        let(:pre_condition) do
+          [
+            'class mongodb::globals {
+              $manage_package_repo = true
+              $version = undef
+              $edition = "org"
+              $repo_location = "https://repo.myorg.com/"
+            }',
+            'class{"mongodb::globals": }'
+          ]
+        end
+
+        it { is_expected.to raise_error(Puppet::Error) }
+      end
+
       describe 'with journal and user defined repo_location with version < 7.0' do
         let :params do
           {
@@ -351,7 +414,7 @@ describe 'mongodb::server' do
           [
             'class mongodb::globals {
               $manage_package_repo = true
-              $version = "5.0"
+              $version = undef
               $edition = "org"
               $repo_location = "https://repo.myorg.com/6.0/"
             }',
@@ -375,7 +438,7 @@ describe 'mongodb::server' do
           [
             'class mongodb::globals {
               $manage_package_repo = true
-              $version = "5.0"
+              $version = undef
               $edition = "org"
               $repo_location = "https://repo.myorg.com/7.0/"
             }',
