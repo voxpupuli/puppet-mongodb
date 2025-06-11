@@ -40,9 +40,6 @@ class mongodb::repo (
   if $version == undef and $repo_location == undef {
     fail('`version` or `repo_location` is required')
   }
-  if $version != undef and $repo_location != undef {
-    fail('`version` is not supported with `repo_location`')
-  }
   if $version != undef and versioncmp($version, '4.4') < 0 {
     fail('Package repositories for versions older than 4.4 are unsupported')
   }

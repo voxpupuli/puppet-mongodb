@@ -50,6 +50,8 @@
 #
 # @param repo_version
 #   The version of the package repo.
+#   If not specified, the module will default to the latest supported version for your OS distro.
+#   When `repo_location` is specified `repo_version` is ignored.
 #
 # @param use_enterprise_repo
 #   When manage_package_repo is set to true, this setting indicates if it will use the Community Edition
@@ -74,10 +76,10 @@
 #   This sets the password for the proxyserver, should authentication be required
 #
 class mongodb::globals (
+  String[1] $repo_version,
   Optional[String[1]] $version        = undef,
   Optional[String[1]] $client_version = undef,
   Boolean $manage_package_repo        = true,
-  String[1] $repo_version             = '5.0',
   Boolean $use_enterprise_repo        = false,
   Optional[String] $repo_location     = undef,
   Optional[String] $keyring_location  = undef,
