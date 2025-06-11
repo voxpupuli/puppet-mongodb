@@ -45,7 +45,7 @@ If you want a server installation with the default options you can run
 options you need to do the following:
 
 ```puppet
-class {'mongodb::server':
+class { 'mongodb::server':
   port    => 27018,
   verbose => true,
 }
@@ -56,21 +56,21 @@ To install client with default options run `include mongodb::client`
 To override the default mongodb repo version you need the following:
 
 ```puppet
-class {'mongodb::globals':
+class { 'mongodb::globals':
   repo_version => '4.4',
 }
--> class {'mongodb::server': }
--> class {'mongodb::client': }
+-> class { 'mongodb::server': }
+-> class { 'mongodb::client': }
 ```
 
 If you have a custom Mongodb repository you can opt out of repo management:
 
 ```puppet
-class {'mongodb::globals':
+class { 'mongodb::globals':
   manage_package_repo => false,
 }
--> class {'mongodb::server': }
--> class {'mongodb::client': }
+-> class { 'mongodb::server': }
+-> class { 'mongodb::client': }
 ```
 
 ## Usage
@@ -85,7 +85,7 @@ class does nothing.
 To install MongoDB server, create database "testdb" and user "user1" with password "pass1".
 
 ```puppet
-class {'mongodb::server':
+class { 'mongodb::server':
   auth => true,
 }
 
@@ -103,7 +103,7 @@ If one plans to configure sharding for a Mongo deployment, the module offer
 the `mongos` installation. `mongos` can be installed the following way :
 
 ```puppet
-class {'mongodb::mongos' :
+class { 'mongodb::mongos' :
   configdb => ['configsvr1.example.com:27018'],
 }
 ```
@@ -113,7 +113,7 @@ class {'mongodb::mongos' :
 To install Ops Manager and have it run with a local MongoDB application server do the following:
 
 ```puppet
-class {'mongodb::opsmanager':
+class { 'mongodb::opsmanager':
   opsmanager_url        => 'http://opsmanager.yourdomain.com'
   mongo_uri             => 'mongodb://yourmongocluster:27017,
   from_email_addr       => 'opsmanager@yourdomain.com',
