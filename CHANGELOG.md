@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.0.0](https://github.com/voxpupuli/puppet-mongodb/tree/v7.0.0) (2025-06-11)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v6.0.1...v7.0.0)
+
+**Breaking changes:**
+
+- Update default repo version to latest supported by OS [\#779](https://github.com/voxpupuli/puppet-mongodb/pull/779) ([h-haaks](https://github.com/h-haaks))
+- remove EOL OSes [\#775](https://github.com/voxpupuli/puppet-mongodb/pull/775) ([h-haaks](https://github.com/h-haaks))
+
+**Implemented enhancements:**
+
+- Add Ubuntu 24.04 support [\#778](https://github.com/voxpupuli/puppet-mongodb/pull/778) ([h-haaks](https://github.com/h-haaks))
+- Allow puppetlabs/apt 10.x [\#773](https://github.com/voxpupuli/puppet-mongodb/pull/773) ([smortex](https://github.com/smortex))
+- metadata.json: Add OpenVox [\#770](https://github.com/voxpupuli/puppet-mongodb/pull/770) ([jstraw](https://github.com/jstraw))
+- allow puppet/systemd 8.x [\#769](https://github.com/voxpupuli/puppet-mongodb/pull/769) ([jay7x](https://github.com/jay7x))
+
+**Fixed bugs:**
+
+- granting roles using role@db syntax does not allow db names containing "-" [\#771](https://github.com/voxpupuli/puppet-mongodb/issues/771)
+
+**Closed issues:**
+
+- Update default mongodb version to 7.x [\#754](https://github.com/voxpupuli/puppet-mongodb/issues/754)
+
+**Merged pull requests:**
+
+- README: fix spacing style [\#780](https://github.com/voxpupuli/puppet-mongodb/pull/780) ([kenyon](https://github.com/kenyon))
+- Add MongoDB 8.x to integration tests [\#777](https://github.com/voxpupuli/puppet-mongodb/pull/777) ([h-haaks](https://github.com/h-haaks))
+- remove tests on EOL MongoDB 5.x [\#776](https://github.com/voxpupuli/puppet-mongodb/pull/776) ([h-haaks](https://github.com/h-haaks))
+- replace legacy facts in unit tests [\#774](https://github.com/voxpupuli/puppet-mongodb/pull/774) ([h-haaks](https://github.com/h-haaks))
+- fix regex to allow database names to contain "-" in role@db syntax [\#772](https://github.com/voxpupuli/puppet-mongodb/pull/772) ([dermsd](https://github.com/dermsd))
+- Fix secondary users on a replicaset being marked as changed [\#766](https://github.com/voxpupuli/puppet-mongodb/pull/766) ([stevenpost](https://github.com/stevenpost))
+
 ## [v6.0.1](https://github.com/voxpupuli/puppet-mongodb/tree/v6.0.1) (2024-05-07)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-mongodb/compare/v6.0.0...v6.0.1)
