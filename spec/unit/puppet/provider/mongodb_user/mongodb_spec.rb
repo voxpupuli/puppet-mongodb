@@ -116,7 +116,8 @@ describe Puppet::Type.type(:mongodb_user).provider(:mongodb) do
       {
           "updateUser":"new_user",
           "pwd":"pass",
-          "digestPassword":false
+          "digestPassword":false,
+          "mechanisms":["SCRAM-SHA-1"]
       }
       EOS
       allow(provider).to receive(:mongo_eval).
