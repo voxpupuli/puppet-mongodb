@@ -430,16 +430,11 @@ class mongodb::server (
     Class['mongodb::server::service'] -> Class['mongodb::server::config'] -> Class['mongodb::server::install']
   }
 
-  $admin_password_unsensitive = if $admin_password =~ Sensitive[String] {
-    $admin_password.unwrap
-  } else {
-    $admin_password
-  }
   if $create_admin and ($service_ensure == 'running' or $service_ensure == true) {
     mongodb::db { 'admin':
       user            => $admin_username,
       auth_mechanism  => $admin_auth_mechanism,
-      password        => $admin_password_unsensitive,
+      password        => $admin_password.unwrap,
       password_hash   => $admin_password_hash,
       roles           => $admin_roles,
       update_password => $admin_update_password,

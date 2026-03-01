@@ -40,10 +40,8 @@ define mongodb::db (
       tries  => $tries,
     }
 
-    if $password_hash =~ Sensitive[String] {
+    if $password_hash {
       $hash = $password_hash.unwrap
-    } elsif $password_hash {
-      $hash = $password_hash
     } elsif $password {
       $hash = mongodb_password($user, $password)
     } else {

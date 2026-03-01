@@ -153,15 +153,10 @@ class mongodb::server::config {
     }
   }
 
-  $admin_password_unsensitive = if $admin_password =~ Sensitive[String] {
-    $admin_password.unwrap
-  } else {
-    $admin_password
-  }
   if $handle_creds {
     file { $rcfile:
       ensure  => file,
-      content => template('mongodb/mongoshrc.js.erb'),
+      content => epp("${module_name}/mongoshrc.js.epp"),
       owner   => 'root',
       group   => 'root',
       mode    => '0600',

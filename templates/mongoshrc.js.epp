@@ -16,7 +16,7 @@ function rsReconfigSettings(settings){
   return rs.reconfig(cfg)
 }
 
-<% if @auth and @store_creds -%>
+<% if $mongodb::server::config::auth and $mongodb::server::config::store_creds { -%>
 function authRequired() {
   try {
     return rs.status().ok != 1;
@@ -29,12 +29,12 @@ function authRequired() {
 }
 
 if (authRequired()) {
-  <%- if @replset -%>
+  <%- if $mongodb::server::config::replset { -%>
   db.getMongo().setReadPref('primaryPreferred')
-  <%- end -%>
+  <%- } -%>
   try {
     admin = db.getSiblingDB('admin')
-    admin.auth('<%= @admin_username %>', '<%= @admin_password_unsensitive.gsub('\\','\\\\\\\\').gsub("'","\\\\'") %>')
+    admin.auth('<%= $mongodb::server::config::admin_username %>', '<%= $mongodb::server::config::admin_password.regsubst('\\\\','\\\\\\\\','G').regsubst("'","\\\\'",'G') %>')
   }
   catch (err) {
     // Silently ignore this error, we can't really do anything about it.
@@ -44,4 +44,4 @@ if (authRequired()) {
     //   This is normal when setting up a new cluster/server.
   }
 }
-<% end -%>
+<% } -%>
