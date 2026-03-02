@@ -81,7 +81,7 @@ describe 'mongodb::server' do
           {
             create_admin: true,
             admin_username: 'admin',
-            admin_password: 'password'
+            admin_password: sensitive('password')
           }
         end
 
@@ -90,7 +90,7 @@ describe 'mongodb::server' do
         it do
           is_expected.to contain_mongodb__db('admin').
             with_user('admin').
-            with_password('password').
+            with_password(sensitive('password')).
             with_roles(%w[userAdmin readWrite dbAdmin dbAdminAnyDatabase readAnyDatabase
                           readWriteAnyDatabase userAdminAnyDatabase clusterAdmin clusterManager
                           clusterMonitor hostManager root restore])
@@ -104,7 +104,7 @@ describe 'mongodb::server' do
           {
             create_admin: true,
             admin_username: 'admin',
-            admin_password_hash: 'xxx89adfaxd'
+            admin_password_hash: sensitive('xxx89adfaxd')
           }
         end
 
@@ -113,7 +113,7 @@ describe 'mongodb::server' do
         it do
           is_expected.to contain_mongodb__db('admin').
             with_user('admin').
-            with_password_hash('xxx89adfaxd').
+            with_password_hash(sensitive('xxx89adfaxd')).
             with_roles(%w[userAdmin readWrite dbAdmin dbAdminAnyDatabase readAnyDatabase
                           readWriteAnyDatabase userAdminAnyDatabase clusterAdmin clusterManager
                           clusterMonitor hostManager root restore])
@@ -501,7 +501,7 @@ describe 'mongodb::server' do
           let :params do
             {
               admin_username: 'admin',
-              admin_password: 'password',
+              admin_password: sensitive('password'),
               auth: true,
               store_creds: true
             }
@@ -513,14 +513,14 @@ describe 'mongodb::server' do
               with_owner('root').
               with_group('root').
               with_mode('0600').
-              with_content(%r{admin\.auth\('admin', 'password'\)})
+              with_content(sensitive(%r{admin\.auth\('admin', 'password'\)}))
           }
 
           context 'with complex password' do
             let :params do
               {
                 admin_username: 'admin',
-                admin_password: 'complex_\\_\'_"_&_password',
+                admin_password: sensitive('complex_\\_\'_"_&_password'),
                 auth: true,
                 store_creds: true
               }
@@ -528,7 +528,7 @@ describe 'mongodb::server' do
 
             it {
               is_expected.to contain_file('/root/.mongoshrc.js').
-                with_content(%r{admin\.auth\('admin', 'complex_\\\\_\\'_"_&_password'\)})
+                with_content(sensitive(%r{admin\.auth\('admin', 'complex_\\\\_\\'_"_&_password'\)}))
             }
           end
         end

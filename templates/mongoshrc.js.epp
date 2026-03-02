@@ -34,7 +34,8 @@ if (authRequired()) {
   <%- } -%>
   try {
     admin = db.getSiblingDB('admin')
-    admin.auth('<%= $mongodb::server::config::admin_username %>', '<%= $mongodb::server::config::admin_password.regsubst('\\\\','\\\\\\\\','G').regsubst("'","\\\\'",'G') %>')
+    <%# TODO: we need to unwrap and re-wrap until Openvox-regsubst flawlessly accepts Sensitive, like Puppet-regsubst does.  (PR pending: https://github.com/OpenVoxProject/openvox/pull/354) %>
+    admin.auth('<%= $mongodb::server::config::admin_username %>', '<%= Sensitive($mongodb::server::config::admin_password.unwrap.regsubst('\\\\','\\\\\\\\','G').regsubst("'","\\\\'",'G')) %>')
   }
   catch (err) {
     // Silently ignore this error, we can't really do anything about it.
