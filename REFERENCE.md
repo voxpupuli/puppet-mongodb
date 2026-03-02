@@ -2009,7 +2009,7 @@ Type: Ruby 4.x API
 
 Get the mongodb password hash from the clear text password.
 
-#### `mongodb_password(String[1] $username, Variant[String[1], Sensitive[String[1]]] $password, Optional[Boolean] $sensitive)`
+#### `mongodb_password(String[1] $username, Variant[String[1], Sensitive[String[1]]] $password)`
 
 Get the mongodb password hash from the clear text password.
 
@@ -2024,12 +2024,6 @@ Data type: `String[1]`
 ##### `password`
 
 Data type: `Variant[String[1], Sensitive[String[1]]]`
-
-
-
-##### `sensitive`
-
-Data type: `Optional[Boolean]`
 
 
 
