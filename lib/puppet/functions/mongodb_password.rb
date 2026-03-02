@@ -7,11 +7,11 @@ Puppet::Functions.create_function(:mongodb_password) do
   dispatch :mongodb_password do
     required_param 'String[1]', :username
     required_param 'Variant[String[1], Sensitive[String[1]]]', :password
-    optional_param 'Boolean', :sensitive
     return_type 'Variant[String, Sensitive[String]]'
   end
 
-  def mongodb_password(username, password, sensitive = false)
+  def mongodb_password(username, password)
+    sensitive = password.is_a?(Puppet::Pops::Types::PSensitiveType::Sensitive)
     password = password.unwrap if password.respond_to?(:unwrap)
     result_string = Puppet::Util::MongodbMd5er.md5(username, password)
     if sensitive
