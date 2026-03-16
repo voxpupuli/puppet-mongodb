@@ -9,6 +9,8 @@ Documentation=https://docs.mongodb.org/manual
 After=network.target
 
 [Service]
+RuntimeDirectory=mongodb
+RuntimeDirectoryMode=0755
 User=<%= $service_user %>
 Group=<%= $service_group %>
 Environment="OPTIONS=-f /etc/mongos.conf"

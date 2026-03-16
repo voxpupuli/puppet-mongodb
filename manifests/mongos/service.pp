@@ -66,7 +66,7 @@ class mongodb::mongos::service (
 
   if $service_manage {
     systemd::unit_file { 'mongos.service':
-      content => epp($service_template, { service_user => $service_user, service_group => $service_user }),
+      content => epp($service_template, { service_user => $service_user, service_group => $service_group }),
       enable  => $real_service_enable,
     } ~> Service['mongos']
 
