@@ -480,6 +480,9 @@ The following parameters are available in the `mongodb::opsmanager` class:
 * [`snapshot_weekly_retention`](#-mongodb--opsmanager--snapshot_weekly_retention)
 * [`snapshot_monthly_retention`](#-mongodb--opsmanager--snapshot_monthly_retention)
 * [`versions_directory`](#-mongodb--opsmanager--versions_directory)
+* [`versions_source`](#-mongodb--opsmanager--versions_source)
+* [`release_autodownload`](#-mongodb--opsmanager--release_autodownload)
+* [`release_autodownload_enterprise`](#-mongodb--opsmanager--release_autodownload_enterprise)
 * [`user`](#-mongodb--opsmanager--user)
 * [`group`](#-mongodb--opsmanager--group)
 * [`ensure`](#-mongodb--opsmanager--ensure)
@@ -570,6 +573,30 @@ Data type: `Optional[Integer]`
 The directory where to store the snapshot versions
 
 Default value: `undef`
+
+##### <a name="-mongodb--opsmanager--versions_source"></a>`versions_source`
+
+Data type: `Enum['remote', 'hybrid', 'local']`
+
+Indicates the source of MongoDB installer binaries.
+
+Default value: `'remote'`
+
+##### <a name="-mongodb--opsmanager--release_autodownload"></a>`release_autodownload`
+
+Data type: `Boolean`
+
+Flag indicating whether the Backup Daemons automatically install the versions of MongoDB that the Backup Daemons need.
+
+Default value: `true`
+
+##### <a name="-mongodb--opsmanager--release_autodownload_enterprise"></a>`release_autodownload_enterprise`
+
+Data type: `Boolean`
+
+Flag indicating whether the Backup Daemons automatically install the Enterprise editions of the versions of MongoDB that the Backup Daemons need.
+
+Default value: `true`
 
 ##### <a name="-mongodb--opsmanager--user"></a>`user`
 

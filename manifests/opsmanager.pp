@@ -108,6 +108,15 @@
 # @param versions_directory
 #   The directory where to store the snapshot versions
 #
+# @param versions_source
+#   Indicates the source of MongoDB installer binaries.
+#
+# @param release_autodownload
+#   Flag indicating whether the Backup Daemons automatically install the versions of MongoDB that the Backup Daemons need.
+#
+# @param release_autodownload_enterprise
+#   Flag indicating whether the Backup Daemons automatically install the Enterprise editions of the versions of MongoDB that the Backup Daemons need.
+#
 class mongodb::opsmanager (
   String[1] $user                                = 'mongodb-mms',
   String[1] $group                               = 'mongodb-mms',
@@ -130,6 +139,9 @@ class mongodb::opsmanager (
   Stdlib::Port $smtp_server_port                 = 25,
   Boolean $ssl                                   = false,
   Boolean $ignore_ui_setup                       = true,
+  Enum['remote', 'hybrid', 'local'] $versions_source = 'remote',
+  Boolean $release_autodownload                  = true,
+  Boolean $release_autodownload_enterprise       = true,
   #optional settings
   Optional[String[1]] $ca_file                   = undef,
   Optional[String[1]] $pem_key_file              = undef,

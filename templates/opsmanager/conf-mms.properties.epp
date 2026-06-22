@@ -99,6 +99,10 @@ mms.mail.transport=<%=$mongodb::opsmanager::mail_transport %>
 mms.mail.hostname=<%=$mongodb::opsmanager::smtp_server_hostname %>
 mms.mail.port=<%=$mongodb::opsmanager::smtp_server_port %>
 
+automation.versions.source=<%=$mongodb::opsmanager::versions_source -%>
+mongodb.release.autoDownload=<%=$mongodb::opsmanager::release_autodownload -%>
+mongodb.release.autoDownload.enterprise=<%=$mongodb::opsmanager::release_autodownload_enterprise -%>
+
 <% if $mongodb::opsmanager::user_svc_class { -%>
 mms.userSvcClass=<%=$mongodb::opsmanager::user_svc_class -%>
 <% } -%>
