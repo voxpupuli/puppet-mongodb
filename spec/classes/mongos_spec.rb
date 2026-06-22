@@ -32,7 +32,14 @@ describe 'mongodb::mongos' do
 
         # service
         it { is_expected.to contain_class('mongodb::mongos::service') }
+
         it { is_expected.to contain_service('mongos') }
+
+        it {
+          is_expected.to contain_systemd__unit_file('mongos.service')
+            .with_content(%r{RuntimeDirectory=mongodb})
+            .with_content(%r{RuntimeDirectoryMode=0755})
+        }
       end
 
       describe 'with specific bind_ip values' do
