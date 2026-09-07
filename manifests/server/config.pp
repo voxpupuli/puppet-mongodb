@@ -156,7 +156,7 @@ class mongodb::server::config {
   if $handle_creds {
     file { $rcfile:
       ensure  => file,
-      content => epp("${module_name}/mongoshrc.js.epp"),
+      content => Sensitive(epp("${module_name}/mongoshrc.js.epp")),
       owner   => 'root',
       group   => 'root',
       mode    => '0600',
