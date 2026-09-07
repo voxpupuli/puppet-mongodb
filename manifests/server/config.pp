@@ -156,7 +156,10 @@ class mongodb::server::config {
   if $handle_creds {
     file { $rcfile:
       ensure  => file,
-      content => epp("${module_name}/mongoshrc.js.epp"),
+      content => epp("${module_name}/mongoshrc.js.epp", {
+        'admin_username' => Sensitive($mongodb::server::config::admin_username),
+        'admin_password' => Sensitive($mongodb::server::config::admin_password.regsubst('\\\\','\\\\\\\\','G').regsubst("'","\\\\'",'G'))
+      }),
       owner   => 'root',
       group   => 'root',
       mode    => '0600',
