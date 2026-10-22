@@ -434,7 +434,7 @@ class mongodb::server (
     mongodb::db { 'admin':
       user            => $admin_username,
       auth_mechanism  => $admin_auth_mechanism,
-      password        => $admin_password.unwrap,
+      password        => $admin_password,
       password_hash   => $admin_password_hash,
       roles           => $admin_roles,
       update_password => $admin_update_password,

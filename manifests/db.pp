@@ -41,7 +41,7 @@ define mongodb::db (
     }
 
     if $password_hash {
-      $hash = $password_hash.unwrap
+      $hash = $password_hash
     } elsif $password {
       $hash = mongodb_password($user, $password)
     } else {

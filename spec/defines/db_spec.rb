@@ -14,7 +14,7 @@ describe 'mongodb::db' do
 
         let(:params) do
           { 'user'     => 'testuser',
-            'password' => 'testpass', }
+            'password' => sensitive('testpass'), }
         end
 
         it 'contains mongodb_database with mongodb::server requirement' do
@@ -31,8 +31,8 @@ describe 'mongodb::db' do
         end
 
         it 'prefers password_hash instead of password' do
-          params['password_hash'] = 'securehash'
-          is_expected.to contain_mongodb_user('User testuser on db testdb').with_password_hash('securehash')
+          params['password_hash'] = sensitive('securehash')
+          is_expected.to contain_mongodb_user('User testuser on db testdb').with_password_hash(sensitive('securehash'))
         end
 
         it 'contains mongodb_database with proper tries param' do
@@ -48,7 +48,7 @@ describe 'mongodb::db' do
           {
             'db_name'  => 'testdb',
             'user'     => 'testuser',
-            'password' => 'testpass',
+            'password' => sensitive('testpass'),
           }
         end
 
@@ -66,8 +66,8 @@ describe 'mongodb::db' do
         end
 
         it 'prefers password_hash instead of password' do
-          params['password_hash'] = 'securehash'
-          is_expected.to contain_mongodb_user('User testuser on db testdb').with_password_hash('securehash')
+          params['password_hash'] = sensitive('securehash')
+          is_expected.to contain_mongodb_user('User testuser on db testdb').with_password_hash(sensitive('securehash'))
         end
 
         it 'contains mongodb_database with proper tries param' do
