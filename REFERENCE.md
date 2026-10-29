@@ -2030,6 +2030,3 @@ Data type: `Variant[String[1], Sensitive[String[1]]]`
 ##### `sensitive`
 
 Data type: `Optional[Boolean]`
-
-
-
